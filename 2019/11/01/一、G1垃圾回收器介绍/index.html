@@ -6,18 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://github.com/AnonymousDQ/victor.github.io">
-  <title>Tag: Java | VictorDan</title>
+  <title>G1垃圾回收 | VictorDan</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="Java技术分享">
-<meta name="keywords" content="个人博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="VictorDan">
-<meta property="og:url" content="https:&#x2F;&#x2F;github.com&#x2F;AnonymousDQ&#x2F;victor.github.io&#x2F;tags&#x2F;Java&#x2F;index.html">
+  <meta name="description" content="G1垃圾回收">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="G1垃圾回收">
+<meta property="og:url" content="https:&#x2F;&#x2F;github.com&#x2F;AnonymousDQ&#x2F;victor.github.io&#x2F;2019&#x2F;11&#x2F;01&#x2F;%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
-<meta property="og:description" content="Java技术分享">
+<meta property="og:description" content="G1垃圾回收">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-13T11:29:18.110Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/victor.github.io/atom.xml" title="VictorDan" type="application/atom+xml">
@@ -197,88 +198,177 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-一、G1垃圾回收器介绍" class="article article-type-post " itemscope itemprop="blogPost">
+	<div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/victor.github.io/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/victor.github.io/2019/11/01/docker%E4%BD%BF%E7%94%A8/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
-</a>
-
-        </div>
-    	 
+      <header class="article-header">
   
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/victor.github.io/2019/11/01/docker%E4%BD%BF%E7%94%A8/" target="_blank">Docker的使用</a>
   
+    <h1 class="article-title" itemprop="name">
+      G1垃圾回收
     </h1>
   
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color2">Docker</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
+  
+        
+        <span id="busuanzi_container_page_pv" style='display:none' class="archive-article-date">
+              <i class="icon-smile icon"></i> 阅读数：<span id="busuanzi_value_page_pv"></span>次
+        </span>
+
 <a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" class="archive-article-date">
         <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
 </a>
 
+  
+  
+    
+<div style="margin-top:10px;">
+  <span class="post-time">
+    <span class="post-meta-item-icon">
+      <!-- fonts.scss -->
+      <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
+      <i class="icon-statistics"></i>
+      <span class="post-meta-item-text"> 字数统计:</span>
+      <span class="post-count">1.3k字</span>
+    </span>
+  </span>
+
+  <span class="post-time">
+    &nbsp; | &nbsp;
+    <span class="post-meta-item-icon">
+      <i class="icon-book icon"></i>
+      <span class="post-meta-item-text"> 阅读时长≈</span>
+      <span class="post-count">4分</span>
+    </span>
+  </span>
+</div>
+
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h3 id="一、G1垃圾回收器介绍"><a href="#一、G1垃圾回收器介绍" class="headerlink" title="一、G1垃圾回收器介绍"></a>一、G1垃圾回收器介绍</h3><p>为了解决CMS算法产生空间碎片和其他一系列的问题缺陷，HotSpot虚拟机团队提出了另外一种垃圾回收策略，G1（Garbage First）算法。通过参数-XX:+UserG1GC来启用。这个算法在JDK7被正式推出。</p>
+<p>G1垃圾回收算法主要应用在多CPU大内存的服务中，在满足高吞吐量的同事，尽可能的满足垃圾回收时的暂停时间，G1的设计应用场景：</p>
+<ul>
+<li>垃圾收集线程和应用线程并发执行，和CMS一样。</li>
+<li>空闲内存亚索时避免冗长的暂停时间</li>
+<li>应用需要更多可预测的GC暂停时间</li>
+<li>不希望牺牲太多的吞吐性能</li>
+<li>不需要很大的java堆</li>
+</ul>
+<h3 id="1、堆内存结构："><a href="#1、堆内存结构：" class="headerlink" title="1、堆内存结构："></a>1、堆内存结构：</h3><h4 id="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："><a href="#1、以往的垃圾回收算法，比如CMS，堆内存结构如下：" class="headerlink" title="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："></a>1、以往的垃圾回收算法，比如CMS，堆内存结构如下：</h4><p>年轻代/新生代：eden space+2个survivor</p>
+<p>老年代：old space</p>
+<p>持久代：1.8之前的perm space</p>
+<p>元空间：1.8之后的metaspace(元空间)</p>
+<p>上面这些space必须是地址连续的空间。</p>
+<h4 id="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"><a href="#2、在G1算法中，采用了另一种完全不同的方式组织堆内存" class="headerlink" title="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"></a>2、在G1算法中，采用了另一种完全不同的方式组织堆内存</h4><p>堆内存被划分成多个大小相等的内存块Region，每个Region是逻辑连续的一段内存。</p>
+<p>每个Region被标记了E,S,O,H，说明每个Region在运行时都充当了一种角色，其中H是以往算法中没有的，它代表Humongous，这表示这些Region存储的是巨型对象。当新建对象大小超过Region大小一半的时候，直接在新的一个或者多个连续Region中分配，并标记为H。</p>
+<h4 id="3、Region"><a href="#3、Region" class="headerlink" title="3、Region"></a>3、Region</h4><p>堆内存中一个Region的大小可以通过-XX:G1HeapRegionSize参数指定，大小区间只能是1M,2M,4M,8M,16M,32M，总之是2的幂次方，如果G1HeapRegionSize为默认值，则在堆初始化时计算Region的实际大小。</p>
+<p>默认把堆内存按照2048份均分，最后得到一个合理的大小。</p>
+<h3 id="2、GC模式"><a href="#2、GC模式" class="headerlink" title="2、GC模式"></a>2、GC模式</h3><p>G1中提供了3种模式垃圾回收模式，young GC,mixed GC和full GC。在不同的条件下被触发</p>
+<h4 id="1、young-GC"><a href="#1、young-GC" class="headerlink" title="1、young GC"></a>1、young GC</h4><p>发生在年轻代的GC算法，一般对象（除了巨型对象），都是在eden region中分配内存，当所有的eden region被消耗殆尽无法再申请内存的时候，就会触发一次young GC，这种触发机制和之前的young GC差不多，执行玩一次young GC，活跃对象会被拷贝到survivor region或者晋升到old region中，空闲的region会被放入空闲列表中，等待下次被使用。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-XX:MaxGCPauseMillis</td>
+<td>设置G1收集过程目标时间，默认200ms</td>
+</tr>
+<tr>
+<td>-XX:G1NewSizePercent</td>
+<td>新生代最小值，默认值5%</td>
+</tr>
+<tr>
+<td>-XX:G1MaxNewSizePercent</td>
+<td>新生代最大值，默认值60%</td>
+</tr>
+</tbody></table>
+<h4 id="2、mixed-GC"><a href="#2、mixed-GC" class="headerlink" title="2、mixed GC"></a>2、mixed GC</h4><p>当越来越多的对象晋升到老年代old region时，为了避免堆内存被消耗殆尽，虚拟机会触发一个混合的垃圾收集器，也就是mixed GC；这个算法不是一个old GC，除了回收整个young region，还会回收一部分old region。注：只是一部分老年代，而不是全部老年代，可以选择哪些old region进行收集，从而可以对垃圾回收的耗时时间进行控制。</p>
+<p>mixed GC什么时候被触发？</p>
+<p>有点类似cms的触发机制 ，如果添加了以下参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:CMSInitiatingOccupancyFraction=80</span><br><span class="line">-XX:+UserCMSInitiatingOccupancyOnly</span><br></pre></td></tr></table></figure>
+
+<p>当CMS的老年代的使用率达到80%时，就会触发一次cms gc。</p>
+<p>相对的，mixed gc中也有一个阈值参数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:InitiatingHeapOccupancyPercent</span><br></pre></td></tr></table></figure>
+
+<p>当老年代大小占整个堆大小百分比达到该阈值时，会触发一次mixed gc。</p>
+<h4 id="3、mixed-GC执行过程"><a href="#3、mixed-GC执行过程" class="headerlink" title="3、mixed GC执行过程"></a>3、mixed GC执行过程</h4><ul>
+<li>initial remark：初始标记过程，整个过程STW（Stop-The-World，在执行垃圾回收算法的时候，Java应用程序的其他所有线程都被挂起，Java中一种全局暂停现象，全局停顿，所有Java代码停止，native代码可以执行，但是不饿能够和JVM交互）标记了从GC Root可达的对象</li>
+<li>concurrent marking：并发标记过程，整个过程gc collector线程与应用线程可以并行执行，标记出GC Root可达对象衍生出来的存活的对象，并收集各个Region的存活对象信息。</li>
+<li>remark：最终标记过程，整个过程STW，标记出哪些在并发标记过程中遗漏的，或者内部引用发生变化的对象。</li>
+<li>clean up：垃圾清除过程，如果发现一个Region中没有存活对象，则把该Regioon加入到空闲列表中。</li>
+</ul>
+<h4 id="4、full-GC"><a href="#4、full-GC" class="headerlink" title="4、full GC"></a>4、full GC</h4><p>如果对象内存分配速度过快，mixed GC来不及回收，导致老年代old Region被填满，就会触发一次full gc。</p>
+<p>G1的full GC算法就是单线程的执行serial old gc，会导致异常长时间的暂停时间，需要进行不断的调优，尽可能的避免full GC。</p>
+
+    
+
+    
+    <div class="page-reward">
+      <a href="javascript:void(0);" class="page-reward-btn tooltip-top" target="_self">
+        <div class="tooltip tooltip-east">
+          <span class="tooltip-item">
+            赏
+          </span>
+          <span class="tooltip-content">
+            <span class="tooltip-text">
+              <span class="tooltip-inner">
+                <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i
+                    class="icon icon-quo-right"></i></p>
+                <div class="reward-box">
+                  
+                  <div class="reward-box-item">
+                    <img class="reward-img" src="/victor.github.io/img/alipay.JPG">
+                    <span class="reward-type">支付宝</span>
+                  </div>
+                  
+                  
+                  <div class="reward-box-item">
+                    <img class="reward-img" src="/victor.github.io/img/weixin.JPG">
+                    <span class="reward-type">微信</span>
+                  </div>
+                  
+                </div>
+              </span>
+            </span>
+          </span>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" target="_blank">G1垃圾回收</a>
-  
-    </h1>
-  
+      </a>
+    </div>
+    
 
+    
+    <div class="declare"> 
+      <ul class="post-copyright">
+        <li>
+          <strong>本文作者：</strong>
+          Victor Dan
+        </li>
+        <li>
+          <strong>本文链接：</strong>
+          <a href="https://github.com/AnonymousDQ/victor.github.io/2019/11/01/一、G1垃圾回收器介绍/" title="G1垃圾回收" target="_blank">https://github.com/AnonymousDQ/victor.github.io/2019/11/01/一、G1垃圾回收器介绍/</a>
+        </li>
+        <li>
+          <strong>版权声明： </strong>
+          本博客所有文章除特别声明外，均采用 <a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="external nofollow" target="_blank">Apache License 2.0</a> 许可协议。转载请注明出处！
+        </li>
+      </ul>
+    </div>
+    
 
-        <div class="article-info info-on-right">
-          
+  </div>
+  <div class="article-info article-info-index">
+    
+    
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -290,320 +380,139 @@
 		</ul>
 	</div>
 
-          
+    
 
+    
+
+    
+    
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" target="_blank" rel="noopener" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <!-- <a class="weixin share-sns wxFab" href="javascript:;" target="_blank" rel="noopener" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a> -->
+          <a class="qq share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;" target="_blank" rel="noopener"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://github.com/AnonymousDQ/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" alt="微信分享二维码"> -->
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+
+    
+    <div class="clearfix"></div>
+  </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%813%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
-</a>
 
+
+<nav id="article-nav">
+  
+    <a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81Spark%E7%9A%84%E5%AD%A6%E4%B9%A0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Spark的学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%813%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">分布式锁的使用</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%813%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_blank">分布式锁的使用</a>
-  
-    </h1>
-  
+        
+        
+    </div>
+</aside>
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
-          
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
-</a>
 
-        </div>
-    	 
+
+
+
+
+
+
   
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/" target="_blank">Redis的使用</a>
+  <div id="gitment-ctn"></div>
   
-    </h1>
+    <!-- 中文 -->
+    <link rel="stylesheet" href="/victor.github.io/lib/gitment.css">
+    <script src="/victor.github.io/lib/gitment.js"></script>
+  
+  <script>
+    <!-- id: "G1垃圾回收" -->
+    var gitment = new Gitment({
+      id: "20191101100600",
+      owner: 'AnonymousDQ',
+      repo: 'victor.github.io',
+      oauth: {
+        client_id: '5a17b0a3556d60b2a3fb',
+        client_secret: 'be054e14b78c5f52920d1198a51c12c6a0c28ca6',
+      },
+    })
+    gitment.render('gitment-ctn')
+  </script>
+
+
   
 
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_blank">分布式锁</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" target="_blank">Java并发编程</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/" target="_blank">操作系统</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/victor.github.io/2019/10/08/%E5%BC%80%E5%8F%91%E4%B8%AD-MySQL%E7%9A%84%E9%97%AE%E9%A2%98/" class="archive-article-date">
-        <time datetime="2019-10-08T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-08</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/victor.github.io/2019/10/08/%E5%BC%80%E5%8F%91%E4%B8%AD-MySQL%E7%9A%84%E9%97%AE%E9%A2%98/" target="_blank">MySQL的问题</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/victor.github.io/2019/09/01/%E5%8F%8C%E6%8C%87%E9%92%88/" class="archive-article-date">
-        <time datetime="2019-09-01T01:23:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-01</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/victor.github.io/2019/09/01/%E5%8F%8C%E6%8C%87%E9%92%88/" target="_blank">双指针</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -644,9 +553,9 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
