@@ -203,7 +203,7 @@
             
 
   
-    <article id="post-一、大数据BigData学习路线" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-一、G1垃圾回收器介绍" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -211,7 +211,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" target="_blank">大数据</a>
+	  <a class="article-title" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" target="_blank">G1垃圾回收</a>
   
     </h1>
   
@@ -219,7 +219,7 @@
 
   
   
-<a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" class="archive-article-date">
+<a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" class="archive-article-date">
         <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
 </a>
 
@@ -232,66 +232,64 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、大数据BigData"><a href="#一、大数据BigData" class="headerlink" title="一、大数据BigData"></a>一、大数据BigData</h1><h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><p>​    大数据本质也是数据，但是有了新的特征，包括数据来源广阔，数据格式多样化(结构化数据，非结构化数据，Excel文件，文本文件等)</p>
-<p>数据量大(最少也是TB级别的，甚至可能是PB级别)，数据增长速度快。</p>
-<h3 id="2、需要考虑的问题"><a href="#2、需要考虑的问题" class="headerlink" title="2、需要考虑的问题"></a>2、需要考虑的问题</h3><ul>
-<li><p>数据来源广，数据如何采集汇总？</p>
-<p>对应出现了Sqoop，Cammel，Datax等工具。</p>
-</li>
-<li><p>数据采集之后，如何存储？</p>
-<p>对应出现了GFS，HDFS，TFS等分布式文件存储系统</p>
-</li>
-<li><p>由于数据增长速度块，数据存储就必须水平扩展，于是出现集群</p>
-</li>
-<li><p>数据存储之后，该如何通过运算快速转化为统一的格式，该如何快速运算出自己想要的结果？</p>
+    <h3 id="一、G1垃圾回收器介绍"><a href="#一、G1垃圾回收器介绍" class="headerlink" title="一、G1垃圾回收器介绍"></a>一、G1垃圾回收器介绍</h3><p>为了解决CMS算法产生空间碎片和其他一系列的问题缺陷，HotSpot虚拟机团队提出了另外一种垃圾回收策略，G1（Garbage First）算法。通过参数-XX:+UserG1GC来启用。这个算法在JDK7被正式推出。</p>
+<p>G1垃圾回收算法主要应用在多CPU大内存的服务中，在满足高吞吐量的同事，尽可能的满足垃圾回收时的暂停时间，G1的设计应用场景：</p>
 <ul>
-<li><p>对应的MapReduce，来解决这样的问题；但是写MapReduce需要写大量Java代码，所以出现了Hive，Pig等将SQL转化为MapReduce的解析引擎。</p>
-</li>
-<li><p>但是普通的MapReduce处理数据只能一批一批的执行处理Job跑脚本，时间延迟太长，是离线计算，跑的都是前一天的数据。为了实现实时处理，每输入一条数据就能得到结果，于是出现了Storm/JStorm这样的低延时的流式计算框架。</p>
-</li>
-<li><p>但是如果同时需要批处理和流处理，按照上面的，就需要搭建2个集群，一个Hadoop集群(包括HDFS+MapReduce+Yarn)和Storm集群。不便于管理，所以出现了Spark这样的一站式的计算框架，既可以进行批处理，也可以进行流处理(实质上是微批处理)。如今又进一步发展为Flink(快速流式处理计算框架)。</p>
-</li>
+<li>垃圾收集线程和应用线程并发执行，和CMS一样。</li>
+<li>空闲内存亚索时避免冗长的暂停时间</li>
+<li>应用需要更多可预测的GC暂停时间</li>
+<li>不希望牺牲太多的吞吐性能</li>
+<li>不需要很大的java堆</li>
 </ul>
-</li>
-<li><p>业务处理的通用架构是什么样的？</p>
-<ul>
-<li>Lambda架构</li>
-<li>Kappa机构出现</li>
+<h3 id="1、堆内存结构："><a href="#1、堆内存结构：" class="headerlink" title="1、堆内存结构："></a>1、堆内存结构：</h3><h4 id="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："><a href="#1、以往的垃圾回收算法，比如CMS，堆内存结构如下：" class="headerlink" title="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："></a>1、以往的垃圾回收算法，比如CMS，堆内存结构如下：</h4><p>年轻代/新生代：eden space+2个survivor</p>
+<p>老年代：old space</p>
+<p>持久代：1.8之前的perm space</p>
+<p>元空间：1.8之后的metaspace(元空间)</p>
+<p>上面这些space必须是地址连续的空间。</p>
+<h4 id="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"><a href="#2、在G1算法中，采用了另一种完全不同的方式组织堆内存" class="headerlink" title="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"></a>2、在G1算法中，采用了另一种完全不同的方式组织堆内存</h4><p>堆内存被划分成多个大小相等的内存块Region，每个Region是逻辑连续的一段内存。</p>
+<p>每个Region被标记了E,S,O,H，说明每个Region在运行时都充当了一种角色，其中H是以往算法中没有的，它代表Humongous，这表示这些Region存储的是巨型对象。当新建对象大小超过Region大小一半的时候，直接在新的一个或者多个连续Region中分配，并标记为H。</p>
+<h4 id="3、Region"><a href="#3、Region" class="headerlink" title="3、Region"></a>3、Region</h4><p>堆内存中一个Region的大小可以通过-XX:G1HeapRegionSize参数指定，大小区间只能是1M,2M,4M,8M,16M,32M，总之是2的幂次方，如果G1HeapRegionSize为默认值，则在堆初始化时计算Region的实际大小。</p>
+<p>默认把堆内存按照2048份均分，最后得到一个合理的大小。</p>
+<h3 id="2、GC模式"><a href="#2、GC模式" class="headerlink" title="2、GC模式"></a>2、GC模式</h3><p>G1中提供了3种模式垃圾回收模式，young GC,mixed GC和full GC。在不同的条件下被触发</p>
+<h4 id="1、young-GC"><a href="#1、young-GC" class="headerlink" title="1、young GC"></a>1、young GC</h4><p>发生在年轻代的GC算法，一般对象（除了巨型对象），都是在eden region中分配内存，当所有的eden region被消耗殆尽无法再申请内存的时候，就会触发一次young GC，这种触发机制和之前的young GC差不多，执行玩一次young GC，活跃对象会被拷贝到survivor region或者晋升到old region中，空闲的region会被放入空闲列表中，等待下次被使用。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-XX:MaxGCPauseMillis</td>
+<td>设置G1收集过程目标时间，默认200ms</td>
+</tr>
+<tr>
+<td>-XX:G1NewSizePercent</td>
+<td>新生代最小值，默认值5%</td>
+</tr>
+<tr>
+<td>-XX:G1MaxNewSizePercent</td>
+<td>新生代最大值，默认值60%</td>
+</tr>
+</tbody></table>
+<h4 id="2、mixed-GC"><a href="#2、mixed-GC" class="headerlink" title="2、mixed GC"></a>2、mixed GC</h4><p>当越来越多的对象晋升到老年代old region时，为了避免堆内存被消耗殆尽，虚拟机会触发一个混合的垃圾收集器，也就是mixed GC；这个算法不是一个old GC，除了回收整个young region，还会回收一部分old region。注：只是一部分老年代，而不是全部老年代，可以选择哪些old region进行收集，从而可以对垃圾回收的耗时时间进行控制。</p>
+<p>mixed GC什么时候被触发？</p>
+<p>有点类似cms的触发机制 ，如果添加了以下参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:CMSInitiatingOccupancyFraction=80</span><br><span class="line">-XX:+UserCMSInitiatingOccupancyOnly</span><br></pre></td></tr></table></figure>
+
+<p>当CMS的老年代的使用率达到80%时，就会触发一次cms gc。</p>
+<p>相对的，mixed gc中也有一个阈值参数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:InitiatingHeapOccupancyPercent</span><br></pre></td></tr></table></figure>
+
+<p>当老年代大小占整个堆大小百分比达到该阈值时，会触发一次mixed gc。</p>
+<h4 id="3、mixed-GC执行过程"><a href="#3、mixed-GC执行过程" class="headerlink" title="3、mixed GC执行过程"></a>3、mixed GC执行过程</h4><ul>
+<li>initial remark：初始标记过程，整个过程STW（Stop-The-World，在执行垃圾回收算法的时候，Java应用程序的其他所有线程都被挂起，Java中一种全局暂停现象，全局停顿，所有Java代码停止，native代码可以执行，但是不饿能够和JVM交互）标记了从GC Root可达的对象</li>
+<li>concurrent marking：并发标记过程，整个过程gc collector线程与应用线程可以并行执行，标记出GC Root可达对象衍生出来的存活的对象，并收集各个Region的存活对象信息。</li>
+<li>remark：最终标记过程，整个过程STW，标记出哪些在并发标记过程中遗漏的，或者内部引用发生变化的对象。</li>
+<li>clean up：垃圾清除过程，如果发现一个Region中没有存活对象，则把该Regioon加入到空闲列表中。</li>
 </ul>
-</li>
-<li><p>为了提高工作效率，加快运行速度，又出现了一些辅助工具</p>
-<ul>
-<li>Ozzie，Azkaban：定时任务调度的工具</li>
-<li>Hue，Zepplin：图形化任务执行管理，结果查看工具。类似公司的云窗系统</li>
-<li>Scala语言：编写Spark程序的最佳语言，当然也可以使用Python或者Java</li>
-<li>Allluxio，Kylin：通过对存储的数据进行预处理，就快了运算速度的工具，能够快速的查询得到结果。</li>
-</ul>
-</li>
-</ul>
-<h3 id="3、大数据的必备技能"><a href="#3、大数据的必备技能" class="headerlink" title="3、大数据的必备技能"></a>3、大数据的必备技能</h3><ul>
-<li>日志收集：Flume，Fluentd，ELK</li>
-<li>流式计算：Storm/JStorm，Spark Streaming，Flink Streaming</li>
-<li>编程语言：Java，Python，Scala</li>
-<li>机器学习库：Mahout，MLib</li>
-<li>消息队列：Kafka，RabbitMQ</li>
-<li>数据分析/数据仓库：Hive，SparkSQL，FlinkSQL，Pig，Kylin</li>
-<li>Hadoop家族：Zookeeper，HBase，Hue，Sqoop，Oozie</li>
-<li>资源调度：Yarn，Mesos。</li>
-<li>分布式数据存储：HDFS</li>
-<li>大数据通用处理平台：Hadoop，Spark，Flink</li>
-</ul>
-<h3 id="4、必须掌握的技能"><a href="#4、必须掌握的技能" class="headerlink" title="4、必须掌握的技能"></a>4、必须掌握的技能</h3><ul>
-<li>Java高级开发：JVM，并发</li>
-<li>Linux基本操作</li>
-<li>Hadoop（HDFS+MapReduce+Yarn）</li>
-<li>HBase(JavaAPI操作+Phoenix)</li>
-<li>Hive（Hql基本操作和原理理解）</li>
-<li>Kafka</li>
-<li>Storm</li>
-<li>Python</li>
-<li>Spark（Core+SparkSQL+Spark Streaming）</li>
-<li>辅助小工具(Sqoop/Flume/jOzzie/Hue等)</li>
-</ul>
+<h4 id="4、full-GC"><a href="#4、full-GC" class="headerlink" title="4、full GC"></a>4、full GC</h4><p>如果对象内存分配速度过快，mixed GC来不及回收，导致老年代old Region被填满，就会触发一次full gc。</p>
+<p>G1的full GC算法就是单线程的执行serial old gc，会导致异常长时间的暂停时间，需要进行不断的调优，尽可能的避免full GC。</p>
 
     
 
@@ -308,7 +306,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color4">大数据</a>
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -318,7 +316,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/">展开全文 >></a>
+      <a class="article-more-a" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/">展开全文 >></a>
     </p>
     
 
