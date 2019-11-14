@@ -5,7 +5,7 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="https://github.com/AnonymousDQ/victor.github.io">
+  <link rel="dns-prefetch" href="https://anonymousdq.github.io">
   <title>VictorDan</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -17,7 +17,7 @@
 <meta name="keywords" content="个人博客">
 <meta property="og:type" content="website">
 <meta property="og:title" content="VictorDan">
-<meta property="og:url" content="https:&#x2F;&#x2F;github.com&#x2F;AnonymousDQ&#x2F;victor.github.io&#x2F;page&#x2F;2&#x2F;index.html">
+<meta property="og:url" content="https:&#x2F;&#x2F;anonymousdq.github.io&#x2F;page&#x2F;2&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
 <meta property="og:description" content="Java技术分享">
 <meta property="og:locale" content="zh-Hans">
@@ -51,7 +51,7 @@
 
   
     <script src="/victor.github.io/lib/pace.min.js"></script>
-    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-loading-bar.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
   
 
 </head>
@@ -176,7 +176,7 @@
 				
 					<li style="width: 16.666666666666668%"><a href="/victor.github.io/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="https://anonymousdq.github.io/" target="_blank" rel="noopener">技术笔记</a></li>
+					<li style="width: 16.666666666666668%"><a href="https://anonymousdq.github.io/">技术笔记</a></li>
 		        
 					<li style="width: 16.666666666666668%"><a href="/victor.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li>
 		        
@@ -568,7 +568,7 @@
 
 
   
-    <article id="post-Hive的基本概念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Hive1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -576,7 +576,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="/victor.github.io/2019/10/01/Hive%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" target="_blank">Hive基本概念</a>
+	  <a class="article-title" href="/victor.github.io/2019/10/01/Hive1/" target="_blank">Hive基本概念</a>
   
     </h1>
   
@@ -584,7 +584,7 @@
 
   
   
-<a href="/victor.github.io/2019/10/01/Hive%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="archive-article-date">
+<a href="/victor.github.io/2019/10/01/Hive1/" class="archive-article-date">
         <time datetime="2019-10-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-01</time>
 </a>
 
@@ -634,7 +634,7 @@
 <li>Hive自动生成的MapReduce作业，通常情况下不够智能化</li>
 <li>Hive调优比较困难，粒度比较粗</li>
 </ul>
-<h3 id="1-3、Hive架构原理"><a href="#1-3、Hive架构原理" class="headerlink" title="1.3、Hive架构原理"></a>1.3、Hive架构原理</h3><p><img src="/victor.github.io/AnonymousDQ/victor.github/HIve%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86%E5%9B%BE.png" alt></p>
+<h3 id="1-3、Hive架构原理"><a href="#1-3、Hive架构原理" class="headerlink" title="1.3、Hive架构原理"></a>1.3、Hive架构原理</h3><p><img src="/victor.github.io/2019/10/01/Hive1/Hive.png" alt></p>
 <p>CLI：命令行接口，以命令行的形式输入SQL语句进行数据操作，有点类似shell</p>
 <p>Meta store：元数据存储，就是存的是表跟数据之间的位置对应关系，有点类似索引，Hive不会存储Meta store，会存在mysql或者Derby中</p>
 <p>Meta store作用：客户端连接Meta store服务，Meta store再去连接Mysql数据库来存取元数据，有了Meta store服务，就可以有多个客户端可以同时连接，而切这些客户端不需要知道MySQL的数据库用户名和密码，只需要连接Meta store服务就行。</p>
@@ -666,7 +666,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="/victor.github.io/2019/10/01/Hive%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">展开全文 >></a>
+      <a class="article-more-a" href="/victor.github.io/2019/10/01/Hive1/">展开全文 >></a>
     </p>
     
 
@@ -1289,8 +1289,8 @@
 </ul>
 <h4 id="2、HashMap与Hashtable"><a href="#2、HashMap与Hashtable" class="headerlink" title="2、HashMap与Hashtable"></a>2、HashMap与Hashtable</h4><ul>
 <li>线程是否安全：HashMap非线程安全，Hashtable线程安全。Hashtable的方法内部都是由synchronized修饰。保证线程安全建议使用ConcurrentHashMap</li>
-<li>HashMap可以用null作为一个key键，但是只有一个，value为null可以有一个或者多个。Hashtable如果put进去的key为null就会报空指针。</li>
-<li>HashMap默认的初始化为16，每次扩容会变为原来的2倍。JDK1.8以后的HashMap解决哈希冲突的时候，链表的长度默认值为8，如果超过8的时候，链表会转化为红黑树，用来减少搜索时间。</li>
+<li>HashMap可以用null作为一个key键，但是只有一个，value为null可以有一个或者多个。<font color="red">Hashtable如果put进去的key为null就会报空指针。</font></li>
+<li>HashMap默认的初始化为16，每次扩容会变为原来的2倍。JDK1.8以后的HashMap解决哈希冲突的时候，链表的长度默认值为8，<font color="red">如果超过8的时候，链表会转化为红黑树，用来减少搜索时间</font>。</li>
 </ul>
 <h4 id="3、HashMap和HashSet"><a href="#3、HashMap和HashSet" class="headerlink" title="3、HashMap和HashSet"></a>3、HashMap和HashSet</h4><p>​    HashSet底层是基于HashMap实现。</p>
 <table>
@@ -1316,7 +1316,7 @@
 <p>HashSet检查重复：当add的时候，HashSet会先计算对象的hashcode值来判断对象加入的位置。</p>
 <p>也即是先判断hashcode值，如果hashcode相同，则调用equals()方法，如果为true，则相同,HashsSet就不会加入操作成功。</p>
 <ul>
-<li>HashMap多线程操作导致死循环问题，因为多线程并发情况下Rehash会造成元素之间形成一个循环链表。</li>
+<li>HashMap多线程操作导致死循环问题，因为<font color="red">多线程并发情况下Rehash会造成元素之间形成一个循环链表。</font></li>
 </ul>
 <h4 id="4、ConcurrentHashMap"><a href="#4、ConcurrentHashMap" class="headerlink" title="4、ConcurrentHashMap"></a>4、ConcurrentHashMap</h4><p>JDK1.8的ConcurrentHashMap取消了Segment分段锁，采用CAS和synchronized来保证并发安全。数据结构和1.8的HashMap类似，数组+链表/红黑二叉树。</p>
 <p>当链表长度超过8，链表（查找复杂度O(N)）将转换为红黑树（查找复杂度O(longN)）</p>
@@ -1555,7 +1555,7 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h2 id="大数据技术之Kafka"><a href="#大数据技术之Kafka" class="headerlink" title="大数据技术之Kafka"></a>大数据技术之Kafka</h2><h3 id="1、Kafka概述"><a href="#1、Kafka概述" class="headerlink" title="1、Kafka概述"></a>1、Kafka概述</h3><h4 id="1-1、消息队列"><a href="#1-1、消息队列" class="headerlink" title="1.1、消息队列"></a>1.1、消息队列</h4><p><img src="/victor.github.io/AnonymousDQ/victor.github/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.png" alt></p>
+    <h2 id="大数据技术之Kafka"><a href="#大数据技术之Kafka" class="headerlink" title="大数据技术之Kafka"></a>大数据技术之Kafka</h2><h3 id="1、Kafka概述"><a href="#1、Kafka概述" class="headerlink" title="1、Kafka概述"></a>1、Kafka概述</h3><h4 id="1-1、消息队列"><a href="#1-1、消息队列" class="headerlink" title="1.1、消息队列"></a>1.1、消息队列</h4><p><img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.png" alt></p>
 <h4 id="1-2、为什么要用消息队列？"><a href="#1-2、为什么要用消息队列？" class="headerlink" title="1.2、为什么要用消息队列？"></a>1.2、为什么要用消息队列？</h4><ul>
 <li><strong>解耦</strong>：也即是客户端A跟B不用直连，通过中间件。达到解耦</li>
 <li><strong>冗余</strong>：消息队列可以进行数据备份，它本身可以缓冲数据</li>
@@ -1571,10 +1571,10 @@
 <p>而ActiveMQ，它的队列是存在内存中。普通的消息队列是存在队列Queue中，然后存在内存中。Kafka是持久化到磁盘中，Kafka是以partition为单位进行消费的，而普通消息队列是一条一条进行消费的。</p>
 </li>
 </ul>
-<p><img src="/victor.github.io/AnonymousDQ/victor.github/ActiveMQ.jpg" alt></p>
+<p><img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/ActiveMQ.jpg" alt></p>
 <ul>
-<li><p><strong>RabbitMQ多了一段Exchange，路由交换机。有4中工作机制。</strong></p>
-<p><img src="/victor.github.io/AnonymousDQ/victor.github/RabbitMQ.jpg" alt></p>
+<li><p>RabbitMQ多了一段Exchange，路由交换机。有4中工作机制。**</p>
+<p><img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/RabbitMQ.jpg" alt></p>
 <p>​    当producer生产了3条消息，每个队列中不会都拿到这3条消息的，它是根据路由机制进行匹配的，有4中路由机制，fanout，direct，topic，headers。4种路由机制。</p>
 </li>
 </ul>
@@ -1585,7 +1585,7 @@
 <p>而RabbitMQ它的消息存在内存中，如果消息超过长度，就会内存溢出。而kafka不会，消息存在磁盘中。</p>
 </li>
 </ul>
-<h5 id="1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景"><a href="#1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景" class="headerlink" title="1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景"></a>1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景</h5><p>​    <img src="/victor.github.io/AnonymousDQ/victor.github/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.jpg" alt></p>
+<h5 id="1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景"><a href="#1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景" class="headerlink" title="1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景"></a>1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景</h5><p>​    <img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.jpg" alt></p>
 <p>或者你这个库存当时没有了，可以调用别的地方的库存，然后重新分配库存。但是kafka就没有这样的好处。</p>
 <p>订单太多，可能会导致内存溢出，RabbitMQ中有一个partition是网络分区，用来做网络集群的，与kafka的partition不同，因此可以做集群部署。</p>
 <h4 id="1-4、什么是Kafka"><a href="#1-4、什么是Kafka" class="headerlink" title="1.4、什么是Kafka"></a>1.4、什么是Kafka</h4><p>流式计算中，Kafka用来缓存数据，Storm通过消费Kafka的数据进行计算。</p>
@@ -1600,8 +1600,8 @@
 <li><p>不管是kafka集群，还是consumer都依赖与<strong>zookeeper</strong>集群保存一些meta信息，保证系统可用性。</p>
 </li>
 </ul>
-<h4 id="1-5、Kafka架构"><a href="#1-5、Kafka架构" class="headerlink" title="1.5、Kafka架构"></a>1.5、Kafka架构</h4><p><img src="/victor.github.io/AnonymousDQ/victor.github/kafka%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
-<p><img src="/victor.github.io/AnonymousDQ/victor.github/kafka%E6%9E%B6%E6%9E%84.png" alt></p>
+<h4 id="1-5、Kafka架构"><a href="#1-5、Kafka架构" class="headerlink" title="1.5、Kafka架构"></a>1.5、Kafka架构</h4><p><img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
+<p><img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E6%9E%B6%E6%9E%84.png" alt></p>
 <p>partition分区：作负载均衡用。</p>
 <p>replication：备份。</p>
 <p>一个消费者可以消费多个topic，<strong>同一个组里面的消费者，不能消费同一个partition分区的数据</strong>。但是你不同的组里面，还是可以消费同一个partition分区的数据。</p>

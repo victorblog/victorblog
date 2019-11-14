@@ -5,7 +5,7 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="https://github.com/AnonymousDQ/victor.github.io">
+  <link rel="dns-prefetch" href="https://anonymousdq.github.io">
   <title>Docker的使用 | VictorDan</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -14,11 +14,11 @@
 <meta name="keywords" content="Java,Docker">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker的使用">
-<meta property="og:url" content="https:&#x2F;&#x2F;github.com&#x2F;AnonymousDQ&#x2F;victor.github.io&#x2F;2019&#x2F;11&#x2F;01&#x2F;docker%E4%BD%BF%E7%94%A8&#x2F;index.html">
+<meta property="og:url" content="https:&#x2F;&#x2F;anonymousdq.github.io&#x2F;2019&#x2F;11&#x2F;01&#x2F;docker%E4%BD%BF%E7%94%A8&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
 <meta property="og:description" content="Docker的使用">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-13T07:11:17.428Z">
+<meta property="og:updated_time" content="2019-11-14T08:25:00.398Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/victor.github.io/atom.xml" title="VictorDan" type="application/atom+xml">
@@ -49,7 +49,7 @@
 
   
     <script src="/victor.github.io/lib/pace.min.js"></script>
-    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-loading-bar.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
   
 
 </head>
@@ -174,7 +174,7 @@
 				
 					<li style="width: 16.666666666666668%"><a href="/victor.github.io/">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="https://anonymousdq.github.io/" target="_blank" rel="noopener">技术笔记</a></li>
+					<li style="width: 16.666666666666668%"><a href="https://anonymousdq.github.io/">技术笔记</a></li>
 		        
 					<li style="width: 16.666666666666668%"><a href="/victor.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li>
 		        
@@ -257,8 +257,6 @@
 
 <h4 id="3、使用docker拉取镜像"><a href="#3、使用docker拉取镜像" class="headerlink" title="3、使用docker拉取镜像"></a>3、使用docker拉取镜像</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo docker pull redis:5.0.6</span><br><span class="line">sudo docker pull nginx</span><br><span class="line">sudo docker pull mysql:8.0.18</span><br><span class="line"><span class="meta">#</span><span class="bash">删除拉取的镜像</span></span><br><span class="line">sudo docker image rm mysql:8.0.18</span><br></pre></td></tr></table></figure>
 
-<a id="more"></a>
-
 <h4 id="4、使用docker安装并运行nginx"><a href="#4、使用docker安装并运行nginx" class="headerlink" title="4、使用docker安装并运行nginx"></a>4、使用docker安装并运行nginx</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sudo docker search nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">pull的时候，后面不追加冒号和版本号，默认是最新的latest版本</span></span><br><span class="line">sudo docker pull nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">运行nginx</span></span><br><span class="line">sudo docker run --name victor-nginx-test -p 8081:80 -d nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">victor-nginx-test是容器名称</span></span><br><span class="line">-d，设置容器在后台一直运行</span><br><span class="line">-p，端口进行映射，将本地的8081端口映射到容器内部的80端口</span><br><span class="line"><span class="meta">#</span><span class="bash">执行玩上面那条命令后，会生成一串字符串45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89，这个表示容器的id，一般作为日志的文件名来查看启动信息等</span></span><br><span class="line">sudo docker logs 45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89</span><br><span class="line"><span class="meta">#</span><span class="bash">停止nginx</span></span><br><span class="line">sudo docker ps</span><br><span class="line"><span class="meta">#</span><span class="bash">复制对应容器的id,然后停止镜像</span></span><br><span class="line">sudo docker stop 45faac1c8dca</span><br><span class="line"><span class="meta">#</span><span class="bash">删除镜像</span></span><br><span class="line">sudo docker rm 45faac1c8dca</span><br></pre></td></tr></table></figure>
 
 <h4 id="5、使用docker部署项目"><a href="#5、使用docker部署项目" class="headerlink" title="5、使用docker部署项目"></a>5、使用docker部署项目</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">首先创建一个文件夹，里面包含3个子文件夹</span></span><br><span class="line">sudo mkdir -p ~/桌面/nginx/www ~/桌面/nginx/logs ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">首先你要直到容器的id，</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">复制docker容器里的nginx默认配置文件信息，到你的本地刚创建的conf文件夹目录下</span></span><br><span class="line">sudo docker cp76d9d74d071e:/etc/nginx/nginx.conf ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">部署项目，到docker里的nginx</span></span><br><span class="line">sudo docker run -p 8082:80 --name victor-nginx-web -v ~/桌面/nginx/www:/usr/share/nginx/html -v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v ~/桌面/nginx/logs:/var/log/nginx -d nginx</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">命令说明</span></span><br><span class="line">-p 8082:80  是把你容器里的nginx的80端口映射到你本地主机的8082端口</span><br><span class="line">--name victor-nginx-web  是把容器重命名我们自己喜欢的名字</span><br><span class="line">-v ~/桌面/nginx/www:/usr/share/nginx/html   是把我们本地创建的项目 的www目录挂在到容器的/usr/share/nginx/html</span><br><span class="line">-v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf 是吧我们创建的nginx.conf挂在到容器的/etc/nginx/nginx.conf</span><br><span class="line">-v ~/桌面/nginx/logs:/var/log/nginx 是把我们自己创建的logs挂在到容器的/var/log/nginx</span><br><span class="line">-d nginx :是设置容器一直后台运行</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">执行完命令后，会生成一串字符串，用这个字符串表示日志id，可以使用</span></span><br><span class="line">sudo docker logs 76d9d74d071e8b2d8499a56691587eef3e2f19d4fddeb5a3e26e5d9338856e10</span><br></pre></td></tr></table></figure>
@@ -317,7 +315,7 @@
         </li>
         <li>
           <strong>本文链接：</strong>
-          <a href="https://github.com/AnonymousDQ/victor.github.io/2019/11/01/docker使用/" title="Docker的使用" target="_blank">https://github.com/AnonymousDQ/victor.github.io/2019/11/01/docker使用/</a>
+          <a href="https://anonymousdq.github.io/2019/11/01/docker使用/" title="Docker的使用" target="_blank">https://anonymousdq.github.io/2019/11/01/docker使用/</a>
         </li>
         <li>
           <strong>版权声明： </strong>
@@ -396,7 +394,7 @@
     <a class="close js-modal-close" href="javascript:;" target="_blank" rel="noopener"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://github.com/AnonymousDQ/victor.github.io/2019/11/01/docker%E4%BD%BF%E7%94%A8/" alt="微信分享二维码"> -->
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://anonymousdq.github.io/2019/11/01/docker%E4%BD%BF%E7%94%A8/" alt="微信分享二维码"> -->
     </div>
 </div>
 
@@ -411,18 +409,9 @@
 
 <nav id="article-nav">
   
-    <a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          UDF自定义函数
-        
-      </div>
-    </a>
   
-  
-    <a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">操作系统</div>
+    <a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">大数据</div>
       <i class="icon-circle-right"></i>
     </a>
   
