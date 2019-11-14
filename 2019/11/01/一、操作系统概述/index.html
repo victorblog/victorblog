@@ -931,7 +931,7 @@
 <li><p>安全状态检查，检查预分配后的状态是否为安全状态。</p>
 </li>
 </ul>
-<p>某系统有<font color=red>4类资源</font>A,B,C,D，数量分别是8,10,9,12。当前有<font color=red>5个进程</font>P1，P2，P3，P4，P5。<font color=red>最大需求矩阵Max</font>和<font color=red>当前分配矩阵Used</font>如下：<br>$$<br>Max = \left[ \matrix{  4 &amp; 6 &amp; 3 &amp; 8\  3 &amp; 3 &amp; 5 &amp; 2\  6 &amp; 6 &amp; 0 &amp; 9\ 3 &amp; 4 &amp; 8 &amp; 5\ 4 &amp; 3 &amp; 2 &amp; 2  } \right]<br>$$</p>
+<p>某系统有<font color="red">4类资源</font>A,B,C,D，数量分别是8,10,9,12。当前有<font color="red">5个进程</font>P1，P2，P3，P4，P5。<font color="red">最大需求矩阵Max</font>和<font color="red">当前分配矩阵Used</font>如下：<br>$$<br>Max = \left[ \matrix{  4 &amp; 6 &amp; 3 &amp; 8\  3 &amp; 3 &amp; 5 &amp; 2\  6 &amp; 6 &amp; 0 &amp; 9\ 3 &amp; 4 &amp; 8 &amp; 5\ 4 &amp; 3 &amp; 2 &amp; 2  } \right]<br>$$</p>
 <p>$$<br>Used = \left[ \matrix{  1 &amp; 1 &amp; 0 &amp; 2\  2 &amp; 2 &amp; 4 &amp; 0\  0 &amp; 5 &amp; 0 &amp; 1\ 1 &amp; 1 &amp; 1 &amp; 5\ 2 &amp; 0 &amp; 2 &amp; 2  } \right]<br>$$</p>
 <ul>
 <li><p>在当前状态下，如果进程P1申请request=(1,0,1,0)，系统能否分配？</p>
@@ -1131,10 +1131,10 @@
 </ul>
 </li>
 </ul>
-<h3 id="3、逻辑地址与物理地址"><a href="#3、逻辑地址与物理地址" class="headerlink" title="3、逻辑地址与物理地址"></a>3、逻辑地址与物理地址</h3><p>​        程序在运行的时候被装入到内存中，其中的<font color=red>指令与数据</font>的<font color=red>位置</font>用地址值表示，<font color=red>地址值</font>的变现形式可分为：</p>
+<h3 id="3、逻辑地址与物理地址"><a href="#3、逻辑地址与物理地址" class="headerlink" title="3、逻辑地址与物理地址"></a>3、逻辑地址与物理地址</h3><p>​        程序在运行的时候被装入到内存中，其中的<font color="red">指令与数据</font>的<font color="red">位置</font>用地址值表示，<font color="red">地址值</font>的变现形式可分为：</p>
 <ul>
-<li><font color=red>逻辑（虚拟）地址</font>：指令或者数据在<font color=red>程序中的编号（位置）</font></li>
-<li><font color=red>物理地址</font>：指令或者数据<font color=red>内存中的位置</font></li>
+<li><font color="red">逻辑（虚拟）地址</font>：指令或者数据在<font color="red">程序中的编号（位置）</font></li>
+<li><font color="red">物理地址</font>：指令或者数据<font color="red">内存中的位置</font></li>
 </ul>
 <table>
 <thead>
@@ -1173,9 +1173,9 @@
 <h3 id="4、重定位（地址转换）"><a href="#4、重定位（地址转换）" class="headerlink" title="4、重定位（地址转换）"></a>4、重定位（地址转换）</h3><p>​        若程序中的变量与指令用逻辑地址加以引用，则为了在运行的时候正确访问这些变量或者指令，需要进行重定位（或者叫地址转换），来确定实际的物理地址。</p>
 <p>​        根据地址转换操作的时机，重定位分为：</p>
 <ul>
-<li><p><font color=red>静态重定位</font>：操作系统在<font color=red>装入程序时候</font>修改其中所引用的逻辑地址值为物理地址值–由<font color=red>操作系统</font>实现。</p>
+<li><p><font color="red">静态重定位</font>：操作系统在<font color="red">装入程序时候</font>修改其中所引用的逻辑地址值为物理地址值–由<font color="red">操作系统</font>实现。</p>
 </li>
-<li><p><font color=red>动态重定位</font>：在运行过程中需要做访问操作的时候才进行地址转换–由cpu的<font color=red>存储管理单元MMU</font>自动实现，操作系统只登记MMU进行重定位时需要的相关信息。</p>
+<li><p><font color="red">动态重定位</font>：在运行过程中需要做访问操作的时候才进行地址转换–由cpu的<font color="red">存储管理单元MMU</font>自动实现，操作系统只登记MMU进行重定位时需要的相关信息。</p>
 </li>
 </ul>
 <p>个人理解，Java的反射机制，可以在运行的时候，获取Class信息，想必底层实现原理就是利用的动态重定位吧。</p>
@@ -1218,7 +1218,7 @@
 <td align="center">容易实现</td>
 </tr>
 </tbody></table>
-<h3 id="6、存储器管理的关键问题"><a href="#6、存储器管理的关键问题" class="headerlink" title="6、存储器管理的关键问题"></a>6、存储器管理的关键问题</h3><p>​        <font color=red>存储器管理</font>主要是对用户空间进行管理，目的是为了提供主存储器的利用率，方便用户对主存储器的使用。</p>
+<h3 id="6、存储器管理的关键问题"><a href="#6、存储器管理的关键问题" class="headerlink" title="6、存储器管理的关键问题"></a>6、存储器管理的关键问题</h3><p>​        <font color="red">存储器管理</font>主要是对用户空间进行管理，目的是为了提供主存储器的利用率，方便用户对主存储器的使用。</p>
 <p>​        存储器管理的关键问题：</p>
 <h5 id="1、存储空间的分配与回收"><a href="#1、存储空间的分配与回收" class="headerlink" title="1、存储空间的分配与回收"></a>1、存储空间的分配与回收</h5><ul>
 <li>设计合理的数据结构以记录存储空间的分配情况</li>
@@ -1263,7 +1263,7 @@
 <li><p>不需要复杂硬件支持</p>
 </li>
 <li><p>只允许单任务</p>
-<p>为了实现单一连续区存储管理，或者其他任何存储管理的方法，<font color=red>操作系统采用的请求表来记录请求装入内存的程序信息</font>。</p>
+<p>为了实现单一连续区存储管理，或者其他任何存储管理的方法，<font color="red">操作系统采用的请求表来记录请求装入内存的程序信息</font>。</p>
 <table>
 <thead>
 <tr>
@@ -1294,7 +1294,7 @@
 </tbody></table>
 </li>
 </ul>
-<h3 id="9、固定分区存储管理"><a href="#9、固定分区存储管理" class="headerlink" title="9、固定分区存储管理"></a>9、固定分区存储管理</h3><p>​        操作系统占用内核空间之外，<font color=red>将整个用户空间划分为若干个固定大小的区域（大小可不相等）</font>。多道程序分别装入不同的分区内，一道程序只能装入一个分区，而一个分区也只能分配给一道程序。</p>
+<h3 id="9、固定分区存储管理"><a href="#9、固定分区存储管理" class="headerlink" title="9、固定分区存储管理"></a>9、固定分区存储管理</h3><p>​        操作系统占用内核空间之外，<font color="red">将整个用户空间划分为若干个固定大小的区域（大小可不相等）</font>。多道程序分别装入不同的分区内，一道程序只能装入一个分区，而一个分区也只能分配给一道程序。</p>
 <p>​        为了实现固定分区存储管理，操作系统必须记录各分区的位置和使用情况，采用关键数据结构–分区说明表（DPT）</p>
 <table>
 <thead>
@@ -1532,18 +1532,18 @@
 
 <nav id="article-nav">
   
-    <a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/victor.github.io/2019/11/01/docker%E4%BD%BF%E7%94%A8/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          分布式锁
+          Docker的使用
         
       </div>
     </a>
   
   
-    <a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81Spark%E7%9A%84%E5%AD%A6%E4%B9%A0/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Spark的学习</div>
+    <a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">G1垃圾回收</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -1753,11 +1753,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color2">Docker</a>
               </li>
             
             <div class="clearfix"></div>

@@ -18,7 +18,7 @@
 <meta property="og:site_name" content="VictorDan">
 <meta property="og:description" content="UDF自定义函数">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-13T11:32:36.390Z">
+<meta property="og:updated_time" content="2019-11-14T02:53:51.505Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/victor.github.io/atom.xml" title="VictorDan" type="application/atom+xml">
@@ -231,7 +231,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">163字</span>
+      <span class="post-count">162字</span>
     </span>
   </span>
 
@@ -251,21 +251,17 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、UDF的使用手册"><a href="#一、UDF的使用手册" class="headerlink" title="一、UDF的使用手册"></a>一、UDF的使用手册</h1><h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><p>Hive中，提供了丰富的内置函数，比如<font color=red>trim(),cast(),max(),count(),coalesce()</font>等之外，    还允许用户用java开发自定义的UDF函数。</p>
+    <h1 id="一、UDF的使用手册"><a href="#一、UDF的使用手册" class="headerlink" title="一、UDF的使用手册"></a>一、UDF的使用手册</h1><h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><p>Hive中，提供了丰富的内置函数，比如<font color="red">trim(),cast(),max(),count(),coalesce()</font>等之外，    还允许用户用java开发自定义的UDF函数。</p>
 <h4 id="1-1、开发自定义UDF函数的2种方式："><a href="#1-1、开发自定义UDF函数的2种方式：" class="headerlink" title="1.1、开发自定义UDF函数的2种方式："></a>1.1、开发自定义UDF函数的2种方式：</h4><ul>
 <li>继承org.apache.hadoop.hive.ql.exec.UDF;</li>
 <li>继承org.apache.hadoop.hive.ql.udf.generic.GenericUDF; </li>
 </ul>
 <h4 id="1-2、总结："><a href="#1-2、总结：" class="headerlink" title="1.2、总结："></a>1.2、总结：</h4><ul>
-<li>针对简单数据类型：<font color=red>String,Integer等，可以使用UDF</font>。</li>
-<li>针对复杂数据类型：<font color=red>Array,Map,Struct等，可以使用GenericUDF</font></li>
+<li>针对简单数据类型：<font color="red">String,Integer等，可以使用UDF</font>。</li>
+<li>针对复杂数据类型：<font color="red">Array,Map,Struct等，可以使用GenericUDF</font></li>
 <li>GenericUDF还可以在函数开始之前和结束之后做一些初始化和关闭的处理操作。</li>
 </ul>
 <h3 id="2、UDF"><a href="#2、UDF" class="headerlink" title="2、UDF"></a>2、UDF</h3><p>使用UDF实现对String类型的字符串取HashMD5</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
 <h3 id="3、GenericUDF"><a href="#3、GenericUDF" class="headerlink" title="3、GenericUDF"></a>3、GenericUDF</h3>
     
 
@@ -402,11 +398,11 @@
 
 <nav id="article-nav">
   
-    <a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/victor.github.io/2019/11/01/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Redis的使用
+          分布式锁的使用
         
       </div>
     </a>
@@ -623,11 +619,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color2">Docker</a>
               </li>
             
             <div class="clearfix"></div>

@@ -6,22 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://github.com/AnonymousDQ/victor.github.io">
-  <title>Hive的使用 | VictorDan</title>
+  <title>Java编码规范 | VictorDan</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="Hive的使用">
-<meta name="keywords" content="大数据">
+  <meta name="description" content="Java编码规范">
+<meta name="keywords" content="Java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hive的使用">
-<meta property="og:url" content="https:&#x2F;&#x2F;github.com&#x2F;AnonymousDQ&#x2F;victor.github.io&#x2F;2019&#x2F;10&#x2F;01&#x2F;Hive%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5&#x2F;index.html">
+<meta property="og:title" content="Java编码规范">
+<meta property="og:url" content="https:&#x2F;&#x2F;github.com&#x2F;AnonymousDQ&#x2F;victor.github.io&#x2F;2018&#x2F;02&#x2F;01&#x2F;%E4%B8%80%E3%80%81Java%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
-<meta property="og:description" content="Hive的使用">
+<meta property="og:description" content="Java编码规范">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https:&#x2F;&#x2F;github.com&#x2F;AnonymousDQ&#x2F;victor.github.io&#x2F;2019&#x2F;10&#x2F;01&#x2F;Hive%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5&#x2F;images&#x2F;HIve%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86%E5%9B%BE.png">
-<meta property="og:updated_time" content="2019-11-13T11:26:51.910Z">
+<meta property="og:updated_time" content="2019-11-14T02:07:42.774Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;github.com&#x2F;AnonymousDQ&#x2F;victor.github.io&#x2F;2019&#x2F;10&#x2F;01&#x2F;Hive%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5&#x2F;images&#x2F;HIve%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86%E5%9B%BE.png">
   
     <link rel="alternative" href="/victor.github.io/atom.xml" title="VictorDan" type="application/atom+xml">
   
@@ -200,14 +198,14 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Hive基本概念" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-一、Java编码规范" class="article article-type-post " itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
   
   
     <h1 class="article-title" itemprop="name">
-      Hive的使用
+      Java编码规范
     </h1>
   
 
@@ -219,8 +217,8 @@
               <i class="icon-smile icon"></i> 阅读数：<span id="busuanzi_value_page_pv"></span>次
         </span>
 
-<a href="/victor.github.io/2019/10/01/Hive%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="archive-article-date">
-        <time datetime="2019-10-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-01</time>
+<a href="/victor.github.io/2018/02/01/%E4%B8%80%E3%80%81Java%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/" class="archive-article-date">
+        <time datetime="2018-02-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-01</time>
 </a>
 
   
@@ -233,7 +231,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">804字</span>
+      <span class="post-count">766字</span>
     </span>
   </span>
 
@@ -253,49 +251,74 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="Hive基本概念"><a href="#Hive基本概念" class="headerlink" title="Hive基本概念"></a>Hive基本概念</h1><h3 id="1-1、什么是Hive"><a href="#1-1、什么是Hive" class="headerlink" title="1.1、什么是Hive"></a>1.1、什么是Hive</h3><p>Hive：由Facebook开源用于海量结构化日志的数据统计（Hive是分析框架，它不能存储数据的）</p>
-<p>Hive是基于Hadoop的一个<strong>数据仓库工具</strong>，可以将<strong>结构化的数据文件映射为一张表</strong>，并提供<strong>类SQL</strong>查询功能。</p>
-<p><strong>本质：将HQL转化成MapReduce程序</strong></p>
-<ul>
-<li>数据仓库通过SQL进行统计分析</li>
-<li>将SQL语言中常用的操作（select,where,group等）用MapReduce写成很多模板</li>
-<li>所有的MapReduce模板封装在Hive中</li>
-<li>client客户端，用户根据业务需求编写相应的SQL语句</li>
-<li>然后会去Hive中找对应的MapReduce模板</li>
-<li>通过Hive框架匹配出相应的MapReduce模板</li>
-<li>运行MapReduce程序，生成相应的分析结果</li>
-</ul>
-<p>Hive可以看做是Hadoop的客户端，装一个就够了啊，Hive它有不存储数据，不做计算，它就将HQL转化为MapReduce</p>
-<p>Hive处理的数据存储在HDFS</p>
-<p>Hive分析数据底层的实现是MapReduce</p>
-<p>执行程序运行在Yarn上</p>
-<h3 id="1-2、Hive的优缺点"><a href="#1-2、Hive的优缺点" class="headerlink" title="1.2、Hive的优缺点"></a>1.2、Hive的优缺点</h3><h4 id="1-2-1、优点"><a href="#1-2-1、优点" class="headerlink" title="1.2.1、优点"></a>1.2.1、优点</h4><ul>
-<li><p>操作接口采用类SQL语法，提供快速开发的能力（简单，容易上手）</p>
+    <h2 id="一、Java编码规范"><a href="#一、Java编码规范" class="headerlink" title="一、Java编码规范"></a>一、Java编码规范</h2><h3 id="1、命名风格"><a href="#1、命名风格" class="headerlink" title="1、命名风格"></a>1、命名风格</h3><ol>
+<li><p>代码中的命名不能以_，$开始和结束</p>
 </li>
-<li><p>避免了去写MapReduce，减少开发人员得 学习成本</p>
+<li><p>代码中的命名严禁使用拼音与英文混合，不允许使用中文的方式</p>
 </li>
-<li><p>HIve的执行延迟比较高，因此HIve常用数据分析，对实时性要求不高的场合</p>
-<p>比如你凌晨一两点，启动一个定时脚本，跑一下数据，实时性不高，不是那种你来一条数据，就立马处理的那种，就是说它可以处理，但是给反馈，交互出结果比较慢，因为它跑MR，而MR整个启动，提交啊，切片啊非常的慢，所以它应用的场景一般是离线</p>
+<li><p>常量命名全部大写，单词之间下划线隔开。</p>
 </li>
-<li><p>Hive优势在于处理大数据，对于处理小数据没有优势，因为Hive的执行延迟比较高，启动太慢</p>
+<li><p>POJO类中布尔类型，都不要加is，否则框架解析出现序列化错误。</p>
 </li>
-<li><p>Hive支持用户自定义函数，用户可以根据自己的需求来实现自己的函数</p>
+<li><p>对于Service和DAO类，基于SOA理念，暴露出服务一定是接口。</p>
+<p>内部的实现类用Impl。比如CacheServiceImpl是CacheService接口。</p>
 </li>
-</ul>
-<h4 id="1-2-2、缺点"><a href="#1-2-2、缺点" class="headerlink" title="1.2.2、缺点"></a>1.2.2、缺点</h4><h5 id="1、Hive的HQL表达能力有限"><a href="#1、Hive的HQL表达能力有限" class="headerlink" title="1、Hive的HQL表达能力有限"></a>1、Hive的HQL表达能力有限</h5><ul>
-<li>迭代式算法无法表达</li>
-<li>数据挖掘方面不擅长</li>
-</ul>
-<h5 id="2、Hive的效率比较低"><a href="#2、Hive的效率比较低" class="headerlink" title="2、Hive的效率比较低"></a>2、Hive的效率比较低</h5><ul>
-<li>Hive自动生成的MapReduce作业，通常情况下不够智能化</li>
-<li>Hive调优比较困难，粒度比较粗</li>
-</ul>
-<h3 id="1-3、Hive架构原理"><a href="#1-3、Hive架构原理" class="headerlink" title="1.3、Hive架构原理"></a>1.3、Hive架构原理</h3><p><img src="images/HIve%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86%E5%9B%BE.png" alt="Hive架构原理"></p>
-<p>CLI：命令行接口，以命令行的形式输入SQL语句进行数据操作，有点类似shell</p>
-<p>Meta store：元数据存储，就是存的是表跟数据之间的位置对应关系，有点类似索引，Hive不会存储Meta store，会存在mysql或者Derby中</p>
-<p>Meta store作用：客户端连接Meta store服务，Meta store再去连接Mysql数据库来存取元数据，有了Meta store服务，就可以有多个客户端可以同时连接，而切这些客户端不需要知道MySQL的数据库用户名和密码，只需要连接Meta store服务就行。</p>
-<p>因为Meta store的元数据不断的修改，更新，所以Hive元数据不适合存在HDFS中，一般存在RDBMS中</p>
-<p>HIve没有专门的数据存储格式，也没有为数据建立索引，Hive中所有数据都存储在HDFS中</p>
+<li><p>枚举类名要加上Enum后缀，枚举成员名称要全部大写，单词之间有下划线隔开。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> DealStatusEnum&#123;</span><br><span class="line">    SUCCESS,UNKOWN_REASON</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果用到了设计模式，建议在类名中体现出具体设计模式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginProxy</span></span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h3 id="2、代码风格"><a href="#2、代码风格" class="headerlink" title="2、代码风格"></a>2、代码风格</h3><ol>
+<li><p>左右小括号和字符之间不能有空格</p>
+</li>
+<li><p>单行字符数限制不超过120个，超出需要换行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sb.append(<span class="string">"zi"</span>).append(<span class="string">"xin"</span>)</span><br><span class="line">    .append(<span class="string">"victor"</span>)</span><br><span class="line">    .append(<span class="string">"victor"</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方法体内的执行语句组、变量的定义语句组、不同的业务逻辑之前或者不同的语义之间插入一个空行。</p>
+<p>相同的业务逻辑和语义之间不需要插入一个空行</p>
+</li>
+<li><p>if/for/while/switch/do等括号之间必须加空格</p>
+</li>
+<li><p>方法参数在定义和传入时，多个参数逗号后边必须加空格</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">method(<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="3、OOP规范"><a href="#3、OOP规范" class="headerlink" title="3、OOP规范"></a>3、OOP规范</h3><ol>
+<li><p>所有的重写方法，必须加上@Override注解；注：是为了让编译器帮你发现错误</p>
+</li>
+<li><p>相同参数类型，相同业务含义，才可以使用java的可变参数，避免使用Object可变参数。</p>
+</li>
+<li><p>Object的equals方法容易抛出空指针异常，应使用常量或者确定有值得对象来调用equals</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"test"</span>.equals(object);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>所有的POJO类属性必须使用包装数据类型；RPC方法的返回值和参数必须使用包装数据类型</p>
+<p>注意：为了避免在POJO转换过程中失败。</p>
+</li>
+<li><p>定义DO/DTO/VO等POJO类时，不要设定任何属性默认值。</p>
+<p>注意：因为POJO原则转换过程中避免失败。</p>
+</li>
+<li><p>类内方法定义顺序依次是：public方法/protected方法&gt;&gt;private方法&gt;&gt;getter/setter方法</p>
+<p>注意：把最关注的方法放在前面</p>
+</li>
+<li><p>getter/setter方法中，不要增加业务逻辑，增加排查问题的难度</p>
+</li>
+<li><p>慎用Object的clone方法来拷贝对象，深度复制需要自己实现。</p>
+</li>
+<li><p>循环体内，字符串的连接方式，使用StringBuilder的append方法进行扩展</p>
+</li>
+<li><p>拒绝巨型方法，把方法拆解到尽可能符合单一责任原则的粒度，方便维护及复用。</p>
+</li>
+</ol>
+<h3 id="4、集合处理"><a href="#4、集合处理" class="headerlink" title="4、集合处理"></a>4、集合处理</h3><ol>
+<li>只要重写equals，就必须重写hashCode()，Set，Map对象作为键的情况小重写hashCode,equals</li>
+<li>ArrayList的subList结果不可强转成ArrayList，否则会抛出ClassCastException强制类型转换异常。</li>
+<li>使用工具类Arrays.asList()把数组转换为集合时，不能使用其修改集合相关的方法，它的add/remove/clear方法会抛出UnsupportedOperationException异常。</li>
+</ol>
 
     
 
@@ -342,7 +365,7 @@
         </li>
         <li>
           <strong>本文链接：</strong>
-          <a href="https://github.com/AnonymousDQ/victor.github.io/2019/10/01/Hive基本概念/" title="Hive的使用" target="_blank">https://github.com/AnonymousDQ/victor.github.io/2019/10/01/Hive基本概念/</a>
+          <a href="https://github.com/AnonymousDQ/victor.github.io/2018/02/01/一、Java编码规范/" title="Java编码规范" target="_blank">https://github.com/AnonymousDQ/victor.github.io/2018/02/01/一、Java编码规范/</a>
         </li>
         <li>
           <strong>版权声明： </strong>
@@ -361,7 +384,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color4">大数据</a>
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -417,7 +440,7 @@
     <a class="close js-modal-close" href="javascript:;" target="_blank" rel="noopener"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://github.com/AnonymousDQ/victor.github.io/2019/10/01/Hive%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" alt="微信分享二维码"> -->
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://github.com/AnonymousDQ/victor.github.io/2018/02/01/%E4%B8%80%E3%80%81Java%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/" alt="微信分享二维码"> -->
     </div>
 </div>
 
@@ -432,20 +455,15 @@
 
 <nav id="article-nav">
   
-    <a href="/victor.github.io/2019/10/01/Hive/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/victor.github.io/2018/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Hive的使用
+          计算机网络
         
       </div>
     </a>
   
-  
-    <a href="/victor.github.io/2019/09/01/%E5%8F%8C%E6%8C%87%E9%92%88/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">双指针</div>
-      <i class="icon-circle-right"></i>
-    </a>
   
 </nav>
 
@@ -484,9 +502,9 @@
     <script src="/victor.github.io/lib/gitment.js"></script>
   
   <script>
-    <!-- id: "Hive的使用" -->
+    <!-- id: "Java编码规范" -->
     var gitment = new Gitment({
-      id: "20191001100600",
+      id: "20180201100600",
       owner: 'AnonymousDQ',
       repo: 'victor.github.io',
       oauth: {
@@ -653,11 +671,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color2">Docker</a>
               </li>
             
             <div class="clearfix"></div>

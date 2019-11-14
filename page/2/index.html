@@ -203,7 +203,7 @@
             
 
   
-    <article id="post-一、大数据离线部分总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-一、大数据BigData学习路线" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -211,7 +211,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%A6%BB%E7%BA%BF%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93/" target="_blank">大数据离线部分</a>
+	  <a class="article-title" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" target="_blank">大数据</a>
   
     </h1>
   
@@ -219,7 +219,7 @@
 
   
   
-<a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%A6%BB%E7%BA%BF%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93/" class="archive-article-date">
+<a href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" class="archive-article-date">
         <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
 </a>
 
@@ -232,36 +232,65 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、大数据离线部分总结"><a href="#一、大数据离线部分总结" class="headerlink" title="一、大数据离线部分总结"></a>一、大数据离线部分总结</h1><h3 id="1、HDFS"><a href="#1、HDFS" class="headerlink" title="1、HDFS"></a>1、HDFS</h3><ul>
-<li>HDFS的架构部分以及工作原理<ul>
-<li>NameNode：负责管理元数据，将信息保存在内存中</li>
-<li>DataNode：保存数据，以块的形式保存，启动后需要定时的向NameNode发送心跳，报告自身存储的Block块信息。</li>
-<li>SecondNameNode：二级节点，负责合并请求。分担NameNode工作。</li>
-</ul>
+    <h1 id="一、大数据BigData"><a href="#一、大数据BigData" class="headerlink" title="一、大数据BigData"></a>一、大数据BigData</h1><h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><p>​    大数据本质也是数据，但是有了新的特征，包括数据来源广阔，数据格式多样化(结构化数据，非结构化数据，Excel文件，文本文件等)</p>
+<p>数据量大(最少也是TB级别的，甚至可能是PB级别)，数据增长速度快。</p>
+<h3 id="2、需要考虑的问题"><a href="#2、需要考虑的问题" class="headerlink" title="2、需要考虑的问题"></a>2、需要考虑的问题</h3><ul>
+<li><p>数据来源广，数据如何采集汇总？</p>
+<p>对应出现了Sqoop，Cammel，Datax等工具。</p>
 </li>
-</ul>
-<h3 id="2、Spark容错机制"><a href="#2、Spark容错机制" class="headerlink" title="2、Spark容错机制"></a>2、Spark容错机制</h3><p>分布式数据集的容错性有2种方式：数据检查和记录数据的更新。</p>
-<p>面向大规模数据分析，数据检查点操作成本很高，需要通过数据中心的网络连接在机器之前复制庞大的数据集，而网络带宽往往比内存带宽低很多，同事还需要消耗更多的存储资源。</p>
-<h3 id="3、YARN的总结"><a href="#3、YARN的总结" class="headerlink" title="3、YARN的总结"></a>3、YARN的总结</h3><p>YARN（Yet Another Resource Negotiator）：另一种资源协调者。</p>
-<h4 id="3-1、使用YARN的背景"><a href="#3-1、使用YARN的背景" class="headerlink" title="3.1、使用YARN的背景"></a>3.1、使用YARN的背景</h4><p>​    旧版本MapReduce中的JobTracker/TaskTracker在可扩展性、内存消耗、可靠性和线程模型方面存在很多问题，需要开发者做很多调整来修复。后来Hadoop开发者对这些问题进行了修复，可是也因而带来的成本却越来越高，为了从根本上解决旧版本的MapReduce存在的问题，从Hadoop 0.23.0版本开始，Hadoop的MapReduce框架就大改动。Hadoop新的MapReduce框架被叫做MapReduce V2，也叫YARN。</p>
-<h4 id="3-2、为什么要使用YARN"><a href="#3-2、为什么要使用YARN" class="headerlink" title="3.2、为什么要使用YARN"></a>3.2、为什么要使用YARN</h4><p>​    与旧版本的MapReduce比较，YARN采用了一种分层的集群框架。</p>
+<li><p>数据采集之后，如何存储？</p>
+<p>对应出现了GFS，HDFS，TFS等分布式文件存储系统</p>
+</li>
+<li><p>由于数据增长速度块，数据存储就必须水平扩展，于是出现集群</p>
+</li>
+<li><p>数据存储之后，该如何通过运算快速转化为统一的格式，该如何快速运算出自己想要的结果？</p>
 <ul>
-<li>解决了NameNode的单点故障问题，可以通过配置NameNode高可用来解决</li>
-<li>提出了HDFS联邦，通过HDFS联邦可以让多个NameNode分别管理不同的目录，从而实现访问隔离以及横向扩展。</li>
-<li>将资源管理和应用程序管理ApplicationManager分离开。用ResourceManager管理资源，用ApplicationMaster负责管理程序。（YARN的核心思想）</li>
-<li>具有向后兼容特点，运行在MR1上的Job不需要做任何修改就可以运行在YARN上。</li>
-<li>YARN是一个框架管理器，用户可以将各种计算框架移植到YARN上，统一由YARNJ进行管理和资源调度。目前YARN支持的计算框架有：MapReduce，Storm，Spark，Flink等。</li>
+<li><p>对应的MapReduce，来解决这样的问题；但是写MapReduce需要写大量Java代码，所以出现了Hive，Pig等将SQL转化为MapReduce的解析引擎。</p>
+</li>
+<li><p>但是普通的MapReduce处理数据只能一批一批的执行处理Job跑脚本，时间延迟太长，是离线计算，跑的都是前一天的数据。为了实现实时处理，每输入一条数据就能得到结果，于是出现了Storm/JStorm这样的低延时的流式计算框架。</p>
+</li>
+<li><p>但是如果同时需要批处理和流处理，按照上面的，就需要搭建2个集群，一个Hadoop集群(包括HDFS+MapReduce+Yarn)和Storm集群。不便于管理，所以出现了Spark这样的一站式的计算框架，既可以进行批处理，也可以进行流处理(实质上是微批处理)。如今又进一步发展为Flink(快速流式处理计算框架)。</p>
+</li>
 </ul>
-<h4 id="3-2、YARN的基本架构"><a href="#3-2、YARN的基本架构" class="headerlink" title="3.2、YARN的基本架构"></a>3.2、YARN的基本架构</h4><ul>
-<li><p>YARN的核心思想：将功能分开，ResourceManager进程完成整个集群的资源管理和调度。ApplicationMaster进程负责应用程序的相关事务，比如任务调度，容错，任务监控等。</p>
+</li>
+<li><p>业务处理的通用架构是什么样的？</p>
 <ul>
-<li>系统中所有应用资源调度的最终决定权是ResourceManager担当的。</li>
-<li>每个应用的ApplicationMaster实际上是框架指定的库，它从ResourceManager调度资源，和Node Manager一块执行监控任务。</li>
-<li>NodeManager通过心跳信息向ResourceManager汇报自己所在节点的资源使用情况。</li>
+<li>Lambda架构</li>
+<li>Kappa机构出现</li>
 </ul>
 </li>
-<li><p>在旧版本的MapReduce(MR1)中，JobTracker有2个功能：一个是资源管理，另一个是作业调度。</p>
+<li><p>为了提高工作效率，加快运行速度，又出现了一些辅助工具</p>
+<ul>
+<li>Ozzie，Azkaban：定时任务调度的工具</li>
+<li>Hue，Zepplin：图形化任务执行管理，结果查看工具。类似公司的云窗系统</li>
+<li>Scala语言：编写Spark程序的最佳语言，当然也可以使用Python或者Java</li>
+<li>Allluxio，Kylin：通过对存储的数据进行预处理，就快了运算速度的工具，能够快速的查询得到结果。</li>
+</ul>
 </li>
+</ul>
+<h3 id="3、大数据的必备技能"><a href="#3、大数据的必备技能" class="headerlink" title="3、大数据的必备技能"></a>3、大数据的必备技能</h3><ul>
+<li>日志收集：Flume，Fluentd，ELK</li>
+<li>流式计算：Storm/JStorm，Spark Streaming，Flink Streaming</li>
+<li>编程语言：Java，Python，Scala</li>
+<li>机器学习库：Mahout，MLib</li>
+<li>消息队列：Kafka，RabbitMQ</li>
+<li>数据分析/数据仓库：Hive，SparkSQL，FlinkSQL，Pig，Kylin</li>
+<li>Hadoop家族：Zookeeper，HBase，Hue，Sqoop，Oozie</li>
+<li>资源调度：Yarn，Mesos。</li>
+<li>分布式数据存储：HDFS</li>
+<li>大数据通用处理平台：Hadoop，Spark，Flink</li>
+</ul>
+<h3 id="4、必须掌握的技能"><a href="#4、必须掌握的技能" class="headerlink" title="4、必须掌握的技能"></a>4、必须掌握的技能</h3><ul>
+<li>Java高级开发：JVM，并发</li>
+<li>Linux基本操作</li>
+<li>Hadoop（HDFS+MapReduce+Yarn）</li>
+<li>HBase(JavaAPI操作+Phoenix)</li>
+<li>Hive（Hql基本操作和原理理解）</li>
+<li>Kafka</li>
+<li>Storm</li>
+<li>Python</li>
+<li>Spark（Core+SparkSQL+Spark Streaming）</li>
+<li>辅助小工具(Sqoop/Flume/jOzzie/Hue等)</li>
 </ul>
 
     
@@ -289,7 +318,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%A6%BB%E7%BA%BF%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93/">展开全文 >></a>
+      <a class="article-more-a" href="/victor.github.io/2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/">展开全文 >></a>
     </p>
     
 
@@ -539,7 +568,7 @@
 
 
   
-    <article id="post-Hive基本概念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Hive的基本概念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -547,7 +576,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="/victor.github.io/2019/10/01/Hive%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" target="_blank">Hive的使用</a>
+	  <a class="article-title" href="/victor.github.io/2019/10/01/Hive%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" target="_blank">Hive基本概念</a>
   
     </h1>
   
@@ -555,7 +584,7 @@
 
   
   
-<a href="/victor.github.io/2019/10/01/Hive%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="archive-article-date">
+<a href="/victor.github.io/2019/10/01/Hive%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="archive-article-date">
         <time datetime="2019-10-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-01</time>
 </a>
 
@@ -605,7 +634,7 @@
 <li>Hive自动生成的MapReduce作业，通常情况下不够智能化</li>
 <li>Hive调优比较困难，粒度比较粗</li>
 </ul>
-<h3 id="1-3、Hive架构原理"><a href="#1-3、Hive架构原理" class="headerlink" title="1.3、Hive架构原理"></a>1.3、Hive架构原理</h3><p><img src="images/HIve%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86%E5%9B%BE.png" alt="Hive架构原理"></p>
+<h3 id="1-3、Hive架构原理"><a href="#1-3、Hive架构原理" class="headerlink" title="1.3、Hive架构原理"></a>1.3、Hive架构原理</h3><p><img src="/victor.github.io/AnonymousDQ/victor.github/HIve%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86%E5%9B%BE.png" alt></p>
 <p>CLI：命令行接口，以命令行的形式输入SQL语句进行数据操作，有点类似shell</p>
 <p>Meta store：元数据存储，就是存的是表跟数据之间的位置对应关系，有点类似索引，Hive不会存储Meta store，会存在mysql或者Derby中</p>
 <p>Meta store作用：客户端连接Meta store服务，Meta store再去连接Mysql数据库来存取元数据，有了Meta store服务，就可以有多个客户端可以同时连接，而切这些客户端不需要知道MySQL的数据库用户名和密码，只需要连接Meta store服务就行。</p>
@@ -637,7 +666,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="/victor.github.io/2019/10/01/Hive%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">展开全文 >></a>
+      <a class="article-more-a" href="/victor.github.io/2019/10/01/Hive%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">展开全文 >></a>
     </p>
     
 
@@ -777,9 +806,876 @@
 
 
   
+    <article id="post-JVM的运行过程：" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="/victor.github.io/2019/07/21/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/" target="_blank">JVM探究</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="/victor.github.io/2019/07/21/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/" class="archive-article-date">
+        <time datetime="2019-07-21T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-21</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="JVM的运行过程："><a href="#JVM的运行过程：" class="headerlink" title="JVM的运行过程："></a>JVM的运行过程：</h2><p>​    Java源文件，通过编译器，能够生产相应得.class字节码文件。而字节码文件又通过JVM中的解释器，编译成特定机器上的机器码。</p>
+<ul>
+<li>Java源文件–&gt;编译器–&gt;字节码文件</li>
+<li>字节码文件–&gt;JVM–&gt;机器码</li>
+</ul>
+<p>每一种平台的解释器是不同的，但是实现的虚拟机是相同的，这也就是Java为什么可以跨平台的原因，当一个程序从开始运行，这时虚拟机就开始实例化了，多个程序启动就会存在多个虚拟机实例。程序退出或者关闭，则虚拟机实例消亡，多个虚拟机实例之间数据不能共享。</p>
+<h3 id="1、线程"><a href="#1、线程" class="headerlink" title="1、线程"></a>1、线程</h3><p>​    线程指的是程序执行过程中的一个线程实体。JVM允许一个应用并发执行多个线程。Hotspot JVM中的Java线程与原生操作系统线程有直接的映射关系。当线程本地存储、缓冲区分配、同步对象、栈、程序计数器等准备好之后，就会创建一个操作系统原生的线程(守护线程Daemon)。Java线程结束，原生线程随之被回收。操作系统负责调度所有线程，并把它分配到任何可用的CPU上。<strong>当原生线程初始化完毕，就会调用Java线程的run()方法。当线程结束时，会释放原生线程和Java线程的所有资源</strong>。</p>
+<p>Hotspot JVM后台运行的系统线程主要有下面几个：</p>
+<table>
+<thead>
+<tr>
+<th align="left">线程</th>
+<th align="center">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">虚拟机线程（VM thread）</td>
+<td align="center">这个线程等待JVM到达安全点操作出现。这些操作必须要在独立的线程里执行，因为当堆修改无法进行时，线程都需要JVM位于安全点。这些操作的类型有：stop-the-world垃圾回收、线程栈dump、线程暂停、线程偏向锁（biased locking）解除</td>
+</tr>
+<tr>
+<td align="left">周期性任务线程</td>
+<td align="center">这线程负责定时器事件（也就是中断），用来调度周期性操作的执行</td>
+</tr>
+<tr>
+<td align="left">GC线程</td>
+<td align="center">这些线程支持JVM中不同的垃圾回收活动</td>
+</tr>
+<tr>
+<td align="left">编译器线程</td>
+<td align="center">这些线程在运行时将字节码动态编译成本地平台相关的机器码</td>
+</tr>
+<tr>
+<td align="left">信号分发线程</td>
+<td align="center">这个线程接收发送到JVM的信号并调用适当的JVM方法处理</td>
+</tr>
+</tbody></table>
+<h3 id="3、JVM内存"><a href="#3、JVM内存" class="headerlink" title="3、JVM内存"></a>3、JVM内存</h3><h4 id="3-1、线程私有Thread-Local"><a href="#3-1、线程私有Thread-Local" class="headerlink" title="3.1、线程私有Thread Local"></a>3.1、线程私有Thread Local</h4><ul>
+<li><p>程序计数器PC</p>
+<ul>
+<li><p>指向虚拟机字节码指令的位置</p>
+</li>
+<li><p>唯一一个无OOM的区域（OOM：Out Of Memory内存溢出）</p>
+</li>
+</ul>
+</li>
+<li><p>虚拟机栈VM Stack</p>
+<ul>
+<li><p>虚拟机栈和线程的生命周期相同</p>
+</li>
+<li><p>一个线程中，每调用一个方法创建一个栈帧（Stack Frame）</p>
+</li>
+<li><p>栈帧的结构</p>
+<ul>
+<li>本地变量表Local Variable</li>
+<li>操作数栈Operand Stack</li>
+<li>对运行时常量池的引用 Runtime Constant Pool Reference</li>
+</ul>
+</li>
+<li><p>异常</p>
+<ul>
+<li>线程请求的栈深度大于JVM所允许的深度StackOverflowError</li>
+<li>若JVM允许动态扩展，若无法申请到足够内存OutOfMemoryError</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>本地方法栈Native Method Stack</p>
+<ul>
+<li>异常<ul>
+<li>线程请求的栈深度大于JVM所允许的深度StackOverflowError</li>
+<li>若JVM允许动态扩展，若无法申请到足够内存OutOfMemoryError</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>线程共享Thread Shared</p>
+<ul>
+<li><p>方法区（永久代）Method Area</p>
+<ul>
+<li>运行时常量池Runtime Constant Pool</li>
+</ul>
+</li>
+<li><p>类实例区（Java堆）Objects</p>
+<ul>
+<li><p>新生代</p>
+<ul>
+<li>eden</li>
+<li>from survivor</li>
+<li>to survivor</li>
+</ul>
+</li>
+<li><p>老年代</p>
+</li>
+<li><p>异常OutOfMemoryError</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>直接内存Direct Memory</p>
+<ul>
+<li>不受JVM GC管理</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-2、JVM内存区域解释"><a href="#3-2、JVM内存区域解释" class="headerlink" title="3.2、JVM内存区域解释"></a>3.2、JVM内存区域解释</h4><p>JVM内存区域主要分为：</p>
+<ol>
+<li>线程私有区域：程序计数器、虚拟机栈、本地方法栈</li>
+<li>线程共享区域：Java堆，方法区</li>
+<li>直接内存</li>
+</ol>
+<p><strong>线程私有数据区域生命周期与线程相同，依赖用户线程的启动/结束，而创建/销毁在Hotspot JVM内，每个线程都与操作系统的本地线程直接映射，因此这部分内存区域的存/否跟随本地线程的生/死对应。</strong></p>
+<p><strong>线程共享区域随虚拟机JVM的启动/关闭而创建/销毁</strong></p>
+<p><strong>直接内存并不是JVM运行时数据区的一部分，但也会被频繁的使用：在JDK1.4引入的NIO提供了基于Channel与Buffer的IO方式，它可以使用Native函数库直接分配堆外内存，然后使用DirectByteBuffer对象作为这块内存的引用进行操作，这样就避免了在Java堆和Native堆中来回复制数据，因此在一些场景中可以显著提供性能。</strong></p>
+<h5 id="1、程序计数器（线程私有）"><a href="#1、程序计数器（线程私有）" class="headerlink" title="1、程序计数器（线程私有）"></a>1、程序计数器（线程私有）</h5><p>​    一块较小的内存空间，是当前线程所执行的字节码的行号指示器，每条线程都要有一个独立的程序计数器，这类内存也称为“线程私有”的内存。</p>
+<p>​    正在执行Java方法的话，计数器记录的是虚拟机字节码指令的地址（当前指令的地址）。如果还是Native方法，则为空。</p>
+<p>​    这个内存区域是唯一一个在虚拟机中没有规定任何OutOfMemoryError情况的区域。</p>
+<h5 id="2、虚拟机栈（线程私有）"><a href="#2、虚拟机栈（线程私有）" class="headerlink" title="2、虚拟机栈（线程私有）"></a>2、虚拟机栈（线程私有）</h5><p>​    是描述Java方法执行的内存模型，每个方法在执行的同时都会创建一个栈帧（Stack Frame）,用来存储局部变量表、操作数栈、动态链接、方法出口等信息。每一个方法从调用直至执行完成的过程，就对应着一个栈帧在虚拟机栈中入栈到出栈的过程。</p>
+<p>​    栈帧（Frame）是用来存储数据和部分过程结果的数据结构，同时也被用来处理动态链接（Dynamic Linking）、方法返回值和异常分派(Dispatch Exception)。栈帧随着方法调用而创建，随着方法结束而摧毁—无论方法是正常完成还是异常完成（抛出了在方法内未被捕获的异常）都算作方法结束。</p>
+<ul>
+<li>当前线程：<ul>
+<li>当前栈帧Current Stack Frame<ul>
+<li>局部变量表</li>
+<li>操作栈</li>
+<li>动态链接</li>
+<li>返回地址</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="3、本地方法区（线程私有）"><a href="#3、本地方法区（线程私有）" class="headerlink" title="3、本地方法区（线程私有）"></a>3、本地方法区（线程私有）</h5><p>​    本地方法区和Java Stack作用类似，区别是虚拟机栈为执行Java方法服务，而本地方法栈则为Native方法服务，如果一个VM实现使用C-linkage模型来支持Native调用，那么该栈将会是一个C栈，但是HotSpot VM直接就把本地方法栈和虚拟机栈合二为一。</p>
+<h5 id="4、堆（Heap-线程共享）-运行时数据区"><a href="#4、堆（Heap-线程共享）-运行时数据区" class="headerlink" title="4、堆（Heap-线程共享）-运行时数据区"></a>4、堆（Heap-线程共享）-运行时数据区</h5><p>​    是被线程共享的一块内存区域，创建的对象和数组都保存在Java堆内存中，也是垃圾收集器进行垃圾收集的最重要的内存区域。由于现代VM采用分代收集算法，因此Java堆从GC的角度还可以细分为：新生代(Eden区，From Survivor区、To Survivor区)和老年代。</p>
+<h5 id="5、方法区-永久代（线程共享）"><a href="#5、方法区-永久代（线程共享）" class="headerlink" title="5、方法区/永久代（线程共享）"></a>5、方法区/永久代（线程共享）</h5><p>​    我们常说的永久代（Permanent Generation），用于存储被JVM加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。HotSpot VM把GC分代收集扩展到方法区，也就是使用Java堆的永久代来实现方法区，这样HotSpot的垃圾收集器就可以像管理Java堆一样管理这部分内存，而不必为方法区开发专门的内存管理器（永久代的内存回收的主要目标是针对常量池的回收和类型的卸载，因此收益一般很小）</p>
+<p>​    运行时常量池（Runtime Constant Pool）是方法区的一部分。Class文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项信息是常量池(Constant Pool Table)，用于存放编译期生成的各种字面量和符号引用，这部分内容将在类加载后存放到方法区的运行时常量池中。Java虚拟机对Class文件的每一部分（自然也包括常量池）的格式都有严格的规定，每一个字节用于存储哪种数据都必须符合规范上的要求，这样才会被虚拟机认可、装载和执行。</p>
+<h4 id="3-3、JVM运行时内存"><a href="#3-3、JVM运行时内存" class="headerlink" title="3.3、JVM运行时内存"></a>3.3、JVM运行时内存</h4><p>Java堆从GC的角度还可以细分为：新生代（Eden区、From Survivor区和To Survivor区）和老年区</p>
+<p>堆（Heap）</p>
+<p>新生代（1/3）堆空间 ：Eden(8/10)，From Survivor(1/10)，To Survivor(1/10)</p>
+<p>老年代(2/3)堆空间</p>
+<h5 id="1、新生代"><a href="#1、新生代" class="headerlink" title="1、新生代"></a>1、新生代</h5><p>​    用来存放新生的对象。一般占据堆的1/3空间。由于频繁创建对象，所以新生代会频繁触发MinorGC进行垃圾回收。新生代又分为Eden区、From Survivor区，To Survivor三个区。</p>
+<ul>
+<li><p>Eden区</p>
+<p>Java新对象的出生地 （如果新创建的对象占用内存很大，则直接分配到老年代）。当Eden区内存不够的时候就会触发MinorGC，对新生代区进行一次垃圾回收。</p>
+</li>
+<li><p>From Survivor区</p>
+<p>上一次GC的幸存者，作为这一次GC的被扫描者</p>
+</li>
+<li><p>To Survivor区</p>
+<p>保留了一次MinorGC过程中的幸存者</p>
+</li>
+<li><p>MinorGC的过程</p>
+<p>复制—&gt;清空—&gt;互换</p>
+<p>MinorGC采用复制算法。</p>
+</li>
+</ul>
+<h6 id="1、-Eden、From-Survivor复制到To-Survivor，年龄-1"><a href="#1、-Eden、From-Survivor复制到To-Survivor，年龄-1" class="headerlink" title="1、 Eden、From Survivor复制到To Survivor，年龄+1"></a>1、 Eden、From Survivor复制到To Survivor，年龄+1</h6><p>​    首先，把Eden和From Survivor区域中存活的对象复制到To Survivor区域(如果有对象的年龄以及达到了老年的标准，则赋值到老年区)，同时把这些对象的年龄+1（如果To Survivor不够位置了就放到老年区）</p>
+<h6 id="2、清空Eden、From-Survivor"><a href="#2、清空Eden、From-Survivor" class="headerlink" title="2、清空Eden、From Survivor"></a>2、清空Eden、From Survivor</h6><p>​    然后，清空Eden和From Survivor中的对象 。</p>
+<h6 id="3、To-Survivor和From-Survivor互换"><a href="#3、To-Survivor和From-Survivor互换" class="headerlink" title="3、To Survivor和From Survivor互换"></a>3、To Survivor和From Survivor互换</h6><p>​    最后，To Survivor和From Survivor互换，原To Survivor成为下一次GC的From Survivor区。</p>
+<h5 id="2、老年代"><a href="#2、老年代" class="headerlink" title="2、老年代"></a>2、老年代</h5><p>​    主要存放应用程序中生命周期长的内存对象。</p>
+<p>​    老年代的对象比较稳定，所以MajorGC不会频繁执行。在进行MajorGC前一般都先进行了一次MinorGC，使得有新生代的对象晋身入老年代，导致空间不够用时才触发。当无法找到足够大的连续空间分配给新创建的较大对象的时候，也会提前触发一次MajorGC进行了垃圾回收腾出空间。</p>
+<p>​    MajorGC采用标记清除算法：首先扫描一次所有老年代，标记出存活的对象，然后回收没有标记的对象。MajorGC的耗时比较长，因为要扫描再回收 。MajorGC会产生 内存碎片，为了减少内存损耗，我们一般需要进行合并或者标记出来方便下次直接分配。当老年代也满了装不下的时候，就会抛出OOM(OutOfMemory)异常。</p>
+<h5 id="3、永久代"><a href="#3、永久代" class="headerlink" title="3、永久代"></a>3、永久代</h5><p>​    内存的永久保存区域。主要存放Class和Meta(元数据)的信息，Class被加载的时候被放入永久区域，它和存放实例的区域不同，GC不会再逐层序运行期对永久区域进行清理。所以这也导致了永久代的区域会随着加载的Class的增多而胀满，最终抛出OOM异常。</p>
+<h6 id="1、Java8与Meta元数据"><a href="#1、Java8与Meta元数据" class="headerlink" title="1、Java8与Meta元数据"></a>1、Java8与Meta元数据</h6><p>​    在Java8中，永久代已经被移除，被一个成为元数据区(元空间)的区域所取代。元空间的本质和永久代类似，元空间与永久代之间最大的区别是：元空间并不在虚拟机中，而是使用本地内存。在默认情况下，元空间的大小仅受本地内存限制，类的元数据放入Native Memory，字符串池和静态变量放入Java堆中，这样可以加载多少类的元数据就不再由MaxPermSize控制，而由系统的实际可用空间来控制。</p>
+<h4 id="4、垃圾回收与算法"><a href="#4、垃圾回收与算法" class="headerlink" title="4、垃圾回收与算法"></a>4、垃圾回收与算法</h4>
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="/victor.github.io/2019/07/21/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java版数据结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="/victor.github.io/2019/07/02/Java%E7%89%88%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" target="_blank">Java数据结构</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="/victor.github.io/2019/07/02/Java%E7%89%88%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="archive-article-date">
+        <time datetime="2019-07-02T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-02</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="1、数据结构的特性"><a href="#1、数据结构的特性" class="headerlink" title="1、数据结构的特性"></a>1、数据结构的特性</h1><table>
+<thead>
+<tr>
+<th>数据结构</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数组</td>
+<td>插入快，如果知道下标，可以非常快速的存取</td>
+<td>删除慢，大小固定</td>
+</tr>
+<tr>
+<td>有序数组</td>
+<td>比无序的数组查找快</td>
+<td>删除和插入慢，大小固定</td>
+</tr>
+<tr>
+<td>栈</td>
+<td>先进后出的存取方式</td>
+<td>存取其他项很慢</td>
+</tr>
+<tr>
+<td>队列</td>
+<td>先进先出的存取方式</td>
+<td>存取其他项很慢</td>
+</tr>
+<tr>
+<td>二叉树</td>
+<td>查找、插入、删除都快（如果树保持平衡）</td>
+<td>删除算法复杂</td>
+</tr>
+<tr>
+<td>红-黑树</td>
+<td>查找、插入、删除都快。树总是平衡的</td>
+<td>算法复杂</td>
+</tr>
+<tr>
+<td>2-3-4树</td>
+<td>查找、插入、删除都快、树总是平衡的。类似的树对磁盘存储有用</td>
+<td>算法复杂</td>
+</tr>
+<tr>
+<td>哈希表</td>
+<td>如果关键字已知，则存储极快，插入快</td>
+<td>删除满，如果不知道关键字则存储很慢，对存储空间使用不充分</td>
+</tr>
+<tr>
+<td>堆</td>
+<td>插入、删除快。对大数据项的存取很快</td>
+<td>对其他数据项存取慢</td>
+</tr>
+<tr>
+<td>图</td>
+<td>对现实世界建模</td>
+<td>有些算法慢且复杂</td>
+</tr>
+</tbody></table>
+<h2 id="1-1、数组"><a href="#1-1、数组" class="headerlink" title="1.1、数组"></a>1.1、数组</h2><ul>
+<li><p>创建数组</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Java中数组作为对象处理。创建数组使用new关键字</span></span><br><span class="line"><span class="comment">一旦创建数组，数组大小便不可改变</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">int</span>[] arr=<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>访问数组数据项</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*数组数据项通过方括号的下标来访问*/</span></span><br><span class="line">arr[<span class="number">0</span>]=<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数组初始化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] arr=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="1-2、有序数组"><a href="#1-2、有序数组" class="headerlink" title="1.2、有序数组"></a>1.2、有序数组</h2><ul>
+<li><p>有序数组特点</p>
+<p>有序数组按照数组元素一定的顺序排列，方便使用二分查找来查找数组中特定的元素。有序数组提高了查询效率，并没有提高删除和插入元素的效率。</p>
+</li>
+</ul>
+<h2 id="1-3、查找算法"><a href="#1-3、查找算法" class="headerlink" title="1.3、查找算法"></a>1.3、查找算法</h2><ul>
+<li><p>线性查找</p>
+<p>查找的时候，将要查找的数一个个的与数组中的元素比较，直到找到要找的数。</p>
+</li>
+<li><p>二分查找（折半查找）</p>
+<p>不断的将有序数组进行对半分割，每次拿中间位置的数和要查找的数进行比较：</p>
+<ul>
+<li>target&lt;middle,target在数组的前半段。</li>
+<li>target&gt;middle,target在数组的后半段</li>
+<li>target==middle,target就是中间数</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">二分查找索引（前提：有序）</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">long</span> value)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> middle=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> left=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> right=size-<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">        middle=(left+right)/<span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(arr[middle]==value)&#123;</span><br><span class="line">            <span class="keyword">return</span> middle;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(left&gt;right)&#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;<span class="comment">//不存在</span></span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(arr[middle]&gt;value)&#123;</span><br><span class="line">                right=middle-<span class="number">1</span>;<span class="comment">//在左半部分</span></span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                left=middle+<span class="number">1</span>;<span class="comment">//在右半部分</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="1-4、栈和队列"><a href="#1-4、栈和队列" class="headerlink" title="1.4、栈和队列"></a>1.4、栈和队列</h2><p>​    栈和队列都是抽象数据类型（Abstract Data Type，ADT），既可以用数组实现，又可以用链表实现。</p>
+<h3 id="1-4-1、栈"><a href="#1-4-1、栈" class="headerlink" title="1.4.1、栈"></a>1.4.1、栈</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStack</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span>[] arr;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> top;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestStack</span><span class="params">()</span></span>&#123;</span><br><span class="line">        arr=<span class="keyword">new</span> <span class="keyword">long</span>[<span class="number">100</span>];</span><br><span class="line">        top=-<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestStack</span><span class="params">(<span class="keyword">int</span> maxSize)</span></span>&#123;</span><br><span class="line">        arr=<span class="keyword">new</span> <span class="keyword">long</span>[maxSize];</span><br><span class="line">        top=-<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">long</span> value)</span></span>&#123;</span><br><span class="line">        arr[++top]=value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">pop</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> arr[top--];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">peek</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> arr[top];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (top==-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (top==arr.length-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-4-2、链表"><a href="#1-4-2、链表" class="headerlink" title="1.4.2、链表"></a>1.4.2、链表</h3><ul>
+<li><p>链结点：一个链结点（Link，结点）是某个类的对象，该对象中包含对下一个链结点引用的字段（next）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*结点定义*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Link</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">long</span> data;<span class="comment">//data域</span></span><br><span class="line">    <span class="keyword">public</span> Link next;<span class="comment">//next Link in list</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Link</span><span class="params">(<span class="keyword">long</span> data)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.data=data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayLink</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(data+<span class="string">"---&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>单链表（LinkList）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkList</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Link first;<span class="comment">//定义头结点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LinkList</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.first=<span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertFirst</span><span class="params">(<span class="keyword">long</span> value)</span></span>&#123;</span><br><span class="line">        Link newLink=<span class="keyword">new</span> Link(value);</span><br><span class="line">        newLink.next=first;</span><br><span class="line">        first=newLink;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Link <span class="title">deleteFirst</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(first==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Link temp=first;</span><br><span class="line">        first=first.next;</span><br><span class="line">        <span class="keyword">return</span> temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayList</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Link current=first;</span><br><span class="line">        <span class="keyword">while</span>(current!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            current.displayLink();</span><br><span class="line">            current=current.next</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="/victor.github.io/2019/07/02/Java%E7%89%88%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java面试" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="/victor.github.io/2019/07/01/Java%E9%9D%A2%E8%AF%95/" target="_blank">Java的常识总结</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="/victor.github.io/2019/07/01/Java%E9%9D%A2%E8%AF%95/" class="archive-article-date">
+        <time datetime="2019-07-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="一、Java的常识总结"><a href="#一、Java的常识总结" class="headerlink" title="一、Java的常识总结"></a>一、Java的常识总结</h2><h4 id="1、final、finally、finalize的区别"><a href="#1、final、finally、finalize的区别" class="headerlink" title="1、final、finally、finalize的区别"></a>1、final、finally、finalize的区别</h4><ul>
+<li><p>final：修饰类、方法、变量</p>
+<ul>
+<li>修饰类：类不能被其他类继承</li>
+<li>修饰方法：方法锁定，防止其他继承类进行更改</li>
+<li>修饰变量：表示为常量，只能被赋值一次，不能更改，而且必须要初始化。</li>
+</ul>
+</li>
+<li><p>finally：只有与finally对应的try语句块得到执行的情况下，finally语句块才能执行。如果在执行try之前，方法发生异常，则finally不会执行。</p>
+</li>
+<li><p>finalize：是java.lang.Object定义的，每一个方法都有finalize方法</p>
+<p>方法是在gc启动的时候，被调用。凡是new出来的对象，gc都能搞定，一般情况下我们又不会用new以外的方式去创建对象，所以一般是不需要程序员去实现finalize。</p>
+</li>
+</ul>
+<h4 id="2、HashMap与Hashtable"><a href="#2、HashMap与Hashtable" class="headerlink" title="2、HashMap与Hashtable"></a>2、HashMap与Hashtable</h4><ul>
+<li>线程是否安全：HashMap非线程安全，Hashtable线程安全。Hashtable的方法内部都是由synchronized修饰。保证线程安全建议使用ConcurrentHashMap</li>
+<li>HashMap可以用null作为一个key键，但是只有一个，value为null可以有一个或者多个。Hashtable如果put进去的key为null就会报空指针。</li>
+<li>HashMap默认的初始化为16，每次扩容会变为原来的2倍。JDK1.8以后的HashMap解决哈希冲突的时候，链表的长度默认值为8，如果超过8的时候，链表会转化为红黑树，用来减少搜索时间。</li>
+</ul>
+<h4 id="3、HashMap和HashSet"><a href="#3、HashMap和HashSet" class="headerlink" title="3、HashMap和HashSet"></a>3、HashMap和HashSet</h4><p>​    HashSet底层是基于HashMap实现。</p>
+<table>
+<thead>
+<tr>
+<th>HashMap</th>
+<th>HashSet</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>实现Map接口</td>
+<td>实现Set接口</td>
+</tr>
+<tr>
+<td>存key-value</td>
+<td>存Object</td>
+</tr>
+<tr>
+<td>调用put()添加</td>
+<td>调用add()添加</td>
+</tr>
+</tbody></table>
+<p>HashSet检查重复：当add的时候，HashSet会先计算对象的hashcode值来判断对象加入的位置。</p>
+<p>也即是先判断hashcode值，如果hashcode相同，则调用equals()方法，如果为true，则相同,HashsSet就不会加入操作成功。</p>
+<ul>
+<li>HashMap多线程操作导致死循环问题，因为多线程并发情况下Rehash会造成元素之间形成一个循环链表。</li>
+</ul>
+<h4 id="4、ConcurrentHashMap"><a href="#4、ConcurrentHashMap" class="headerlink" title="4、ConcurrentHashMap"></a>4、ConcurrentHashMap</h4><p>JDK1.8的ConcurrentHashMap取消了Segment分段锁，采用CAS和synchronized来保证并发安全。数据结构和1.8的HashMap类似，数组+链表/红黑二叉树。</p>
+<p>当链表长度超过8，链表（查找复杂度O(N)）将转换为红黑树（查找复杂度O(longN)）</p>
+<p>synchronized只锁定当前链表或者红黑二叉树的首节点，这样只要hash不冲突，就不会产生并发，效率又提升了N倍。</p>
+<h4 id="5、线程"><a href="#5、线程" class="headerlink" title="5、线程"></a>5、线程</h4><p>线程是一个比进程更小的执行单位，一个进程在其执行的过程中可以产生多个线程。</p>
+<p>与进程不同的是，类的多个线程共享进程的堆Heap和方法区Method Area资源。</p>
+<p>每个线程都有自己的程序计数器PC，虚拟机栈Stack，本地方法栈Native Method Stack。</p>
+<p>一个进程中可以有多个线程，多个线程共享进程的堆和方法区（JDK1.8以后的没有方法区，从JVM移到本地成为元空间MetaSpace）</p>
+<ul>
+<li><p>程序计数器PC：字节码解释器通过改变程序计数器来读取指令，主要是为了线程切换后能恢复到正确的执行位置。</p>
+</li>
+<li><p>虚拟机栈和本地方法栈</p>
+<ul>
+<li>虚拟机栈：每个java方法在执行的同时会创建一个栈帧用来存储局部变量表，操作数栈，常量池引用的信息。</li>
+<li>本地方法栈：虚拟机栈是为Java方法也就是字节码服务，本地方法栈为虚拟机用到的Native方法服务。</li>
+</ul>
+</li>
+<li><p>堆和方法区</p>
+<p>是所有线程共享的资源，堆是进程中最大的一块内存，主要用来存放新创建的对象，所有对象都在这里分配内存，用来存放新创建的对象。</p>
+<p>方法区：用来存放已被加载的类信息，常量，静态变量。</p>
+</li>
+</ul>
+<h4 id="6、sleep-方法和wait-方法"><a href="#6、sleep-方法和wait-方法" class="headerlink" title="6、sleep()方法和wait()方法"></a>6、sleep()方法和wait()方法</h4><p>wait()方法是java.lang.Object里的方法，用来线程间交互/通信</p>
+<p>sleep()是thread的方法。sleep方法没有释放锁，wait会释放锁，导致其他进程占用锁。</p>
+<p>wait()方法被调用后，线程不会自动苏醒，需要别的线程调用同一个对象上的notify()或者notifyAll()方法。</p>
+<p>sleep()方法执行完后，线程会自动苏醒。</p>
+<h4 id="7、start-方法和run-方法"><a href="#7、start-方法和run-方法" class="headerlink" title="7、start()方法和run()方法"></a>7、start()方法和run()方法</h4><p>Thread thread=new Thread();线程就进入了新建装填，调用了start()方法，就会启动一个线程进入就绪状态。当分配到时间片就可以运行了。</p>
+<p>start()：执行线程相应的准备工作，然后自动执行run()方法的内容。</p>
+<p>直接执行run()，会把run()方法当成一个main主线程的普通方法去执行，并不会再某个线程中执行它。</p>
+<p>run方法只是thread的一个普通方法调用，还是在主线程里执行。</p>
+<h4 id="8、synchronized关键字"><a href="#8、synchronized关键字" class="headerlink" title="8、synchronized关键字"></a>8、synchronized关键字</h4><p>synchronized关键字可以保证被修饰的方法、代码块在任何时刻都只有一个线程执行。</p>
+<p>JDK1.6之前，synchronized属于重量锁，因为使用监视器monitor，它是依赖于操作系统Mutex lock。需要进行线程切换从用户态到和心态。</p>
+<p>JDK1.6之后，引入了锁优化，自选锁，锁消除，锁粗化，偏向锁。等减少了锁操作的开销。</p>
+<h4 id="9、synchronized和ReentrantLock"><a href="#9、synchronized和ReentrantLock" class="headerlink" title="9、synchronized和ReentrantLock"></a>9、synchronized和ReentrantLock</h4><p>都是可重入锁：自己可以再次获取自己的内部锁，比如一个线程获得了某个对象的锁，此时这个对象锁还没有释放，当再次想要获取这个对象的锁还是可以获取的，如果不可重入，就会死锁。</p>
+<p>ReentrantLock是JDK层面实现的，需要用lock()和unlock()方法配合try/finally语句块。</p>
+<p>ReentrantLock增加的高级功能：</p>
+<ul>
+<li><p>等待可中断：lock.lockInterruptibly();</p>
+</li>
+<li><p>可实现公平锁：ReentrantLock(boolean fair)://值为true，则为公平锁。</p>
+</li>
+<li><p>可实现选择性通知：需要借助Condition接口和newCondition()，来实现线程通信</p>
+<p>和wait()与notify()/notifyAll()原理类似。而Condition的singnalAll()方法会唤醒所有线程。</p>
+</li>
+</ul>
+<h4 id="10、volatile关键字"><a href="#10、volatile关键字" class="headerlink" title="10、volatile关键字"></a>10、volatile关键字</h4><p>Java的内存模型总是从主存（共享内存）读取变量，保证内存可见性CAS。</p>
+<p>防止指令重排序。</p>
+<h2 id="二、HTTP请求头"><a href="#二、HTTP请求头" class="headerlink" title="二、HTTP请求头"></a>二、HTTP请求头</h2><p>http请求头，http客户程序（浏览器），向服务器发送请求的时候必须指明请求类型（GET或者POST），如果必要还可以选择发送其他的请求头。</p>
+<ul>
+<li>Accept：浏览器可以接受的MIME类型</li>
+<li>Accept-Charset：浏览器可接受的字符集</li>
+<li>Accept-Encoding：浏览器能够进行解码的数据编码方式，比如gzip。Servlet能够向支持gzip的浏览器返回经过gzip编码的HTML页面，许多情形下可以减少5到10倍的下载时间</li>
+<li>Accept-Language：浏览器所希望的语言种类，当服务器能够提供一种以上的语言版本时使用。</li>
+<li>Authorization：授权信息，通常出现在服务器发送的token中</li>
+<li>Connection：表示是否需要持久连接，如果Servlet看到这里的值为Keep-Alive，或者请求使用的是Http1.1（默认为持久连接）</li>
+<li>Cookie：最重要的请求头信息之一</li>
+<li>Host：初始URL中的主机和端口</li>
+<li>Referer：包含一个URL，用户从该URL代表的页面出发访问当前请求的页面</li>
+<li>User-Agent：浏览器类型，如果Servlet返回的内容与浏览器类型有关则该值非常有用。</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="/victor.github.io/2019/07/01/Java%E9%9D%A2%E8%AF%95/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="/victor.github.io/2019/06/11/Java%E9%94%81/" target="_blank">Java的锁</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="/victor.github.io/2019/06/11/Java%E9%94%81/" class="archive-article-date">
+        <time datetime="2019-06-11T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-11</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h3 id="一、Java锁"><a href="#一、Java锁" class="headerlink" title="一、Java锁"></a>一、Java锁</h3><h4 id="1、乐观锁"><a href="#1、乐观锁" class="headerlink" title="1、乐观锁"></a>1、乐观锁</h4><p>乐观锁是一种乐观思想，认为读多写少，遇到并发写的可能性低，每次拿数据的时候都认为别人会修改，所以不会上锁。</p>
+<p>但是在更新的时候会判断一下在期间别人有没有去更新这个数据，采取在写时先读出当前版本号，然后加锁操作。比较跟上一次的版本号，如果一样则更新，如果失败则要重复读-比较-写的操作。</p>
+<p>Java的乐观锁基本都是通过CAS操作实现的。CAS是一种更新的原子操作，比较当前值是否一样，一样则更新，否则失败。</p>
+<h4 id="2、悲观锁"><a href="#2、悲观锁" class="headerlink" title="2、悲观锁"></a>2、悲观锁</h4><p>悲观锁就是悲观思想，认为写多，遇到并发写的可能性高，每次去拿数据的时候都认为别人会修改，所以每次在读写数据的时候都会上锁，这样别人想读写这个数据就会block直到拿到锁。java中的悲观锁就是</p>
+<p>synchronized，AQS框架下的锁则是先尝试CAS乐观锁去获取锁，获取不到才会转换为悲观锁，比如RetreenLock。</p>
+<h4 id="3、自旋锁"><a href="#3、自旋锁" class="headerlink" title="3、自旋锁"></a>3、自旋锁</h4><p>自选锁原理非常简单，如果持有锁的线程能在很短时间内释放锁资源，那么那些等待竞争锁的线程就不需要做内核态和用户态之间的切换进行阻塞挂起状态，他们只需要等一等（自旋），等持有锁的线程释放锁后就可以立即获取到锁，这样就避免了用户线程和内核的切换消耗。</p>
+<p>线程自旋需要消耗CPU，说白了就是让CPU再做无用功，如果一直获取不到锁，那么线程也不能一直占用CPU自旋做无用功，所以需要设定一个自旋等待的最大时间。</p>
+<p>如果持有锁的线程执行的时间超过自旋等待的最大时间仍没有释放锁，就会导致其他的线程在最大等待时间内还是获取不到锁，这时其他线程就会停止自旋进入阻塞状态。</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="/victor.github.io/2019/06/11/Java%E9%94%81/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-消息队列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" target="_blank">消息队列</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" class="archive-article-date">
+        <time datetime="2019-05-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="大数据技术之Kafka"><a href="#大数据技术之Kafka" class="headerlink" title="大数据技术之Kafka"></a>大数据技术之Kafka</h2><h3 id="1、Kafka概述"><a href="#1、Kafka概述" class="headerlink" title="1、Kafka概述"></a>1、Kafka概述</h3><h4 id="1-1、消息队列"><a href="#1-1、消息队列" class="headerlink" title="1.1、消息队列"></a>1.1、消息队列</h4><p><img src="/victor.github.io/AnonymousDQ/victor.github/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.png" alt></p>
+<h4 id="1-2、为什么要用消息队列？"><a href="#1-2、为什么要用消息队列？" class="headerlink" title="1.2、为什么要用消息队列？"></a>1.2、为什么要用消息队列？</h4><ul>
+<li><strong>解耦</strong>：也即是客户端A跟B不用直连，通过中间件。达到解耦</li>
+<li><strong>冗余</strong>：消息队列可以进行数据备份，它本身可以缓冲数据</li>
+<li><strong>扩展性</strong>：消息队列可以进行集群</li>
+<li><strong>灵活性&amp;峰值处理能力</strong>：机器扩展多了，峰值处理能力自然提高</li>
+<li><strong>可恢复性</strong>：因为你数据可备份的，消息丢了一个，可以恢复的</li>
+<li><strong>顺序保证</strong>：队列先进先出，它有顺序。</li>
+<li><strong>缓冲</strong>：均衡两边的速度，这边数据冗余了。可以进行备份缓冲。</li>
+<li><strong>异步通信</strong>：比如你A挂了，并不会影响B</li>
+</ul>
+<h4 id="1-3三种消息队列对比："><a href="#1-3三种消息队列对比：" class="headerlink" title="1.3三种消息队列对比："></a>1.3三种消息队列对比：</h4><h5 id="1-3-1、ActiveMQ，RabbitMQ，Kafka"><a href="#1-3-1、ActiveMQ，RabbitMQ，Kafka" class="headerlink" title="1.3.1、ActiveMQ，RabbitMQ，Kafka"></a>1.3.1、ActiveMQ，RabbitMQ，Kafka</h5><ul>
+<li><p><strong>ActiveMQ中，消费者消费完消息后，队列Queue中，这条消息立即被删除</strong>。</p>
+<p>而ActiveMQ，它的队列是存在内存中。普通的消息队列是存在队列Queue中，然后存在内存中。Kafka是持久化到磁盘中，Kafka是以partition为单位进行消费的，而普通消息队列是一条一条进行消费的。</p>
+</li>
+</ul>
+<p><img src="/victor.github.io/AnonymousDQ/victor.github/ActiveMQ.jpg" alt></p>
+<ul>
+<li><p><strong>RabbitMQ多了一段Exchange，路由交换机。有4中工作机制。</strong></p>
+<p><img src="/victor.github.io/AnonymousDQ/victor.github/RabbitMQ.jpg" alt></p>
+<p>​    当producer生产了3条消息，每个队列中不会都拿到这3条消息的，它是根据路由机制进行匹配的，有4中路由机制，fanout，direct，topic，headers。4种路由机制。</p>
+</li>
+</ul>
+<p>​    topic是以点为分隔符进行通配，*是匹配一个单词，#是匹配多个单词。</p>
+<ul>
+<li><p><strong>Kafka，当消费者消费完消息后，不会被立即删除，它有避免重复消费，和避免内存溢出</strong>，Kafka是以文件的方式进行存储的，存储在磁盘中，所以永远不会内存溢出。可能会存在磁盘满了，磁盘满了，可以加集群，然后进行备份，就是partition可以备份到另一台机器中。在kafka中是以zookeeper来管理集群的。</p>
+<p><strong>kafka消费是以partition为单位进行消费的。</strong>所以所，kafka适合数据量更大的时候的处理。</p>
+<p>而RabbitMQ它的消息存在内存中，如果消息超过长度，就会内存溢出。而kafka不会，消息存在磁盘中。</p>
+</li>
+</ul>
+<h5 id="1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景"><a href="#1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景" class="headerlink" title="1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景"></a>1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景</h5><p>​    <img src="/victor.github.io/AnonymousDQ/victor.github/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.jpg" alt></p>
+<p>或者你这个库存当时没有了，可以调用别的地方的库存，然后重新分配库存。但是kafka就没有这样的好处。</p>
+<p>订单太多，可能会导致内存溢出，RabbitMQ中有一个partition是网络分区，用来做网络集群的，与kafka的partition不同，因此可以做集群部署。</p>
+<h4 id="1-4、什么是Kafka"><a href="#1-4、什么是Kafka" class="headerlink" title="1.4、什么是Kafka"></a>1.4、什么是Kafka</h4><p>流式计算中，Kafka用来缓存数据，Storm通过消费Kafka的数据进行计算。</p>
+<ul>
+<li><p>Apache Kafka是一个开源消息系统，由<strong>Scala</strong>写成</p>
+</li>
+<li><p>Kafka是由LinkedIn公司开发</p>
+</li>
+<li><p>Kafka是一个<strong>分布式消息队列</strong>，kafka对消息保存时根据<strong>Topic</strong>进行归类，发送消息者叫<strong>Producer</strong></p>
+<p>消息接收者叫<strong>Consumer</strong>。此外Kafka集群有多个Kafka实例组成，每个实例(server)叫<strong>broker</strong>。</p>
+</li>
+<li><p>不管是kafka集群，还是consumer都依赖与<strong>zookeeper</strong>集群保存一些meta信息，保证系统可用性。</p>
+</li>
+</ul>
+<h4 id="1-5、Kafka架构"><a href="#1-5、Kafka架构" class="headerlink" title="1.5、Kafka架构"></a>1.5、Kafka架构</h4><p><img src="/victor.github.io/AnonymousDQ/victor.github/kafka%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
+<p><img src="/victor.github.io/AnonymousDQ/victor.github/kafka%E6%9E%B6%E6%9E%84.png" alt></p>
+<p>partition分区：作负载均衡用。</p>
+<p>replication：备份。</p>
+<p>一个消费者可以消费多个topic，<strong>同一个组里面的消费者，不能消费同一个partition分区的数据</strong>。但是你不同的组里面，还是可以消费同一个partition分区的数据。</p>
+<p>Consumer A与Consumer B属于通过一个消费者组，Partition0被Consumer A消费，就不能被Consumer B消费。</p>
+<p>zookeeper：Consumer的集群依赖的，kafka集群的构建依赖于zookeeper，消费者也需要，上次消费到哪了，也要给zookeeper存一份。</p>
+<h4 id="1-6、kafka的专业术语"><a href="#1-6、kafka的专业术语" class="headerlink" title="1.6、kafka的专业术语"></a>1.6、kafka的专业术语</h4><ul>
+<li><strong>massage</strong>： kafka中最基本的传递对象，有固定格式。</li>
+<li><strong>topic</strong>： 一类消息，如page view，click行为等。</li>
+<li><strong>producer</strong>： 产生信息的主体，可以是服务器日志信息等。</li>
+<li><strong>consumer</strong>： 消费producer产生话题消息的主体。</li>
+<li><strong>broker</strong>： 消息处理结点，多个broker组成kafka集群。</li>
+<li><strong>partition</strong>： topic的物理分组，每个partition都是一个有序队列。</li>
+<li><strong>segment</strong>： 多个大小相等的段组成了一个partition。</li>
+<li><strong>offset</strong>： 一个连续的用于定位被追加到分区的每一个消息的序列号，最大值为64位的long大小，19位数字字符长度</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/victor.github.io/">&amp;laquo; Prev</a><a class="page-number" href="/victor.github.io/">1</a><span class="page-number current">2</span>
+      <a class="extend prev" rel="prev" href="/victor.github.io/">&amp;laquo; Prev</a><a class="page-number" href="/victor.github.io/">1</a><span class="page-number current">2</span><a class="page-number" href="/victor.github.io/page/3/">3</a><a class="extend next" rel="next" href="/victor.github.io/page/3/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -935,11 +1831,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color2">Docker</a>
               </li>
             
             <div class="clearfix"></div>
