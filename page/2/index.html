@@ -123,7 +123,7 @@
     <div class="mid-col" q-class="show:isShow,hide:isShow|isFalse">
       
       
-      <a class="forkMe" style="position:absolute;z-index:999;top:0;right:0.5em" href="https://github.com/victorblog"
+      <a class="forkMe" style="position:absolute;z-index:999;top:0;right:0.5em" href="https://github.com/victorblog/victorblog.github.io.git"
         target="_blank"><img width="149" height="149" src="../../img/forkme.png"
           class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
       
@@ -203,7 +203,7 @@
             
 
   
-    <article id="post-一、Java并发编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-一、分布式锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -211,7 +211,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="../../2019/11/01/%E4%B8%80%E3%80%81Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" target="_blank">Java并发编程</a>
+	  <a class="article-title" href="../../2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_blank">分布式锁</a>
   
     </h1>
   
@@ -219,7 +219,7 @@
 
   
   
-<a href="../../2019/11/01/%E4%B8%80%E3%80%81Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" class="archive-article-date">
+<a href="../../2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="archive-article-date">
         <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
 </a>
 
@@ -232,116 +232,44 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、Java并发编程"><a href="#一、Java并发编程" class="headerlink" title="一、Java并发编程"></a>一、Java并发编程</h1><ul>
-<li><p>多线程程序包含两个或者多个可以同事运行的部分，每个部分可以同事处理不同的任务，从而能更好的利用可用资源，如果CPU是多核，多线程可以写入多个task，在同一个程序同时进行操作处理。</p>
-</li>
-<li><p>多任务是多个进程共享，比如CPU处理公共资源</p>
-</li>
-<li><p>多线程：将多任务的概念扩展到可以将单个应用程序中的特定操作细分为单个线程的应用程序 ，每个线程可以并行运行。</p>
-</li>
-</ul>
-<h2 id="1、线程的生命周期"><a href="#1、线程的生命周期" class="headerlink" title="1、线程的生命周期"></a>1、线程的生命周期</h2><p>线程在生命周期中经历多个阶段：线程诞生，启动，运行，然后死亡。</p>
+    <h1 id="一、分布式锁"><a href="#一、分布式锁" class="headerlink" title="一、分布式锁"></a>一、分布式锁</h1><p>在单机场景下，可以使用Java里的内置所来实现进行同步。但是在分布式场景下，需要同步的进程可能位于不同的节点上，那么就需要使用分布式锁。</p>
+<p>阻塞所通常使用互斥量来实现：</p>
 <ul>
-<li>新线程New：新线程在新的状态下开始其生命周期，直到程序启动线程为止，保持在这种状态，也叫出生线程。</li>
-<li>可运行Runnable：新诞生的线程启动以后，start，该线层可以运行，状态的线程被认为正在执行其任务。</li>
-<li>等待Waiting：有时线程回转换到等待状态sleep,wait()，而线程等待另一个线程执行任务。只有当另一个线程发信号通知notify()/notifyAll()等待线程才能继续执行时，线程才转回到可运行状态。</li>
-<li>定时等待Timed Waiting：可运行的线程可以在指定的时间间隔内进入定时等待状态，当该时间间隔sleep(100)到期或者发生等待的事件的时候，此状态的线程将转换到可运行状态。</li>
-<li>终止dead：可执行线程在完成任务或者以其他方式终止的时候进入到终止状态。</li>
+<li>互斥量mutex为0表示有其他进程在使用锁，此时处于锁定状态。</li>
+<li>互斥量mutex为1表示未锁定状态。</li>
 </ul>
-<h2 id="2、线程优先级"><a href="#2、线程优先级" class="headerlink" title="2、线程优先级"></a>2、线程优先级</h2><p>每个java线程都有一个优先级，可以帮助操作系统安排线程的顺序。Java线程优先级在MIN_PRIORITY(1),和MAX_PRIORITY(10)之间的范围内，默认情况下的，每个线程优先级都是NORM_PRIORITY(5)</p>
-<p>具有较高的优先级的线程相对于一个程序来说更重要，应该在低优先级线程之前分配处理器时间。然而，线程优先级并不能呢保证线程执行的顺序。</p>
-<h2 id="3、通过实现Runnable接口创建线程"><a href="#3、通过实现Runnable接口创建线程" class="headerlink" title="3、通过实现Runnable接口创建线程"></a>3、通过实现Runnable接口创建线程</h2><ul>
-<li><p>需要实现Runnable接口提供的run()方法。run()方法为线程提供一个入口，可以把完整的业务逻辑放到run()方法体。此方法是没有返回值的</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ...service....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>然后在通过Thread构造函数，去创建一个对象</p>
-</li>
-<li><p>对象调用start()方法来启动线程。</p>
-</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> multi_thread;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>:通过实现Runnable接口的方式创建线程</span></span><br><span class="line"><span class="comment"> * 1、首先是需要实现Runnable的接口的run方法，run()作为线程提供一个入口，完成的业务逻辑写在run()里</span></span><br><span class="line"><span class="comment"> * 2、通过Thread构造函数，去创建一个实例对象</span></span><br><span class="line"><span class="comment"> * 3、对象调用start()方法来启动线程</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: VictorDan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 19-8-12 下午3:58</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span>: 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestRunnable</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Thread thread;</span><br><span class="line">    <span class="keyword">private</span> String threadName;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestRunnable</span><span class="params">(String threadName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.threadName = threadName;</span><br><span class="line">        System.out.println(<span class="string">"创建线程："</span>+threadName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 实现Runnable接口，需要重写run方法</span></span><br><span class="line"><span class="comment">     * run方法里一般写的业务逻辑代码</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建线程："</span>+threadName);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">                System.out.println(<span class="string">"线程："</span>+threadName+<span class="string">","</span>+i);</span><br><span class="line">                Thread.sleep(<span class="number">50</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span>(InterruptedException e)&#123;</span><br><span class="line">            System.out.println(<span class="string">"线程："</span>+threadName+<span class="string">"被打断"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"线程:"</span>+threadName+<span class="string">"执行完退出"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"开启线程："</span>+threadName);</span><br><span class="line">        <span class="keyword">if</span>(thread==<span class="keyword">null</span>)&#123;</span><br><span class="line">            thread=<span class="keyword">new</span> Thread(<span class="keyword">this</span>,threadName);</span><br><span class="line">            thread.start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        TestRunnable thread1 = <span class="keyword">new</span> TestRunnable(<span class="string">"Thread-1"</span>);</span><br><span class="line">        thread1.start();</span><br><span class="line">        TestRunnable thread2 = <span class="keyword">new</span> TestRunnable(<span class="string">"Thread-2"</span>);</span><br><span class="line">        thread2.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="4、通过继承Thread类创建一个线程"><a href="#4、通过继承Thread类创建一个线程" class="headerlink" title="4、通过继承Thread类创建一个线程"></a>4、通过继承Thread类创建一个线程</h2><h2 id="5、线程池的使用"><a href="#5、线程池的使用" class="headerlink" title="5、线程池的使用"></a>5、线程池的使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 使用Executors可以创建线程池，但是你方便的同时，隐藏了复杂性，而埋下隐患，比如OOM，线程耗尽等。</span></span><br><span class="line"><span class="comment">         * 所以阿里开发规范，创建线程池要手动创建，而不允许Executors直接调用的方式。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="comment">//1、创建一个不限制线程数上限的线程池，任何提交的任务都立即执行，最大上限是Integer.MAX_VALUE,会使用</span></span><br><span class="line">        Executors.newCachedThreadPool();</span><br><span class="line">        <span class="comment">//2、创建一个固定个数大小的线程池</span></span><br><span class="line">        Executors.newFixedThreadPool(<span class="number">10</span>);</span><br><span class="line">        <span class="comment">//3、创建一个只有1个线程的线程池</span></span><br><span class="line">        Executors.newSingleThreadExecutor();</span><br><span class="line">        <span class="comment">//4、创建一个定时的线程池，工作队列是延迟队列。</span></span><br><span class="line">        Executors.newScheduledThreadPool(<span class="number">20</span>);</span><br><span class="line">        <span class="comment">//总结：小程序使用这些快捷方法创建线程池没问题，但是对于服务端长期运行的程序，需要如下通过利用ThreadPoolExecutor的构造函数创建线程池。</span></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Executors.newXXXThreadPool(),这种方式创建线程池，会使用无界的任务队列，为了避免OOM，应该手动使用ThreadPoolExecutor的构造方法指定队列的最大长度。</span></span><br><span class="line"><span class="comment">         * 还要明确拒绝任务时的策略，行为。也就是任务对了沾满的时候，这里在submit()新的任务，</span></span><br><span class="line"><span class="comment">         * public interface RejectedExecutionHandler&#123;</span></span><br><span class="line"><span class="comment">         *     void rejectedExecution(Runnable r,ThreadPoolExecutor executor);</span></span><br><span class="line"><span class="comment">         * &#125;</span></span><br><span class="line"><span class="comment">         * 线程池提供了常见的拒绝策略。</span></span><br><span class="line"><span class="comment">         * 1、new ThreadPoolExecutor.DiscardOldestPolicy():丢弃执行队列中最老的任务，尝试为当前提交的任务腾出位置</span></span><br><span class="line"><span class="comment">         * 2、new ThreadPoolExecutor.DiscardPolicy()：什么都不做，直接忽略</span></span><br><span class="line"><span class="comment">         * 3、new ThreadPoolExecutor.AbortPolicy();抛出RejectedExecutionException</span></span><br><span class="line"><span class="comment">         * 4、new ThreadPoolExecutor.CallerRunsPolicy();直接由提交任务者执行这个任务</span></span><br><span class="line"><span class="comment">         * 线程池默认的拒绝行为是：AbortPolicy，也就是抛出RejectedExecutionException，</span></span><br><span class="line"><span class="comment">         * 如果不关心任务被拒绝，则可以使用DiscardPolicy，这样多余的任务可以悄悄的被忽略。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="comment">//Executors的方法也是使用ThreadPoolExecutor的构造方法创建的线程池。</span></span><br><span class="line">        <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">2</span>, <span class="number">20</span>, <span class="number">0L</span>, SECONDS, <span class="keyword">new</span> ArrayBlockingQueue&lt;&gt;(<span class="number">512</span>), <span class="keyword">new</span> ThreadPoolExecutor.DiscardOldestPolicy());</span><br><span class="line">        ExecutorService executorService = Executors.newCachedThreadPool();</span><br><span class="line">        <span class="keyword">new</span> ThreadPoolExecutor.DiscardPolicy();</span><br><span class="line">        <span class="keyword">new</span> ThreadPoolExecutor.AbortPolicy();</span><br><span class="line">        <span class="keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy();</span><br><span class="line">        <span class="keyword">new</span> ThreadPoolExecutor.DiscardOldestPolicy();</span><br><span class="line">        <span class="comment">//executorService=Executors.newSingleThreadExecutor();</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</span><br><span class="line">            executorService.execute(<span class="keyword">new</span> WorkTask());</span><br><span class="line">        &#125;</span><br><span class="line">        Future&lt;Object&gt; future = executorService.submit(() -&gt; &#123;</span><br><span class="line">            <span class="comment">//这个异常会在调用Future.get()的时候传递给调用者</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"exception in call"</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Object result = future.get();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ExecutionException e) &#123;</span><br><span class="line">            <span class="comment">//exception in Callable.call();</span></span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            executorService.shutdown();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 线程池的常用场景</span></span><br><span class="line"><span class="comment">         * 1、如何正确的构造线程池</span></span><br><span class="line"><span class="comment">         * 2、构造一个工作阻塞队列</span></span><br><span class="line"><span class="comment">         * 3、设置拒绝策略</span></span><br><span class="line"><span class="comment">         * 设置</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">int</span> poolSize = Runtime.getRuntime().availableProcessors() * <span class="number">2</span>;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * BlockingQueue只是一个接口，有好多实现类</span></span><br><span class="line"><span class="comment">         * 1、ArrayBlockingQueue:底层基于数组实现的阻塞队列</span></span><br><span class="line"><span class="comment">         * 2、LinkedBlockingQueue：底层基于链表实现的阻塞队列</span></span><br><span class="line"><span class="comment">         * 3、LinkedBlockingDeque：底层基于双端链表实现的阻塞队列</span></span><br><span class="line"><span class="comment">         * 4、DelayQueue：延迟队列</span></span><br><span class="line"><span class="comment">         * 5、PriorityBlockingQueue:基于优先队列，底层是堆实现的。</span></span><br><span class="line"><span class="comment">         * 6、SynchronousQueue:同步队列,队列内只存储一个元素。公平模式。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        BlockingQueue&lt;Object&gt; queue = <span class="keyword">new</span> ArrayBlockingQueue&lt;&gt;(<span class="number">512</span>);</span><br><span class="line">        RejectedExecutionHandler policy = <span class="keyword">new</span> ThreadPoolExecutor.DiscardPolicy();</span><br><span class="line"><span class="comment">//        executorService = new ThreadPoolExecutor(poolSize, poolSize,</span></span><br><span class="line"><span class="comment">//                0, TimeUnit.SECONDS,</span></span><br><span class="line"><span class="comment">//                queue,</span></span><br><span class="line"><span class="comment">//                policy);</span></span><br><span class="line">        System.out.println(poolSize);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ThreadPoolExecutor1</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 线程池长期维持的线程数，即使没有任务，也不会回收</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">int</span> corePoolSize;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 线程数的上限，比如一般是Integer.MAX_VALUE</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">int</span> maximumPoolSize;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 超过corePoolSize的线程，会有一个活跃时间，超过这个时间，多余线程会被回收</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">long</span> keepAliveTime;</span><br><span class="line">        TimeUnit unit;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 任务的排队队列，也就是排期队列。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        BlockingQueue&lt;Runnable&gt; workQueue;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 创建线程的渠道</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        ThreadFactory threadFactory;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 拒绝策略，也就是任务队列也塞满了，新来的任务需要被拒绝。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        RejectedExecutionHandler handler;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="二、Dubbo的知识点"><a href="#二、Dubbo的知识点" class="headerlink" title="二、Dubbo的知识点"></a>二、Dubbo的知识点</h1><p>dubbo是一款高性能，轻量级的开源java RPC框架，提供3大核心功能：</p>
+<p>1和0可以用一个整形值表示，也可以用某个数据是否存在表示。</p>
+<h2 id="1、数据库的唯一索引"><a href="#1、数据库的唯一索引" class="headerlink" title="1、数据库的唯一索引"></a>1、数据库的唯一索引</h2><p>获取锁时向表中插入一条记录，释放锁时删除这条记录。唯一索引可以保证该记录只被插入一次，那么就可以用这个记录是否存在来判断是否在锁定状态。</p>
+<p>存在以下几个问题：</p>
 <ul>
-<li>面向接口的远程方法调用</li>
-<li>智能容错和负载均衡</li>
-<li>服务自动注册和发现</li>
+<li>锁没有失效时间，解锁失败的话，其他进程无法再获得该锁。</li>
+<li>只能是非阻塞锁，插入失败直接就报错，无法重试。</li>
+<li>不可重入，已经获得锁的进程也必须重新获取锁。</li>
 </ul>
-<p>dubbo是一个分布式服务框架，用来提供高性能和透明化的RPC远程服务调用方案，以及SOA服务治理。</p>
-<h3 id="1、什么是RPC？"><a href="#1、什么是RPC？" class="headerlink" title="1、什么是RPC？"></a>1、什么是RPC？</h3><p>RPC：Remote Procedure Call，一个远程过程调用，它是一种通过网络从远程计算机程序上请求服务，而不需要了解底层网络技术的协议。比如说两个不同的服务A，B部署在两台不同的机器上，那么服务A如果想要调用服务B中的某个方法怎么解决？使用HTTP请求当然可以，但是可能会比较慢，而且一些优化做的并不好，RPC的出现就是为了解决这个问题。</p>
-<p>RPC的原理：</p>
+<h2 id="2、Redis的SETNX指令"><a href="#2、Redis的SETNX指令" class="headerlink" title="2、Redis的SETNX指令"></a>2、Redis的SETNX指令</h2><p>使用SETNX（set if not exist）指令插入一个键值对，如果key已经存在，那么会返回false，否则插入成功并返回true。</p>
+<p>SETNX指令和数据库的唯一索引类似，保证了只存在一个key的键值对，那么可以用一个key的键值对是否存在来判断是否存于锁定状态。</p>
+<p>EXPIRE指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引方式中释放锁失败的问题。也就是数据库的唯一索引解决方案的升级而已，只是可以设置过期时间。</p>
+<h2 id="3、Redis的RedLock算法"><a href="#3、Redis的RedLock算法" class="headerlink" title="3、Redis的RedLock算法"></a>3、Redis的RedLock算法</h2><p>使用了多个Redis实例来实现分布式锁，这是为了保证在发生单点故障时仍然可用。多个Redis实例实现，也就是即使一台Redis挂了，还可以有其他的服务可用。</p>
 <ul>
-<li>服务消费方client调用以本地调用方式调用服务</li>
-<li>client stub接收到调用后负责将方法、参数等组装成能够进行网络传输的消息体。</li>
-<li>client stub找到服务地址，并将消息发送到服务端</li>
-<li>server stub收到消息后进行解码</li>
-<li>server stub根据解码结果调用本地的服务</li>
-<li>本地服务执行并结果返回给server stub</li>
-<li>server stub将返回结果打包成消息并发送到消费方</li>
-<li>client stub接收到消息，并进行解码</li>
-<li>服务消费方得到最终结果。</li>
+<li>尝试从N个互相独立的Redis实例中获取锁。</li>
+<li>计算获取锁消耗的时间，只有当这个时间小于锁的过期时间，并且从大多数(N/2+1)，半数以上的实例上获取锁，那么就认为获取锁成功了。</li>
+<li>如果锁获取失败，就到每个实例上释放锁。</li>
 </ul>
-<h3 id="2、为什么要用dubbo？"><a href="#2、为什么要用dubbo？" class="headerlink" title="2、为什么要用dubbo？"></a>2、为什么要用dubbo？</h3><p>dubbo和SOA分布式架构的流行有着关系。SOA面向服务的架构(Service Oriented Architecture)，就是把工程按照业务逻辑拆分成服务层，表现层两个工程。服务层中包含业务逻辑，只需要对外提供服务就行。表现层只需要处理和页面的交互，业务逻辑都是调用服务层的服务来实现。SOA架构中有两个主要角色：服务提供者Provieder和服务使用者Consumer</p>
-<h3 id="3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？"><a href="#3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？" class="headerlink" title="3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？"></a>3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？</h3><p>dubbo的四个特点：</p>
-<ul>
-<li>负载均衡：同一个服务部署在不同的机器时该调用哪一台机器上的服务</li>
-<li>服务调用链路生成：随着系统的发展，服务越来越多，服务间依赖关系变得错综复杂，甚至分不清哪个应用要在哪个应用之前启动，架构师都不能完整的描述应用的架构关系，dubbo可以为我们解决服务之间是如何互相调用的。</li>
-<li>服务访问压力以及时长统计，资源调度和治理：基于访问压力实时管理集群容量，提供集群利用率。</li>
-<li>服务降级：某个服务挂掉之后调用备用服务。</li>
+<h2 id="4、Zookeeper的有序节点"><a href="#4、Zookeeper的有序节点" class="headerlink" title="4、Zookeeper的有序节点"></a>4、Zookeeper的有序节点</h2><h3 id="1、Zookeeper抽象模型"><a href="#1、Zookeeper抽象模型" class="headerlink" title="1、Zookeeper抽象模型"></a>1、Zookeeper抽象模型</h3><p>Zookeeper提供了一种树型结构的命名空间，/app1/p_1节点的父节点为app1。有点类似linux系统文件系统，文件目录树</p>
+<h3 id="2、节点类型"><a href="#2、节点类型" class="headerlink" title="2、节点类型"></a>2、节点类型</h3><ul>
+<li>永久节点：不会因为会话结束或者超时而消失。</li>
+<li>临时节点：如果会话结束或者超时就会消失。</li>
+<li>有序节点：会在节点名的后面加上一个数字后缀，并且是有序的。例如生成的有序节点为/lock/node-0000000000，它的下一个有序节点就是/lock/node-0000000001，以此类推。</li>
 </ul>
-<p>dubbo除了用在分布式系统中，也可以应用在微服务系统中，但是由于springboot cloud在微服务中更加广泛，所以一般提dubbo大部分在分布式系统的情况。</p>
-<h3 id="4、什么是分布式？"><a href="#4、什么是分布式？" class="headerlink" title="4、什么是分布式？"></a>4、什么是分布式？</h3><p>分布式或者说SOA分布式重要的就是面向服务，说简单的分布式就是我们把整个系统拆分成不同的服务然后将这些服务放在不同的服务器上减轻单体服务的压力提高并发量和性能。比如电商系统可以简单拆分成订单系统，商品系统，登录系统等，拆分之后的每个服务可以部署在不同的机器上，如果某一个服务的访问量比较大的话也可以将这个服务同时部署在多台机器上。</p>
-<h3 id="5、为什么要分布式？"><a href="#5、为什么要分布式？" class="headerlink" title="5、为什么要分布式？"></a>5、为什么要分布式？</h3><p>从开发角度来讲单体应用的代码都集中在一起，而分布式系统的代码根据业务被拆分。所以每个团队可以负责一个服务的开发，这样提升了开发效率。另外，代码根据业务拆分之后更加便于维护和扩展。</p>
-<p>另外，将系统拆分成分布式之后不光便于系统扩展和维护，更能提高整个系统的性能。把整个系统拆分成不同的服务、系统，然后每个服务，系统单独部署在一台服务器上，是不是很大成都提升了系统性能。</p>
-<h3 id="6、dubbo的架构"><a href="#6、dubbo的架构" class="headerlink" title="6、dubbo的架构"></a>6、dubbo的架构</h3><ul>
-<li>Provider：暴露服务的服务提供方</li>
-<li>Consumer：调用远程服务的服务消费方</li>
-<li>Registry：服务注册与发现的注册中心</li>
-<li>Monitor：统计服务的调用次数和调用时间的监控中心</li>
-<li>Container：服务运行容器</li>
+<h3 id="3、监听器"><a href="#3、监听器" class="headerlink" title="3、监听器"></a>3、监听器</h3><p>为一个节点注册监听器，在节点状态发生改变的时候，会给客户端发送消息 。</p>
+<h3 id="4、分布式锁实现"><a href="#4、分布式锁实现" class="headerlink" title="4、分布式锁实现"></a>4、分布式锁实现</h3><ul>
+<li>创建一个目录/lock。</li>
+<li>当一个客户端需要获取锁时，在/lock下创建临时的且有序的子节点。</li>
+<li>客户端获取/lock下的子节点列表，判断自己创建的子节点是否为当前子节点列表中序号最小的子节点，如果是则认为获得锁。否则监听自己的前一个子节点，获得子节点的变更通知后重复此步骤直到获取锁为止。</li>
+<li>执行业务代码，完成后，删除对应的子节点。</li>
 </ul>
-<h4 id="6-1、调用关系说明："><a href="#6-1、调用关系说明：" class="headerlink" title="6.1、调用关系说明："></a>6.1、调用关系说明：</h4><ul>
-<li><p>Container服务容器负责启动，加载，运行服务提供者Provider。</p>
-</li>
-<li><p>服务提供者Provider在启动的是偶，向注册中心Registry注册自己提供的服务</p>
-</li>
-<li><p>服务消费者Consumer在启动的时候，向注册中心Registry订阅自己所需要的服务</p>
-</li>
-<li><p>注册中心Registry返回服务提供者Provider地址列表给消费者Consumer，如果有变更，注册中心Registry将基于长连接keep-alive推送变更数据给消费者Consumer</p>
-</li>
-<li><p>服务消费者Consumer，从服务提供者Provider地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。</p>
-<ul>
-<li>dubbo提供了4中负载均衡算法：<ul>
-<li>权重随机算法：RandomLoadBalance</li>
-<li>最少活跃调用数算法：LeastActiveLoadBalance</li>
-<li>一致性哈希算法：ConsistentHashLoadBalance</li>
-<li>加权轮询算法：RoundRobinLoadBalance</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>服务消费者Consumer和服务提供这Provider，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心Monitor。</p>
-</li>
-</ul>
-<h4 id="6-2、总结："><a href="#6-2、总结：" class="headerlink" title="6.2、总结："></a>6.2、总结：</h4><ul>
-<li>注册中心负责服务地址的注册与查找，相当于目录服务，服务提供者Provider和服务消费者Consumer只在启动的时候与注册中心Registry交互，注册中心不转发请求，压力小。</li>
-<li>监控中心Monitor负责统计各个服务调动次数，调用时间等，统计现在内存汇总后每分钟一次发送到监控中心服务器，并以报表的形式显示。</li>
-<li>注册中心Registry，服务提供这Provider，服务消费者Consumer三者之间均为长连接Keep-alive，监控中心Monitor除外</li>
-<li>注册中心Registry通过长连接感知服务提供者Provider的存在，服务提供者挂了，注册中心立即将推送事件通知消费者Consumer。</li>
-<li>注册中心和监控中心全部挂了，不影响已经运行的服务提供者Provider和Consumer，消费者在本地缓存了提供者列表。</li>
-<li>注册中心和监控中心都是可选的，服务消费者Consumer可以直接连服务提供者Provider</li>
-<li>服务提供者Provider无状态，任意一台挂掉，不影响使用。</li>
-<li>服务提供者Provider全部挂了，服务消费者Consumer应用将无法使用，并无限次重连等待服务提供者恢复。</li>
-</ul>
-<h4 id="6-3、Zookeeper挂了与dubbo直连的情况"><a href="#6-3、Zookeeper挂了与dubbo直连的情况" class="headerlink" title="6.3、Zookeeper挂了与dubbo直连的情况"></a>6.3、Zookeeper挂了与dubbo直连的情况</h4><p>在实际生产中，如果zookeeper注册中心挂了，一段时间内服务消费者Consumer还是能够调用服务提供者Provider服务的，实际上Consumer使用了本地缓存进行通讯，Consumer本地缓存了提供者列表。</p>
-<p>dubbo的健壮性:</p>
-<ul>
-<li>监控中心挂了不影响使用</li>
-</ul>
+<h3 id="5、会话超时"><a href="#5、会话超时" class="headerlink" title="5、会话超时"></a>5、会话超时</h3><p>如果一个已经获的锁的会话超时了，因为创建的是临时节点，所以该会话对应的临时节点会被删除，其他会话就可以获取锁。可以看到zookeeper分布式锁不会出现数据库的唯一索引的分布式锁释放锁失败的问题。</p>
+<h3 id="6、羊群效应"><a href="#6、羊群效应" class="headerlink" title="6、羊群效应"></a>6、羊群效应</h3><p>一个节点未获得锁，只需要监听自己前一个子节点，这是因为如果监听所有的子节点，那么任意一个子节点状态改变，其他所有子节点都会收到通知(羊群效应)，而我们秩序网它的后一个子节点收到通知。</p>
 
     
 
@@ -368,7 +296,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="../../2019/11/01/%E4%B8%80%E3%80%81Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">展开全文 >></a>
+      <a class="article-more-a" href="../../2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">展开全文 >></a>
     </p>
     
 
@@ -699,7 +627,7 @@
 <li>Hive自动生成的MapReduce作业，通常情况下不够智能化</li>
 <li>Hive调优比较困难，粒度比较粗</li>
 </ul>
-<h3 id="1-3、Hive架构原理"><a href="#1-3、Hive架构原理" class="headerlink" title="1.3、Hive架构原理"></a>1.3、Hive架构原理</h3><p><img src="/victor.github.io/2019/10/01/Hive1/Hive.png" alt></p>
+<h3 id="1-3、Hive架构原理"><a href="#1-3、Hive架构原理" class="headerlink" title="1.3、Hive架构原理"></a>1.3、Hive架构原理</h3><p><img src="/2019/10/01/Hive1/Hive.png" alt></p>
 <p>CLI：命令行接口，以命令行的形式输入SQL语句进行数据操作，有点类似shell</p>
 <p>Meta store：元数据存储，就是存的是表跟数据之间的位置对应关系，有点类似索引，Hive不会存储Meta store，会存在mysql或者Derby中</p>
 <p>Meta store作用：客户端连接Meta store服务，Meta store再去连接Mysql数据库来存取元数据，有了Meta store服务，就可以有多个客户端可以同时连接，而切这些客户端不需要知道MySQL的数据库用户名和密码，只需要连接Meta store服务就行。</p>
@@ -1650,7 +1578,7 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h2 id="大数据技术之Kafka"><a href="#大数据技术之Kafka" class="headerlink" title="大数据技术之Kafka"></a>大数据技术之Kafka</h2><h3 id="1、Kafka概述"><a href="#1、Kafka概述" class="headerlink" title="1、Kafka概述"></a>1、Kafka概述</h3><h4 id="1-1、消息队列"><a href="#1-1、消息队列" class="headerlink" title="1.1、消息队列"></a>1.1、消息队列</h4><p><img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.png" alt></p>
+    <h2 id="大数据技术之Kafka"><a href="#大数据技术之Kafka" class="headerlink" title="大数据技术之Kafka"></a>大数据技术之Kafka</h2><h3 id="1、Kafka概述"><a href="#1、Kafka概述" class="headerlink" title="1、Kafka概述"></a>1、Kafka概述</h3><h4 id="1-1、消息队列"><a href="#1-1、消息队列" class="headerlink" title="1.1、消息队列"></a>1.1、消息队列</h4><p><img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.png" alt></p>
 <h4 id="1-2、为什么要用消息队列？"><a href="#1-2、为什么要用消息队列？" class="headerlink" title="1.2、为什么要用消息队列？"></a>1.2、为什么要用消息队列？</h4><ul>
 <li><strong>解耦</strong>：也即是客户端A跟B不用直连，通过中间件。达到解耦</li>
 <li><strong>冗余</strong>：消息队列可以进行数据备份，它本身可以缓冲数据</li>
@@ -1666,10 +1594,10 @@
 <p>而ActiveMQ，它的队列是存在内存中。普通的消息队列是存在队列Queue中，然后存在内存中。Kafka是持久化到磁盘中，Kafka是以partition为单位进行消费的，而普通消息队列是一条一条进行消费的。</p>
 </li>
 </ul>
-<p><img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/ActiveMQ.jpg" alt></p>
+<p><img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/ActiveMQ.jpg" alt></p>
 <ul>
 <li><p>RabbitMQ多了一段Exchange，路由交换机。有4中工作机制。**</p>
-<p><img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/RabbitMQ.jpg" alt></p>
+<p><img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/RabbitMQ.jpg" alt></p>
 <p>​    当producer生产了3条消息，每个队列中不会都拿到这3条消息的，它是根据路由机制进行匹配的，有4中路由机制，fanout，direct，topic，headers。4种路由机制。</p>
 </li>
 </ul>
@@ -1680,7 +1608,7 @@
 <p>而RabbitMQ它的消息存在内存中，如果消息超过长度，就会内存溢出。而kafka不会，消息存在磁盘中。</p>
 </li>
 </ul>
-<h5 id="1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景"><a href="#1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景" class="headerlink" title="1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景"></a>1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景</h5><p>​    <img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.jpg" alt></p>
+<h5 id="1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景"><a href="#1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景" class="headerlink" title="1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景"></a>1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景</h5><p>​    <img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.jpg" alt></p>
 <p>或者你这个库存当时没有了，可以调用别的地方的库存，然后重新分配库存。但是kafka就没有这样的好处。</p>
 <p>订单太多，可能会导致内存溢出，RabbitMQ中有一个partition是网络分区，用来做网络集群的，与kafka的partition不同，因此可以做集群部署。</p>
 <h4 id="1-4、什么是Kafka"><a href="#1-4、什么是Kafka" class="headerlink" title="1.4、什么是Kafka"></a>1.4、什么是Kafka</h4><p>流式计算中，Kafka用来缓存数据，Storm通过消费Kafka的数据进行计算。</p>
@@ -1695,8 +1623,8 @@
 <li><p>不管是kafka集群，还是consumer都依赖与<strong>zookeeper</strong>集群保存一些meta信息，保证系统可用性。</p>
 </li>
 </ul>
-<h4 id="1-5、Kafka架构"><a href="#1-5、Kafka架构" class="headerlink" title="1.5、Kafka架构"></a>1.5、Kafka架构</h4><p><img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
-<p><img src="/victor.github.io/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E6%9E%B6%E6%9E%84.png" alt></p>
+<h4 id="1-5、Kafka架构"><a href="#1-5、Kafka架构" class="headerlink" title="1.5、Kafka架构"></a>1.5、Kafka架构</h4><p><img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
+<p><img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E6%9E%B6%E6%9E%84.png" alt></p>
 <p>partition分区：作负载均衡用。</p>
 <p>replication：备份。</p>
 <p>一个消费者可以消费多个topic，<strong>同一个组里面的消费者，不能消费同一个partition分区的数据</strong>。但是你不同的组里面，还是可以消费同一个partition分区的数据。</p>

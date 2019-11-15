@@ -18,10 +18,10 @@
 <meta property="og:site_name" content="VictorDan">
 <meta property="og:description" content="算法与数据结构">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;victor.github.io&#x2F;2018&#x2F;07&#x2F;01&#x2F;%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84&#x2F;%E5%BB%BA%E7%AB%8B%E9%93%BE%E8%A1%A8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;01&#x2F;%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84&#x2F;%E5%BB%BA%E7%AB%8B%E9%93%BE%E8%A1%A8.jpg">
 <meta property="og:updated_time" content="2019-11-15T10:56:38.687Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;victor.github.io&#x2F;2018&#x2F;07&#x2F;01&#x2F;%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84&#x2F;%E5%BB%BA%E7%AB%8B%E9%93%BE%E8%A1%A8.jpg">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;01&#x2F;%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84&#x2F;%E5%BB%BA%E7%AB%8B%E9%93%BE%E8%A1%A8.jpg">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
   
@@ -123,7 +123,7 @@
     <div class="mid-col" q-class="show:isShow,hide:isShow|isFalse">
       
       
-      <a class="forkMe" style="position:absolute;z-index:999;top:0;right:0.5em" href="https://github.com/victorblog"
+      <a class="forkMe" style="position:absolute;z-index:999;top:0;right:0.5em" href="https://github.com/victorblog/victorblog.github.io.git"
         target="_blank"><img width="149" height="149" src="../../../../img/forkme.png"
           class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
       
@@ -308,7 +308,7 @@
 
 <p>带头结点的单链表：头结点：data里没有数据。比如把表里元素都删除。总不能只剩下一个L吧。头结点的增加仅仅是为了运算的方便。做题的时候，要看清楚是不是带头结点的链表，默认都是带头结点的链表。</p>
 <h4 id="2、线性表的基本操作："><a href="#2、线性表的基本操作：" class="headerlink" title="2、线性表的基本操作："></a>2、线性表的基本操作：</h4><h5 id="1、初始化线性链表"><a href="#1、初始化线性链表" class="headerlink" title="1、初始化线性链表"></a>1、初始化线性链表</h5><p>也就是创建一个仅仅有头结点的空表。</p>
-<p><img src="/victor.github.io/2018/07/01/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%BB%BA%E7%AB%8B%E9%93%BE%E8%A1%A8.jpg" alt="建立链表"></p>
+<p><img src="/2018/07/01/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%BB%BA%E7%AB%8B%E9%93%BE%E8%A1%A8.jpg" alt="建立链表"></p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">InitList_L</span><span class="params">(LinkList &amp;L)</span></span>&#123;<span class="comment">//LinkList，就是刚刚在struct结构体定义的*LinkList</span></span><br><span class="line">    <span class="comment">//建立头结点，其next为空</span></span><br><span class="line">    L=(LinkList)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(LNode));</span><br><span class="line">    L-&gt;next=<span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h5 id="2、GetElem在单链表中的实现GetElem-L-L-i-amp-e"><a href="#2、GetElem在单链表中的实现GetElem-L-L-i-amp-e" class="headerlink" title="2、GetElem在单链表中的实现GetElem_L(L,i,&amp;e)"></a>2、GetElem在单链表中的实现GetElem_L(L,i,&amp;e)</h5><p>也就是把第i个元素取出来，赋给变量e。</p>
