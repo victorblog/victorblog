@@ -18,7 +18,7 @@
 <meta property="og:site_name" content="VictorDan">
 <meta property="og:description" content="分布式锁">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-14T08:29:21.700Z">
+<meta property="og:updated_time" content="2019-11-15T10:58:03.239Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
@@ -425,11 +425,11 @@
 
 <nav id="article-nav">
   
-    <a href="../%E4%B8%80%E3%80%81Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="../%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Java并发编程
+          G1垃圾回收
         
       </div>
     </a>
@@ -455,6 +455,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、分布式锁"><span class="toc-number">1.</span> <span class="toc-text">一、分布式锁</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、数据库的唯一索引"><span class="toc-number">1.1.</span> <span class="toc-text">1、数据库的唯一索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、Redis的SETNX指令"><span class="toc-number">1.2.</span> <span class="toc-text">2、Redis的SETNX指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、Redis的RedLock算法"><span class="toc-number">1.3.</span> <span class="toc-text">3、Redis的RedLock算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4、Zookeeper的有序节点"><span class="toc-number">1.4.</span> <span class="toc-text">4、Zookeeper的有序节点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、Zookeeper抽象模型"><span class="toc-number">1.4.1.</span> <span class="toc-text">1、Zookeeper抽象模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、节点类型"><span class="toc-number">1.4.2.</span> <span class="toc-text">2、节点类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、监听器"><span class="toc-number">1.4.3.</span> <span class="toc-text">3、监听器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、分布式锁实现"><span class="toc-number">1.4.4.</span> <span class="toc-text">4、分布式锁实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、会话超时"><span class="toc-number">1.4.5.</span> <span class="toc-text">5、会话超时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、羊群效应"><span class="toc-number">1.4.6.</span> <span class="toc-text">6、羊群效应</span></a></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
@@ -493,6 +506,35 @@
 
   
 
+
+
+	  <!-- 目录内容 -->
+        
+            <p class="show-toc-btn" id="show-toc-btn" onclick="showToc();" style="display:none">
+            <span class="btn-bg"></span>
+            <span class="btn-text">文章导航</span>
+            </p>
+            <div id="toc-article" class="toc-article">
+                <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
+                <strong class="toc-title">文章目录</strong>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、分布式锁"><span class="toc-number">1.</span> <span class="toc-text">一、分布式锁</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、数据库的唯一索引"><span class="toc-number">1.1.</span> <span class="toc-text">1、数据库的唯一索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、Redis的SETNX指令"><span class="toc-number">1.2.</span> <span class="toc-text">2、Redis的SETNX指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、Redis的RedLock算法"><span class="toc-number">1.3.</span> <span class="toc-text">3、Redis的RedLock算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4、Zookeeper的有序节点"><span class="toc-number">1.4.</span> <span class="toc-text">4、Zookeeper的有序节点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、Zookeeper抽象模型"><span class="toc-number">1.4.1.</span> <span class="toc-text">1、Zookeeper抽象模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、节点类型"><span class="toc-number">1.4.2.</span> <span class="toc-text">2、节点类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、监听器"><span class="toc-number">1.4.3.</span> <span class="toc-text">3、监听器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、分布式锁实现"><span class="toc-number">1.4.4.</span> <span class="toc-text">4、分布式锁实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、会话超时"><span class="toc-number">1.4.5.</span> <span class="toc-text">5、会话超时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、羊群效应"><span class="toc-number">1.4.6.</span> <span class="toc-text">6、羊群效应</span></a></li></ol></li></ol></li></ol>
+           </div>
+           <script type="text/javascript">
+            function showToc(){
+                var toc_article = document.getElementById("toc-article");
+                var show_toc_btn = document.getElementById("show-toc-btn");
+                toc_article.setAttribute("style","display:block");
+                show_toc_btn.setAttribute("style","display:none");
+                };
+            function showBtn(){
+                var toc_article = document.getElementById("toc-article");
+                var show_toc_btn = document.getElementById("show-toc-btn");
+                toc_article.setAttribute("style","display:none");
+                show_toc_btn.setAttribute("style","display:block");
+                };
+           </script>
+             
+        <!-- 目录内容结束 -->
 
 
           </div>

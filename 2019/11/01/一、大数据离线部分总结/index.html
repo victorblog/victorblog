@@ -18,7 +18,7 @@
 <meta property="og:site_name" content="VictorDan">
 <meta property="og:description" content="大数据离线部分">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-14T08:29:13.376Z">
+<meta property="og:updated_time" content="2019-11-15T10:57:54.959Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
@@ -418,18 +418,18 @@
 
 <nav id="article-nav">
   
-    <a href="../%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="../Spark%E7%9A%84%E4%BD%BF%E7%94%A8/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          操作系统
+          Spark的学习
         
       </div>
     </a>
   
   
-    <a href="../docker%E4%BD%BF%E7%94%A8/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Docker的使用</div>
+    <a href="../%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">G1垃圾回收</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -448,6 +448,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、大数据离线部分总结"><span class="toc-number">1.</span> <span class="toc-text">一、大数据离线部分总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、HDFS"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、HDFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、Spark容错机制"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、Spark容错机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、YARN的总结"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、YARN的总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1、使用YARN的背景"><span class="toc-number">1.0.3.1.</span> <span class="toc-text">3.1、使用YARN的背景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、为什么要使用YARN"><span class="toc-number">1.0.3.2.</span> <span class="toc-text">3.2、为什么要使用YARN</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、YARN的基本架构"><span class="toc-number">1.0.3.3.</span> <span class="toc-text">3.2、YARN的基本架构</span></a></li></ol></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
@@ -486,6 +499,35 @@
 
   
 
+
+
+	  <!-- 目录内容 -->
+        
+            <p class="show-toc-btn" id="show-toc-btn" onclick="showToc();" style="display:none">
+            <span class="btn-bg"></span>
+            <span class="btn-text">文章导航</span>
+            </p>
+            <div id="toc-article" class="toc-article">
+                <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
+                <strong class="toc-title">文章目录</strong>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、大数据离线部分总结"><span class="toc-number">1.</span> <span class="toc-text">一、大数据离线部分总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、HDFS"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、HDFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、Spark容错机制"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、Spark容错机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、YARN的总结"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、YARN的总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1、使用YARN的背景"><span class="toc-number">1.0.3.1.</span> <span class="toc-text">3.1、使用YARN的背景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、为什么要使用YARN"><span class="toc-number">1.0.3.2.</span> <span class="toc-text">3.2、为什么要使用YARN</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、YARN的基本架构"><span class="toc-number">1.0.3.3.</span> <span class="toc-text">3.2、YARN的基本架构</span></a></li></ol></li></ol></li></ol></li></ol>
+           </div>
+           <script type="text/javascript">
+            function showToc(){
+                var toc_article = document.getElementById("toc-article");
+                var show_toc_btn = document.getElementById("show-toc-btn");
+                toc_article.setAttribute("style","display:block");
+                show_toc_btn.setAttribute("style","display:none");
+                };
+            function showBtn(){
+                var toc_article = document.getElementById("toc-article");
+                var show_toc_btn = document.getElementById("show-toc-btn");
+                toc_article.setAttribute("style","display:none");
+                show_toc_btn.setAttribute("style","display:block");
+                };
+           </script>
+             
+        <!-- 目录内容结束 -->
 
 
           </div>
