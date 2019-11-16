@@ -121,7 +121,7 @@
     <div class="mid-col" q-class="show:isShow,hide:isShow|isFalse">
       
       
-      <a class="forkMe" style="position:absolute;z-index:999;top:0;right:0.5em" href="https://github.com/victorblog/victorblog.github.io.git"
+      <a class="forkMe" style="position:absolute;z-index:999;top:0;right:0.5em" href="https://github.com/AnonymousDQ?tab=repositories"
         target="_blank"><img width="149" height="149" src="../img/forkme.png"
           class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
       
@@ -400,30 +400,33 @@
 
 
 
-
+  <div id="giteement-ctn"></div>
   
-  <div id="gitment-ctn"></div>
-  
-    <!-- 中文 -->
-    <link rel="stylesheet" href="../lib/gitment.css">
-    <script src="../lib/gitment.js"></script>
+    <!-- <link rel="stylesheet" href="https://giteement.oss-cn-beijing.aliyuncs.com/wd-discuss.css"> -->
+    <!-- <script src="https://giteement.oss-cn-beijing.aliyuncs.com/discuss_hexo.js"></script> -->
+    <link rel="stylesheet" href="https://giteement.oss-cn-beijing.aliyuncs.com/default.css">
+    <script src="https://giteement.oss-cn-beijing.aliyuncs.com/giteement.browser.js"></script>
   
   <script>
-    <!-- id: "tags" -->
-    var gitment = new Gitment({
-      id: "20191113115601",
-      owner: 'AnonymousDQ',
-      repo: 'victor.github.io',
-      oauth: {
-        client_id: '5a17b0a3556d60b2a3fb',
-        client_secret: 'be054e14b78c5f52920d1198a51c12c6a0c28ca6',
-      },
-    })
-    gitment.render('gitment-ctn')
+  <!-- id: "tags" -->
+  var giteement = new Giteement({
+    id: '20191113115601',
+    owner: 'victorblog',
+    repo: 'victorblog',
+    backcall_uri: 'https://victorblog.github.io/',
+    oauth_uri: 'https://cors-anywhere.herokuapp.com/https://gitee.com/oauth/token',
+    oauth: {
+      client_id: 'e2d6da671450e4ff6cc059016d4d75f2b680b0c1fe1b24e71b1bd74344f8e657',
+      client_secret: 'a7e5b035c17a4b30e6b3f00db2fff2df5a5c209c3db66b6846c6fb19b521c8f0'
+    },
+  })
+  giteement.render('giteement-ctn')
   </script>
 
 
-  
+
+
+
 
 
 
@@ -478,7 +481,7 @@
 		toc_hide_index: true,
 		root: "/",
 		innerArchive: true,
-		showTags: false
+		showTags: true
 	}
 </script>
 
@@ -687,7 +690,7 @@
     	<section class="tools-section tools-section-me" q-show="aboutme">
         
           
-  	  		<div class="aboutme-wrap" id="aboutme">主要涉及技术：<br>Java后端开发、Hadoop、Spark、微服务、TensorFlow<br>AI、公众号开发、开源爱好者、Linux<br></div>
+  	  		<div class="aboutme-wrap" id="aboutme">主要涉及技术：<br>Java后端开发、Hadoop、Spark、微服务、TensorFlow<br>AI、公众号开发、开源爱好者、Linux<br>大数据、DevOps、分布式中间件</div>
   	  	
     	</section>
     

@@ -123,7 +123,7 @@
     <div class="mid-col" q-class="show:isShow,hide:isShow|isFalse">
       
       
-      <a class="forkMe" style="position:absolute;z-index:999;top:0;right:0.5em" href="https://github.com/victorblog/victorblog.github.io.git"
+      <a class="forkMe" style="position:absolute;z-index:999;top:0;right:0.5em" href="https://github.com/AnonymousDQ?tab=repositories"
         target="_blank"><img width="149" height="149" src="img/forkme.png"
           class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
       
@@ -201,6 +201,13 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <script src="https://giteement.oss-cn-beijing.aliyuncs.com/oauthcallback.browser.js"></script>
+  
+  <script>
+    Oauthcallback();
+  </script>
+
 
   
     <article id="post-Spark的使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
@@ -432,7 +439,7 @@
 
 
   
-    <article id="post-一、G1垃圾回收器介绍" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-一、分布式锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -440,7 +447,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" target="_blank">G1垃圾回收</a>
+	  <a class="article-title" href="2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_blank">分布式锁</a>
   
     </h1>
   
@@ -448,7 +455,7 @@
 
   
   
-<a href="2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" class="archive-article-date">
+<a href="2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="archive-article-date">
         <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
 </a>
 
@@ -461,64 +468,44 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h3 id="一、G1垃圾回收器介绍"><a href="#一、G1垃圾回收器介绍" class="headerlink" title="一、G1垃圾回收器介绍"></a>一、G1垃圾回收器介绍</h3><p>为了解决CMS算法产生空间碎片和其他一系列的问题缺陷，HotSpot虚拟机团队提出了另外一种垃圾回收策略，G1（Garbage First）算法。通过参数-XX:+UserG1GC来启用。这个算法在JDK7被正式推出。</p>
-<p>G1垃圾回收算法主要应用在多CPU大内存的服务中，在满足高吞吐量的同事，尽可能的满足垃圾回收时的暂停时间，G1的设计应用场景：</p>
+    <h1 id="一、分布式锁"><a href="#一、分布式锁" class="headerlink" title="一、分布式锁"></a>一、分布式锁</h1><p>在单机场景下，可以使用Java里的内置所来实现进行同步。但是在分布式场景下，需要同步的进程可能位于不同的节点上，那么就需要使用分布式锁。</p>
+<p>阻塞所通常使用互斥量来实现：</p>
 <ul>
-<li>垃圾收集线程和应用线程并发执行，和CMS一样。</li>
-<li>空闲内存亚索时避免冗长的暂停时间</li>
-<li>应用需要更多可预测的GC暂停时间</li>
-<li>不希望牺牲太多的吞吐性能</li>
-<li>不需要很大的java堆</li>
+<li>互斥量mutex为0表示有其他进程在使用锁，此时处于锁定状态。</li>
+<li>互斥量mutex为1表示未锁定状态。</li>
 </ul>
-<h3 id="1、堆内存结构："><a href="#1、堆内存结构：" class="headerlink" title="1、堆内存结构："></a>1、堆内存结构：</h3><h4 id="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："><a href="#1、以往的垃圾回收算法，比如CMS，堆内存结构如下：" class="headerlink" title="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："></a>1、以往的垃圾回收算法，比如CMS，堆内存结构如下：</h4><p>年轻代/新生代：eden space+2个survivor</p>
-<p>老年代：old space</p>
-<p>持久代：1.8之前的perm space</p>
-<p>元空间：1.8之后的metaspace(元空间)</p>
-<p>上面这些space必须是地址连续的空间。</p>
-<h4 id="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"><a href="#2、在G1算法中，采用了另一种完全不同的方式组织堆内存" class="headerlink" title="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"></a>2、在G1算法中，采用了另一种完全不同的方式组织堆内存</h4><p>堆内存被划分成多个大小相等的内存块Region，每个Region是逻辑连续的一段内存。</p>
-<p>每个Region被标记了E,S,O,H，说明每个Region在运行时都充当了一种角色，其中H是以往算法中没有的，它代表Humongous，这表示这些Region存储的是巨型对象。当新建对象大小超过Region大小一半的时候，直接在新的一个或者多个连续Region中分配，并标记为H。</p>
-<h4 id="3、Region"><a href="#3、Region" class="headerlink" title="3、Region"></a>3、Region</h4><p>堆内存中一个Region的大小可以通过-XX:G1HeapRegionSize参数指定，大小区间只能是1M,2M,4M,8M,16M,32M，总之是2的幂次方，如果G1HeapRegionSize为默认值，则在堆初始化时计算Region的实际大小。</p>
-<p>默认把堆内存按照2048份均分，最后得到一个合理的大小。</p>
-<h3 id="2、GC模式"><a href="#2、GC模式" class="headerlink" title="2、GC模式"></a>2、GC模式</h3><p>G1中提供了3种模式垃圾回收模式，young GC,mixed GC和full GC。在不同的条件下被触发</p>
-<h4 id="1、young-GC"><a href="#1、young-GC" class="headerlink" title="1、young GC"></a>1、young GC</h4><p>发生在年轻代的GC算法，一般对象（除了巨型对象），都是在eden region中分配内存，当所有的eden region被消耗殆尽无法再申请内存的时候，就会触发一次young GC，这种触发机制和之前的young GC差不多，执行玩一次young GC，活跃对象会被拷贝到survivor region或者晋升到old region中，空闲的region会被放入空闲列表中，等待下次被使用。</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>-XX:MaxGCPauseMillis</td>
-<td>设置G1收集过程目标时间，默认200ms</td>
-</tr>
-<tr>
-<td>-XX:G1NewSizePercent</td>
-<td>新生代最小值，默认值5%</td>
-</tr>
-<tr>
-<td>-XX:G1MaxNewSizePercent</td>
-<td>新生代最大值，默认值60%</td>
-</tr>
-</tbody></table>
-<h4 id="2、mixed-GC"><a href="#2、mixed-GC" class="headerlink" title="2、mixed GC"></a>2、mixed GC</h4><p>当越来越多的对象晋升到老年代old region时，为了避免堆内存被消耗殆尽，虚拟机会触发一个混合的垃圾收集器，也就是mixed GC；这个算法不是一个old GC，除了回收整个young region，还会回收一部分old region。注：只是一部分老年代，而不是全部老年代，可以选择哪些old region进行收集，从而可以对垃圾回收的耗时时间进行控制。</p>
-<p>mixed GC什么时候被触发？</p>
-<p>有点类似cms的触发机制 ，如果添加了以下参数：</p>
-<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">-XX:CMSInitiatingOccupancyFraction=80</span></span><br><span class="line"><span class="deletion">-XX:+UserCMSInitiatingOccupancyOnly</span></span><br></pre></td></tr></table></figure>
-
-<p>当CMS的老年代的使用率达到80%时，就会触发一次cms gc。</p>
-<p>相对的，mixed gc中也有一个阈值参数：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:InitiatingHeapOccupancyPercent</span><br></pre></td></tr></table></figure>
-
-<p>当老年代大小占整个堆大小百分比达到该阈值时，会触发一次mixed gc。</p>
-<h4 id="3、mixed-GC执行过程"><a href="#3、mixed-GC执行过程" class="headerlink" title="3、mixed GC执行过程"></a>3、mixed GC执行过程</h4><ul>
-<li>initial remark：初始标记过程，整个过程STW（Stop-The-World，在执行垃圾回收算法的时候，Java应用程序的其他所有线程都被挂起，Java中一种全局暂停现象，全局停顿，所有Java代码停止，native代码可以执行，但是不饿能够和JVM交互）标记了从GC Root可达的对象</li>
-<li>concurrent marking：并发标记过程，整个过程gc collector线程与应用线程可以并行执行，标记出GC Root可达对象衍生出来的存活的对象，并收集各个Region的存活对象信息。</li>
-<li>remark：最终标记过程，整个过程STW，标记出哪些在并发标记过程中遗漏的，或者内部引用发生变化的对象。</li>
-<li>clean up：垃圾清除过程，如果发现一个Region中没有存活对象，则把该Regioon加入到空闲列表中。</li>
+<p>1和0可以用一个整形值表示，也可以用某个数据是否存在表示。</p>
+<h2 id="1、数据库的唯一索引"><a href="#1、数据库的唯一索引" class="headerlink" title="1、数据库的唯一索引"></a>1、数据库的唯一索引</h2><p>获取锁时向表中插入一条记录，释放锁时删除这条记录。唯一索引可以保证该记录只被插入一次，那么就可以用这个记录是否存在来判断是否在锁定状态。</p>
+<p>存在以下几个问题：</p>
+<ul>
+<li>锁没有失效时间，解锁失败的话，其他进程无法再获得该锁。</li>
+<li>只能是非阻塞锁，插入失败直接就报错，无法重试。</li>
+<li>不可重入，已经获得锁的进程也必须重新获取锁。</li>
 </ul>
-<h4 id="4、full-GC"><a href="#4、full-GC" class="headerlink" title="4、full GC"></a>4、full GC</h4><p>如果对象内存分配速度过快，mixed GC来不及回收，导致老年代old Region被填满，就会触发一次full gc。</p>
-<p>G1的full GC算法就是单线程的执行serial old gc，会导致异常长时间的暂停时间，需要进行不断的调优，尽可能的避免full GC。</p>
+<h2 id="2、Redis的SETNX指令"><a href="#2、Redis的SETNX指令" class="headerlink" title="2、Redis的SETNX指令"></a>2、Redis的SETNX指令</h2><p>使用SETNX（set if not exist）指令插入一个键值对，如果key已经存在，那么会返回false，否则插入成功并返回true。</p>
+<p>SETNX指令和数据库的唯一索引类似，保证了只存在一个key的键值对，那么可以用一个key的键值对是否存在来判断是否存于锁定状态。</p>
+<p>EXPIRE指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引方式中释放锁失败的问题。也就是数据库的唯一索引解决方案的升级而已，只是可以设置过期时间。</p>
+<h2 id="3、Redis的RedLock算法"><a href="#3、Redis的RedLock算法" class="headerlink" title="3、Redis的RedLock算法"></a>3、Redis的RedLock算法</h2><p>使用了多个Redis实例来实现分布式锁，这是为了保证在发生单点故障时仍然可用。多个Redis实例实现，也就是即使一台Redis挂了，还可以有其他的服务可用。</p>
+<ul>
+<li>尝试从N个互相独立的Redis实例中获取锁。</li>
+<li>计算获取锁消耗的时间，只有当这个时间小于锁的过期时间，并且从大多数(N/2+1)，半数以上的实例上获取锁，那么就认为获取锁成功了。</li>
+<li>如果锁获取失败，就到每个实例上释放锁。</li>
+</ul>
+<h2 id="4、Zookeeper的有序节点"><a href="#4、Zookeeper的有序节点" class="headerlink" title="4、Zookeeper的有序节点"></a>4、Zookeeper的有序节点</h2><h3 id="1、Zookeeper抽象模型"><a href="#1、Zookeeper抽象模型" class="headerlink" title="1、Zookeeper抽象模型"></a>1、Zookeeper抽象模型</h3><p>Zookeeper提供了一种树型结构的命名空间，/app1/p_1节点的父节点为app1。有点类似linux系统文件系统，文件目录树</p>
+<h3 id="2、节点类型"><a href="#2、节点类型" class="headerlink" title="2、节点类型"></a>2、节点类型</h3><ul>
+<li>永久节点：不会因为会话结束或者超时而消失。</li>
+<li>临时节点：如果会话结束或者超时就会消失。</li>
+<li>有序节点：会在节点名的后面加上一个数字后缀，并且是有序的。例如生成的有序节点为/lock/node-0000000000，它的下一个有序节点就是/lock/node-0000000001，以此类推。</li>
+</ul>
+<h3 id="3、监听器"><a href="#3、监听器" class="headerlink" title="3、监听器"></a>3、监听器</h3><p>为一个节点注册监听器，在节点状态发生改变的时候，会给客户端发送消息 。</p>
+<h3 id="4、分布式锁实现"><a href="#4、分布式锁实现" class="headerlink" title="4、分布式锁实现"></a>4、分布式锁实现</h3><ul>
+<li>创建一个目录/lock。</li>
+<li>当一个客户端需要获取锁时，在/lock下创建临时的且有序的子节点。</li>
+<li>客户端获取/lock下的子节点列表，判断自己创建的子节点是否为当前子节点列表中序号最小的子节点，如果是则认为获得锁。否则监听自己的前一个子节点，获得子节点的变更通知后重复此步骤直到获取锁为止。</li>
+<li>执行业务代码，完成后，删除对应的子节点。</li>
+</ul>
+<h3 id="5、会话超时"><a href="#5、会话超时" class="headerlink" title="5、会话超时"></a>5、会话超时</h3><p>如果一个已经获的锁的会话超时了，因为创建的是临时节点，所以该会话对应的临时节点会被删除，其他会话就可以获取锁。可以看到zookeeper分布式锁不会出现数据库的唯一索引的分布式锁释放锁失败的问题。</p>
+<h3 id="6、羊群效应"><a href="#6、羊群效应" class="headerlink" title="6、羊群效应"></a>6、羊群效应</h3><p>一个节点未获得锁，只需要监听自己前一个子节点，这是因为如果监听所有的子节点，那么任意一个子节点状态改变，其他所有子节点都会收到通知(羊群效应)，而我们秩序网它的后一个子节点收到通知。</p>
 
     
 
@@ -545,7 +532,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/">展开全文 >></a>
+      <a class="article-more-a" href="2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">展开全文 >></a>
     </p>
     
 
@@ -830,6 +817,154 @@
 
 
   
+    <article id="post-一、G1垃圾回收器介绍" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" target="_blank">G1垃圾回收</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" class="archive-article-date">
+        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h3 id="一、G1垃圾回收器介绍"><a href="#一、G1垃圾回收器介绍" class="headerlink" title="一、G1垃圾回收器介绍"></a>一、G1垃圾回收器介绍</h3><p>为了解决CMS算法产生空间碎片和其他一系列的问题缺陷，HotSpot虚拟机团队提出了另外一种垃圾回收策略，G1（Garbage First）算法。通过参数-XX:+UserG1GC来启用。这个算法在JDK7被正式推出。</p>
+<p>G1垃圾回收算法主要应用在多CPU大内存的服务中，在满足高吞吐量的同事，尽可能的满足垃圾回收时的暂停时间，G1的设计应用场景：</p>
+<ul>
+<li>垃圾收集线程和应用线程并发执行，和CMS一样。</li>
+<li>空闲内存亚索时避免冗长的暂停时间</li>
+<li>应用需要更多可预测的GC暂停时间</li>
+<li>不希望牺牲太多的吞吐性能</li>
+<li>不需要很大的java堆</li>
+</ul>
+<h3 id="1、堆内存结构："><a href="#1、堆内存结构：" class="headerlink" title="1、堆内存结构："></a>1、堆内存结构：</h3><h4 id="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："><a href="#1、以往的垃圾回收算法，比如CMS，堆内存结构如下：" class="headerlink" title="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："></a>1、以往的垃圾回收算法，比如CMS，堆内存结构如下：</h4><p>年轻代/新生代：eden space+2个survivor</p>
+<p>老年代：old space</p>
+<p>持久代：1.8之前的perm space</p>
+<p>元空间：1.8之后的metaspace(元空间)</p>
+<p>上面这些space必须是地址连续的空间。</p>
+<h4 id="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"><a href="#2、在G1算法中，采用了另一种完全不同的方式组织堆内存" class="headerlink" title="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"></a>2、在G1算法中，采用了另一种完全不同的方式组织堆内存</h4><p>堆内存被划分成多个大小相等的内存块Region，每个Region是逻辑连续的一段内存。</p>
+<p>每个Region被标记了E,S,O,H，说明每个Region在运行时都充当了一种角色，其中H是以往算法中没有的，它代表Humongous，这表示这些Region存储的是巨型对象。当新建对象大小超过Region大小一半的时候，直接在新的一个或者多个连续Region中分配，并标记为H。</p>
+<h4 id="3、Region"><a href="#3、Region" class="headerlink" title="3、Region"></a>3、Region</h4><p>堆内存中一个Region的大小可以通过-XX:G1HeapRegionSize参数指定，大小区间只能是1M,2M,4M,8M,16M,32M，总之是2的幂次方，如果G1HeapRegionSize为默认值，则在堆初始化时计算Region的实际大小。</p>
+<p>默认把堆内存按照2048份均分，最后得到一个合理的大小。</p>
+<h3 id="2、GC模式"><a href="#2、GC模式" class="headerlink" title="2、GC模式"></a>2、GC模式</h3><p>G1中提供了3种模式垃圾回收模式，young GC,mixed GC和full GC。在不同的条件下被触发</p>
+<h4 id="1、young-GC"><a href="#1、young-GC" class="headerlink" title="1、young GC"></a>1、young GC</h4><p>发生在年轻代的GC算法，一般对象（除了巨型对象），都是在eden region中分配内存，当所有的eden region被消耗殆尽无法再申请内存的时候，就会触发一次young GC，这种触发机制和之前的young GC差不多，执行玩一次young GC，活跃对象会被拷贝到survivor region或者晋升到old region中，空闲的region会被放入空闲列表中，等待下次被使用。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-XX:MaxGCPauseMillis</td>
+<td>设置G1收集过程目标时间，默认200ms</td>
+</tr>
+<tr>
+<td>-XX:G1NewSizePercent</td>
+<td>新生代最小值，默认值5%</td>
+</tr>
+<tr>
+<td>-XX:G1MaxNewSizePercent</td>
+<td>新生代最大值，默认值60%</td>
+</tr>
+</tbody></table>
+<h4 id="2、mixed-GC"><a href="#2、mixed-GC" class="headerlink" title="2、mixed GC"></a>2、mixed GC</h4><p>当越来越多的对象晋升到老年代old region时，为了避免堆内存被消耗殆尽，虚拟机会触发一个混合的垃圾收集器，也就是mixed GC；这个算法不是一个old GC，除了回收整个young region，还会回收一部分old region。注：只是一部分老年代，而不是全部老年代，可以选择哪些old region进行收集，从而可以对垃圾回收的耗时时间进行控制。</p>
+<p>mixed GC什么时候被触发？</p>
+<p>有点类似cms的触发机制 ，如果添加了以下参数：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">-XX:CMSInitiatingOccupancyFraction=80</span></span><br><span class="line"><span class="deletion">-XX:+UserCMSInitiatingOccupancyOnly</span></span><br></pre></td></tr></table></figure>
+
+<p>当CMS的老年代的使用率达到80%时，就会触发一次cms gc。</p>
+<p>相对的，mixed gc中也有一个阈值参数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:InitiatingHeapOccupancyPercent</span><br></pre></td></tr></table></figure>
+
+<p>当老年代大小占整个堆大小百分比达到该阈值时，会触发一次mixed gc。</p>
+<h4 id="3、mixed-GC执行过程"><a href="#3、mixed-GC执行过程" class="headerlink" title="3、mixed GC执行过程"></a>3、mixed GC执行过程</h4><ul>
+<li>initial remark：初始标记过程，整个过程STW（Stop-The-World，在执行垃圾回收算法的时候，Java应用程序的其他所有线程都被挂起，Java中一种全局暂停现象，全局停顿，所有Java代码停止，native代码可以执行，但是不饿能够和JVM交互）标记了从GC Root可达的对象</li>
+<li>concurrent marking：并发标记过程，整个过程gc collector线程与应用线程可以并行执行，标记出GC Root可达对象衍生出来的存活的对象，并收集各个Region的存活对象信息。</li>
+<li>remark：最终标记过程，整个过程STW，标记出哪些在并发标记过程中遗漏的，或者内部引用发生变化的对象。</li>
+<li>clean up：垃圾清除过程，如果发现一个Region中没有存活对象，则把该Regioon加入到空闲列表中。</li>
+</ul>
+<h4 id="4、full-GC"><a href="#4、full-GC" class="headerlink" title="4、full GC"></a>4、full GC</h4><p>如果对象内存分配速度过快，mixed GC来不及回收，导致老年代old Region被填满，就会触发一次full gc。</p>
+<p>G1的full GC算法就是单线程的执行serial old gc，会导致异常长时间的暂停时间，需要进行不断的调优，尽可能的避免full GC。</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-一、大数据离线部分总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -951,7 +1086,7 @@
 
 
   
-    <article id="post-docker使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-一、UDF的使用手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -959,7 +1094,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="2019/11/01/docker%E4%BD%BF%E7%94%A8/" target="_blank">Docker的使用</a>
+	  <a class="article-title" href="2019/11/01/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" target="_blank">UDF自定义函数</a>
   
     </h1>
   
@@ -967,7 +1102,7 @@
 
   
   
-<a href="2019/11/01/docker%E4%BD%BF%E7%94%A8/" class="archive-article-date">
+<a href="2019/11/01/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" class="archive-article-date">
         <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
 </a>
 
@@ -980,25 +1115,18 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、docker的使用"><a href="#一、docker的使用" class="headerlink" title="一、docker的使用"></a>一、docker的使用</h1><h4 id="1、docker添加镜像加速文件"><a href="#1、docker添加镜像加速文件" class="headerlink" title="1、docker添加镜像加速文件"></a>1、docker添加镜像加速文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/docker</span><br><span class="line"><span class="meta">#</span><span class="bash">如果没有daemon.json文件，需要新建一个</span></span><br><span class="line">sudo touch daemon.json</span><br><span class="line">sudo vim daemon.json</span><br><span class="line"><span class="meta">#</span><span class="bash">daemon.json添加以下配置，然后保存</span></span><br><span class="line">&#123;"registry-mirrors":["https://registry.docker-cn.com"]&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash">重启服务</span></span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
-
-<h4 id="2、查看docker的版本"><a href="#2、查看docker的版本" class="headerlink" title="2、查看docker的版本"></a>2、查看docker的版本</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker查找镜像</span></span><br><span class="line">sudo docker search mysql</span><br><span class="line"><span class="meta">#</span><span class="bash">查看本地下载的镜像</span></span><br><span class="line">sudo docker images</span><br><span class="line"><span class="meta">#</span><span class="bash">查看本地正在运行的镜像</span></span><br><span class="line">sudo docker ps -a</span><br></pre></td></tr></table></figure>
-
-<h4 id="3、使用docker拉取镜像"><a href="#3、使用docker拉取镜像" class="headerlink" title="3、使用docker拉取镜像"></a>3、使用docker拉取镜像</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo docker pull redis:5.0.6</span><br><span class="line">sudo docker pull nginx</span><br><span class="line">sudo docker pull mysql:8.0.18</span><br><span class="line"><span class="meta">#</span><span class="bash">删除拉取的镜像</span></span><br><span class="line">sudo docker image rm mysql:8.0.18</span><br></pre></td></tr></table></figure>
-
-<h4 id="4、使用docker安装并运行nginx"><a href="#4、使用docker安装并运行nginx" class="headerlink" title="4、使用docker安装并运行nginx"></a>4、使用docker安装并运行nginx</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sudo docker search nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">pull的时候，后面不追加冒号和版本号，默认是最新的latest版本</span></span><br><span class="line">sudo docker pull nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">运行nginx</span></span><br><span class="line">sudo docker run --name victor-nginx-test -p 8081:80 -d nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">victor-nginx-test是容器名称</span></span><br><span class="line">-d，设置容器在后台一直运行</span><br><span class="line">-p，端口进行映射，将本地的8081端口映射到容器内部的80端口</span><br><span class="line"><span class="meta">#</span><span class="bash">执行玩上面那条命令后，会生成一串字符串45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89，这个表示容器的id，一般作为日志的文件名来查看启动信息等</span></span><br><span class="line">sudo docker logs 45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89</span><br><span class="line"><span class="meta">#</span><span class="bash">停止nginx</span></span><br><span class="line">sudo docker ps</span><br><span class="line"><span class="meta">#</span><span class="bash">复制对应容器的id,然后停止镜像</span></span><br><span class="line">sudo docker stop 45faac1c8dca</span><br><span class="line"><span class="meta">#</span><span class="bash">删除镜像</span></span><br><span class="line">sudo docker rm 45faac1c8dca</span><br></pre></td></tr></table></figure>
-
-<h4 id="5、使用docker部署项目"><a href="#5、使用docker部署项目" class="headerlink" title="5、使用docker部署项目"></a>5、使用docker部署项目</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">首先创建一个文件夹，里面包含3个子文件夹</span></span><br><span class="line">sudo mkdir -p ~/桌面/nginx/www ~/桌面/nginx/logs ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">首先你要直到容器的id，</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">复制docker容器里的nginx默认配置文件信息，到你的本地刚创建的conf文件夹目录下</span></span><br><span class="line">sudo docker cp76d9d74d071e:/etc/nginx/nginx.conf ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">部署项目，到docker里的nginx</span></span><br><span class="line">sudo docker run -p 8082:80 --name victor-nginx-web -v ~/桌面/nginx/www:/usr/share/nginx/html -v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v ~/桌面/nginx/logs:/var/log/nginx -d nginx</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">命令说明</span></span><br><span class="line">-p 8082:80  是把你容器里的nginx的80端口映射到你本地主机的8082端口</span><br><span class="line">--name victor-nginx-web  是把容器重命名我们自己喜欢的名字</span><br><span class="line">-v ~/桌面/nginx/www:/usr/share/nginx/html   是把我们本地创建的项目 的www目录挂在到容器的/usr/share/nginx/html</span><br><span class="line">-v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf 是吧我们创建的nginx.conf挂在到容器的/etc/nginx/nginx.conf</span><br><span class="line">-v ~/桌面/nginx/logs:/var/log/nginx 是把我们自己创建的logs挂在到容器的/var/log/nginx</span><br><span class="line">-d nginx :是设置容器一直后台运行</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">执行完命令后，会生成一串字符串，用这个字符串表示日志id，可以使用</span></span><br><span class="line">sudo docker logs 76d9d74d071e8b2d8499a56691587eef3e2f19d4fddeb5a3e26e5d9338856e10</span><br></pre></td></tr></table></figure>
-
-<h4 id="6、使用docker安装mysql并运行"><a href="#6、使用docker安装mysql并运行" class="headerlink" title="6、使用docker安装mysql并运行"></a>6、使用docker安装mysql并运行</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉去mysql的镜像</span></span><br><span class="line">sudo docker pull mysql:5.7</span><br><span class="line"><span class="meta">#</span><span class="bash">本地创建一个文件夹，用来映射容器的mysql</span></span><br><span class="line">sudo mkdir -p ~/桌面/mydata/mysql/log ~/桌面/mydata/mysql/conf ~/桌面/mydata/mysql/data</span><br><span class="line"><span class="meta">#</span><span class="bash">给创建好的文件夹开权限</span></span><br><span class="line">sudo chmod 777 -R ~/桌面/mydata/</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动mysql</span></span><br><span class="line">sudo docker run -p 3305:3306 --name mysql -v ~/桌面/mydata/mysql/log:/var/log/mysql -v ~/桌面/mydata/mysql/data:/var/lib/mysql -v ~/桌面/mydata/mysql/conf:/etc/mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7</span><br><span class="line"><span class="meta">#</span><span class="bash">查看镜像，如果存在，或者端口被占用，则换为3305映射容器的端口</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">先删除被占用名字的容器镜像id，然后重新执行启动命令</span></span><br><span class="line">sudo docker rm3bf96e1f8a95</span><br><span class="line"><span class="meta">#</span><span class="bash">进入运行mysql的docker容器</span></span><br><span class="line">sudo docker exec -it mysql /bin/bash</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#######以下是mysql的命令操作</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">使用mysql 命令打开客户端</span></span><br><span class="line">mysql -uroot -proot --default-character-set=utf8</span><br><span class="line"><span class="meta">#</span><span class="bash">查看数据库</span></span><br><span class="line">show databases;</span><br><span class="line">create database test character set utf8;</span><br><span class="line">use test;</span><br><span class="line">create table ();</span><br><span class="line"><span class="meta">#</span><span class="bash">退出mysql命令操作</span></span><br><span class="line">\q</span><br><span class="line"><span class="meta">#</span><span class="bash">退出mysql运行的docker容器</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
-
-<h4 id="7、使用docker安装并运行redis"><a href="#7、使用docker安装并运行redis" class="headerlink" title="7、使用docker安装并运行redis"></a>7、使用docker安装并运行redis</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">docker拉取redis</span></span><br><span class="line">sudo docker pull redis:3.2</span><br><span class="line"><span class="meta">#</span><span class="bash">本地创建一个redis文件夹存放数据</span></span><br><span class="line">sudo mkdir -p ~/桌面/mydata/redis/data</span><br><span class="line"><span class="meta">#</span><span class="bash">更改文件件执行权限</span></span><br><span class="line">sudo chmod 777 -R ~/桌面/mydata/redis</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动redis</span></span><br><span class="line">sudo docker run -p 6379:6379 --name redis -v ~/桌面/mydata/redis/data:/data -d redis:3.2 redis-server --appendonly yes</span><br><span class="line"><span class="meta">#</span><span class="bash">进入redis容器使用redis-cli命令进行连接</span></span><br><span class="line">sudo docker exec -it redis redis-cli</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">####以下为redis的命令</span></span></span><br><span class="line">ping</span><br><span class="line">set a 100</span><br><span class="line">get a</span><br><span class="line"><span class="meta">#</span><span class="bash">退出redis</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
-
-<h4 id="8、使用docker安装并运行rabbitmq"><a href="#8、使用docker安装并运行rabbitmq" class="headerlink" title="8、使用docker安装并运行rabbitmq"></a>8、使用docker安装并运行rabbitmq</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉取docker镜像</span></span><br><span class="line">sudo docker pull rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动rabbitmq</span></span><br><span class="line">sudo docker run --name rabbitmq --publish 5671:5671 --publish 5672:5672 --publish 4369:4369 --publish 25672:25672 --publish 15672:15672 --publish 15671:15671 -d rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">Ubuntu的防火墙暴露端口15672</span></span><br><span class="line">sudo ufw allow 15672</span><br><span class="line"><span class="meta">#</span><span class="bash">开启防火墙</span></span><br><span class="line">sudo ufw enable</span><br><span class="line"><span class="meta">#</span><span class="bash">重新加载</span></span><br><span class="line">sudo ufw reload</span><br><span class="line"><span class="meta">#</span><span class="bash">查看防火墙状态</span></span><br><span class="line">sudo ufw status</span><br><span class="line"><span class="meta">#</span><span class="bash">进入到rabbitmq的连接</span></span><br><span class="line">sudo docker exec -it rabbitmq /bin/bash</span><br><span class="line"><span class="meta">#</span><span class="bash">然后输入如下命令，开启rabbitmq的管理后台</span></span><br><span class="line">rabbitmq-plugins enable rabbitmq_management</span><br><span class="line"><span class="meta">#</span><span class="bash">浏览器输入rabbitmq的管理后台页面</span></span><br><span class="line">http://localhost:15672</span><br><span class="line">用户名密码：guest guest</span><br><span class="line"><span class="meta">#</span><span class="bash">退出</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
-
-
-
-
+    <h1 id="一、UDF的使用手册"><a href="#一、UDF的使用手册" class="headerlink" title="一、UDF的使用手册"></a>一、UDF的使用手册</h1><h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><p>Hive中，提供了丰富的内置函数，比如<font color="red">trim(),cast(),max(),count(),coalesce()</font>等之外，    还允许用户用java开发自定义的UDF函数。</p>
+<h4 id="1-1、开发自定义UDF函数的2种方式："><a href="#1-1、开发自定义UDF函数的2种方式：" class="headerlink" title="1.1、开发自定义UDF函数的2种方式："></a>1.1、开发自定义UDF函数的2种方式：</h4><ul>
+<li>继承org.apache.hadoop.hive.ql.exec.UDF;</li>
+<li>继承org.apache.hadoop.hive.ql.udf.generic.GenericUDF; </li>
+</ul>
+<h4 id="1-2、总结："><a href="#1-2、总结：" class="headerlink" title="1.2、总结："></a>1.2、总结：</h4><ul>
+<li>针对简单数据类型：<font color="red">String,Integer等，可以使用UDF</font>。</li>
+<li>针对复杂数据类型：<font color="red">Array,Map,Struct等，可以使用GenericUDF</font></li>
+<li>GenericUDF还可以在函数开始之前和结束之后做一些初始化和关闭的处理操作。</li>
+</ul>
+<h3 id="2、UDF"><a href="#2、UDF" class="headerlink" title="2、UDF"></a>2、UDF</h3><p>使用UDF实现对String类型的字符串取HashMD5</p>
+<h3 id="3、GenericUDF"><a href="#3、GenericUDF" class="headerlink" title="3、GenericUDF"></a>3、GenericUDF</h3>
     
 
     
@@ -1014,15 +1142,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Docker</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
         		</li>
       		
 		</ul>
@@ -1032,250 +1152,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/01/docker%E4%BD%BF%E7%94%A8/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-一、Redis简介" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/" target="_blank">Redis的使用</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><p>Redis是速度非常快的非关系型(NoSQL)内存键值数据库。可以存储键和5种不同类型的值之间的映射。</p>
-<p>key的类型只能为字符串，value支持6中类型：String,Hash,List,Set,zset,HyperLogLog</p>
-<p>Redis支持很多特性，例如将内存中的数据持久化到硬盘中，使用复制来扩展读性能，使用分片来扩展写性能。</p>
-<h1 id="二、数据类型"><a href="#二、数据类型" class="headerlink" title="二、数据类型"></a>二、数据类型</h1><table>
-<thead>
-<tr>
-<th align="center">数据类型</th>
-<th align="center">可以存储的值</th>
-<th align="center">操作</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">String</td>
-<td align="center">字符串，整数和浮点数</td>
-<td align="center">对整个字符串或者字符串的其中一部分执行操作，对整数和浮点数执行自增或者自减操作。</td>
-</tr>
-<tr>
-<td align="center">List</td>
-<td align="center">列表</td>
-<td align="center">从两端压入或者弹出元素，对单个或者多个元素进行修剪，只保留一个范围内的元素。</td>
-</tr>
-<tr>
-<td align="center">Set</td>
-<td align="center">无序集合</td>
-<td align="center">添加，获取，移除单个元素，检查一个元素是否存在于集合中，计算交集，并集，差集，从集合里面随机获取元素，去重。</td>
-</tr>
-<tr>
-<td align="center">Hash</td>
-<td align="center">包含键值对的无序散列表</td>
-<td align="center">添加，获取，移除单个键值对，获取素有键值对，检查某个键是否存在。</td>
-</tr>
-<tr>
-<td align="center">Zset</td>
-<td align="center">有序集合</td>
-<td align="center">添加，获取，删除元素，根据分值范围或者成员来获取元素计算一个键的排名</td>
-</tr>
-</tbody></table>
-<p>有点类似公司用的Wtable，每次用col key去获取数据。获取的数据里，有数据的，有字符串的，有对象的。</p>
-<h1 id="三、数据结构"><a href="#三、数据结构" class="headerlink" title="三、数据结构"></a>三、数据结构</h1><h2 id="1、字典"><a href="#1、字典" class="headerlink" title="1、字典"></a>1、字典</h2><p>dictht是一个散列表结构，使用拉链法解决哈希冲突。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span>&#123;</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="built_in">size</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> sizemask;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> used;</span><br><span class="line">&#125;dictht;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span>&#123;</span></span><br><span class="line">    <span class="keyword">void</span> *key;</span><br><span class="line">    <span class="keyword">union</span>&#123;</span><br><span class="line">        <span class="keyword">void</span> *val;</span><br><span class="line">        <span class="keyword">uint64_t</span> u64;</span><br><span class="line">        <span class="keyword">double</span> d;</span><br><span class="line">    &#125;v;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125;dictEntry;</span><br></pre></td></tr></table></figure>
-
-<p>Redis的字典dict中包含两个哈希表dictht，只是为了方便进行rehash操作。在扩容的时候，将其中一个dictht上的键值对rehash到另一个dictht上面，完成之后释放空间并交换两个dictht的角色。</p>
-<p>rehash操作不是一次性完成，而是采用渐进方式，这是为了避免一次性执行过多的rehash操作给服务器带来过大的负担。</p>
-<p>渐进式rehash通过记录dict的rehashidx完成，他从0开始，然后每执行一次rehash都会递增。</p>
-<h2 id="2、跳跃表"><a href="#2、跳跃表" class="headerlink" title="2、跳跃表"></a>2、跳跃表</h2><p>是有序集合的底层实现之一。</p>
-<p>跳跃表是基于多指针有序链表实现的，可以看成多个有序链表。</p>
-<p>在查找时候，从上层指针开始查找，找到对应的区间之后再到下一层去查找。</p>
-<p>与红黑树等平衡树相比，跳跃表具有以下优点：</p>
-<ul>
-<li>插入速度非常快，因为不需要进行旋转等操作来维护平衡性。</li>
-<li>更容易实现</li>
-<li>支持无锁操作。</li>
-</ul>
-<h1 id="四、Redis使用场景"><a href="#四、Redis使用场景" class="headerlink" title="四、Redis使用场景"></a>四、Redis使用场景</h1><h2 id="1、计数器"><a href="#1、计数器" class="headerlink" title="1、计数器"></a>1、计数器</h2><p>可以对String进行自增自减运算，从而实现计数器功能。</p>
-<p>Redis这种内存型数据库的读写性能非常高，很适合存储频繁读写的及数量。</p>
-<h2 id="2、缓存"><a href="#2、缓存" class="headerlink" title="2、缓存"></a>2、缓存</h2><p>将热点数据存放到内存中，设置内存的最大使用量以及淘汰策略来保证缓存的命中率。</p>
-<h2 id="3、查找表"><a href="#3、查找表" class="headerlink" title="3、查找表"></a>3、查找表</h2><p>例如DNS的记录就很适合使用Redis进行存储。</p>
-<p>查找表和缓存类似，也是利用Redis快速的查找特性。但是查找表的内容不能失效，而缓存的内容可以失效，因为缓存不作为可靠地数据来源。</p>
-<h2 id="4、消息队列"><a href="#4、消息队列" class="headerlink" title="4、消息队列"></a>4、消息队列</h2><p>List是一个双向链表，可以通过lpush和rpop写入和读取消息</p>
-<p>不过最好使用kafka，RabbitMQ等消息中间件。</p>
-<h2 id="5、Session缓存"><a href="#5、Session缓存" class="headerlink" title="5、Session缓存"></a>5、Session缓存</h2><p>可以使用Redis来同一个存储多台应用服务器的Session信息。</p>
-<p>当应用服务器不在存储用户的会话信息，也就不再具有状态。一个用户可以请求任意一个应用服务器，从而更容易实现高可用性以及可伸缩性。</p>
-<h2 id="6、分布式锁实现"><a href="#6、分布式锁实现" class="headerlink" title="6、分布式锁实现"></a>6、分布式锁实现</h2><p>在分布式场景下，无法使用单机环境下的锁来对多个节点上的进程进行同步。</p>
-<p>可以使用Redis子代的SETNX命令实现分布式锁，除此之外，还可以使用官方提供的RedLock分布式锁实现。</p>
-<h2 id="7、其他"><a href="#7、其他" class="headerlink" title="7、其他"></a>7、其他</h2><p>Set可以实现交集，并集等操作，从而实现共同好友等功能 。</p>
-<p>Zset可以shixi9an有序性操作，从而实现排行榜等功能。</p>
-<h1 id="五、Redis与Memcached"><a href="#五、Redis与Memcached" class="headerlink" title="五、Redis与Memcached"></a>五、Redis与Memcached</h1><p>两个都是非关系型内存键值数据库。主要区别如下：</p>
-<h2 id="1、数据类型"><a href="#1、数据类型" class="headerlink" title="1、数据类型"></a>1、数据类型</h2><p>Memcached只支持string类型，而Redis支持5种不同的数据类型，可更灵活的解决问题。</p>
-<h2 id="2、数据持久化"><a href="#2、数据持久化" class="headerlink" title="2、数据持久化"></a>2、数据持久化</h2><p>Redis支持3种持久化策略：RDB快照和AOF日志，RDB和AOF混合型，而Memcached不支持持久化。</p>
-<h2 id="3、分布式"><a href="#3、分布式" class="headerlink" title="3、分布式"></a>3、分布式</h2><p>Memcached不支持分布式，只能通过咋客户端使用一致性哈希来实现分布式存储，这种方式在存储和查询时都需要现在客户端计算一次数据所在的节点。</p>
-<p>Redis Cluster实现了分布式的支持。</p>
-<h2 id="4、内存管理机制"><a href="#4、内存管理机制" class="headerlink" title="4、内存管理机制"></a>4、内存管理机制</h2><ul>
-<li>在Redis中，并不是所有数据都是一直存在内存里，可以将一些很久没用的value交换到磁盘，而Memcached的数据则会一直在内存中。</li>
-<li>Memcached将内存分割成特定长度的块来存储数据，以完全解决内存碎片的问题，但是这种方式会使得内存的利用率不高。比如块代销为128b，只存储100b的数据，那么剩下的28b就浪费掉了。</li>
-</ul>
-<h1 id="六、Redis的key过期时间"><a href="#六、Redis的key过期时间" class="headerlink" title="六、Redis的key过期时间"></a>六、Redis的key过期时间</h1><p>Redis可以为每个key设置过期时间，当key过期时，会自动删除该key。</p>
-<p>对于散列表这种容器，只能为整个key设置过期时间(整个散列表)，而不能为key里面的单个元素设置过期时间。</p>
-<h1 id="七、数据淘汰策略"><a href="#七、数据淘汰策略" class="headerlink" title="七、数据淘汰策略"></a>七、数据淘汰策略</h1><p>Redis可以设置内存最大使用量，当内存使用量超出时，会施行数据淘汰策略。</p>
-<p>Redis具有6种淘汰策略：</p>
-<table>
-<thead>
-<tr>
-<th align="center">策略</th>
-<th align="center">描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">volatile-LRU</td>
-<td align="center">当内存使用量超出时，此种策略，从已经设置过期时间的数据集中选出最近最少使用的数据淘汰</td>
-</tr>
-<tr>
-<td align="center">volatile-TTL</td>
-<td align="center">当内存使用量超出时，此种策略，从已经设置过期时间的数据集中选出将要过期的数据淘汰</td>
-</tr>
-<tr>
-<td align="center">volatile-Random</td>
-<td align="center">当内存使用量超出时，此种策略，从已经设置过期时间的数据中任意选择数据淘汰</td>
-</tr>
-<tr>
-<td align="center">allkeys-LRU</td>
-<td align="center">当内存使用量超出时，此种策略，从所有数据中挑选最近最少使用的数据淘汰。</td>
-</tr>
-<tr>
-<td align="center">allkeys-Random</td>
-<td align="center">当内存使用量超出时，此种策略，从所有数据中选任意数据进行淘汰</td>
-</tr>
-<tr>
-<td align="center">noeviction</td>
-<td align="center">禁止驱逐数据</td>
-</tr>
-</tbody></table>
-<p>作为内存数据库，处于对性能和内存消耗的考虑，Redis的淘汰算法实际实现上并非针对素有key，而是抽样一小部分并且从中选出被淘汰的key。</p>
-<p>使用Redis缓存数据时，为了提高缓存命中率，需要保证缓存数据都是热点数据。可以将内存最大使用量设置为热点数据占用的内存量，然后启用allkeys-LRU淘汰策略，将最近最少使用的数据淘汰。</p>
-<p>Redis4.0引入了volatile-LFU,allkeys-LFU淘汰策略，LFU策略通过统计访问频率，将访问频率最少的键值对淘汰。</p>
-<h1 id="八、持久化"><a href="#八、持久化" class="headerlink" title="八、持久化"></a>八、持久化</h1><p>Redis是内存型数据库，为了保证数据在断电后不会丢失，需要将内存中的数据持久化到硬盘上。</p>
-<h2 id="1、RDB持久化"><a href="#1、RDB持久化" class="headerlink" title="1、RDB持久化"></a>1、RDB持久化</h2><ul>
-<li>将某个时间点的所有数据都存到硬盘上</li>
-<li>可以将快照复制到其他服务器从而创建具有相同数据的服务器副本。</li>
-<li>如果系统发生故障，将会丢失最后一次创建快照之后的数据。</li>
-<li>如果数据量很大，保存快照的时间会很长。</li>
-</ul>
-<h2 id="2、AOF持久化"><a href="#2、AOF持久化" class="headerlink" title="2、AOF持久化"></a>2、AOF持久化</h2><p>将写命令添加到AOF文件(Append Only File)的末尾。</p>
-<p>使用AOF持久化需要设置同步选项，从而确保写命令同步到磁盘文件上的时机。这是因为对文件进行写入并不会马上将内容同步到磁盘上，而是先存储到缓冲区，然后由操作系统决定什么时候同步到磁盘。有以下同步选项：</p>
-<table>
-<thead>
-<tr>
-<th align="center">选项</th>
-<th align="center">同步频率</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">always</td>
-<td align="center">每个写命令都同步</td>
-</tr>
-<tr>
-<td align="center">everysec</td>
-<td align="center">每秒同步一次</td>
-</tr>
-<tr>
-<td align="center">no</td>
-<td align="center">让操作系统决定何时同步</td>
-</tr>
-</tbody></table>
-<ul>
-<li>always选项会严重降低服务器的性能。</li>
-<li>everysec选项比较合适，可以保证系统崩溃时只会丢失一秒左右的数据，并且Redis每秒执行一次同步对服务器性能几乎没有任何影响。</li>
-<li>no选项并不能给服务器性能带来多大的提升，而且也会增加系统崩溃时数据丢失的数量。</li>
-</ul>
-<p>随着服务器写请求的增多，AOF文件也会越来越大。Redis提供了一种将AOF重写特性，能够去除AOF文件中的冗余写命令。</p>
-<h1 id="九、事务"><a href="#九、事务" class="headerlink" title="九、事务"></a>九、事务</h1><p>一个事务包含了多个命令，服务器在执行事务期间，不会改去执行其他客户端的命令请求。也就是事务的ACID。</p>
-<p>事务中的多个命令被一次性发给服务器，而不是一条一条的发送，这种方式叫流水线，它可以减少客户端和服务器之间的网络通信次数从而提升性能。</p>
-<p>Redis最简单的事务实现方式是使用MULTI和EXEC命令来将事务操作包围起来。</p>
-<h1 id="十、事件"><a href="#十、事件" class="headerlink" title="十、事件"></a>十、事件</h1><p>Redis服务器是一个事件驱动程序。</p>
-<h2 id="1、文件事件"><a href="#1、文件事件" class="headerlink" title="1、文件事件"></a>1、文件事件</h2>
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/">展开全文 >></a>
+      <a class="article-more-a" href="2019/11/01/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/">展开全文 >></a>
     </p>
     
 
@@ -2545,6 +2422,249 @@
 
 
   
+    <article id="post-一、Redis简介" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/" target="_blank">Redis的使用</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/" class="archive-article-date">
+        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><p>Redis是速度非常快的非关系型(NoSQL)内存键值数据库。可以存储键和5种不同类型的值之间的映射。</p>
+<p>key的类型只能为字符串，value支持6中类型：String,Hash,List,Set,zset,HyperLogLog</p>
+<p>Redis支持很多特性，例如将内存中的数据持久化到硬盘中，使用复制来扩展读性能，使用分片来扩展写性能。</p>
+<h1 id="二、数据类型"><a href="#二、数据类型" class="headerlink" title="二、数据类型"></a>二、数据类型</h1><table>
+<thead>
+<tr>
+<th align="center">数据类型</th>
+<th align="center">可以存储的值</th>
+<th align="center">操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">String</td>
+<td align="center">字符串，整数和浮点数</td>
+<td align="center">对整个字符串或者字符串的其中一部分执行操作，对整数和浮点数执行自增或者自减操作。</td>
+</tr>
+<tr>
+<td align="center">List</td>
+<td align="center">列表</td>
+<td align="center">从两端压入或者弹出元素，对单个或者多个元素进行修剪，只保留一个范围内的元素。</td>
+</tr>
+<tr>
+<td align="center">Set</td>
+<td align="center">无序集合</td>
+<td align="center">添加，获取，移除单个元素，检查一个元素是否存在于集合中，计算交集，并集，差集，从集合里面随机获取元素，去重。</td>
+</tr>
+<tr>
+<td align="center">Hash</td>
+<td align="center">包含键值对的无序散列表</td>
+<td align="center">添加，获取，移除单个键值对，获取素有键值对，检查某个键是否存在。</td>
+</tr>
+<tr>
+<td align="center">Zset</td>
+<td align="center">有序集合</td>
+<td align="center">添加，获取，删除元素，根据分值范围或者成员来获取元素计算一个键的排名</td>
+</tr>
+</tbody></table>
+<p>有点类似公司用的Wtable，每次用col key去获取数据。获取的数据里，有数据的，有字符串的，有对象的。</p>
+<h1 id="三、数据结构"><a href="#三、数据结构" class="headerlink" title="三、数据结构"></a>三、数据结构</h1><h2 id="1、字典"><a href="#1、字典" class="headerlink" title="1、字典"></a>1、字典</h2><p>dictht是一个散列表结构，使用拉链法解决哈希冲突。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span>&#123;</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="built_in">size</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> sizemask;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> used;</span><br><span class="line">&#125;dictht;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span>&#123;</span></span><br><span class="line">    <span class="keyword">void</span> *key;</span><br><span class="line">    <span class="keyword">union</span>&#123;</span><br><span class="line">        <span class="keyword">void</span> *val;</span><br><span class="line">        <span class="keyword">uint64_t</span> u64;</span><br><span class="line">        <span class="keyword">double</span> d;</span><br><span class="line">    &#125;v;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125;dictEntry;</span><br></pre></td></tr></table></figure>
+
+<p>Redis的字典dict中包含两个哈希表dictht，只是为了方便进行rehash操作。在扩容的时候，将其中一个dictht上的键值对rehash到另一个dictht上面，完成之后释放空间并交换两个dictht的角色。</p>
+<p>rehash操作不是一次性完成，而是采用渐进方式，这是为了避免一次性执行过多的rehash操作给服务器带来过大的负担。</p>
+<p>渐进式rehash通过记录dict的rehashidx完成，他从0开始，然后每执行一次rehash都会递增。</p>
+<h2 id="2、跳跃表"><a href="#2、跳跃表" class="headerlink" title="2、跳跃表"></a>2、跳跃表</h2><p>是有序集合的底层实现之一。</p>
+<p>跳跃表是基于多指针有序链表实现的，可以看成多个有序链表。</p>
+<p>在查找时候，从上层指针开始查找，找到对应的区间之后再到下一层去查找。</p>
+<p>与红黑树等平衡树相比，跳跃表具有以下优点：</p>
+<ul>
+<li>插入速度非常快，因为不需要进行旋转等操作来维护平衡性。</li>
+<li>更容易实现</li>
+<li>支持无锁操作。</li>
+</ul>
+<h1 id="四、Redis使用场景"><a href="#四、Redis使用场景" class="headerlink" title="四、Redis使用场景"></a>四、Redis使用场景</h1><h2 id="1、计数器"><a href="#1、计数器" class="headerlink" title="1、计数器"></a>1、计数器</h2><p>可以对String进行自增自减运算，从而实现计数器功能。</p>
+<p>Redis这种内存型数据库的读写性能非常高，很适合存储频繁读写的及数量。</p>
+<h2 id="2、缓存"><a href="#2、缓存" class="headerlink" title="2、缓存"></a>2、缓存</h2><p>将热点数据存放到内存中，设置内存的最大使用量以及淘汰策略来保证缓存的命中率。</p>
+<h2 id="3、查找表"><a href="#3、查找表" class="headerlink" title="3、查找表"></a>3、查找表</h2><p>例如DNS的记录就很适合使用Redis进行存储。</p>
+<p>查找表和缓存类似，也是利用Redis快速的查找特性。但是查找表的内容不能失效，而缓存的内容可以失效，因为缓存不作为可靠地数据来源。</p>
+<h2 id="4、消息队列"><a href="#4、消息队列" class="headerlink" title="4、消息队列"></a>4、消息队列</h2><p>List是一个双向链表，可以通过lpush和rpop写入和读取消息</p>
+<p>不过最好使用kafka，RabbitMQ等消息中间件。</p>
+<h2 id="5、Session缓存"><a href="#5、Session缓存" class="headerlink" title="5、Session缓存"></a>5、Session缓存</h2><p>可以使用Redis来同一个存储多台应用服务器的Session信息。</p>
+<p>当应用服务器不在存储用户的会话信息，也就不再具有状态。一个用户可以请求任意一个应用服务器，从而更容易实现高可用性以及可伸缩性。</p>
+<h2 id="6、分布式锁实现"><a href="#6、分布式锁实现" class="headerlink" title="6、分布式锁实现"></a>6、分布式锁实现</h2><p>在分布式场景下，无法使用单机环境下的锁来对多个节点上的进程进行同步。</p>
+<p>可以使用Redis子代的SETNX命令实现分布式锁，除此之外，还可以使用官方提供的RedLock分布式锁实现。</p>
+<h2 id="7、其他"><a href="#7、其他" class="headerlink" title="7、其他"></a>7、其他</h2><p>Set可以实现交集，并集等操作，从而实现共同好友等功能 。</p>
+<p>Zset可以shixi9an有序性操作，从而实现排行榜等功能。</p>
+<h1 id="五、Redis与Memcached"><a href="#五、Redis与Memcached" class="headerlink" title="五、Redis与Memcached"></a>五、Redis与Memcached</h1><p>两个都是非关系型内存键值数据库。主要区别如下：</p>
+<h2 id="1、数据类型"><a href="#1、数据类型" class="headerlink" title="1、数据类型"></a>1、数据类型</h2><p>Memcached只支持string类型，而Redis支持5种不同的数据类型，可更灵活的解决问题。</p>
+<h2 id="2、数据持久化"><a href="#2、数据持久化" class="headerlink" title="2、数据持久化"></a>2、数据持久化</h2><p>Redis支持3种持久化策略：RDB快照和AOF日志，RDB和AOF混合型，而Memcached不支持持久化。</p>
+<h2 id="3、分布式"><a href="#3、分布式" class="headerlink" title="3、分布式"></a>3、分布式</h2><p>Memcached不支持分布式，只能通过咋客户端使用一致性哈希来实现分布式存储，这种方式在存储和查询时都需要现在客户端计算一次数据所在的节点。</p>
+<p>Redis Cluster实现了分布式的支持。</p>
+<h2 id="4、内存管理机制"><a href="#4、内存管理机制" class="headerlink" title="4、内存管理机制"></a>4、内存管理机制</h2><ul>
+<li>在Redis中，并不是所有数据都是一直存在内存里，可以将一些很久没用的value交换到磁盘，而Memcached的数据则会一直在内存中。</li>
+<li>Memcached将内存分割成特定长度的块来存储数据，以完全解决内存碎片的问题，但是这种方式会使得内存的利用率不高。比如块代销为128b，只存储100b的数据，那么剩下的28b就浪费掉了。</li>
+</ul>
+<h1 id="六、Redis的key过期时间"><a href="#六、Redis的key过期时间" class="headerlink" title="六、Redis的key过期时间"></a>六、Redis的key过期时间</h1><p>Redis可以为每个key设置过期时间，当key过期时，会自动删除该key。</p>
+<p>对于散列表这种容器，只能为整个key设置过期时间(整个散列表)，而不能为key里面的单个元素设置过期时间。</p>
+<h1 id="七、数据淘汰策略"><a href="#七、数据淘汰策略" class="headerlink" title="七、数据淘汰策略"></a>七、数据淘汰策略</h1><p>Redis可以设置内存最大使用量，当内存使用量超出时，会施行数据淘汰策略。</p>
+<p>Redis具有6种淘汰策略：</p>
+<table>
+<thead>
+<tr>
+<th align="center">策略</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">volatile-LRU</td>
+<td align="center">当内存使用量超出时，此种策略，从已经设置过期时间的数据集中选出最近最少使用的数据淘汰</td>
+</tr>
+<tr>
+<td align="center">volatile-TTL</td>
+<td align="center">当内存使用量超出时，此种策略，从已经设置过期时间的数据集中选出将要过期的数据淘汰</td>
+</tr>
+<tr>
+<td align="center">volatile-Random</td>
+<td align="center">当内存使用量超出时，此种策略，从已经设置过期时间的数据中任意选择数据淘汰</td>
+</tr>
+<tr>
+<td align="center">allkeys-LRU</td>
+<td align="center">当内存使用量超出时，此种策略，从所有数据中挑选最近最少使用的数据淘汰。</td>
+</tr>
+<tr>
+<td align="center">allkeys-Random</td>
+<td align="center">当内存使用量超出时，此种策略，从所有数据中选任意数据进行淘汰</td>
+</tr>
+<tr>
+<td align="center">noeviction</td>
+<td align="center">禁止驱逐数据</td>
+</tr>
+</tbody></table>
+<p>作为内存数据库，处于对性能和内存消耗的考虑，Redis的淘汰算法实际实现上并非针对素有key，而是抽样一小部分并且从中选出被淘汰的key。</p>
+<p>使用Redis缓存数据时，为了提高缓存命中率，需要保证缓存数据都是热点数据。可以将内存最大使用量设置为热点数据占用的内存量，然后启用allkeys-LRU淘汰策略，将最近最少使用的数据淘汰。</p>
+<p>Redis4.0引入了volatile-LFU,allkeys-LFU淘汰策略，LFU策略通过统计访问频率，将访问频率最少的键值对淘汰。</p>
+<h1 id="八、持久化"><a href="#八、持久化" class="headerlink" title="八、持久化"></a>八、持久化</h1><p>Redis是内存型数据库，为了保证数据在断电后不会丢失，需要将内存中的数据持久化到硬盘上。</p>
+<h2 id="1、RDB持久化"><a href="#1、RDB持久化" class="headerlink" title="1、RDB持久化"></a>1、RDB持久化</h2><ul>
+<li>将某个时间点的所有数据都存到硬盘上</li>
+<li>可以将快照复制到其他服务器从而创建具有相同数据的服务器副本。</li>
+<li>如果系统发生故障，将会丢失最后一次创建快照之后的数据。</li>
+<li>如果数据量很大，保存快照的时间会很长。</li>
+</ul>
+<h2 id="2、AOF持久化"><a href="#2、AOF持久化" class="headerlink" title="2、AOF持久化"></a>2、AOF持久化</h2><p>将写命令添加到AOF文件(Append Only File)的末尾。</p>
+<p>使用AOF持久化需要设置同步选项，从而确保写命令同步到磁盘文件上的时机。这是因为对文件进行写入并不会马上将内容同步到磁盘上，而是先存储到缓冲区，然后由操作系统决定什么时候同步到磁盘。有以下同步选项：</p>
+<table>
+<thead>
+<tr>
+<th align="center">选项</th>
+<th align="center">同步频率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">always</td>
+<td align="center">每个写命令都同步</td>
+</tr>
+<tr>
+<td align="center">everysec</td>
+<td align="center">每秒同步一次</td>
+</tr>
+<tr>
+<td align="center">no</td>
+<td align="center">让操作系统决定何时同步</td>
+</tr>
+</tbody></table>
+<ul>
+<li>always选项会严重降低服务器的性能。</li>
+<li>everysec选项比较合适，可以保证系统崩溃时只会丢失一秒左右的数据，并且Redis每秒执行一次同步对服务器性能几乎没有任何影响。</li>
+<li>no选项并不能给服务器性能带来多大的提升，而且也会增加系统崩溃时数据丢失的数量。</li>
+</ul>
+<p>随着服务器写请求的增多，AOF文件也会越来越大。Redis提供了一种将AOF重写特性，能够去除AOF文件中的冗余写命令。</p>
+<h1 id="九、事务"><a href="#九、事务" class="headerlink" title="九、事务"></a>九、事务</h1><p>一个事务包含了多个命令，服务器在执行事务期间，不会改去执行其他客户端的命令请求。也就是事务的ACID。</p>
+<p>事务中的多个命令被一次性发给服务器，而不是一条一条的发送，这种方式叫流水线，它可以减少客户端和服务器之间的网络通信次数从而提升性能。</p>
+<p>Redis最简单的事务实现方式是使用MULTI和EXEC命令来将事务操作包围起来。</p>
+<h1 id="十、事件"><a href="#十、事件" class="headerlink" title="十、事件"></a>十、事件</h1><p>Redis服务器是一个事件驱动程序。</p>
+<h2 id="1、文件事件"><a href="#1、文件事件" class="headerlink" title="1、文件事件"></a>1、文件事件</h2>
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-一、Java并发编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -2895,107 +3015,6 @@
 
 
   
-    <article id="post-一、UDF的使用手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="2019/11/01/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" target="_blank">UDF自定义函数</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="2019/11/01/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、UDF的使用手册"><a href="#一、UDF的使用手册" class="headerlink" title="一、UDF的使用手册"></a>一、UDF的使用手册</h1><h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><p>Hive中，提供了丰富的内置函数，比如<font color="red">trim(),cast(),max(),count(),coalesce()</font>等之外，    还允许用户用java开发自定义的UDF函数。</p>
-<h4 id="1-1、开发自定义UDF函数的2种方式："><a href="#1-1、开发自定义UDF函数的2种方式：" class="headerlink" title="1.1、开发自定义UDF函数的2种方式："></a>1.1、开发自定义UDF函数的2种方式：</h4><ul>
-<li>继承org.apache.hadoop.hive.ql.exec.UDF;</li>
-<li>继承org.apache.hadoop.hive.ql.udf.generic.GenericUDF; </li>
-</ul>
-<h4 id="1-2、总结："><a href="#1-2、总结：" class="headerlink" title="1.2、总结："></a>1.2、总结：</h4><ul>
-<li>针对简单数据类型：<font color="red">String,Integer等，可以使用UDF</font>。</li>
-<li>针对复杂数据类型：<font color="red">Array,Map,Struct等，可以使用GenericUDF</font></li>
-<li>GenericUDF还可以在函数开始之前和结束之后做一些初始化和关闭的处理操作。</li>
-</ul>
-<h3 id="2、UDF"><a href="#2、UDF" class="headerlink" title="2、UDF"></a>2、UDF</h3><p>使用UDF实现对String类型的字符串取HashMD5</p>
-<h3 id="3、GenericUDF"><a href="#3、GenericUDF" class="headerlink" title="3、GenericUDF"></a>3、GenericUDF</h3>
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/01/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="page/2/">2</a><a class="page-number" href="page/3/">3</a><a class="extend next" rel="next" href="page/2/">Next &amp;raquo;</a>
@@ -3049,7 +3068,7 @@
 		toc_hide_index: true,
 		root: "/",
 		innerArchive: true,
-		showTags: false
+		showTags: true
 	}
 </script>
 
@@ -3258,7 +3277,7 @@
     	<section class="tools-section tools-section-me" q-show="aboutme">
         
           
-  	  		<div class="aboutme-wrap" id="aboutme">主要涉及技术：<br>Java后端开发、Hadoop、Spark、微服务、TensorFlow<br>AI、公众号开发、开源爱好者、Linux<br></div>
+  	  		<div class="aboutme-wrap" id="aboutme">主要涉及技术：<br>Java后端开发、Hadoop、Spark、微服务、TensorFlow<br>AI、公众号开发、开源爱好者、Linux<br>大数据、DevOps、分布式中间件</div>
   	  	
     	</section>
     
