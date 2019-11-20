@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://victorblog.github.io">
-  <title>Java并发编程 | VictorDan</title>
+  <title>git开发规范 | VictorDan</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="Java并发编程">
+  <meta name="description" content="1、配置SSH12345678910111213#配置用户名，邮箱git config --global user.name &quot;xxx&quot;git config --global user.email &quot;xxx@163.com&quot;#设置pull代码为rebasegit config --global --bool pull.rebase true#设置git log的格式alias gl=&amp;apos;git lo">
 <meta name="keywords" content="Java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java并发编程">
-<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2019&#x2F;11&#x2F;01&#x2F;%E4%B8%80%E3%80%81Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B&#x2F;index.html">
+<meta property="og:title" content="git开发规范">
+<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;11&#x2F;20&#x2F;git%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
-<meta property="og:description" content="Java并发编程">
+<meta property="og:description" content="1、配置SSH12345678910111213#配置用户名，邮箱git config --global user.name &quot;xxx&quot;git config --global user.email &quot;xxx@163.com&quot;#设置pull代码为rebasegit config --global --bool pull.rebase true#设置git log的格式alias gl=&amp;apos;git lo">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-15T10:57:10.527Z">
+<meta property="og:updated_time" content="2019-11-20T07:35:36.575Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
@@ -198,14 +198,14 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-一、Java并发编程" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-git开发规范" class="article article-type-post " itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
   
   
     <h1 class="article-title" itemprop="name">
-      Java并发编程
+      git开发规范
     </h1>
   
 
@@ -218,7 +218,7 @@
         </span>
 
 <a href="" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
+        <time datetime="2018-11-20T07:23:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-20</time>
 </a>
 
   
@@ -231,7 +231,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">3.7k字</span>
+      <span class="post-count">373字</span>
     </span>
   </span>
 
@@ -240,7 +240,7 @@
     <span class="post-meta-item-icon">
       <i class="icon-book icon"></i>
       <span class="post-meta-item-text"> 阅读时长≈</span>
-      <span class="post-count">13分</span>
+      <span class="post-count">1分</span>
     </span>
   </span>
 </div>
@@ -251,116 +251,18 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、Java并发编程"><a href="#一、Java并发编程" class="headerlink" title="一、Java并发编程"></a>一、Java并发编程</h1><ul>
-<li><p>多线程程序包含两个或者多个可以同事运行的部分，每个部分可以同事处理不同的任务，从而能更好的利用可用资源，如果CPU是多核，多线程可以写入多个task，在同一个程序同时进行操作处理。</p>
-</li>
-<li><p>多任务是多个进程共享，比如CPU处理公共资源</p>
-</li>
-<li><p>多线程：将多任务的概念扩展到可以将单个应用程序中的特定操作细分为单个线程的应用程序 ，每个线程可以并行运行。</p>
-</li>
-</ul>
-<h2 id="1、线程的生命周期"><a href="#1、线程的生命周期" class="headerlink" title="1、线程的生命周期"></a>1、线程的生命周期</h2><p>线程在生命周期中经历多个阶段：线程诞生，启动，运行，然后死亡。</p>
-<ul>
-<li>新线程New：新线程在新的状态下开始其生命周期，直到程序启动线程为止，保持在这种状态，也叫出生线程。</li>
-<li>可运行Runnable：新诞生的线程启动以后，start，该线层可以运行，状态的线程被认为正在执行其任务。</li>
-<li>等待Waiting：有时线程回转换到等待状态sleep,wait()，而线程等待另一个线程执行任务。只有当另一个线程发信号通知notify()/notifyAll()等待线程才能继续执行时，线程才转回到可运行状态。</li>
-<li>定时等待Timed Waiting：可运行的线程可以在指定的时间间隔内进入定时等待状态，当该时间间隔sleep(100)到期或者发生等待的事件的时候，此状态的线程将转换到可运行状态。</li>
-<li>终止dead：可执行线程在完成任务或者以其他方式终止的时候进入到终止状态。</li>
-</ul>
-<h2 id="2、线程优先级"><a href="#2、线程优先级" class="headerlink" title="2、线程优先级"></a>2、线程优先级</h2><p>每个java线程都有一个优先级，可以帮助操作系统安排线程的顺序。Java线程优先级在MIN_PRIORITY(1),和MAX_PRIORITY(10)之间的范围内，默认情况下的，每个线程优先级都是NORM_PRIORITY(5)</p>
-<p>具有较高的优先级的线程相对于一个程序来说更重要，应该在低优先级线程之前分配处理器时间。然而，线程优先级并不能呢保证线程执行的顺序。</p>
-<h2 id="3、通过实现Runnable接口创建线程"><a href="#3、通过实现Runnable接口创建线程" class="headerlink" title="3、通过实现Runnable接口创建线程"></a>3、通过实现Runnable接口创建线程</h2><ul>
-<li><p>需要实现Runnable接口提供的run()方法。run()方法为线程提供一个入口，可以把完整的业务逻辑放到run()方法体。此方法是没有返回值的</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ...service....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>然后在通过Thread构造函数，去创建一个对象</p>
-</li>
-<li><p>对象调用start()方法来启动线程。</p>
-</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> multi_thread;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>:通过实现Runnable接口的方式创建线程</span></span><br><span class="line"><span class="comment"> * 1、首先是需要实现Runnable的接口的run方法，run()作为线程提供一个入口，完成的业务逻辑写在run()里</span></span><br><span class="line"><span class="comment"> * 2、通过Thread构造函数，去创建一个实例对象</span></span><br><span class="line"><span class="comment"> * 3、对象调用start()方法来启动线程</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: VictorDan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 19-8-12 下午3:58</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span>: 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestRunnable</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Thread thread;</span><br><span class="line">    <span class="keyword">private</span> String threadName;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestRunnable</span><span class="params">(String threadName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.threadName = threadName;</span><br><span class="line">        System.out.println(<span class="string">"创建线程："</span>+threadName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 实现Runnable接口，需要重写run方法</span></span><br><span class="line"><span class="comment">     * run方法里一般写的业务逻辑代码</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建线程："</span>+threadName);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">                System.out.println(<span class="string">"线程："</span>+threadName+<span class="string">","</span>+i);</span><br><span class="line">                Thread.sleep(<span class="number">50</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span>(InterruptedException e)&#123;</span><br><span class="line">            System.out.println(<span class="string">"线程："</span>+threadName+<span class="string">"被打断"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"线程:"</span>+threadName+<span class="string">"执行完退出"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"开启线程："</span>+threadName);</span><br><span class="line">        <span class="keyword">if</span>(thread==<span class="keyword">null</span>)&#123;</span><br><span class="line">            thread=<span class="keyword">new</span> Thread(<span class="keyword">this</span>,threadName);</span><br><span class="line">            thread.start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        TestRunnable thread1 = <span class="keyword">new</span> TestRunnable(<span class="string">"Thread-1"</span>);</span><br><span class="line">        thread1.start();</span><br><span class="line">        TestRunnable thread2 = <span class="keyword">new</span> TestRunnable(<span class="string">"Thread-2"</span>);</span><br><span class="line">        thread2.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    <h3 id="1、配置SSH"><a href="#1、配置SSH" class="headerlink" title="1、配置SSH"></a>1、配置SSH</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">配置用户名，邮箱</span></span><br><span class="line">git config --global user.name "xxx"</span><br><span class="line">git config --global user.email "xxx@163.com"</span><br><span class="line"><span class="meta">#</span><span class="bash">设置pull代码为rebase</span></span><br><span class="line">git config --global --bool pull.rebase true</span><br><span class="line"><span class="meta">#</span><span class="bash">设置git <span class="built_in">log</span>的格式</span></span><br><span class="line">alias gl='git log --graph --pretty=format:'\''%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset'\'' --abbrev-commit --date=relative'</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">生成秘钥</span></span><br><span class="line">ssh-keygen -t rsa </span><br><span class="line"><span class="meta">#</span><span class="bash">查看公钥</span></span><br><span class="line">cat ~/.ssh/id_rsa.pub</span><br><span class="line"><span class="meta">#</span><span class="bash">把key赋值到git的settings的SSH keys</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="4、通过继承Thread类创建一个线程"><a href="#4、通过继承Thread类创建一个线程" class="headerlink" title="4、通过继承Thread类创建一个线程"></a>4、通过继承Thread类创建一个线程</h2><h2 id="5、线程池的使用"><a href="#5、线程池的使用" class="headerlink" title="5、线程池的使用"></a>5、线程池的使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 使用Executors可以创建线程池，但是你方便的同时，隐藏了复杂性，而埋下隐患，比如OOM，线程耗尽等。</span></span><br><span class="line"><span class="comment">         * 所以阿里开发规范，创建线程池要手动创建，而不允许Executors直接调用的方式。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="comment">//1、创建一个不限制线程数上限的线程池，任何提交的任务都立即执行，最大上限是Integer.MAX_VALUE,会使用</span></span><br><span class="line">        Executors.newCachedThreadPool();</span><br><span class="line">        <span class="comment">//2、创建一个固定个数大小的线程池</span></span><br><span class="line">        Executors.newFixedThreadPool(<span class="number">10</span>);</span><br><span class="line">        <span class="comment">//3、创建一个只有1个线程的线程池</span></span><br><span class="line">        Executors.newSingleThreadExecutor();</span><br><span class="line">        <span class="comment">//4、创建一个定时的线程池，工作队列是延迟队列。</span></span><br><span class="line">        Executors.newScheduledThreadPool(<span class="number">20</span>);</span><br><span class="line">        <span class="comment">//总结：小程序使用这些快捷方法创建线程池没问题，但是对于服务端长期运行的程序，需要如下通过利用ThreadPoolExecutor的构造函数创建线程池。</span></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Executors.newXXXThreadPool(),这种方式创建线程池，会使用无界的任务队列，为了避免OOM，应该手动使用ThreadPoolExecutor的构造方法指定队列的最大长度。</span></span><br><span class="line"><span class="comment">         * 还要明确拒绝任务时的策略，行为。也就是任务对了沾满的时候，这里在submit()新的任务，</span></span><br><span class="line"><span class="comment">         * public interface RejectedExecutionHandler&#123;</span></span><br><span class="line"><span class="comment">         *     void rejectedExecution(Runnable r,ThreadPoolExecutor executor);</span></span><br><span class="line"><span class="comment">         * &#125;</span></span><br><span class="line"><span class="comment">         * 线程池提供了常见的拒绝策略。</span></span><br><span class="line"><span class="comment">         * 1、new ThreadPoolExecutor.DiscardOldestPolicy():丢弃执行队列中最老的任务，尝试为当前提交的任务腾出位置</span></span><br><span class="line"><span class="comment">         * 2、new ThreadPoolExecutor.DiscardPolicy()：什么都不做，直接忽略</span></span><br><span class="line"><span class="comment">         * 3、new ThreadPoolExecutor.AbortPolicy();抛出RejectedExecutionException</span></span><br><span class="line"><span class="comment">         * 4、new ThreadPoolExecutor.CallerRunsPolicy();直接由提交任务者执行这个任务</span></span><br><span class="line"><span class="comment">         * 线程池默认的拒绝行为是：AbortPolicy，也就是抛出RejectedExecutionException，</span></span><br><span class="line"><span class="comment">         * 如果不关心任务被拒绝，则可以使用DiscardPolicy，这样多余的任务可以悄悄的被忽略。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="comment">//Executors的方法也是使用ThreadPoolExecutor的构造方法创建的线程池。</span></span><br><span class="line">        <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">2</span>, <span class="number">20</span>, <span class="number">0L</span>, SECONDS, <span class="keyword">new</span> ArrayBlockingQueue&lt;&gt;(<span class="number">512</span>), <span class="keyword">new</span> ThreadPoolExecutor.DiscardOldestPolicy());</span><br><span class="line">        ExecutorService executorService = Executors.newCachedThreadPool();</span><br><span class="line">        <span class="keyword">new</span> ThreadPoolExecutor.DiscardPolicy();</span><br><span class="line">        <span class="keyword">new</span> ThreadPoolExecutor.AbortPolicy();</span><br><span class="line">        <span class="keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy();</span><br><span class="line">        <span class="keyword">new</span> ThreadPoolExecutor.DiscardOldestPolicy();</span><br><span class="line">        <span class="comment">//executorService=Executors.newSingleThreadExecutor();</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</span><br><span class="line">            executorService.execute(<span class="keyword">new</span> WorkTask());</span><br><span class="line">        &#125;</span><br><span class="line">        Future&lt;Object&gt; future = executorService.submit(() -&gt; &#123;</span><br><span class="line">            <span class="comment">//这个异常会在调用Future.get()的时候传递给调用者</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"exception in call"</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Object result = future.get();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ExecutionException e) &#123;</span><br><span class="line">            <span class="comment">//exception in Callable.call();</span></span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            executorService.shutdown();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 线程池的常用场景</span></span><br><span class="line"><span class="comment">         * 1、如何正确的构造线程池</span></span><br><span class="line"><span class="comment">         * 2、构造一个工作阻塞队列</span></span><br><span class="line"><span class="comment">         * 3、设置拒绝策略</span></span><br><span class="line"><span class="comment">         * 设置</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">int</span> poolSize = Runtime.getRuntime().availableProcessors() * <span class="number">2</span>;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * BlockingQueue只是一个接口，有好多实现类</span></span><br><span class="line"><span class="comment">         * 1、ArrayBlockingQueue:底层基于数组实现的阻塞队列</span></span><br><span class="line"><span class="comment">         * 2、LinkedBlockingQueue：底层基于链表实现的阻塞队列</span></span><br><span class="line"><span class="comment">         * 3、LinkedBlockingDeque：底层基于双端链表实现的阻塞队列</span></span><br><span class="line"><span class="comment">         * 4、DelayQueue：延迟队列</span></span><br><span class="line"><span class="comment">         * 5、PriorityBlockingQueue:基于优先队列，底层是堆实现的。</span></span><br><span class="line"><span class="comment">         * 6、SynchronousQueue:同步队列,队列内只存储一个元素。公平模式。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        BlockingQueue&lt;Object&gt; queue = <span class="keyword">new</span> ArrayBlockingQueue&lt;&gt;(<span class="number">512</span>);</span><br><span class="line">        RejectedExecutionHandler policy = <span class="keyword">new</span> ThreadPoolExecutor.DiscardPolicy();</span><br><span class="line"><span class="comment">//        executorService = new ThreadPoolExecutor(poolSize, poolSize,</span></span><br><span class="line"><span class="comment">//                0, TimeUnit.SECONDS,</span></span><br><span class="line"><span class="comment">//                queue,</span></span><br><span class="line"><span class="comment">//                policy);</span></span><br><span class="line">        System.out.println(poolSize);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ThreadPoolExecutor1</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 线程池长期维持的线程数，即使没有任务，也不会回收</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">int</span> corePoolSize;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 线程数的上限，比如一般是Integer.MAX_VALUE</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">int</span> maximumPoolSize;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 超过corePoolSize的线程，会有一个活跃时间，超过这个时间，多余线程会被回收</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">long</span> keepAliveTime;</span><br><span class="line">        TimeUnit unit;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 任务的排队队列，也就是排期队列。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        BlockingQueue&lt;Runnable&gt; workQueue;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 创建线程的渠道</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        ThreadFactory threadFactory;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 拒绝策略，也就是任务队列也塞满了，新来的任务需要被拒绝。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        RejectedExecutionHandler handler;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2、rebase代码"><a href="#2、rebase代码" class="headerlink" title="2、rebase代码"></a>2、rebase代码</h3><p>​        除了master分支，其他分支拉最新master代码，要加上rebase，保证代码整洁性，都在一条线上。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">切换到当前你自己的分支，获取最新的代码</span></span><br><span class="line">git branch consult</span><br><span class="line"><span class="meta">#</span><span class="bash">rebase远程master分支的最新代码，合并到你自己的分支</span></span><br><span class="line">git rebase origin/master</span><br><span class="line"><span class="meta">#</span><span class="bash">如果出现冲突，则需要解决冲突</span></span><br><span class="line">git diff -w</span><br><span class="line"><span class="meta">#</span><span class="bash">解决冲突文件</span></span><br><span class="line">vim 冲突文件</span><br><span class="line">git rebase origin/master</span><br><span class="line">git rebase --continue</span><br><span class="line">git add .</span><br><span class="line">git log</span><br><span class="line"><span class="meta">#</span><span class="bash">然后fetch到当前分支</span></span><br><span class="line">git fetch</span><br><span class="line"><span class="meta">#</span><span class="bash">然后push到自己的分支</span></span><br><span class="line">git push origin consult</span><br><span class="line"><span class="meta">#</span><span class="bash">push不上去的时候，直接强push(慎用)</span></span><br><span class="line">git push -f origin consult</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、合并自己的分支代码到master"><a href="#3、合并自己的分支代码到master" class="headerlink" title="3、合并自己的分支代码到master"></a>3、合并自己的分支代码到master</h3><p>​        合并自己分支的代码到master的时候，需要git merge –no-ff xxx</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">切换分支到master</span></span><br><span class="line">git checkout master</span><br><span class="line"><span class="meta">#</span><span class="bash">合并自己分支代码到master分支</span></span><br><span class="line">git merge --no-ff consult</span><br><span class="line"><span class="meta">#</span><span class="bash">合并完之后，查看下日志，有没有自己分支的代码</span></span><br><span class="line">git log</span><br><span class="line"><span class="meta">#</span><span class="bash">查看分支状态</span></span><br><span class="line">git status</span><br><span class="line"><span class="meta">#</span><span class="bash">合并都增加准备提交</span></span><br><span class="line">git add .</span><br><span class="line"><span class="meta">#</span><span class="bash">本地提交</span></span><br><span class="line">git commit -m "合并分支consult"</span><br><span class="line"><span class="meta">#</span><span class="bash">然后远程push到master分支</span></span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
 
 
 
-<h1 id="二、Dubbo的知识点"><a href="#二、Dubbo的知识点" class="headerlink" title="二、Dubbo的知识点"></a>二、Dubbo的知识点</h1><p>dubbo是一款高性能，轻量级的开源java RPC框架，提供3大核心功能：</p>
-<ul>
-<li>面向接口的远程方法调用</li>
-<li>智能容错和负载均衡</li>
-<li>服务自动注册和发现</li>
-</ul>
-<p>dubbo是一个分布式服务框架，用来提供高性能和透明化的RPC远程服务调用方案，以及SOA服务治理。</p>
-<h3 id="1、什么是RPC？"><a href="#1、什么是RPC？" class="headerlink" title="1、什么是RPC？"></a>1、什么是RPC？</h3><p>RPC：Remote Procedure Call，一个远程过程调用，它是一种通过网络从远程计算机程序上请求服务，而不需要了解底层网络技术的协议。比如说两个不同的服务A，B部署在两台不同的机器上，那么服务A如果想要调用服务B中的某个方法怎么解决？使用HTTP请求当然可以，但是可能会比较慢，而且一些优化做的并不好，RPC的出现就是为了解决这个问题。</p>
-<p>RPC的原理：</p>
-<ul>
-<li>服务消费方client调用以本地调用方式调用服务</li>
-<li>client stub接收到调用后负责将方法、参数等组装成能够进行网络传输的消息体。</li>
-<li>client stub找到服务地址，并将消息发送到服务端</li>
-<li>server stub收到消息后进行解码</li>
-<li>server stub根据解码结果调用本地的服务</li>
-<li>本地服务执行并结果返回给server stub</li>
-<li>server stub将返回结果打包成消息并发送到消费方</li>
-<li>client stub接收到消息，并进行解码</li>
-<li>服务消费方得到最终结果。</li>
-</ul>
-<h3 id="2、为什么要用dubbo？"><a href="#2、为什么要用dubbo？" class="headerlink" title="2、为什么要用dubbo？"></a>2、为什么要用dubbo？</h3><p>dubbo和SOA分布式架构的流行有着关系。SOA面向服务的架构(Service Oriented Architecture)，就是把工程按照业务逻辑拆分成服务层，表现层两个工程。服务层中包含业务逻辑，只需要对外提供服务就行。表现层只需要处理和页面的交互，业务逻辑都是调用服务层的服务来实现。SOA架构中有两个主要角色：服务提供者Provieder和服务使用者Consumer</p>
-<h3 id="3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？"><a href="#3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？" class="headerlink" title="3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？"></a>3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？</h3><p>dubbo的四个特点：</p>
-<ul>
-<li>负载均衡：同一个服务部署在不同的机器时该调用哪一台机器上的服务</li>
-<li>服务调用链路生成：随着系统的发展，服务越来越多，服务间依赖关系变得错综复杂，甚至分不清哪个应用要在哪个应用之前启动，架构师都不能完整的描述应用的架构关系，dubbo可以为我们解决服务之间是如何互相调用的。</li>
-<li>服务访问压力以及时长统计，资源调度和治理：基于访问压力实时管理集群容量，提供集群利用率。</li>
-<li>服务降级：某个服务挂掉之后调用备用服务。</li>
-</ul>
-<p>dubbo除了用在分布式系统中，也可以应用在微服务系统中，但是由于springboot cloud在微服务中更加广泛，所以一般提dubbo大部分在分布式系统的情况。</p>
-<h3 id="4、什么是分布式？"><a href="#4、什么是分布式？" class="headerlink" title="4、什么是分布式？"></a>4、什么是分布式？</h3><p>分布式或者说SOA分布式重要的就是面向服务，说简单的分布式就是我们把整个系统拆分成不同的服务然后将这些服务放在不同的服务器上减轻单体服务的压力提高并发量和性能。比如电商系统可以简单拆分成订单系统，商品系统，登录系统等，拆分之后的每个服务可以部署在不同的机器上，如果某一个服务的访问量比较大的话也可以将这个服务同时部署在多台机器上。</p>
-<h3 id="5、为什么要分布式？"><a href="#5、为什么要分布式？" class="headerlink" title="5、为什么要分布式？"></a>5、为什么要分布式？</h3><p>从开发角度来讲单体应用的代码都集中在一起，而分布式系统的代码根据业务被拆分。所以每个团队可以负责一个服务的开发，这样提升了开发效率。另外，代码根据业务拆分之后更加便于维护和扩展。</p>
-<p>另外，将系统拆分成分布式之后不光便于系统扩展和维护，更能提高整个系统的性能。把整个系统拆分成不同的服务、系统，然后每个服务，系统单独部署在一台服务器上，是不是很大成都提升了系统性能。</p>
-<h3 id="6、dubbo的架构"><a href="#6、dubbo的架构" class="headerlink" title="6、dubbo的架构"></a>6、dubbo的架构</h3><ul>
-<li>Provider：暴露服务的服务提供方</li>
-<li>Consumer：调用远程服务的服务消费方</li>
-<li>Registry：服务注册与发现的注册中心</li>
-<li>Monitor：统计服务的调用次数和调用时间的监控中心</li>
-<li>Container：服务运行容器</li>
-</ul>
-<h4 id="6-1、调用关系说明："><a href="#6-1、调用关系说明：" class="headerlink" title="6.1、调用关系说明："></a>6.1、调用关系说明：</h4><ul>
-<li><p>Container服务容器负责启动，加载，运行服务提供者Provider。</p>
-</li>
-<li><p>服务提供者Provider在启动的是偶，向注册中心Registry注册自己提供的服务</p>
-</li>
-<li><p>服务消费者Consumer在启动的时候，向注册中心Registry订阅自己所需要的服务</p>
-</li>
-<li><p>注册中心Registry返回服务提供者Provider地址列表给消费者Consumer，如果有变更，注册中心Registry将基于长连接keep-alive推送变更数据给消费者Consumer</p>
-</li>
-<li><p>服务消费者Consumer，从服务提供者Provider地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。</p>
-<ul>
-<li>dubbo提供了4中负载均衡算法：<ul>
-<li>权重随机算法：RandomLoadBalance</li>
-<li>最少活跃调用数算法：LeastActiveLoadBalance</li>
-<li>一致性哈希算法：ConsistentHashLoadBalance</li>
-<li>加权轮询算法：RoundRobinLoadBalance</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>服务消费者Consumer和服务提供这Provider，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心Monitor。</p>
-</li>
-</ul>
-<h4 id="6-2、总结："><a href="#6-2、总结：" class="headerlink" title="6.2、总结："></a>6.2、总结：</h4><ul>
-<li>注册中心负责服务地址的注册与查找，相当于目录服务，服务提供者Provider和服务消费者Consumer只在启动的时候与注册中心Registry交互，注册中心不转发请求，压力小。</li>
-<li>监控中心Monitor负责统计各个服务调动次数，调用时间等，统计现在内存汇总后每分钟一次发送到监控中心服务器，并以报表的形式显示。</li>
-<li>注册中心Registry，服务提供这Provider，服务消费者Consumer三者之间均为长连接Keep-alive，监控中心Monitor除外</li>
-<li>注册中心Registry通过长连接感知服务提供者Provider的存在，服务提供者挂了，注册中心立即将推送事件通知消费者Consumer。</li>
-<li>注册中心和监控中心全部挂了，不影响已经运行的服务提供者Provider和Consumer，消费者在本地缓存了提供者列表。</li>
-<li>注册中心和监控中心都是可选的，服务消费者Consumer可以直接连服务提供者Provider</li>
-<li>服务提供者Provider无状态，任意一台挂掉，不影响使用。</li>
-<li>服务提供者Provider全部挂了，服务消费者Consumer应用将无法使用，并无限次重连等待服务提供者恢复。</li>
-</ul>
-<h4 id="6-3、Zookeeper挂了与dubbo直连的情况"><a href="#6-3、Zookeeper挂了与dubbo直连的情况" class="headerlink" title="6.3、Zookeeper挂了与dubbo直连的情况"></a>6.3、Zookeeper挂了与dubbo直连的情况</h4><p>在实际生产中，如果zookeeper注册中心挂了，一段时间内服务消费者Consumer还是能够调用服务提供者Provider服务的，实际上Consumer使用了本地缓存进行通讯，Consumer本地缓存了提供者列表。</p>
-<p>dubbo的健壮性:</p>
-<ul>
-<li>监控中心挂了不影响使用</li>
-</ul>
+
+
 
     
 
@@ -407,7 +309,7 @@
         </li>
         <li>
           <strong>本文链接：</strong>
-          <a href="https://victorblog.github.io/2019/11/01/一、Java并发编程/" title="Java并发编程" target="_blank">https://victorblog.github.io/2019/11/01/一、Java并发编程/</a>
+          <a href="https://victorblog.github.io/2018/11/20/git开发规范/" title="git开发规范" target="_blank">https://victorblog.github.io/2018/11/20/git开发规范/</a>
         </li>
         <li>
           <strong>版权声明： </strong>
@@ -482,7 +384,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://victorblog.github.io/2019/11/01/%E4%B8%80%E3%80%81Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" alt="微信分享二维码"> -->
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://victorblog.github.io/2018/11/20/git%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/" alt="微信分享二维码"> -->
     </div>
 </div>
 
@@ -497,18 +399,18 @@
 
 <nav id="article-nav">
   
-    <a href="../../20/sbt%E7%9A%84%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="../../../../2019/02/01/%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%EF%BC%8C%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%EF%BC%8C%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          sbt的相关问题
+          缓存常识总结
         
       </div>
     </a>
   
   
-    <a href="../%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%A6%BB%E7%BA%BF%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">大数据离线部分</div>
+    <a href="../../../07/01/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">算法与数据结构</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -535,7 +437,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、Java并发编程"><span class="toc-number">1.</span> <span class="toc-text">一、Java并发编程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、线程的生命周期"><span class="toc-number">1.1.</span> <span class="toc-text">1、线程的生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、线程优先级"><span class="toc-number">1.2.</span> <span class="toc-text">2、线程优先级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、通过实现Runnable接口创建线程"><span class="toc-number">1.3.</span> <span class="toc-text">3、通过实现Runnable接口创建线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4、通过继承Thread类创建一个线程"><span class="toc-number">1.4.</span> <span class="toc-text">4、通过继承Thread类创建一个线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5、线程池的使用"><span class="toc-number">1.5.</span> <span class="toc-text">5、线程池的使用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、Dubbo的知识点"><span class="toc-number">2.</span> <span class="toc-text">二、Dubbo的知识点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、什么是RPC？"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、什么是RPC？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、为什么要用dubbo？"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、为什么要用dubbo？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、什么是分布式？"><span class="toc-number">2.0.4.</span> <span class="toc-text">4、什么是分布式？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、为什么要分布式？"><span class="toc-number">2.0.5.</span> <span class="toc-text">5、为什么要分布式？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、dubbo的架构"><span class="toc-number">2.0.6.</span> <span class="toc-text">6、dubbo的架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1、调用关系说明："><span class="toc-number">2.0.6.1.</span> <span class="toc-text">6.1、调用关系说明：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2、总结："><span class="toc-number">2.0.6.2.</span> <span class="toc-text">6.2、总结：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3、Zookeeper挂了与dubbo直连的情况"><span class="toc-number">2.0.6.3.</span> <span class="toc-text">6.3、Zookeeper挂了与dubbo直连的情况</span></a></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、配置SSH"><span class="toc-number">1.</span> <span class="toc-text">1、配置SSH</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、rebase代码"><span class="toc-number">2.</span> <span class="toc-text">2、rebase代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、合并自己的分支代码到master"><span class="toc-number">3.</span> <span class="toc-text">3、合并自己的分支代码到master</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -561,9 +463,9 @@
     <script src="https://giteement.oss-cn-beijing.aliyuncs.com/giteement.browser.js"></script>
   
   <script>
-  <!-- id: "Java并发编程" -->
+  <!-- id: "git开发规范" -->
   var giteement = new Giteement({
-    id: '20191101100600',
+    id: '20181120152333',
     owner: 'victorblog',
     repo: 'victorblog',
     backcall_uri: 'https://victorblog.github.io/',
@@ -592,7 +494,7 @@
             <div id="toc-article" class="toc-article">
                 <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
                 <strong class="toc-title">文章目录</strong>
-                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、Java并发编程"><span class="toc-number">1.</span> <span class="toc-text">一、Java并发编程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、线程的生命周期"><span class="toc-number">1.1.</span> <span class="toc-text">1、线程的生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、线程优先级"><span class="toc-number">1.2.</span> <span class="toc-text">2、线程优先级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、通过实现Runnable接口创建线程"><span class="toc-number">1.3.</span> <span class="toc-text">3、通过实现Runnable接口创建线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4、通过继承Thread类创建一个线程"><span class="toc-number">1.4.</span> <span class="toc-text">4、通过继承Thread类创建一个线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5、线程池的使用"><span class="toc-number">1.5.</span> <span class="toc-text">5、线程池的使用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、Dubbo的知识点"><span class="toc-number">2.</span> <span class="toc-text">二、Dubbo的知识点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、什么是RPC？"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、什么是RPC？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、为什么要用dubbo？"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、为什么要用dubbo？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、开发分布式及程序，可以直接基于HTTP接口进行通信，但是为什么要使用dubbo？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、什么是分布式？"><span class="toc-number">2.0.4.</span> <span class="toc-text">4、什么是分布式？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、为什么要分布式？"><span class="toc-number">2.0.5.</span> <span class="toc-text">5、为什么要分布式？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、dubbo的架构"><span class="toc-number">2.0.6.</span> <span class="toc-text">6、dubbo的架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1、调用关系说明："><span class="toc-number">2.0.6.1.</span> <span class="toc-text">6.1、调用关系说明：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2、总结："><span class="toc-number">2.0.6.2.</span> <span class="toc-text">6.2、总结：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3、Zookeeper挂了与dubbo直连的情况"><span class="toc-number">2.0.6.3.</span> <span class="toc-text">6.3、Zookeeper挂了与dubbo直连的情况</span></a></li></ol></li></ol></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、配置SSH"><span class="toc-number">1.</span> <span class="toc-text">1、配置SSH</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、rebase代码"><span class="toc-number">2.</span> <span class="toc-text">2、rebase代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、合并自己的分支代码到master"><span class="toc-number">3.</span> <span class="toc-text">3、合并自己的分支代码到master</span></a></li></ol>
            </div>
            <script type="text/javascript">
             function showToc(){
