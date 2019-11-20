@@ -210,6 +210,158 @@
 
 
   
+    <article id="post-消息队列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" target="_blank">消息队列</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" class="archive-article-date">
+        <time datetime="2019-05-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="大数据技术之Kafka"><a href="#大数据技术之Kafka" class="headerlink" title="大数据技术之Kafka"></a>大数据技术之Kafka</h2><h3 id="1、Kafka概述"><a href="#1、Kafka概述" class="headerlink" title="1、Kafka概述"></a>1、Kafka概述</h3><h4 id="1-1、消息队列"><a href="#1-1、消息队列" class="headerlink" title="1.1、消息队列"></a>1.1、消息队列</h4><p><img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.png" alt></p>
+<h4 id="1-2、为什么要用消息队列？"><a href="#1-2、为什么要用消息队列？" class="headerlink" title="1.2、为什么要用消息队列？"></a>1.2、为什么要用消息队列？</h4><ul>
+<li><strong>解耦</strong>：也即是客户端A跟B不用直连，通过中间件。达到解耦</li>
+<li><strong>冗余</strong>：消息队列可以进行数据备份，它本身可以缓冲数据</li>
+<li><strong>扩展性</strong>：消息队列可以进行集群</li>
+<li><strong>灵活性&amp;峰值处理能力</strong>：机器扩展多了，峰值处理能力自然提高</li>
+<li><strong>可恢复性</strong>：因为你数据可备份的，消息丢了一个，可以恢复的</li>
+<li><strong>顺序保证</strong>：队列先进先出，它有顺序。</li>
+<li><strong>缓冲</strong>：均衡两边的速度，这边数据冗余了。可以进行备份缓冲。</li>
+<li><strong>异步通信</strong>：比如你A挂了，并不会影响B</li>
+</ul>
+<h4 id="1-3三种消息队列对比："><a href="#1-3三种消息队列对比：" class="headerlink" title="1.3三种消息队列对比："></a>1.3三种消息队列对比：</h4><h5 id="1-3-1、ActiveMQ，RabbitMQ，Kafka"><a href="#1-3-1、ActiveMQ，RabbitMQ，Kafka" class="headerlink" title="1.3.1、ActiveMQ，RabbitMQ，Kafka"></a>1.3.1、ActiveMQ，RabbitMQ，Kafka</h5><ul>
+<li><p><strong>ActiveMQ中，消费者消费完消息后，队列Queue中，这条消息立即被删除</strong>。</p>
+<p>而ActiveMQ，它的队列是存在内存中。普通的消息队列是存在队列Queue中，然后存在内存中。Kafka是持久化到磁盘中，Kafka是以partition为单位进行消费的，而普通消息队列是一条一条进行消费的。</p>
+</li>
+</ul>
+<p><img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/ActiveMQ.jpg" alt></p>
+<ul>
+<li><p>RabbitMQ多了一段Exchange，路由交换机。有4中工作机制。**</p>
+<p><img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/RabbitMQ.jpg" alt></p>
+<p>​    当producer生产了3条消息，每个队列中不会都拿到这3条消息的，它是根据路由机制进行匹配的，有4中路由机制，fanout，direct，topic，headers。4种路由机制。</p>
+</li>
+</ul>
+<p>​    topic是以点为分隔符进行通配，*是匹配一个单词，#是匹配多个单词。</p>
+<ul>
+<li><p><strong>Kafka，当消费者消费完消息后，不会被立即删除，它有避免重复消费，和避免内存溢出</strong>，Kafka是以文件的方式进行存储的，存储在磁盘中，所以永远不会内存溢出。可能会存在磁盘满了，磁盘满了，可以加集群，然后进行备份，就是partition可以备份到另一台机器中。在kafka中是以zookeeper来管理集群的。</p>
+<p><strong>kafka消费是以partition为单位进行消费的。</strong>所以所，kafka适合数据量更大的时候的处理。</p>
+<p>而RabbitMQ它的消息存在内存中，如果消息超过长度，就会内存溢出。而kafka不会，消息存在磁盘中。</p>
+</li>
+</ul>
+<h5 id="1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景"><a href="#1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景" class="headerlink" title="1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景"></a>1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景</h5><p>​    <img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.jpg" alt></p>
+<p>或者你这个库存当时没有了，可以调用别的地方的库存，然后重新分配库存。但是kafka就没有这样的好处。</p>
+<p>订单太多，可能会导致内存溢出，RabbitMQ中有一个partition是网络分区，用来做网络集群的，与kafka的partition不同，因此可以做集群部署。</p>
+<h4 id="1-4、什么是Kafka"><a href="#1-4、什么是Kafka" class="headerlink" title="1.4、什么是Kafka"></a>1.4、什么是Kafka</h4><p>流式计算中，Kafka用来缓存数据，Storm通过消费Kafka的数据进行计算。</p>
+<ul>
+<li><p>Apache Kafka是一个开源消息系统，由<strong>Scala</strong>写成</p>
+</li>
+<li><p>Kafka是由LinkedIn公司开发</p>
+</li>
+<li><p>Kafka是一个<strong>分布式消息队列</strong>，kafka对消息保存时根据<strong>Topic</strong>进行归类，发送消息者叫<strong>Producer</strong></p>
+<p>消息接收者叫<strong>Consumer</strong>。此外Kafka集群有多个Kafka实例组成，每个实例(server)叫<strong>broker</strong>。</p>
+</li>
+<li><p>不管是kafka集群，还是consumer都依赖与<strong>zookeeper</strong>集群保存一些meta信息，保证系统可用性。</p>
+</li>
+</ul>
+<h4 id="1-5、Kafka架构"><a href="#1-5、Kafka架构" class="headerlink" title="1.5、Kafka架构"></a>1.5、Kafka架构</h4><p><img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
+<p><img src="/2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E6%9E%B6%E6%9E%84.png" alt></p>
+<p>partition分区：作负载均衡用。</p>
+<p>replication：备份。</p>
+<p>一个消费者可以消费多个topic，<strong>同一个组里面的消费者，不能消费同一个partition分区的数据</strong>。但是你不同的组里面，还是可以消费同一个partition分区的数据。</p>
+<p>Consumer A与Consumer B属于通过一个消费者组，Partition0被Consumer A消费，就不能被Consumer B消费。</p>
+<p>zookeeper：Consumer的集群依赖的，kafka集群的构建依赖于zookeeper，消费者也需要，上次消费到哪了，也要给zookeeper存一份。</p>
+<h4 id="1-6、kafka的专业术语"><a href="#1-6、kafka的专业术语" class="headerlink" title="1.6、kafka的专业术语"></a>1.6、kafka的专业术语</h4><ul>
+<li><strong>massage</strong>： kafka中最基本的传递对象，有固定格式。</li>
+<li><strong>topic</strong>： 一类消息，如page view，click行为等。</li>
+<li><strong>producer</strong>： 产生信息的主体，可以是服务器日志信息等。</li>
+<li><strong>consumer</strong>： 消费producer产生话题消息的主体。</li>
+<li><strong>broker</strong>： 消息处理结点，多个broker组成kafka集群。</li>
+<li><strong>partition</strong>： topic的物理分组，每个partition都是一个有序队列。</li>
+<li><strong>segment</strong>： 多个大小相等的段组成了一个partition。</li>
+<li><strong>offset</strong>： 一个连续的用于定位被追加到分区的每一个消息的序列号，最大值为64位的long大小，19位数字字符长度</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2019/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-分布式理论" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
