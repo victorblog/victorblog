@@ -218,7 +218,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="2019/11/01/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_blank">Spark的学习</a>
+	  <a class="article-title" href="2018/10/04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_blank">Spark的学习</a>
   
     </h1>
   
@@ -226,8 +226,8 @@
 
   
   
-<a href="2019/11/01/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
+<a href="2018/10/04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/" class="archive-article-date">
+        <time datetime="2018-10-04T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-04</time>
 </a>
 
   
@@ -242,13 +242,13 @@
     <h1 id="一、Spark-Core的学习"><a href="#一、Spark-Core的学习" class="headerlink" title="一、Spark Core的学习"></a>一、Spark Core的学习</h1><h4 id="1、下载并安装Spark"><a href="#1、下载并安装Spark" class="headerlink" title="1、下载并安装Spark"></a>1、下载并安装Spark</h4><p><a href="http://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz">下载链接</a></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">安装spark相关命令</span></span><br><span class="line">cd /usr</span><br><span class="line">sudo mkdir spark</span><br><span class="line">cd ~/下载/软件安装包</span><br><span class="line">sudo mv spark-2.4.4-bin-hadoop2.7.tgz /usr/spark/</span><br><span class="line">cd /usr/spark/</span><br><span class="line">sudo tar -zxvf spark-2.4.4-bin-hadoop2.7.tgz</span><br><span class="line">cd spark-2.4.4-bin-hadoop2.7/</span><br><span class="line"><span class="meta">#</span><span class="bash">配置spark相关文件,切换到conf目录</span></span><br><span class="line">cd conf/</span><br><span class="line"><span class="meta">#</span><span class="bash">复制一个模板sh文件，设置spark的</span></span><br><span class="line">cp spark-env.sh.template spark-env.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">配置spark需要的jdk环境，以及使用的内存，核心数</span></span><br><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_201</span><br><span class="line">export SPARK_MASTER_IP=SparkMaster</span><br><span class="line">export SPARK_WORKER_MEMORY=2g</span><br><span class="line">export SPARK_WORKER_CORES=2</span><br><span class="line">export SPARK_WORKER_INSTANCES=1</span><br><span class="line">cp slaves.template slaves </span><br><span class="line"><span class="meta">#</span><span class="bash">配置spark的slave</span></span><br><span class="line">vim slaves</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2019/11/01/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/spark-env.sh%E9%85%8D%E7%BD%AE.png" alt></p>
+<p><img src="/2018/10/04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/spark-env.sh%E9%85%8D%E7%BD%AE.png" alt></p>
 <h4 id="2、首先要有jdk，scala"><a href="#2、首先要有jdk，scala" class="headerlink" title="2、首先要有jdk，scala"></a>2、首先要有jdk，scala</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">修改当前用户的环境变量文件</span></span><br><span class="line">vim ~/.bashrc</span><br><span class="line"><span class="meta">#</span><span class="bash">保存</span></span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2019/11/01/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/spark%E7%9B%B8%E5%85%B3%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E9%85%8D%E7%BD%AE.png" alt></p>
+<p><img src="/2018/10/04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/spark%E7%9B%B8%E5%85%B3%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E9%85%8D%E7%BD%AE.png" alt></p>
 <h4 id="3、操作spark并启动"><a href="#3、操作spark并启动" class="headerlink" title="3、操作spark并启动"></a>3、操作spark并启动</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">cd /sbin</span><br><span class="line"><span class="meta">#</span><span class="bash">如果发现报错，拒绝连接本地，则说明没有安装ssh</span></span><br><span class="line"><span class="meta">#</span><span class="bash">启动spark的简单集群</span></span><br><span class="line">./start-all.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">发现还是一样，拒绝连接本地</span></span><br><span class="line">ssh localhost</span><br><span class="line"><span class="meta">#</span><span class="bash">发现只有ssh-agent，而没有sshd</span></span><br><span class="line">ps -e|grep ssh</span><br><span class="line"><span class="meta">#</span><span class="bash">安装ssh</span></span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br><span class="line">sudo apt install openssh-server</span><br><span class="line">ps -e|grep ssh</span><br><span class="line"><span class="meta">#</span><span class="bash">重新启动</span></span><br><span class="line">./start-all.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">打开浏览器访问</span></span><br><span class="line">lhttp://victor:8081/</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2019/11/01/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/ssh%E5%AE%89%E8%A3%85.png" alt></p>
+<p><img src="/2018/10/04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/ssh%E5%AE%89%E8%A3%85.png" alt></p>
 <ul>
 <li><p>启动spark-shell</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd bin/</span><br><span class="line"><span class="meta">#</span><span class="bash">python下的spark shell</span></span><br><span class="line">pyspark</span><br><span class="line"><span class="meta">#</span><span class="bash">scala下的spark shell</span></span><br><span class="line">spark-shell</span><br></pre></td></tr></table></figure>
@@ -257,10 +257,10 @@
 </ul>
 <h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><ul>
 <li><p>Spark流是对于Spark核心API的扩展，从而支持对于实时数据流的可扩展，高吞吐量和容错性流处理。数据可以由多个源取的，比如Kafka，Flume，ZeroMQ，或者TCP接口等。可以同时使用比如map，reduce，join和window这样的高层接口描述的复杂算法进行处理。最终，处理过得数据可以保存到HDFS，数据库等。</p>
-<p><img src="/2019/11/01/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/spark.png" alt></p>
+<p><img src="/2018/10/04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/spark.png" alt></p>
 </li>
 <li><p>在内部，Spark Streaming接收到实时数据流同时将其划分为分批，也就是微批处理。这些数据的分批将会被Spark的引擎所处理而生成同样按批次形式的最终流。</p>
-<p><img src="/2019/11/01/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/spark-streaming.png" alt></p>
+<p><img src="/2018/10/04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/spark-streaming.png" alt></p>
 </li>
 <li><p>Spark Streaming提供了被成为离散化或者DStream的高层抽象，这个高层抽象用于表示数据的连续流。</p>
 <p>创建DStream的2种方式：</p>
@@ -404,233 +404,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/01/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-JVM相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="2019/11/20/JVM%E7%9B%B8%E5%85%B3/" target="_blank">JVM相关</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="2019/11/20/JVM%E7%9B%B8%E5%85%B3/" class="archive-article-date">
-        <time datetime="2019-11-20T02:46:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-20</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h2 id="一、JVM相关的笔记"><a href="#一、JVM相关的笔记" class="headerlink" title="一、JVM相关的笔记"></a>一、JVM相关的笔记</h2><p>简历上可以写，熟悉JVM架构与GC垃圾回收机制，以及相应的参数调优，有过在Linux上进行系统优化的经验。</p>
-<p>面试官让你谈谈jvm优化，我是根据淘宝周志明那哥们写的那本深入理解java虚拟机书，99*%的优化的是堆Heap，1%的优化的是方法区Method Area，虚拟机栈Stack是私有的，不可能优化，最多是栈溢出StackOverFlow，调整一下栈的大小<font color="red">-xss参数</font><br><font color="red">静态变量+常量+类信息+运行时常量池</font>存在方法区。方法区一般放的是<font color="red">类的构造函数和接口的代码。所有定义的方法的信息都保存在方法区。</font><br>引用存在虚拟机栈里。实例变量存在堆里面。</p>
-<h3 id="1、栈"><a href="#1、栈" class="headerlink" title="1、栈"></a>1、栈</h3><p>​    栈，也叫栈内存，主管java程序的运行，是在线程创建是创建，它的生命周期跟随线程的生命周期，线程结束栈内存也就释放，对于栈来说，不存在垃圾回收，生命周期和线程一致，是线程私有的。<br>   基本类型变量和对象的引用变量，都是在函数的栈内存里分配。</p>
-<h4 id="1-1、栈存储的是什么？"><a href="#1-1、栈存储的是什么？" class="headerlink" title="1.1、栈存储的是什么？"></a>1.1、栈存储的是什么？</h4><p>   栈是先进后出，比如你main方法调用test1，test1调用test2，等等，所以main在最底下，可以看作一个栈帧对应一个方法。<br>    栈帧里面存3种类型变量：</p>
-<ul>
-<li>本地变量（local variables），输入参数和输出参数，以及方法内的变量。</li>
-<li>栈操作（ operand stack）出栈和入栈的操作</li>
-<li>栈帧数据（Frame data）：包括类文件，方法等，言下之意，每一个方法就是一个栈帧。</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span></span>&#123;</span><br><span class="line">    <span class="comment">//test的栈帧在上面，直接如此调用，把栈给撑爆了，所以栈溢出</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">          test();</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="comment">//main方法的栈帧在最底部</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] Args)</span></span>&#123;</span><br><span class="line">         test();</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line"> <span class="comment">//死循环，或者循环递归调用,出现的异常java.lang.StackOverflowError</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2、堆Heap"><a href="#2、堆Heap" class="headerlink" title="2、堆Heap"></a>2、堆Heap</h3><p>​    一个JVM实例只存在一个堆内存，堆内存大小是可以调节的。类加载器读取了类文件后，需要把类、方法、成员变量存在堆内存中，保存所有引用类型的真实信息，以方便执行器执行，堆内存分为三个部分：</p>
-<h4 id="2-1、Young-generation-space-新生代-young"><a href="#2-1、Young-generation-space-新生代-young" class="headerlink" title="2.1、Young generation space 新生代 young"></a>2.1、Young generation space 新生代 young</h4><p>新生代分为3个区：</p>
-<ul>
-<li>Eden space伊甸区</li>
-<li>Survivor 0 space 幸存0区</li>
-<li>Survivor 1 space 幸存1区</li>
-</ul>
-<h4 id="2-2、Tenure-generation-space-养老区-Old"><a href="#2-2、Tenure-generation-space-养老区-Old" class="headerlink" title="2.2、Tenure generation space 养老区 Old"></a>2.2、Tenure generation space 养老区 Old</h4><h4 id="2-3、Permanent-space-永久区-Perm"><a href="#2-3、Permanent-space-永久区-Perm" class="headerlink" title="2.3、Permanent space 永久区 Perm"></a>2.3、Permanent space 永久区 Perm</h4><h2 id="二、3种JVM"><a href="#二、3种JVM" class="headerlink" title="二、3种JVM"></a>二、3种JVM</h2><ul>
-<li>SUN公司的HotSpot虚拟机</li>
-<li>BEA公司的JRockit虚拟机</li>
-<li>IBM公司的J9VM虚拟机</li>
-</ul>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/20/JVM%E7%9B%B8%E5%85%B3/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-Kafka的应用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="2019/11/20/Kafka%E7%9A%84%E5%BA%94%E7%94%A8/" target="_blank">Kafka的应用</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="2019/11/20/Kafka%E7%9A%84%E5%BA%94%E7%94%A8/" class="archive-article-date">
-        <time datetime="2019-11-20T02:44:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-20</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、Kafka的应用"><a href="#一、Kafka的应用" class="headerlink" title="一、Kafka的应用"></a>一、Kafka的应用</h1><h3 id="1、Spark-Spark-Streaming-实时计算"><a href="#1、Spark-Spark-Streaming-实时计算" class="headerlink" title="1、Spark/Spark Streaming 实时计算"></a>1、Spark/Spark Streaming 实时计算</h3><p>充当消费者，消费Kafka的消息。也就是说Spark大约有90%的数据会来自kafka。</p>
-<h3 id="2、kafka有两种消息发送模式"><a href="#2、kafka有两种消息发送模式" class="headerlink" title="2、kafka有两种消息发送模式"></a>2、kafka有两种消息发送模式</h3><h4 id="2-1、点对点（一对一）模式。"><a href="#2-1、点对点（一对一）模式。" class="headerlink" title="2.1、点对点（一对一）模式。"></a>2.1、点对点（一对一）模式。</h4><p>只能一个生产者，一个消费者这样，消费者消费一条数据，然后表示接收到了，然后再回复一个确认收到，则消费一条数据，消息队列就删掉一条数据。如果想要多个消费者消费消息，就不行了。</p>
-<h4 id="2-2、发布订阅（publish-subscribe-）"><a href="#2-2、发布订阅（publish-subscribe-）" class="headerlink" title="2.2、发布订阅（publish/subscribe ）"></a>2.2、发布订阅（publish/subscribe ）</h4><p>​        发布订阅有两种，一种是生产者把消息发送到队列里，然后主动推送消息给消费者，有点类似你订阅的微信公众号，只要有新的消息就会推送给消费者。但是这种机制有一个缺点就是，比如你生产者生产消息的速度是100M/s，但是，你多个消费者可能处理消息的速度都不一样，有的50M/s，有的200M/s，而直接推送消息这种方式，处理速度慢的消费者就会直接崩掉。而处理速度快的又会造成很大的资源浪费。第二种是消费者主动拉取数据，会根据自身数据处理速度拉取。但是有问题，消费者要隔一段时间的轮询消息队列，看有没有新的消息产生。假如某种情况下，这样也容易造成一些资源浪费。kafka的发布订阅方式是消费者主动拉取数据。</p>
-<h3 id="3、Kafka中的相关定义"><a href="#3、Kafka中的相关定义" class="headerlink" title="3、Kafka中的相关定义"></a>3、Kafka中的相关定义</h3><h4 id="3-1、Offset"><a href="#3-1、Offset" class="headerlink" title="3.1、Offset"></a>3.1、Offset</h4><p>​        作用就是记录消费位，比如你消费到第6条，broker挂了，它会保存记录到zookeeper 里，kafka的0.9版本之前都是保存在zk中，之后就直接保存在kafka里也就是本地存储。不管你保存在zk也好，也是本地kafka集群也好，offset都是用来管理消息消费偏移量的<br>为什么要改保存到kafka集群本地呢？你zk存的好好的，首先消费者本身跟kafka直接连接的，我在kafka里面获取数据的同时，还要维护跟zk的连接，首先消费者是以拉取的方式获取消息的，本身拉取速度是非常快的，可能你消费者一秒要拉取消息好几次，还要跟zk这边打交道好几次，这样太频繁了，就会影响效率，而zk本身是来提供各大框架之间润滑技的作用，那你此时这么高并发的请求，存到zk里面也不好，后来把offset存到本地，这个本地不是本地磁盘，而是存到kafka本地。kafka存数据是存在topic 里面，kafka存消息是存到磁盘上的，默认保留七天，配置文件里写的是168个小时</p>
-<h4 id="3-2、topic"><a href="#3-2、topic" class="headerlink" title="3.2、topic"></a>3.2、topic</h4><p>​        看成是一个消息队列，因为生产者消费者面向的都是一个topic。</p>
-<ul>
-<li><p>partition分区</p>
-<p>为了实现扩展性，一个非常大的topic主题，会分布到多个broker（服务器）上。一个topic可以分为多个分区partition，而每个partition是一个有序队列。</p>
-</li>
-<li><p>replication是副本</p>
-<p>为保证集群中，当某个节点发生故障时，保证节点上的数据不丢失，而且kafka还能继续工作，kafka提供了副本机制，也就是一个topic的每一个分区，都有许多个副本。也就是一个leader和许多个follower。当然follower肯定不能再同一个broker，不然副本毫无意义。</p>
-</li>
-<li><p>leader副本</p>
-<p>leader是每个分区多个副本的主，生产者发送数据的对象，以及消费者消费数据的对象都是leader。每个分区多个副本的从，实时的从leader主副本同步数据，保持和leader数据同步，当某个leader分区挂了，某一个follwer从副本会成为新的leader分区启动kafka之前要先启动zk，因为kafka依赖于zk</p>
-</li>
-<li><p>消费者组consumer group</p>
-</li>
-</ul>
-<p>也就是同一个消费者组里面的消费者，消费topic不同分区，也就是不能消费同一个分区的数据</p>
-<h4 id="3-3、关于leader何时向follwer发送ack"><a href="#3-3、关于leader何时向follwer发送ack" class="headerlink" title="3.3、关于leader何时向follwer发送ack"></a>3.3、关于leader何时向follwer发送ack</h4><p>​        有两种想法，一是，半数以上的follwer同步完成数据，leader发送ack，但是这种解决方案，至少需要2n+1台服务器。容易造成资源浪费，还有很多重复的副本。第二种解决方案是，所有的服务器都同步完成，也就是总共有n+1台服务器，但是这样仍然有一个问题，就是，假如同步过程中，有一个follwer可能由于网络问题，长时间的没有和leader同步数据，这样就要一直等下去，容易造成资源浪费，因此就出现了ISR机制。kafka使用的是第二种方案<br>​        leader维护一个ISR（in sync replication set）叫做和follwer保持同步的集合，当ISR中的follwer和leader同步数据完成后，leader就会发出ack给follower。如果follwer长时间没有向leader同步数据，则这个follwer就会被踢出ISR，replica.lag.time.max.ms这个参数决定follwer的这个长时间的最大限度（默认值是10000ms，也就是10s之内同步完，否则被踢出isr）。如果leader挂了，就会选择follwer作为新的leader。选举follwer作为新的leader的时候，是看消息条数最多的，作为新的。因为数据越多的丢数据越少。</p>
-<ul>
-<li>ack的应答机制<br>  对某些不重要的数据，可靠性要求不是很高的数据，能够容忍少量丢失数据。所以，没必要等ISR中的的follwer都同步完数据。Kafka提供了3种可靠性级别，可以让用户使用的时候，对可靠性和延迟进行权衡。</li>
-</ul>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/20/Kafka%E7%9A%84%E5%BA%94%E7%94%A8/">展开全文 >></a>
+      <a class="article-more-a" href="2018/10/04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/">展开全文 >></a>
     </p>
     
 
@@ -766,7 +540,7 @@
 
 
   
-    <article id="post-分布式锁的3种实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-一、大数据离线部分总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -774,7 +548,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/" target="_blank">分布式锁的使用</a>
+	  <a class="article-title" href="2019/09/30/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%A6%BB%E7%BA%BF%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93/" target="_blank">大数据离线部分</a>
   
     </h1>
   
@@ -782,8 +556,8 @@
 
   
   
-<a href="2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/" class="archive-article-date">
-        <time datetime="2019-11-12T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-12</time>
+<a href="2019/09/30/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%A6%BB%E7%BA%BF%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93/" class="archive-article-date">
+        <time datetime="2019-09-30T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-30</time>
 </a>
 
   
@@ -795,166 +569,37 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、分布式锁"><a href="#一、分布式锁" class="headerlink" title="一、分布式锁"></a>一、分布式锁</h1><h3 id="1、为什么要使用分布式锁"><a href="#1、为什么要使用分布式锁" class="headerlink" title="1、为什么要使用分布式锁"></a>1、为什么要使用分布式锁</h3><p>​    如果需要对一个共享变量进行多线程同步访问的时候，可以使用java多线程进行运行。</p>
-<p>​    如果是单机应用，也就是所有的请求都会分配到当前服务器的JVM内部，然后映射为操作系统的线程进行处理，而这个共享变量只是在这个JVM内部的一块内存空间。</p>
-<p>​    后续业务发展，需要做集群，一个应用需要部署好几台机器然后做负载均衡。</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E5%9C%BA%E6%99%AF.png" alt></p>
-<p>一个共享变量A，存在JVM1，JVM2，JVM3，这3个JVM内存中，这个变量A主要体现是在一个类中的一个成员变量，是一个有状态的对象。</p>
-<p>比如UserController中的一个int类型的成员变量。如果不加任何控制的话，变量A同时都会在JVM分配一块内存，3个请求发过来，同时对这个变量操作，显然结果是不对的。即使不是同时发过来，3个请求分别操作3个不同JVM内存区域的数据，变量A之间不共享的话，也不具有可见性的话，处理结果也是不对的。</p>
-<h3 id="2、解决问题"><a href="#2、解决问题" class="headerlink" title="2、解决问题"></a>2、解决问题</h3><p>​    为了保证一个方法或者属性在高并发情况下的同一时间只能被同一个线程运行，在传统单体应用单机部署的情况下，可以使用Java并发处理相关的API（比如ReentrantLock，Synchronized）进行互斥控制。在单机环境中，Java中提供了很多并发处理的API。但是随着业务发展的需要，原来的单机部署的系统被演化为分布式集群系统后，由于分布式系统多线程，多进程并且分布在不同机器上，这将使得原单机部署情况下的并发控制锁策略失效，单纯的Java API并不能呢提供分布式锁的能力。为了解决这个问题就需要一种跨JVM的互斥机制来控制共享资源的访问，这就是分布式锁要解决的问题。</p>
-<h3 id="3、分布式锁具备的条件"><a href="#3、分布式锁具备的条件" class="headerlink" title="3、分布式锁具备的条件"></a>3、分布式锁具备的条件</h3><ul>
-<li>在分布式系统环境下，一个方法在同一时间只能被一个机器的一个线程执行。</li>
-<li>高可用的获取锁与释放锁</li>
-<li>高性能的获取锁与释放锁</li>
-<li>具备可重入特性</li>
-<li>具备锁失效机制，防止死锁</li>
-<li>具备非阻塞锁特性，也就是没有获取到锁将直接返回获取锁失败。</li>
+    <h1 id="一、大数据离线部分总结"><a href="#一、大数据离线部分总结" class="headerlink" title="一、大数据离线部分总结"></a>一、大数据离线部分总结</h1><h3 id="1、HDFS"><a href="#1、HDFS" class="headerlink" title="1、HDFS"></a>1、HDFS</h3><ul>
+<li>HDFS的架构部分以及工作原理<ul>
+<li>NameNode：负责管理元数据，将信息保存在内存中</li>
+<li>DataNode：保存数据，以块的形式保存，启动后需要定时的向NameNode发送心跳，报告自身存储的Block块信息。</li>
+<li>SecondNameNode：二级节点，负责合并请求。分担NameNode工作。</li>
 </ul>
-<h3 id="4、分布式锁的3种实现方式"><a href="#4、分布式锁的3种实现方式" class="headerlink" title="4、分布式锁的3种实现方式"></a>4、分布式锁的3种实现方式</h3><p>​    目前大型网站应用都是分布式部署，分布式场景中的数据一致性问题一直是一个重要的问题。出现了CAP定理。任何一个分布式系统都无法同时满足一致性(Consistency)，可用性(Availablility)，分区容忍性(Partition tolerance)，只能同时满足2个。</p>
-<p>​    目前在绝大多数场景中，都是需要牺牲强一致性来换取系统的高可用性，系统往往只需要保证最终一致性就行。也就是只要这个最终时间是在用户可以接受的范围内就行。</p>
-<p>​    在很多场景中，我们为了保证数据的最终一致性，需要很多技术支持。比如分布式事务，分布式锁。需要保证一个方法在同一个时间内只能被同一个线程执行。</p>
+</li>
+</ul>
+<h3 id="2、Spark容错机制"><a href="#2、Spark容错机制" class="headerlink" title="2、Spark容错机制"></a>2、Spark容错机制</h3><p>分布式数据集的容错性有2种方式：数据检查和记录数据的更新。</p>
+<p>面向大规模数据分析，数据检查点操作成本很高，需要通过数据中心的网络连接在机器之前复制庞大的数据集，而网络带宽往往比内存带宽低很多，同事还需要消耗更多的存储资源。</p>
+<h3 id="3、YARN的总结"><a href="#3、YARN的总结" class="headerlink" title="3、YARN的总结"></a>3、YARN的总结</h3><p>YARN（Yet Another Resource Negotiator）：另一种资源协调者。</p>
+<h4 id="3-1、使用YARN的背景"><a href="#3-1、使用YARN的背景" class="headerlink" title="3.1、使用YARN的背景"></a>3.1、使用YARN的背景</h4><p>​    旧版本MapReduce中的JobTracker/TaskTracker在可扩展性、内存消耗、可靠性和线程模型方面存在很多问题，需要开发者做很多调整来修复。后来Hadoop开发者对这些问题进行了修复，可是也因而带来的成本却越来越高，为了从根本上解决旧版本的MapReduce存在的问题，从Hadoop 0.23.0版本开始，Hadoop的MapReduce框架就大改动。Hadoop新的MapReduce框架被叫做MapReduce V2，也叫YARN。</p>
+<h4 id="3-2、为什么要使用YARN"><a href="#3-2、为什么要使用YARN" class="headerlink" title="3.2、为什么要使用YARN"></a>3.2、为什么要使用YARN</h4><p>​    与旧版本的MapReduce比较，YARN采用了一种分层的集群框架。</p>
 <ul>
-<li>基于数据库实现分布式锁</li>
-<li>基于缓存Redis等，实现分布式锁</li>
-<li>基于Zookeeper实现分布式锁</li>
+<li>解决了NameNode的单点故障问题，可以通过配置NameNode高可用来解决</li>
+<li>提出了HDFS联邦，通过HDFS联邦可以让多个NameNode分别管理不同的目录，从而实现访问隔离以及横向扩展。</li>
+<li>将资源管理和应用程序管理ApplicationManager分离开。用ResourceManager管理资源，用ApplicationMaster负责管理程序。（YARN的核心思想）</li>
+<li>具有向后兼容特点，运行在MR1上的Job不需要做任何修改就可以运行在YARN上。</li>
+<li>YARN是一个框架管理器，用户可以将各种计算框架移植到YARN上，统一由YARNJ进行管理和资源调度。目前YARN支持的计算框架有：MapReduce，Storm，Spark，Flink等。</li>
 </ul>
-<h4 id="1、基于数据库实现排它锁-互斥锁"><a href="#1、基于数据库实现排它锁-互斥锁" class="headerlink" title="1、基于数据库实现排它锁(互斥锁)"></a>1、基于数据库实现排它锁(互斥锁)</h4><h5 id="1-1、解决方法1：使用唯一索引约束。"><a href="#1-1、解决方法1：使用唯一索引约束。" class="headerlink" title="1.1、解决方法1：使用唯一索引约束。"></a>1.1、解决方法1：使用唯一索引约束。</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`method_lock`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`method_lock`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'主键'</span>,</span><br><span class="line">  <span class="string">`method_name`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'锁定的方法名'</span>,</span><br><span class="line">  <span class="string">`update_time`</span> <span class="built_in">timestamp</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">  <span class="string">`PRIMARY KEY (`</span><span class="keyword">id</span><span class="string">`),</span></span><br><span class="line"><span class="string">  UNIQUE KEY `</span>uidx_method_name<span class="string">` (`</span>method_name<span class="string">`) USING BTREE</span></span><br><span class="line"><span class="string">) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='锁定中的方法';</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--获取锁</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> method_lock(method_name,<span class="keyword">desc</span>) <span class="keyword">values</span>(<span class="string">'xxxService'</span>,<span class="string">'methodName'</span>;)</span><br></pre></td></tr></table></figure>
-
-<p>这种解决方法，对method_name做了唯一性约束，这里如果有多个请求同时提交到数据库的话，数据库会保证只有一个操作可以成功。</p>
-<h5 id="1-2、解决方法2：先获取锁的信息，然后更新状态。"><a href="#1-2、解决方法2：先获取锁的信息，然后更新状态。" class="headerlink" title="1.2、解决方法2：先获取锁的信息，然后更新状态。"></a>1.2、解决方法2：先获取锁的信息，然后更新状态。</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`method_lock`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`method_lock`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'主键'</span>,</span><br><span class="line">  <span class="string">`method_name`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'锁定的方法名'</span>,</span><br><span class="line">  <span class="string">`state`</span> <span class="built_in">tinyint</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'1:未分配；2：已分配'</span>,</span><br><span class="line">  <span class="string">`update_time`</span> <span class="built_in">timestamp</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">  <span class="string">`version`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'版本号'</span>,</span><br><span class="line">  <span class="string">`PRIMARY KEY (`</span><span class="keyword">id</span><span class="string">`),</span></span><br><span class="line"><span class="string">  UNIQUE KEY `</span>uidx_method_name<span class="string">` (`</span>method_name<span class="string">`) USING BTREE</span></span><br><span class="line"><span class="string">) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='锁定中的方法';</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--先获取锁的信息</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,method_name,state,<span class="keyword">version</span> <span class="keyword">from</span> method_lock <span class="keyword">where</span> state=<span class="number">1</span> <span class="keyword">and</span> method_name=<span class="string">'methodName'</span>;</span><br><span class="line"><span class="comment">--占有锁</span></span><br><span class="line"><span class="keyword">update</span> method_lock <span class="keyword">set</span> state=<span class="number">2</span>,<span class="keyword">version</span>=<span class="number">2</span>,update_time=<span class="keyword">now</span>()</span><br><span class="line"><span class="keyword">where</span> method_name=<span class="string">'methodName'</span> <span class="keyword">and</span> state=<span class="number">1</span> <span class="keyword">and</span> <span class="keyword">version</span>=<span class="number">2</span>;</span><br><span class="line"><span class="comment">--如果没有更新影响到的这一行数据，说明这个资源已经被别人占位了。</span></span><br></pre></td></tr></table></figure>
-
-<h5 id="1-3、这2种方案都是有弊端"><a href="#1-3、这2种方案都是有弊端" class="headerlink" title="1.3、这2种方案都是有弊端"></a>1.3、这2种方案都是有弊端</h5><ul>
-<li><p>缺点：</p>
+<h4 id="3-2、YARN的基本架构"><a href="#3-2、YARN的基本架构" class="headerlink" title="3.2、YARN的基本架构"></a>3.2、YARN的基本架构</h4><ul>
+<li><p>YARN的核心思想：将功能分开，ResourceManager进程完成整个集群的资源管理和调度。ApplicationMaster进程负责应用程序的相关事务，比如任务调度，容错，任务监控等。</p>
 <ul>
-<li>这把锁很依赖数据库的可用性，如果数据库是单个节点，一旦数据库挂了，则业务系统不可用了。</li>
-<li>这把锁还没有失效时间，一旦解锁失败(更新state状态失败)，就会导致锁记录一直在数据库中，其他线程无法获取锁。</li>
-<li>这把锁是非阻塞的，因为数是insert操作，一旦插入失败就会直接报错，没有获取锁的线程就不会进入到等待队列，要想再次获取锁就必须再次触发获取锁的操作。</li>
-<li>这把锁是不可重入的，同一个线程在没有释放锁之前无法再次得到这个所，因为数据已经在数据库中存在了。</li>
+<li>系统中所有应用资源调度的最终决定权是ResourceManager担当的。</li>
+<li>每个应用的ApplicationMaster实际上是框架指定的库，它从ResourceManager调度资源，和Node Manager一块执行监控任务。</li>
+<li>NodeManager通过心跳信息向ResourceManager汇报自己所在节点的资源使用情况。</li>
 </ul>
 </li>
-<li><p>解决方案：</p>
-<ul>
-<li>数据库是单点的话，可以数据库集群，然后数据之前进行同步，一旦挂掉，快速切换到备份库上。</li>
-<li>没有失效时间，可以搞一个定时任务，每隔一段时间把数据库中的超时的数据delete。</li>
-<li>他是非阻塞的，可以搞一个while循环，直到insert成功后再返回。</li>
-<li>它是不可重入的，可以在数据库表上加一个字段，记录当前获取锁的机器的主机信息和线程信息，那么下次获取锁的时候可以先查询数据库，如果当前及其的主机信息和线程信息在数据库可以查到的话，直接把锁分配给他就行了。</li>
-</ul>
+<li><p>在旧版本的MapReduce(MR1)中，JobTracker有2个功能：一个是资源管理，另一个是作业调度。</p>
 </li>
 </ul>
-<h4 id="2、基于Redis实现分布式锁"><a href="#2、基于Redis实现分布式锁" class="headerlink" title="2、基于Redis实现分布式锁"></a>2、基于Redis实现分布式锁</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 获取锁使用的命令：</span></span></span><br><span class="line">SET resource_name_value NX PX 30000</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> RedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String LOCK=<span class="string">"distribute_key"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">test</span><span class="params">(String lockKey)</span></span>&#123;</span><br><span class="line">    Boolean lock=<span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加锁的时候，在try块中，尝试获取锁，在finaly块中释放锁。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">//如果key不存在，则新增，如果存在则不改变已经有的值</span></span><br><span class="line">      lock = redisTemplate.opsForValue().setIfAbsent(lockKey, LOCK);</span><br><span class="line">      log.info(<span class="string">"test方法是否获取到锁："</span> + lock);</span><br><span class="line">      <span class="keyword">if</span> (lock) &#123;</span><br><span class="line">          <span class="comment">//todo 业务逻辑</span></span><br><span class="line">          redisTemplate.expire(lockKey, <span class="number">1</span>, TimeUnit.MINUTES);</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          log.info(<span class="string">"test方法没有获取到锁，不执行任务！"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">      <span class="keyword">if</span>(lock)&#123;</span><br><span class="line">          redisTemplate.delete(lockKey);</span><br><span class="line">          log.info(<span class="string">"test方法任务结束，释放锁！"</span>);</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">          log.info(<span class="string">"test方法没获取到锁，不需要释放锁！"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-1、弊端"><a href="#2-1、弊端" class="headerlink" title="2.1、弊端"></a>2.1、弊端</h5><p>首先是这主从结构存在明显的竞争状态：</p>
-<p>客户端A从master获取到锁，在master将锁同步到slave之前，master挂掉了，slave节点被晋级为master节点，客户端B取的了同一个资源被客户端A已经获取到的另外一个锁。安全失效。</p>
-<h4 id="3、基于Zookeeper实现"><a href="#3、基于Zookeeper实现" class="headerlink" title="3、基于Zookeeper实现"></a>3、基于Zookeeper实现</h4><p>​    Zookeeper中有节点的概念，Zk的数据存储结构就像一棵树，这棵树由节点组成，节点叫Znode，有点类似Linux的文件系统结构。</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zookeeper%E8%8A%82%E7%82%B9%E7%BB%93%E6%9E%84.jpeg" alt></p>
-<p>​    Znode有4种类型：</p>
-<ul>
-<li><p>持久节点Persistent</p>
-<p>默认的节点类型，创建节点的客户端与zk断开连接后，这个节点仍然存在。</p>
-</li>
-<li><p>持久节点顺序节点Persistent_Sequential</p>
-<p>顺序节点，就是在创建节点的时候，zk根据创建的时间顺序给该节点名称进行编号。</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zookeeper%E4%B8%AD%E7%9A%84%E9%A1%BA%E5%BA%8F%E8%8A%82%E7%82%B9.jpeg" alt></p>
-</li>
-<li><p>临时节点Ephemeral</p>
-<p>和持久节点相反，当创建节点的客户端与zk断开后，临时节点会被删除。</p>
-</li>
-</ul>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zookeeper%E5%88%9B%E5%BB%BA%E4%B8%B4%E6%97%B6%E8%8A%82%E7%82%B9.jpeg" alt></p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/../../%E6%A1%8C%E9%9D%A2/md/images/%E5%88%9B%E5%BB%BA%E8%8A%82%E7%82%B9%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8Ezk%E6%96%AD%E5%BC%80.jpeg" alt></p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E4%B8%B4%E6%97%B6%E8%8A%82%E7%82%B9%E4%BC%9A%E8%A2%AB%E5%88%A0%E9%99%A4.jpeg" alt></p>
-<ul>
-<li><p>临时顺序节点（Ephemeral_Sequential）</p>
-<p>临时顺序节点就是结合了临时节点和顺序节点的特点：在创建临时节点的时候，zk根据创建的时间顺序给节点名称进行编号，当创建节点的客户端与zk断开连接后，临时顺序节点被删除。</p>
-</li>
-</ul>
-<h5 id="3-1、Zookeeper分布式锁的原理"><a href="#3-1、Zookeeper分布式锁的原理" class="headerlink" title="3.1、Zookeeper分布式锁的原理"></a>3.1、Zookeeper分布式锁的原理</h5><p>Zk分布式锁使用的是临时顺序节点，也就是客户端断开连接后，会删除该节点，然后客户端创建节点的时候，会按照时间顺序来对临时节点命名。</p>
-<ul>
-<li><p>获取锁</p>
-<ul>
-<li>首先在zk中创建一个持久节点ParentLock，当第一个客户端想要获取锁的时候，需要在ParentLock这个节点下面创建临时顺序节点Lock1。</li>
-</ul>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zk%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%EF%BC%9A%E8%8E%B7%E5%8F%96%E9%94%81.jpeg" alt></p>
-</li>
-</ul>
-<ul>
-<li><p>Client1查找ParnentLock下面所有的临时顺序节点并排序，然后判断自己创建的节点Lock1是不是顺序最靠前的一个节点。如果是第一个节点，就成功获取锁。</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%88%A4%E6%96%AD%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E7%9A%84%E8%8A%82%E7%82%B9%E6%98%AF%E4%B8%8D%E6%98%AF%E7%AC%AC%E4%B8%80%E4%B8%AA.jpeg" alt></p>
-</li>
-<li><p>这个时候，再有一个客户端Client2前来获取锁，首先在ParentLock下再创建一个临时顺序节点Lock2</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%86%8D%E6%9C%89%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AFClient2%E6%9D%A5%E8%8E%B7%E5%8F%96%E9%94%81%EF%BC%8C%E5%85%88%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%B4%E6%97%B6%E9%A1%BA%E5%BA%8F%E8%8A%82%E7%82%B9Lock2.jpeg" alt></p>
-</li>
-<li><p>Client2查找ParnentLock下面所有的临时顺序节点并排序，判断它自己创建的节点Lock2是不是顺序最靠前的一个，结果发现节点Lock2并不是最小的。于是，Client2向排序仅仅比他靠前的节点Lock1注册Watcher，用来监听Lock1节点是否存在。这意味者此时Client2抢锁失败，进入了等待状态。</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client2%E5%90%91%E6%AF%94%E4%BB%96%E9%9D%A0%E5%89%8D%E7%9A%84Lock1%E6%B3%A8%E5%86%8CWatcher%EF%BC%8C%E6%84%8F%E5%91%B3%E7%9D%80%E6%8A%A2%E9%94%81%E5%A4%B1%E8%B4%A5%EF%BC%8C%E8%BF%9B%E5%85%A5%E7%AD%89%E5%BE%85%E7%8A%B6%E6%80%81.jpeg" alt></p>
-</li>
-<li><p>假如这个时候，又有一个客户端Client3前来获取锁，则在ParentLock下再创建一个临时顺序节点Lock3</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%8F%88%E6%9D%A5%E4%B8%80%E4%B8%AAClient3%E6%9D%A5%E8%8E%B7%E5%8F%96%E9%94%81%EF%BC%8C%E5%88%99%E5%85%88%E5%9C%A8ParentLock%E4%B8%AD%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E4%B8%B4%E6%97%B6%E9%A1%BA%E5%BA%8F%E8%8A%82%E7%82%B9.jpeg" alt></p>
-</li>
-<li><p>Client3查找ParentLock下面所有的临时顺序节点并排序，判断自己所创建的节点Lock3是不是顺序最靠前的一个，结果同样发现节点Lock3并不是最小的。</p>
-<p>于是，Client3向排序仅仅比他靠前的节点Lock2注册Watcher，用来监听Lock2节点是否存在，这意味这Client3同样抢锁失败，进入了等待状态。</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client3%E5%90%91%E6%AF%94%E8%87%AA%E5%B7%B1%E9%9D%A0%E5%89%8D%E7%9A%84%E8%8A%82%E7%82%B9Lock2%E6%B3%A8%E5%86%8CWatcher%EF%BC%8C%E6%8A%A2%E9%94%81%E5%A4%B1%E8%B4%A5%EF%BC%8C%E8%BF%9B%E5%85%A5%E7%AD%89%E5%BE%85%E7%8A%B6%E6%80%81.jpeg" alt></p>
-</li>
-<li><p>这样就形成了，Client1获取了锁，Client2监听了Lock1，Client3监听额Lock2。从而形成了一个等待队列，很像Java中ReentrantLock所依赖的。</p>
-</li>
-</ul>
-<ul>
-<li><p>释放锁</p>
-<ul>
-<li><p>1、任务完成，客户端显示释放</p>
-<p>当任务完成后，Client1会显示调用删除节点Lock1的指令。</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client1%E4%BB%BB%E5%8A%A1%E5%AE%8C%E6%88%90%EF%BC%8C%E4%BC%9A%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9Lock1.jpeg" alt></p>
-</li>
-<li><p>2、任务执行过程中，客户端崩溃</p>
-<p>得到锁的Client1在执行任务过程中，突然挂了，则会断开与Zk服务端的连接，根据临时节点的特性，它自己创建的节点也会被自动删除。</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client1%E8%BF%90%E8%A1%8C%E4%B8%AD%E7%AA%81%E7%84%B6%E6%8C%82%E4%BA%86%EF%BC%8C%E5%88%99zk%E4%BC%9A%E8%87%AA%E5%8A%A8%E5%88%A0%E9%99%A4%E5%AE%83%E7%9A%84%E8%8A%82%E7%82%B9.jpeg" alt></p>
-<p>由于Client2一直监听者Lock1的存在状态，当Lock1节点被删除后，Client2会立刻得到通知，这时候Client2会再次查ParentLock下面的所有节点，确认自己创建的节点Lock22是不是目前最小的节点，如果是最小，则Client2就成功获取了锁。</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client2%E7%9B%91%E5%90%ACLock1%E7%9A%84%E8%8A%82%E7%82%B9%E5%AD%98%E5%9C%A8%E7%8A%B6%E6%80%81%EF%BC%8CLock1%E8%8A%82%E7%82%B9%E8%A2%AB%E5%88%A0%E9%99%A4%EF%BC%8CClient2%E4%BC%9A%E7%AB%8B%E5%88%BB%E5%BE%97%E5%88%B0%E9%80%9A%E7%9F%A5%EF%BC%8C%E7%84%B6%E5%90%8Eclient2%E5%9C%A8%E6%9F%A5%E8%AF%A2ParentLock%E4%B8%8B%E9%9D%A2%E6%89%80%E6%9C%89%E8%8A%82%E7%82%B9%E5%B9%B6%E6%8E%92%E5%BA%8F%EF%BC%8C%E7%A1%AE%E4%BF%9D%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E7%9A%84%E8%8A%82%E7%82%B9%E6%98%AF%E7%AC%AC%E4%B8%80%E4%B8%AA.jpeg" alt></p>
-<p>同理，如果Client2也因为任务完成或者节点崩溃而删除了Lock2，那么Client3会收到通知。</p>
-<p><img src="/2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%90%8C%E7%90%86Client3.jpeg" alt></p>
-<p>最终，Client3成功获取锁。</p>
-</li>
-</ul>
-</li>
-</ul>
-<h5 id="3-2、实现方法"><a href="#3-2、实现方法" class="headerlink" title="3.2、实现方法"></a>3.2、实现方法</h5><p>可以直接使用zk第三方库Curator客户端，这个客户端封装了一个可重入的锁服务。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * InterProcessMutex是分布式锁的实现，acquire方法用户获取锁，release释放锁</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> InterProcessMutex interProcessMutex;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(<span class="keyword">long</span> timeout,TimeUnit unit)</span></span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            interProcessMutex.acquire(timeout,unit);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ExecutorCompletionService executorService;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">unLock</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            interProcessMutex.release();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">//executorService.schedule(new Cleaner(client,path),delayTimeForClean,TimeUnit.MILLISECONDS);</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>缺点：</p>
-<p>​    性能上，并没有缓存那么高，因为每次在创建锁和释放锁的过程中，都需要动态创建按，销毁临时顺序节点来实现锁功能。zk中创建和删除节点只能通过leader服务器来执行，然后将数据同步到所有的follwer服务器上。</p>
-<p>​    使用zk也有可能带来并发问题，只是并不常见。由于网络抖动，客户端与zk集群的session连接断了，那么zk以为客户端挂了，就会删除临时节点，这时候其他客户端就可以获取到分布式锁了。也有可能产生并发问题，并不常见，因为zk有重试机制，一旦zk集群检测不到客户端的心跳，你就会重试，Curator客户端（操作zk的客户端）支持多种重试策略    ，多次重试之后还是不行的话，就会删除临时节点。因此，选择一个合适的重试策略也很重要，要在锁的粒度和并发之前找一个平衡。</p>
-</li>
-</ul>
-<h3 id="5、总结"><a href="#5、总结" class="headerlink" title="5、总结"></a>5、总结</h3><table>
-<thead>
-<tr>
-<th align="center">分布式锁</th>
-<th align="center">优点</th>
-<th align="center">缺点</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">Zk</td>
-<td align="center">1、有封装好的框架，容易实现。2、有等待锁的队列，大大提升抢锁效率。</td>
-<td align="center">添加和删除节点性能比较低</td>
-</tr>
-<tr>
-<td align="center">Redis</td>
-<td align="center">Set和Del执行的性能比较高</td>
-<td align="center">1、实现复杂，需要考虑超时，原子性，误删的情况。2、没有等待锁的队列，只能在客户端自旋来等待，效率比较低。</td>
-</tr>
-</tbody></table>
-<h3 id="6、3种方案比较使用"><a href="#6、3种方案比较使用" class="headerlink" title="6、3种方案比较使用"></a>6、3种方案比较使用</h3><p>3种方法，就如同CAP一样，在复杂性，可靠性，性能等方面无法同事满足。应该根据不同应用场景，选择最合适的分布式锁。</p>
-<h4 id="6-1、从理解的难易程度上，从低到高"><a href="#6-1、从理解的难易程度上，从低到高" class="headerlink" title="6.1、从理解的难易程度上，从低到高"></a>6.1、从理解的难易程度上，从低到高</h4><p>数据库——-&gt;Redis——-&gt;Zk</p>
-<h4 id="6-2、从实现的复杂程度上，从低到高"><a href="#6-2、从实现的复杂程度上，从低到高" class="headerlink" title="6.2、从实现的复杂程度上，从低到高"></a>6.2、从实现的复杂程度上，从低到高</h4><p>zk————-&gt;Redis——-&gt;数据库</p>
-<h4 id="6-3、从性能角度，从低到高"><a href="#6-3、从性能角度，从低到高" class="headerlink" title="6.3、从性能角度，从低到高"></a>6.3、从性能角度，从低到高</h4><p>数据库————–&gt;zk———&gt;Redis</p>
-<h4 id="6-4、从可靠性角度，从低到高"><a href="#6-4、从可靠性角度，从低到高" class="headerlink" title="6.4、从可靠性角度，从低到高"></a>6.4、从可靠性角度，从低到高</h4><p>zk—————&gt;Redis—————&gt;数据库</p>
 
     
 
@@ -971,7 +616,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
         		</li>
       		
 		</ul>
@@ -981,7 +626,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/12/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/">展开全文 >></a>
+      <a class="article-more-a" href="2019/09/30/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%A6%BB%E7%BA%BF%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93/">展开全文 >></a>
     </p>
     
 
@@ -1016,7 +661,7 @@
 
 
   
-    <article id="post-一、G1垃圾回收器介绍" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-一、分布式锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -1024,7 +669,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" target="_blank">G1垃圾回收</a>
+	  <a class="article-title" href="2018/12/11/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_blank">分布式锁</a>
   
     </h1>
   
@@ -1032,8 +677,8 @@
 
   
   
-<a href="2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
+<a href="2018/12/11/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="archive-article-date">
+        <time datetime="2018-12-11T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-11</time>
 </a>
 
   
@@ -1045,64 +690,44 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h3 id="一、G1垃圾回收器介绍"><a href="#一、G1垃圾回收器介绍" class="headerlink" title="一、G1垃圾回收器介绍"></a>一、G1垃圾回收器介绍</h3><p>为了解决CMS算法产生空间碎片和其他一系列的问题缺陷，HotSpot虚拟机团队提出了另外一种垃圾回收策略，G1（Garbage First）算法。通过参数-XX:+UserG1GC来启用。这个算法在JDK7被正式推出。</p>
-<p>G1垃圾回收算法主要应用在多CPU大内存的服务中，在满足高吞吐量的同事，尽可能的满足垃圾回收时的暂停时间，G1的设计应用场景：</p>
+    <h1 id="一、分布式锁"><a href="#一、分布式锁" class="headerlink" title="一、分布式锁"></a>一、分布式锁</h1><p>在单机场景下，可以使用Java里的内置所来实现进行同步。但是在分布式场景下，需要同步的进程可能位于不同的节点上，那么就需要使用分布式锁。</p>
+<p>阻塞所通常使用互斥量来实现：</p>
 <ul>
-<li>垃圾收集线程和应用线程并发执行，和CMS一样。</li>
-<li>空闲内存亚索时避免冗长的暂停时间</li>
-<li>应用需要更多可预测的GC暂停时间</li>
-<li>不希望牺牲太多的吞吐性能</li>
-<li>不需要很大的java堆</li>
+<li>互斥量mutex为0表示有其他进程在使用锁，此时处于锁定状态。</li>
+<li>互斥量mutex为1表示未锁定状态。</li>
 </ul>
-<h3 id="1、堆内存结构："><a href="#1、堆内存结构：" class="headerlink" title="1、堆内存结构："></a>1、堆内存结构：</h3><h4 id="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："><a href="#1、以往的垃圾回收算法，比如CMS，堆内存结构如下：" class="headerlink" title="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："></a>1、以往的垃圾回收算法，比如CMS，堆内存结构如下：</h4><p>年轻代/新生代：eden space+2个survivor</p>
-<p>老年代：old space</p>
-<p>持久代：1.8之前的perm space</p>
-<p>元空间：1.8之后的metaspace(元空间)</p>
-<p>上面这些space必须是地址连续的空间。</p>
-<h4 id="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"><a href="#2、在G1算法中，采用了另一种完全不同的方式组织堆内存" class="headerlink" title="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"></a>2、在G1算法中，采用了另一种完全不同的方式组织堆内存</h4><p>堆内存被划分成多个大小相等的内存块Region，每个Region是逻辑连续的一段内存。</p>
-<p>每个Region被标记了E,S,O,H，说明每个Region在运行时都充当了一种角色，其中H是以往算法中没有的，它代表Humongous，这表示这些Region存储的是巨型对象。当新建对象大小超过Region大小一半的时候，直接在新的一个或者多个连续Region中分配，并标记为H。</p>
-<h4 id="3、Region"><a href="#3、Region" class="headerlink" title="3、Region"></a>3、Region</h4><p>堆内存中一个Region的大小可以通过-XX:G1HeapRegionSize参数指定，大小区间只能是1M,2M,4M,8M,16M,32M，总之是2的幂次方，如果G1HeapRegionSize为默认值，则在堆初始化时计算Region的实际大小。</p>
-<p>默认把堆内存按照2048份均分，最后得到一个合理的大小。</p>
-<h3 id="2、GC模式"><a href="#2、GC模式" class="headerlink" title="2、GC模式"></a>2、GC模式</h3><p>G1中提供了3种模式垃圾回收模式，young GC,mixed GC和full GC。在不同的条件下被触发</p>
-<h4 id="1、young-GC"><a href="#1、young-GC" class="headerlink" title="1、young GC"></a>1、young GC</h4><p>发生在年轻代的GC算法，一般对象（除了巨型对象），都是在eden region中分配内存，当所有的eden region被消耗殆尽无法再申请内存的时候，就会触发一次young GC，这种触发机制和之前的young GC差不多，执行玩一次young GC，活跃对象会被拷贝到survivor region或者晋升到old region中，空闲的region会被放入空闲列表中，等待下次被使用。</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>-XX:MaxGCPauseMillis</td>
-<td>设置G1收集过程目标时间，默认200ms</td>
-</tr>
-<tr>
-<td>-XX:G1NewSizePercent</td>
-<td>新生代最小值，默认值5%</td>
-</tr>
-<tr>
-<td>-XX:G1MaxNewSizePercent</td>
-<td>新生代最大值，默认值60%</td>
-</tr>
-</tbody></table>
-<h4 id="2、mixed-GC"><a href="#2、mixed-GC" class="headerlink" title="2、mixed GC"></a>2、mixed GC</h4><p>当越来越多的对象晋升到老年代old region时，为了避免堆内存被消耗殆尽，虚拟机会触发一个混合的垃圾收集器，也就是mixed GC；这个算法不是一个old GC，除了回收整个young region，还会回收一部分old region。注：只是一部分老年代，而不是全部老年代，可以选择哪些old region进行收集，从而可以对垃圾回收的耗时时间进行控制。</p>
-<p>mixed GC什么时候被触发？</p>
-<p>有点类似cms的触发机制 ，如果添加了以下参数：</p>
-<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">-XX:CMSInitiatingOccupancyFraction=80</span></span><br><span class="line"><span class="deletion">-XX:+UserCMSInitiatingOccupancyOnly</span></span><br></pre></td></tr></table></figure>
-
-<p>当CMS的老年代的使用率达到80%时，就会触发一次cms gc。</p>
-<p>相对的，mixed gc中也有一个阈值参数：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:InitiatingHeapOccupancyPercent</span><br></pre></td></tr></table></figure>
-
-<p>当老年代大小占整个堆大小百分比达到该阈值时，会触发一次mixed gc。</p>
-<h4 id="3、mixed-GC执行过程"><a href="#3、mixed-GC执行过程" class="headerlink" title="3、mixed GC执行过程"></a>3、mixed GC执行过程</h4><ul>
-<li>initial remark：初始标记过程，整个过程STW（Stop-The-World，在执行垃圾回收算法的时候，Java应用程序的其他所有线程都被挂起，Java中一种全局暂停现象，全局停顿，所有Java代码停止，native代码可以执行，但是不饿能够和JVM交互）标记了从GC Root可达的对象</li>
-<li>concurrent marking：并发标记过程，整个过程gc collector线程与应用线程可以并行执行，标记出GC Root可达对象衍生出来的存活的对象，并收集各个Region的存活对象信息。</li>
-<li>remark：最终标记过程，整个过程STW，标记出哪些在并发标记过程中遗漏的，或者内部引用发生变化的对象。</li>
-<li>clean up：垃圾清除过程，如果发现一个Region中没有存活对象，则把该Regioon加入到空闲列表中。</li>
+<p>1和0可以用一个整形值表示，也可以用某个数据是否存在表示。</p>
+<h2 id="1、数据库的唯一索引"><a href="#1、数据库的唯一索引" class="headerlink" title="1、数据库的唯一索引"></a>1、数据库的唯一索引</h2><p>获取锁时向表中插入一条记录，释放锁时删除这条记录。唯一索引可以保证该记录只被插入一次，那么就可以用这个记录是否存在来判断是否在锁定状态。</p>
+<p>存在以下几个问题：</p>
+<ul>
+<li>锁没有失效时间，解锁失败的话，其他进程无法再获得该锁。</li>
+<li>只能是非阻塞锁，插入失败直接就报错，无法重试。</li>
+<li>不可重入，已经获得锁的进程也必须重新获取锁。</li>
 </ul>
-<h4 id="4、full-GC"><a href="#4、full-GC" class="headerlink" title="4、full GC"></a>4、full GC</h4><p>如果对象内存分配速度过快，mixed GC来不及回收，导致老年代old Region被填满，就会触发一次full gc。</p>
-<p>G1的full GC算法就是单线程的执行serial old gc，会导致异常长时间的暂停时间，需要进行不断的调优，尽可能的避免full GC。</p>
+<h2 id="2、Redis的SETNX指令"><a href="#2、Redis的SETNX指令" class="headerlink" title="2、Redis的SETNX指令"></a>2、Redis的SETNX指令</h2><p>使用SETNX（set if not exist）指令插入一个键值对，如果key已经存在，那么会返回false，否则插入成功并返回true。</p>
+<p>SETNX指令和数据库的唯一索引类似，保证了只存在一个key的键值对，那么可以用一个key的键值对是否存在来判断是否存于锁定状态。</p>
+<p>EXPIRE指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引方式中释放锁失败的问题。也就是数据库的唯一索引解决方案的升级而已，只是可以设置过期时间。</p>
+<h2 id="3、Redis的RedLock算法"><a href="#3、Redis的RedLock算法" class="headerlink" title="3、Redis的RedLock算法"></a>3、Redis的RedLock算法</h2><p>使用了多个Redis实例来实现分布式锁，这是为了保证在发生单点故障时仍然可用。多个Redis实例实现，也就是即使一台Redis挂了，还可以有其他的服务可用。</p>
+<ul>
+<li>尝试从N个互相独立的Redis实例中获取锁。</li>
+<li>计算获取锁消耗的时间，只有当这个时间小于锁的过期时间，并且从大多数(N/2+1)，半数以上的实例上获取锁，那么就认为获取锁成功了。</li>
+<li>如果锁获取失败，就到每个实例上释放锁。</li>
+</ul>
+<h2 id="4、Zookeeper的有序节点"><a href="#4、Zookeeper的有序节点" class="headerlink" title="4、Zookeeper的有序节点"></a>4、Zookeeper的有序节点</h2><h3 id="1、Zookeeper抽象模型"><a href="#1、Zookeeper抽象模型" class="headerlink" title="1、Zookeeper抽象模型"></a>1、Zookeeper抽象模型</h3><p>Zookeeper提供了一种树型结构的命名空间，/app1/p_1节点的父节点为app1。有点类似linux系统文件系统，文件目录树</p>
+<h3 id="2、节点类型"><a href="#2、节点类型" class="headerlink" title="2、节点类型"></a>2、节点类型</h3><ul>
+<li>永久节点：不会因为会话结束或者超时而消失。</li>
+<li>临时节点：如果会话结束或者超时就会消失。</li>
+<li>有序节点：会在节点名的后面加上一个数字后缀，并且是有序的。例如生成的有序节点为/lock/node-0000000000，它的下一个有序节点就是/lock/node-0000000001，以此类推。</li>
+</ul>
+<h3 id="3、监听器"><a href="#3、监听器" class="headerlink" title="3、监听器"></a>3、监听器</h3><p>为一个节点注册监听器，在节点状态发生改变的时候，会给客户端发送消息 。</p>
+<h3 id="4、分布式锁实现"><a href="#4、分布式锁实现" class="headerlink" title="4、分布式锁实现"></a>4、分布式锁实现</h3><ul>
+<li>创建一个目录/lock。</li>
+<li>当一个客户端需要获取锁时，在/lock下创建临时的且有序的子节点。</li>
+<li>客户端获取/lock下的子节点列表，判断自己创建的子节点是否为当前子节点列表中序号最小的子节点，如果是则认为获得锁。否则监听自己的前一个子节点，获得子节点的变更通知后重复此步骤直到获取锁为止。</li>
+<li>执行业务代码，完成后，删除对应的子节点。</li>
+</ul>
+<h3 id="5、会话超时"><a href="#5、会话超时" class="headerlink" title="5、会话超时"></a>5、会话超时</h3><p>如果一个已经获的锁的会话超时了，因为创建的是临时节点，所以该会话对应的临时节点会被删除，其他会话就可以获取锁。可以看到zookeeper分布式锁不会出现数据库的唯一索引的分布式锁释放锁失败的问题。</p>
+<h3 id="6、羊群效应"><a href="#6、羊群效应" class="headerlink" title="6、羊群效应"></a>6、羊群效应</h3><p>一个节点未获得锁，只需要监听自己前一个子节点，这是因为如果监听所有的子节点，那么任意一个子节点状态改变，其他所有子节点都会收到通知(羊群效应)，而我们秩序网它的后一个子节点收到通知。</p>
 
     
 
@@ -1129,1485 +754,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/01/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-一、Redis简介" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/" target="_blank">Redis的使用</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><p>Redis是速度非常快的非关系型(NoSQL)内存键值数据库。可以存储键和5种不同类型的值之间的映射。</p>
-<p>key的类型只能为字符串，value支持6中类型：String,Hash,List,Set,zset,HyperLogLog</p>
-<p>Redis支持很多特性，例如将内存中的数据持久化到硬盘中，使用复制来扩展读性能，使用分片来扩展写性能。</p>
-<h1 id="二、数据类型"><a href="#二、数据类型" class="headerlink" title="二、数据类型"></a>二、数据类型</h1><table>
-<thead>
-<tr>
-<th align="center">数据类型</th>
-<th align="center">可以存储的值</th>
-<th align="center">操作</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">String</td>
-<td align="center">字符串，整数和浮点数</td>
-<td align="center">对整个字符串或者字符串的其中一部分执行操作，对整数和浮点数执行自增或者自减操作。</td>
-</tr>
-<tr>
-<td align="center">List</td>
-<td align="center">列表</td>
-<td align="center">从两端压入或者弹出元素，对单个或者多个元素进行修剪，只保留一个范围内的元素。</td>
-</tr>
-<tr>
-<td align="center">Set</td>
-<td align="center">无序集合</td>
-<td align="center">添加，获取，移除单个元素，检查一个元素是否存在于集合中，计算交集，并集，差集，从集合里面随机获取元素，去重。</td>
-</tr>
-<tr>
-<td align="center">Hash</td>
-<td align="center">包含键值对的无序散列表</td>
-<td align="center">添加，获取，移除单个键值对，获取素有键值对，检查某个键是否存在。</td>
-</tr>
-<tr>
-<td align="center">Zset</td>
-<td align="center">有序集合</td>
-<td align="center">添加，获取，删除元素，根据分值范围或者成员来获取元素计算一个键的排名</td>
-</tr>
-</tbody></table>
-<p>有点类似公司用的Wtable，每次用col key去获取数据。获取的数据里，有数据的，有字符串的，有对象的。</p>
-<h1 id="三、数据结构"><a href="#三、数据结构" class="headerlink" title="三、数据结构"></a>三、数据结构</h1><h2 id="1、字典"><a href="#1、字典" class="headerlink" title="1、字典"></a>1、字典</h2><p>dictht是一个散列表结构，使用拉链法解决哈希冲突。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span>&#123;</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="built_in">size</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> sizemask;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> used;</span><br><span class="line">&#125;dictht;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span>&#123;</span></span><br><span class="line">    <span class="keyword">void</span> *key;</span><br><span class="line">    <span class="keyword">union</span>&#123;</span><br><span class="line">        <span class="keyword">void</span> *val;</span><br><span class="line">        <span class="keyword">uint64_t</span> u64;</span><br><span class="line">        <span class="keyword">double</span> d;</span><br><span class="line">    &#125;v;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125;dictEntry;</span><br></pre></td></tr></table></figure>
-
-<p>Redis的字典dict中包含两个哈希表dictht，只是为了方便进行rehash操作。在扩容的时候，将其中一个dictht上的键值对rehash到另一个dictht上面，完成之后释放空间并交换两个dictht的角色。</p>
-<p>rehash操作不是一次性完成，而是采用渐进方式，这是为了避免一次性执行过多的rehash操作给服务器带来过大的负担。</p>
-<p>渐进式rehash通过记录dict的rehashidx完成，他从0开始，然后每执行一次rehash都会递增。</p>
-<h2 id="2、跳跃表"><a href="#2、跳跃表" class="headerlink" title="2、跳跃表"></a>2、跳跃表</h2><p>是有序集合的底层实现之一。</p>
-<p>跳跃表是基于多指针有序链表实现的，可以看成多个有序链表。</p>
-<p>在查找时候，从上层指针开始查找，找到对应的区间之后再到下一层去查找。</p>
-<p>与红黑树等平衡树相比，跳跃表具有以下优点：</p>
-<ul>
-<li>插入速度非常快，因为不需要进行旋转等操作来维护平衡性。</li>
-<li>更容易实现</li>
-<li>支持无锁操作。</li>
-</ul>
-<h1 id="四、Redis使用场景"><a href="#四、Redis使用场景" class="headerlink" title="四、Redis使用场景"></a>四、Redis使用场景</h1><h2 id="1、计数器"><a href="#1、计数器" class="headerlink" title="1、计数器"></a>1、计数器</h2><p>可以对String进行自增自减运算，从而实现计数器功能。</p>
-<p>Redis这种内存型数据库的读写性能非常高，很适合存储频繁读写的及数量。</p>
-<h2 id="2、缓存"><a href="#2、缓存" class="headerlink" title="2、缓存"></a>2、缓存</h2><p>将热点数据存放到内存中，设置内存的最大使用量以及淘汰策略来保证缓存的命中率。</p>
-<h2 id="3、查找表"><a href="#3、查找表" class="headerlink" title="3、查找表"></a>3、查找表</h2><p>例如DNS的记录就很适合使用Redis进行存储。</p>
-<p>查找表和缓存类似，也是利用Redis快速的查找特性。但是查找表的内容不能失效，而缓存的内容可以失效，因为缓存不作为可靠地数据来源。</p>
-<h2 id="4、消息队列"><a href="#4、消息队列" class="headerlink" title="4、消息队列"></a>4、消息队列</h2><p>List是一个双向链表，可以通过lpush和rpop写入和读取消息</p>
-<p>不过最好使用kafka，RabbitMQ等消息中间件。</p>
-<h2 id="5、Session缓存"><a href="#5、Session缓存" class="headerlink" title="5、Session缓存"></a>5、Session缓存</h2><p>可以使用Redis来同一个存储多台应用服务器的Session信息。</p>
-<p>当应用服务器不在存储用户的会话信息，也就不再具有状态。一个用户可以请求任意一个应用服务器，从而更容易实现高可用性以及可伸缩性。</p>
-<h2 id="6、分布式锁实现"><a href="#6、分布式锁实现" class="headerlink" title="6、分布式锁实现"></a>6、分布式锁实现</h2><p>在分布式场景下，无法使用单机环境下的锁来对多个节点上的进程进行同步。</p>
-<p>可以使用Redis子代的SETNX命令实现分布式锁，除此之外，还可以使用官方提供的RedLock分布式锁实现。</p>
-<h2 id="7、其他"><a href="#7、其他" class="headerlink" title="7、其他"></a>7、其他</h2><p>Set可以实现交集，并集等操作，从而实现共同好友等功能 。</p>
-<p>Zset可以shixi9an有序性操作，从而实现排行榜等功能。</p>
-<h1 id="五、Redis与Memcached"><a href="#五、Redis与Memcached" class="headerlink" title="五、Redis与Memcached"></a>五、Redis与Memcached</h1><p>两个都是非关系型内存键值数据库。主要区别如下：</p>
-<h2 id="1、数据类型"><a href="#1、数据类型" class="headerlink" title="1、数据类型"></a>1、数据类型</h2><p>Memcached只支持string类型，而Redis支持5种不同的数据类型，可更灵活的解决问题。</p>
-<h2 id="2、数据持久化"><a href="#2、数据持久化" class="headerlink" title="2、数据持久化"></a>2、数据持久化</h2><p>Redis支持3种持久化策略：RDB快照和AOF日志，RDB和AOF混合型，而Memcached不支持持久化。</p>
-<h2 id="3、分布式"><a href="#3、分布式" class="headerlink" title="3、分布式"></a>3、分布式</h2><p>Memcached不支持分布式，只能通过咋客户端使用一致性哈希来实现分布式存储，这种方式在存储和查询时都需要现在客户端计算一次数据所在的节点。</p>
-<p>Redis Cluster实现了分布式的支持。</p>
-<h2 id="4、内存管理机制"><a href="#4、内存管理机制" class="headerlink" title="4、内存管理机制"></a>4、内存管理机制</h2><ul>
-<li>在Redis中，并不是所有数据都是一直存在内存里，可以将一些很久没用的value交换到磁盘，而Memcached的数据则会一直在内存中。</li>
-<li>Memcached将内存分割成特定长度的块来存储数据，以完全解决内存碎片的问题，但是这种方式会使得内存的利用率不高。比如块代销为128b，只存储100b的数据，那么剩下的28b就浪费掉了。</li>
-</ul>
-<h1 id="六、Redis的key过期时间"><a href="#六、Redis的key过期时间" class="headerlink" title="六、Redis的key过期时间"></a>六、Redis的key过期时间</h1><p>Redis可以为每个key设置过期时间，当key过期时，会自动删除该key。</p>
-<p>对于散列表这种容器，只能为整个key设置过期时间(整个散列表)，而不能为key里面的单个元素设置过期时间。</p>
-<h1 id="七、数据淘汰策略"><a href="#七、数据淘汰策略" class="headerlink" title="七、数据淘汰策略"></a>七、数据淘汰策略</h1><p>Redis可以设置内存最大使用量，当内存使用量超出时，会施行数据淘汰策略。</p>
-<p>Redis具有6种淘汰策略：</p>
-<table>
-<thead>
-<tr>
-<th align="center">策略</th>
-<th align="center">描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">volatile-LRU</td>
-<td align="center">当内存使用量超出时，此种策略，从已经设置过期时间的数据集中选出最近最少使用的数据淘汰</td>
-</tr>
-<tr>
-<td align="center">volatile-TTL</td>
-<td align="center">当内存使用量超出时，此种策略，从已经设置过期时间的数据集中选出将要过期的数据淘汰</td>
-</tr>
-<tr>
-<td align="center">volatile-Random</td>
-<td align="center">当内存使用量超出时，此种策略，从已经设置过期时间的数据中任意选择数据淘汰</td>
-</tr>
-<tr>
-<td align="center">allkeys-LRU</td>
-<td align="center">当内存使用量超出时，此种策略，从所有数据中挑选最近最少使用的数据淘汰。</td>
-</tr>
-<tr>
-<td align="center">allkeys-Random</td>
-<td align="center">当内存使用量超出时，此种策略，从所有数据中选任意数据进行淘汰</td>
-</tr>
-<tr>
-<td align="center">noeviction</td>
-<td align="center">禁止驱逐数据</td>
-</tr>
-</tbody></table>
-<p>作为内存数据库，处于对性能和内存消耗的考虑，Redis的淘汰算法实际实现上并非针对素有key，而是抽样一小部分并且从中选出被淘汰的key。</p>
-<p>使用Redis缓存数据时，为了提高缓存命中率，需要保证缓存数据都是热点数据。可以将内存最大使用量设置为热点数据占用的内存量，然后启用allkeys-LRU淘汰策略，将最近最少使用的数据淘汰。</p>
-<p>Redis4.0引入了volatile-LFU,allkeys-LFU淘汰策略，LFU策略通过统计访问频率，将访问频率最少的键值对淘汰。</p>
-<h1 id="八、持久化"><a href="#八、持久化" class="headerlink" title="八、持久化"></a>八、持久化</h1><p>Redis是内存型数据库，为了保证数据在断电后不会丢失，需要将内存中的数据持久化到硬盘上。</p>
-<h2 id="1、RDB持久化"><a href="#1、RDB持久化" class="headerlink" title="1、RDB持久化"></a>1、RDB持久化</h2><ul>
-<li>将某个时间点的所有数据都存到硬盘上</li>
-<li>可以将快照复制到其他服务器从而创建具有相同数据的服务器副本。</li>
-<li>如果系统发生故障，将会丢失最后一次创建快照之后的数据。</li>
-<li>如果数据量很大，保存快照的时间会很长。</li>
-</ul>
-<h2 id="2、AOF持久化"><a href="#2、AOF持久化" class="headerlink" title="2、AOF持久化"></a>2、AOF持久化</h2><p>将写命令添加到AOF文件(Append Only File)的末尾。</p>
-<p>使用AOF持久化需要设置同步选项，从而确保写命令同步到磁盘文件上的时机。这是因为对文件进行写入并不会马上将内容同步到磁盘上，而是先存储到缓冲区，然后由操作系统决定什么时候同步到磁盘。有以下同步选项：</p>
-<table>
-<thead>
-<tr>
-<th align="center">选项</th>
-<th align="center">同步频率</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">always</td>
-<td align="center">每个写命令都同步</td>
-</tr>
-<tr>
-<td align="center">everysec</td>
-<td align="center">每秒同步一次</td>
-</tr>
-<tr>
-<td align="center">no</td>
-<td align="center">让操作系统决定何时同步</td>
-</tr>
-</tbody></table>
-<ul>
-<li>always选项会严重降低服务器的性能。</li>
-<li>everysec选项比较合适，可以保证系统崩溃时只会丢失一秒左右的数据，并且Redis每秒执行一次同步对服务器性能几乎没有任何影响。</li>
-<li>no选项并不能给服务器性能带来多大的提升，而且也会增加系统崩溃时数据丢失的数量。</li>
-</ul>
-<p>随着服务器写请求的增多，AOF文件也会越来越大。Redis提供了一种将AOF重写特性，能够去除AOF文件中的冗余写命令。</p>
-<h1 id="九、事务"><a href="#九、事务" class="headerlink" title="九、事务"></a>九、事务</h1><p>一个事务包含了多个命令，服务器在执行事务期间，不会改去执行其他客户端的命令请求。也就是事务的ACID。</p>
-<p>事务中的多个命令被一次性发给服务器，而不是一条一条的发送，这种方式叫流水线，它可以减少客户端和服务器之间的网络通信次数从而提升性能。</p>
-<p>Redis最简单的事务实现方式是使用MULTI和EXEC命令来将事务操作包围起来。</p>
-<h1 id="十、事件"><a href="#十、事件" class="headerlink" title="十、事件"></a>十、事件</h1><p>Redis服务器是一个事件驱动程序。</p>
-<h2 id="1、文件事件"><a href="#1、文件事件" class="headerlink" title="1、文件事件"></a>1、文件事件</h2>
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/01/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-一、操作系统概述" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="2019/11/01/%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/" target="_blank">操作系统</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="2019/11/01/%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、操作系统概述"><a href="#一、操作系统概述" class="headerlink" title="一、操作系统概述"></a>一、操作系统概述</h1><h3 id="1、指令权限与工作模式"><a href="#1、指令权限与工作模式" class="headerlink" title="1、指令权限与工作模式"></a>1、指令权限与工作模式</h3><p>处理器能处理的指令分为：</p>
-<ul>
-<li>特权指令：需要特殊权限才可以使用的指令，通常涉及系统安全。</li>
-<li>非特权指令：任何情况下都可以使用的指令。</li>
-</ul>
-<p>处理器的控制寄存器中用专门的位标识当前的工作模式：</p>
-<ul>
-<li>核心态(管态)：已获得特殊权限的状态，能够执行所有指令。</li>
-<li>用户态(目态)：只能指令非特权指令。</li>
-</ul>
-<p>事实上，现代处理器通常具有更多层权限和工作模式。从高到低划分为特权级0(管态)，特权级1，特权级2，特权级3(目态)。</p>
-<h3 id="2、内存空间与操作系统的内核"><a href="#2、内存空间与操作系统的内核" class="headerlink" title="2、内存空间与操作系统的内核"></a>2、内存空间与操作系统的内核</h3><p>处理器处于<strong>核心态</strong>时可以将内存的不同区段分别设置为两种类型：</p>
-<ul>
-<li>内核(系统)空间：其中存储的程序将运行在核心态上，从而可以使用所有指令，且可以访问所有内存空间数据。</li>
-<li>用户空间：其中存储的程序将运行在用户态上，于是只能使用非特权指令，且只能访问用户空间数据。</li>
-</ul>
-<p>操作系统通常在启动时指定内核空间，并将其核心程序放置在内核空间内。操作系统的这一部分叫内核，操作系统的其他部分叫核外部分。</p>
-<h3 id="3、操作系统的内核"><a href="#3、操作系统的内核" class="headerlink" title="3、操作系统的内核"></a>3、操作系统的内核</h3><p>操作系统的内核通常包含以下程序和数据：</p>
-<ul>
-<li>与硬件密切相关的操作</li>
-<li>关键数据结构</li>
-<li>基本中断处理程序</li>
-<li>使用频繁的功能模块</li>
-</ul>
-<p>操作系统的内核具有两个基本特点：</p>
-<ul>
-<li>常驻内存</li>
-<li>运行在核心态</li>
-</ul>
-<h3 id="4、固件"><a href="#4、固件" class="headerlink" title="4、固件"></a>4、固件</h3><p>操作系统的启动依赖于一组称作固件（Firmware）的特殊软件。</p>
-<p>固件存储在只读存储器ROM中，也可以将部分程序或者数据存储在硬盘中。</p>
-<p>与PC启动相关的固件有BIOS和UEFI，他们在计算机启动时首先被运行，并运行基本硬件的检查，装入操作系统引导程序，提供基本硬件驱动程序和中断处理程序等。</p>
-<h3 id="5、基本输入输出系统-BIOS"><a href="#5、基本输入输出系统-BIOS" class="headerlink" title="5、基本输入输出系统(BIOS)"></a>5、基本输入输出系统(BIOS)</h3><p>BIOS包含3个部分：</p>
-<ul>
-<li>POST自检程序：计算机启动后识别硬件配置、自检、初始化。</li>
-<li>基本启动程序：在存储介质中查找有效的主引导程序，如果找到，将它读入内存[0000:7C00]处并开始执行，从而引导操作系统启动。</li>
-<li>基本硬件驱动程序以及中断处理程序：用来在未加载操作系统时识别和控制基本IO设置(键盘、鼠标、显卡、硬盘等)</li>
-</ul>
-<p>硬盘的主引导记录MBR</p>
-<h4 id="5-1、基于BIOS的操作系统启动过程"><a href="#5-1、基于BIOS的操作系统启动过程" class="headerlink" title="5.1、基于BIOS的操作系统启动过程"></a>5.1、基于BIOS的操作系统启动过程</h4><ul>
-<li>硬件自检</li>
-<li>加载驱动</li>
-<li>基本启动程序</li>
-<li>主引导程序(440字节)</li>
-<li>引导程序(512字节)</li>
-<li>操作系统装载程序</li>
-<li>操作系统</li>
-</ul>
-<p>操作系统装载程序Loader的作用：</p>
-<ul>
-<li>进一步检查和配置系统硬件。</li>
-<li>建立内核空间，装入操作系统内核，并初始化数据。</li>
-<li>加载用户登录程序和人机交互环境。</li>
-</ul>
-<h3 id="6、统一的可扩展固件接口UEFI"><a href="#6、统一的可扩展固件接口UEFI" class="headerlink" title="6、统一的可扩展固件接口UEFI"></a>6、统一的可扩展固件接口UEFI</h3><p>Intel公司在1997年新推出的高性能处理器，计划设计一种可扩展的、标准化的固件接口规划EFI(Extensible Firmware Interface)，用来计算机系统的启动以及提供与操作系统的接口。在2006年EFI发展成UEFI(Unified EFI)。</p>
-<p>UEFI的特点：</p>
-<ul>
-<li>驱动程序环境DXE</li>
-<li>磁盘管理采用GUID分区方法</li>
-<li>UEFI应用程序</li>
-</ul>
-<h4 id="6-1、基于UEFI的操作系统启动过程"><a href="#6-1、基于UEFI的操作系统启动过程" class="headerlink" title="6.1、基于UEFI的操作系统启动过程"></a>6.1、基于UEFI的操作系统启动过程</h4><p>UEFI体系包含2部分内容：</p>
-<ul>
-<li>平台初始化框架：包含了支持系统启动的底层程序，包含：安全检查、硬件自检和初始化、DXE、启动管理器。</li>
-<li>UEFI映像(UEFI Image):一组在框架的支持下可执行的程序，包括启动管理器、操作系统装载程序、临时操作系统装载程序、EFI应用程序、设备驱动程序。</li>
-</ul>
-<p>UEFI固件的启动过程：</p>
-<ul>
-<li>安全检查</li>
-<li>Pre-EFI</li>
-<li>加载DXE</li>
-<li>启动管理器</li>
-<li>临时操作系统装载程序</li>
-<li>EFI应用程序</li>
-<li>操作系统装载程序</li>
-<li>操作系统</li>
-</ul>
-<h3 id="7、GUID硬盘分区方式"><a href="#7、GUID硬盘分区方式" class="headerlink" title="7、GUID硬盘分区方式"></a>7、GUID硬盘分区方式</h3><p>UEFI采用GUID硬盘分区方式，优点是：</p>
-<ul>
-<li>扇区块号为64位，消除2TB限制。</li>
-<li>磁盘分区数不受4个限制，最多划分128个分区</li>
-<li>分区扇区数为64位，消除2TB限制</li>
-<li>自带备份，增加可靠性</li>
-<li>采用CRC32校验，增加完整性</li>
-<li>每个分区都有唯一标识GUID</li>
-</ul>
-<h3 id="8、操作系统的用户接口–命令接口"><a href="#8、操作系统的用户接口–命令接口" class="headerlink" title="8、操作系统的用户接口–命令接口"></a>8、操作系统的用户接口–命令接口</h3><p>命令接口是人机交互的主要途径</p>
-<h4 id="8-1、按命令接口在操作系统内的实现方式，分为"><a href="#8-1、按命令接口在操作系统内的实现方式，分为" class="headerlink" title="8.1、按命令接口在操作系统内的实现方式，分为"></a>8.1、按命令接口在操作系统内的实现方式，分为</h4><ul>
-<li>内部命令：内核完成的命令</li>
-<li>外部命令：由其他应用程序完成的命令</li>
-</ul>
-<h4 id="8-2、按命令接口的使用方式，分为："><a href="#8-2、按命令接口的使用方式，分为：" class="headerlink" title="8.2、按命令接口的使用方式，分为："></a>8.2、按命令接口的使用方式，分为：</h4><ul>
-<li><p>脱机命令：预先编写好，送交执行后无法立即反馈的命令接口形式。</p>
-<p>比如批处理系统中的JCL</p>
-</li>
-<li><p>联机命令：交互式执行，能够立即得到反馈的命令接口形式。</p>
-<p>比如分时操作系统的交互式命令接口。又可细分为字符命令、菜单命令和图标命令。</p>
-</li>
-</ul>
-<h3 id="9、操作系统的用户接口–程序接口-系统调用"><a href="#9、操作系统的用户接口–程序接口-系统调用" class="headerlink" title="9、操作系统的用户接口–程序接口(系统调用)"></a>9、操作系统的用户接口–程序接口(系统调用)</h3><h4 id="9-1、系统调用的简介"><a href="#9-1、系统调用的简介" class="headerlink" title="9.1、系统调用的简介"></a>9.1、系统调用的简介</h4><p>程序接口是程序员在编写应用程序时使用操作系统功能的接口。目前，程序接口通常通过系统调用System Call方式实现。</p>
-<p>系统调用在不同的上下文中，可能表示2种含义：</p>
-<ul>
-<li>一组由操作系统设计者编写的内核中的子程序，用来封装程序员可能使用到的操作系统功能。</li>
-<li>程序员在编程中对这些子程序进行调用的行为</li>
-</ul>
-<p>系统调用所涉及的子程序属于操作系统内核的一部分，保存在内存空间中，应用程序不能直接访问，于是需要通过特殊方式才能实现系统调用。</p>
-<h4 id="9-2、系统调用的实现："><a href="#9-2、系统调用的实现：" class="headerlink" title="9.2、系统调用的实现："></a>9.2、系统调用的实现：</h4><ul>
-<li><p>放置调用号标识</p>
-</li>
-<li><p>访管指令：发出表示系统调用请求的中断或者陷阱</p>
-</li>
-<li><p>处理器保护程序现场，转向中断处理（内核态）</p>
-</li>
-<li><p>中断处理程序识别中断为系统调用请求，于是转向内核的访管指令处理程序</p>
-</li>
-<li><p>访管指令处理程序在地址入口表中查找所请求的调用号对应的内核子程序的入口地址。</p>
-</li>
-<li><p>从查找到的地址开始执行内核子程序(系统调用)并得到结果。</p>
-</li>
-<li><p>恢复应用程序现场，返回用户态。</p>
-</li>
-</ul>
-<h4 id="9-3、系统调用与用户子程序对比"><a href="#9-3、系统调用与用户子程序对比" class="headerlink" title="9.3、系统调用与用户子程序对比"></a>9.3、系统调用与用户子程序对比</h4><table>
-<thead>
-<tr>
-<th align="center">对比项目</th>
-<th align="center">系统调用</th>
-<th align="center">用户子程序</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">运行环境</td>
-<td align="center">内核态（管态）</td>
-<td align="center">用户态(目态)</td>
-</tr>
-<tr>
-<td align="center">访问方式</td>
-<td align="center">访管指令（中断或者陷阱）</td>
-<td align="center">直接跳转、返回</td>
-</tr>
-<tr>
-<td align="center">与主程序关系</td>
-<td align="center">与主程序分开、独立</td>
-<td align="center">同一进程地址空间</td>
-</tr>
-<tr>
-<td align="center">共享性</td>
-<td align="center">可以在多个进程间共享</td>
-<td align="center">同一进程内部调用</td>
-</tr>
-</tbody></table>
-<h1 id="二、进程管理"><a href="#二、进程管理" class="headerlink" title="二、进程管理"></a>二、进程管理</h1><h3 id="1、程序与系统的工作流程"><a href="#1、程序与系统的工作流程" class="headerlink" title="1、程序与系统的工作流程"></a>1、程序与系统的工作流程</h3><p>程序应具体2个基本特点：</p>
-<ul>
-<li>顺序性</li>
-<li>可再现性</li>
-</ul>
-<p>系统的工作流程分为顺序执行和并发执行</p>
-<ul>
-<li><p>顺序执行的工作方式具有2个特点：</p>
-<ul>
-<li>封闭性：独占全部资源，不受其他程序影响</li>
-<li>可再现性：重复运行的结果相同</li>
-</ul>
-</li>
-<li><p>并发执行的工作方式中，多道程序</p>
-<ul>
-<li>微观上看，轮流执行</li>
-<li>宏观上看，同时执行</li>
-</ul>
-</li>
-<li><p>并发执行的工作方式有3个特点：</p>
-<ul>
-<li>随机性：运行时情景随机</li>
-<li>不可再现性：重复运行结果可能不同</li>
-<li>相互制约：资源争夺和协作关系</li>
-</ul>
-</li>
-</ul>
-<h3 id="2、进程"><a href="#2、进程" class="headerlink" title="2、进程"></a>2、进程</h3><p>Dijkstra：一道程序在一个数据集上的一次执行过程，叫一个进程Process</p>
-<p>IBM：程序的运行过程成为任务Task</p>
-<p>进程和任务都是运行着程序的描述，二者可以互换使用，不加区别。</p>
-<p>进程的主要特征：</p>
-<ul>
-<li>动态性：具有生命周期，状态不断变化</li>
-<li>并发性：可以并发执行</li>
-<li>独立性：互相独立，只能访问自身的内存空间</li>
-<li>结构性：不同的进程可抽象出相同的属性，从而抽象结构相同</li>
-<li>异步性：运行时情况不可预知</li>
-</ul>
-<h3 id="3、进程的动态性"><a href="#3、进程的动态性" class="headerlink" title="3、进程的动态性"></a>3、进程的动态性</h3><p>进程的3种状态</p>
-<ul>
-<li>就绪：能够运行但却未在被处理器处理的状态</li>
-<li>运行：正在被处理器处理的状态</li>
-<li>阻塞：由于各种原因(IO操作、资源缺乏等)暂时无法运行的状态。</li>
-</ul>
-<h3 id="4、进程信息的描述–PCB"><a href="#4、进程信息的描述–PCB" class="headerlink" title="4、进程信息的描述–PCB"></a>4、进程信息的描述–PCB</h3><p>进程控制块PCB：是操作系统用来描述进程信息的数据结构，由3部分组成：</p>
-<ul>
-<li><p>基本信息部分：</p>
-<ul>
-<li>进程名：通常是程序名</li>
-<li>进程标识符PID：操作系统用来识别进程的唯一标识</li>
-<li>用户标识：创建进程的用户标识</li>
-<li>进程状态：运行、就绪或者阻塞</li>
-</ul>
-</li>
-<li><p>管理信息部分：</p>
-<ul>
-<li>程序和数据地址：程序和数据在内存中的位置信息</li>
-<li>IO操作相关参数：进程进行IO操作时的参数</li>
-<li>进程通信信息：用来进程间通信的消息队列指针等。</li>
-</ul>
-</li>
-<li><p>控制信息部分：</p>
-<ul>
-<li>现场信息：进程离开运行状态时，保存进程现场以备恢复。</li>
-<li>调度参数：与进程调度相关的参考信息，如优先级、运行时间等</li>
-<li>同步、互斥信号量：用来保证进程间同步、互斥关系的信息。</li>
-</ul>
-</li>
-</ul>
-<h3 id="5、PCB队列和进程管理"><a href="#5、PCB队列和进程管理" class="headerlink" title="5、PCB队列和进程管理"></a>5、PCB队列和进程管理</h3><p>操作系统用PCB来描述进程信息，并利用2种PCB队列来组织这些PCB:</p>
-<ul>
-<li>就绪队列：就绪进程的PCB组成的队列，按照进程性质或者优先级，系统中可以有多个就绪队列，用来提高进程调度算法选择进程的效率。在多处理器系统中，就绪队列也叫请求队列，每个处理器都有独立的请求队列。</li>
-<li>等待队列：阻塞进程的PCB组成队列，按照阻塞原因，系统中可以有多个等待对了。方便在阻塞原因解除的时候统一调整进程状态。</li>
-</ul>
-<h3 id="6、原语"><a href="#6、原语" class="headerlink" title="6、原语"></a>6、原语</h3><p>改变进程状态操作不应该被打断，也就是具有原子性。</p>
-<p>原语是特殊的程序段，这样的程序段中的所有指令要么全部执行要么一个都不执行。原语就是具有原子性的程序段。</p>
-<ul>
-<li>原语可以被看做广义的指令，指令都具有原子性</li>
-<li>原语中的指令若执行不成功，系统需要回退到原语执行前的状态。</li>
-<li>定义原语是为了保证系统运行的一致性。</li>
-</ul>
-<h3 id="7、进程控制–创建"><a href="#7、进程控制–创建" class="headerlink" title="7、进程控制–创建"></a>7、进程控制–创建</h3><p>进程控制通过一组原语来实现，包括进程的创建、撤销、阻塞、唤醒和切换。</p>
-<h4 id="1、进程的创建原语Create用来创建一个进程"><a href="#1、进程的创建原语Create用来创建一个进程" class="headerlink" title="1、进程的创建原语Create用来创建一个进程"></a>1、进程的创建原语Create用来创建一个进程</h4><p>Create可能在以下情况下被使用：</p>
-<ul>
-<li>按照作业调度程序的作业步规定</li>
-<li>按照用户提交的命令</li>
-<li>用户程序使用了创建进程的系统调用比如Unix的fork</li>
-</ul>
-<p>Create被使用时完成以下操作：</p>
-<ul>
-<li>建立PCB</li>
-<li>生成进程标识符PID</li>
-<li>初始化进程和PCB</li>
-<li>将PCB加入适当的就绪队列</li>
-</ul>
-<h3 id="8、进程控制–撤销"><a href="#8、进程控制–撤销" class="headerlink" title="8、进程控制–撤销"></a>8、进程控制–撤销</h3><h4 id="1、进程的撤销原语Destroy用来结束一个进程"><a href="#1、进程的撤销原语Destroy用来结束一个进程" class="headerlink" title="1、进程的撤销原语Destroy用来结束一个进程"></a>1、进程的撤销原语Destroy用来结束一个进程</h4><p>Destroy可能在以下情况下被使用：</p>
-<ul>
-<li>进程执行完毕</li>
-<li>进程出错而结束</li>
-<li>父进程结束</li>
-<li>人为终止</li>
-</ul>
-<p>Destroy被使用时完成以下操作：</p>
-<ul>
-<li>进程资源回收</li>
-<li>删除进程PCB</li>
-</ul>
-<h3 id="9、进程控制–阻塞"><a href="#9、进程控制–阻塞" class="headerlink" title="9、进程控制–阻塞"></a>9、进程控制–阻塞</h3><h4 id="1、进程的阻塞原语Block用来让一个进程进入阻塞状态"><a href="#1、进程的阻塞原语Block用来让一个进程进入阻塞状态" class="headerlink" title="1、进程的阻塞原语Block用来让一个进程进入阻塞状态"></a>1、进程的阻塞原语Block用来让一个进程进入阻塞状态</h4><p>Block在阻塞原因发生时被使用。</p>
-<p>Block被使用时完成以下操作：</p>
-<ul>
-<li>修改进程状态为阻塞状态</li>
-<li>将进程的现场保存，以备恢复</li>
-<li>将进程PCB加入合适的等待队列</li>
-</ul>
-<h3 id="10、进程控制–唤醒"><a href="#10、进程控制–唤醒" class="headerlink" title="10、进程控制–唤醒"></a>10、进程控制–唤醒</h3><h4 id="1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态"><a href="#1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态" class="headerlink" title="1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态"></a>1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态</h4><p>Wakeup在阻塞原因解除时被使用。</p>
-<p>Wakeup被使用时完成以下操作：</p>
-<ul>
-<li>将进程PCB从等待队列中移除</li>
-<li>修改进程状态为就绪状态</li>
-<li>将进程PCB加入合适的就绪队列</li>
-</ul>
-<p>阻塞原因解除后，进程未必可以直接运行，因此合理的唤醒原语并不会将阻塞状态直接修改为运行状态。</p>
-<h3 id="11、进程控制–切换"><a href="#11、进程控制–切换" class="headerlink" title="11、进程控制–切换"></a>11、进程控制–切换</h3><p>进程切换使处理器的控制权在进程之间专员，无法通过操作系统内核独立完成，必须借助硬件来实现。</p>
-<p>进程：系统调用（系统调用中断），外部因素（IO中断，异常），调度维护（计时器中断），然后进程进入中断、异常处理机制。然后在通过内核功能，控制原语，进程调度等。</p>
-<h3 id="12、相关进程间的制约关系–间接制约"><a href="#12、相关进程间的制约关系–间接制约" class="headerlink" title="12、相关进程间的制约关系–间接制约"></a>12、相关进程间的制约关系–间接制约</h3><p>间接制约关系：仅由于使用相同的资源而造成的制约。</p>
-<p>比如：2个进程p1和p2分别使用同一台打印机，逐行打印各自文本。</p>
-<h4 id="1、间接制约与临界资源"><a href="#1、间接制约与临界资源" class="headerlink" title="1、间接制约与临界资源"></a>1、间接制约与临界资源</h4><ul>
-<li><p>在操作系统的控制下，进程对系统资源的访问逻辑上需要经历3个步骤：申请、使用、归还。</p>
-</li>
-<li><p>某些系统资源，在进程从申请到归还的周期中只能允许此进程独占，否则将造成运行错误。则称这样的资源为临界资源。</p>
-<p>常见的临界资源有：打印机，存储单元，文件等。</p>
-</li>
-<li><p>间接制约实质上是一组并发进程共享某种临界资源的制约关系。</p>
-</li>
-</ul>
-<h4 id="2、间接制约与护持关系"><a href="#2、间接制约与护持关系" class="headerlink" title="2、间接制约与护持关系"></a>2、间接制约与护持关系</h4><ul>
-<li><p>临界区Critical Section/Critical Region：是指进程对应的程序中访问临界资源的一段程序代码，即进程从申请资源开始到归还资源为止的一段程序代码。</p>
-</li>
-<li><p>对于一组(在某资源上)存在间接制约关系的并发进程，可以通过建立一种机制来避免制约关系导致的运行错误：当一个进程在这种临界资源对应的临界区内执行时，其他要求进入相关临界区的进程必须等待。</p>
-</li>
-<li><p>上面的机制得以建立，则称这些并发进程为互斥进程，它们之间建立了护持关系。</p>
-</li>
-</ul>
-<h4 id="3、临界区管理"><a href="#3、临界区管理" class="headerlink" title="3、临界区管理"></a>3、临界区管理</h4><p>实现互斥关系的关键是对临界区的执行进行有效控制。</p>
-<p>临界区管理的准则有：</p>
-<ul>
-<li>空闲让进：如果进程请求进入临界区，而没有其他进程在相关临界区内执行，则允许进入。</li>
-<li>忙则等待：如果有进程在临界区内执行，则其他要求进入相关临界区的进程都需要等待。</li>
-<li>有限等待：对于要求进入临界区的进程，等待的时间应该是有限的</li>
-<li>让权等待：当一个进程离开临界区时，应该让请求进入相关临界区的下一个进程进入临界区执行。</li>
-</ul>
-<h4 id="4、互斥关系的实现–加锁机制"><a href="#4、互斥关系的实现–加锁机制" class="headerlink" title="4、互斥关系的实现–加锁机制"></a>4、互斥关系的实现–加锁机制</h4><p>加锁机制由3个要素组成：锁变量key，加锁操作lock(key)和解锁操作unlock(key)</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">lock(key)&#123;</span><br><span class="line">    <span class="keyword">while</span>(key==<span class="number">1</span>);</span><br><span class="line">    key=<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">unlock(key)&#123;</span><br><span class="line">    key=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>这个机制中，锁变量key=1时表示上锁状态，key=0为未上锁。</p>
-</li>
-<li><p>当进程申请资源时需要对资源加锁，若资源已经上锁，则上锁操作 将进行反复测试也就是反复等待，直到资源被解锁了；当进程归还资源的时候需要对资源解锁。</p>
-</li>
-<li><p>高级语言，软件实现的加锁机制并不能实现真正的加锁，因为加锁操作内部仍可能被打断。</p>
-</li>
-</ul>
-<p>加锁机制的缺陷：</p>
-<ul>
-<li>存在忙等待现象，浪费了处理器时间</li>
-<li>存在饥饿现象，进程等待时间可能无限长</li>
-<li>多个锁变量的加锁操作可能导致进程死锁</li>
-</ul>
-<h4 id="5、互斥关系的实现–信号量机制"><a href="#5、互斥关系的实现–信号量机制" class="headerlink" title="5、互斥关系的实现–信号量机制"></a>5、互斥关系的实现–信号量机制</h4><p>信号量机制由3个要素组成：信号量s，原语p和原语v</p>
-<p>也就是所谓的pv操作</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">semaphore</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> value;<span class="comment">//信号量的值</span></span><br><span class="line">    PCB *bq;/由于该信号量而阻塞的进程队列PCB队列，(阻塞队列/等待队列)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">p(s)&#123;</span><br><span class="line">    s.value=s.value<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">if</span>(s.value&lt;<span class="number">0</span>)</span><br><span class="line">        blocked(s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">v(s)&#123;</span><br><span class="line">    s.value=s.value+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(s.value&lt;=<span class="number">0</span>)</span><br><span class="line">        wakeup(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>信号量机制中，s.value&gt;0表示资源就绪，否则就表示有其他进程在使用或者请求使用资源。</p>
-</li>
-<li><p>进程请求资源时需要使用原语p，如果资源不空闲，则进入由于s而导致的等待队列。直到正在使用资源的进程归还资源时，使用原语v将它唤醒。</p>
-</li>
-</ul>
-<p>信号量机制相比于加锁机制的优势：</p>
-<ul>
-<li>信号量机制把等待资源的进程设置为阻塞状态，而不是忙等待，提高了处理器的利用率。</li>
-<li>信号量机制中由操作系统原语wakeup唤醒进程，可以采取一定策略，比如短作业优先，而不是像加锁机制一样，抢先者得到处理器，这样可以避免饥饿现象的发生。</li>
-</ul>
-<h3 id="13、相关进程间的制约关系–直接制约"><a href="#13、相关进程间的制约关系–直接制约" class="headerlink" title="13、相关进程间的制约关系–直接制约"></a>13、相关进程间的制约关系–直接制约</h3><p>直接制约关系：由于进程协作关系造成的制约。</p>
-<p>某任务需要通过循环使用read、move、write，3个操作将源磁盘上的数据文件，复制到目标磁盘。一次操作处理一个文件。</p>
-<ul>
-<li>如果这3个操作在同一个进程中顺序执行，则当进行IO操作read,write的时候，进程就处在阻塞状态了。</li>
-<li>如果这3个操作，分别建立进程，并发执行，则会节约运行时间。</li>
-<li>然后，由于并发执行的时候这3个操作执行顺序的随机性，可能会造成重复拷贝文件或者遗漏文件的错误。</li>
-</ul>
-<h4 id="1、直接制约与同步关系"><a href="#1、直接制约与同步关系" class="headerlink" title="1、直接制约与同步关系"></a>1、直接制约与同步关系</h4><ul>
-<li><p>对于一组存在直接制约关系的并发进程，为了避免制约关系导致的运行错误，应该让各个进程中代码的运行顺序服从其内在要求，需要建立进程间单向或者相互的依赖关系。</p>
-</li>
-<li><p>如果一组进程中的每一个进程都要与其他至少一个进程建立了单向或者相互的依赖关系，则把这组进程叫同步进程，这组进程之间建立了同步关系。</p>
-</li>
-</ul>
-<h4 id="2、同步关系的实现–信号量机制"><a href="#2、同步关系的实现–信号量机制" class="headerlink" title="2、同步关系的实现–信号量机制"></a>2、同步关系的实现–信号量机制</h4><ul>
-<li><p>比如有代码段L1对L2有依赖，可以将L2的一次执行看做一种资源的归还，而L1的执行，需要申请使用这种资源。</p>
-</li>
-<li><p>于是，可以类似用信号量机制来实现同步关系：在L1执行之前先执行原语p，而在L2执行后执行原语v。</p>
-</li>
-<li><p>与互斥关系不同的是，L1使用资源后并不归还。</p>
-</li>
-</ul>
-<h4 id="3、文件拷贝问题–同步关系的实现"><a href="#3、文件拷贝问题–同步关系的实现" class="headerlink" title="3、文件拷贝问题–同步关系的实现"></a>3、文件拷贝问题–同步关系的实现</h4><ul>
-<li>read中的代码段L1</li>
-<li>L1将文件src的内容存到缓冲区buf1</li>
-<li>然后Move中的代码段L2</li>
-<li>L2读出buf1中的内容</li>
-<li>然后Move中的代码段L3，再把读出的内容写到buf2</li>
-<li>最后write中的代码段L4，再从buf2中读的内容写到别的文件</li>
-</ul>
-<p>初始化的时候：先S1=1,S2=0,S3=0,S4=0，P他们刚开始只能S1进行使用处理器资源，其他的都加入到阻塞队列了。</p>
-<p>首先Read进程是p(S1),因为S1初始化必须为1，P操作，先是做减1操作，然后再做判断S1是否小于0，如果小于0，先加入到阻塞队列。</p>
-<p>为了顺序执行，我们先把S1初始化为1，刚开始S1是1，减1操作后，S1变为0了。此时就是Read进程的L1代码段在使用处理器资源。</p>
-<p>当L1的代码段执行完后，需要进行Move了，此时也就是L1已经让出处理器资源，则需要先把S2给唤醒，需要V以下S2。唤醒S2之后S2做加1操作，然后再P(S2)就得到了处理器资源，然后等到P(S2)减1操作，执行完后，等同理。</p>
-<h3 id="14、进程同步总结"><a href="#14、进程同步总结" class="headerlink" title="14、进程同步总结"></a>14、进程同步总结</h3><ul>
-<li>控制并发进程的互斥，同步关系，保证他们能够正确执行，称作进程同步，实现集成同步的方法叫做进程同步机制。</li>
-<li>操作系统需要为程序提供进程同步机制，而当需要处理互斥/同步关系时才决定如何使用这些机制。</li>
-<li>用于实现互斥关系，针对间接制约的进程同步关系：加锁机制、信号量机制</li>
-<li>用于实现同步关系，针对直接制约的进程同步关系：信号量机制。</li>
-<li>除了加锁机制、信号量机制之外，常用的进程同步机制还有：标志位机制，管程机制等。</li>
-</ul>
-<h3 id="15、生产者、消费者问题"><a href="#15、生产者、消费者问题" class="headerlink" title="15、生产者、消费者问题"></a>15、生产者、消费者问题</h3><p>用两个进程Pro和Con分别表示生产者和消费者，用数组B[]表示最大库存为k的仓库，</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">slot=k;<span class="comment">//正信号量表示还有多少个空位</span></span><br><span class="line">item=<span class="number">0</span>;<span class="comment">//需要消费的</span></span><br><span class="line">Pro()&#123;</span><br><span class="line">    生产货物;</span><br><span class="line">    p(slot);</span><br><span class="line">    查找B中任意空位in;</span><br><span class="line">    将货物放入B[in];</span><br><span class="line">    v(item);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Con()&#123;</span><br><span class="line">    p(item);</span><br><span class="line">    查找B中任意存有货物的位置out;</span><br><span class="line">    取出获取B[out];</span><br><span class="line">    v(slot);</span><br><span class="line">    消费货物；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="16、从信号量到进程通信"><a href="#16、从信号量到进程通信" class="headerlink" title="16、从信号量到进程通信"></a>16、从信号量到进程通信</h3><ul>
-<li>进程的独立性：不同进程无法互相访问代码和数据。</li>
-<li>进程需要相互写作必须能够通信（也就是共享受）。</li>
-<li>信号量就是一种常见的共享受–低级通信</li>
-<li>信号量数据结构的存放位置并不是yoghurt进程的私有空间，而是内核空间，信号量使用前需要向内核申请，用来获得信号量标识。</li>
-</ul>
-<h4 id="1、共享存储区通信"><a href="#1、共享存储区通信" class="headerlink" title="1、共享存储区通信"></a>1、共享存储区通信</h4><ul>
-<li><p>共享存储区通信：进程根据需要向内核申请<strong>位于内核空间的共享存储区，并将此区域映射到发送进程与接收进程的地址空间</strong>，使得发送，接收进程可以通过共享存储区进行通信。</p>
-</li>
-<li><p>共享存储区中的数据存取没有固定模式，需要注意根据实际情况处理同步/互斥关系。</p>
-</li>
-</ul>
-<h4 id="2、信箱通信"><a href="#2、信箱通信" class="headerlink" title="2、信箱通信"></a>2、信箱通信</h4><ul>
-<li><p>信箱通信：在内核空间中建立专门区域作为信箱，信箱划分有限个信格，每个信格可存放一条信息（信件）。每个信箱可由多个发送进程与接收进程共享 ，发送进程用send操作将信息放入信格中，接收进程用receive操作从信格中取出信息。</p>
-</li>
-<li><p>与共享存储区通信相比，信箱通信的数据存取模式固定，其实现是一个多生产者消费者的PC问题。</p>
-</li>
-</ul>
-<h4 id="3、消息缓冲通信"><a href="#3、消息缓冲通信" class="headerlink" title="3、消息缓冲通信"></a>3、消息缓冲通信</h4><ul>
-<li><p>消息缓冲通信：内核空间中为每个进程配备一个消息队列MQ，并记录在进程的PCB中。发送进程通过send操作将信息封到一个消息缓冲区中，并追加到接收进程的消息队列中。接收进程通过receive操作收取自身消息队中的信息。</p>
-</li>
-<li><p>消息缓冲区包含：</p>
-<ul>
-<li>发送进程的标识pid</li>
-<li>正文大小size</li>
-<li>正文data</li>
-<li>向下指针next</li>
-</ul>
-</li>
-<li><p>与信箱通信比较，消息缓冲通信中的消息队列属于进程。消息缓冲通信是一种直接通信，当接收进程没有开启的时候，通信不成功。</p>
-</li>
-</ul>
-<h4 id="4、管道通信"><a href="#4、管道通信" class="headerlink" title="4、管道通信"></a>4、管道通信</h4><ul>
-<li>管道通信：通信双方共享一个文件，发送进程向文件中写入数据，接收进程从中读出数据，从而实现通信。共享的文件叫做管道。</li>
-<li>管道通信中的共享数据并不是存放在内核空间中，而是存放在管道(文件)中，需要注意维护数据的安全问题。</li>
-<li>管道通信中的管道文件，和共享存储区类似，并没有固定数据存取模式，所以需要注意根据实际情况处理互斥同步关系。</li>
-<li>管道通信可以使用远程文件作为管道，所以，这样通信方式不局限于单机系统。</li>
-</ul>
-<h3 id="17、线程"><a href="#17、线程" class="headerlink" title="17、线程"></a>17、线程</h3><p>把进程细化成若干个可以独立运行的实体，每一个实体叫做一个线程Thread。</p>
-<p>线程和进程的比较</p>
-<table>
-<thead>
-<tr>
-<th align="center">对比项目</th>
-<th align="center">进程</th>
-<th align="center">线程</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">独立拥有的资源</td>
-<td align="center">处理器控制权和其他资源</td>
-<td align="center">处理器控制权</td>
-</tr>
-<tr>
-<td align="center">内存访问</td>
-<td align="center">不同享</td>
-<td align="center">同进程内共享</td>
-</tr>
-<tr>
-<td align="center">切换时的开销</td>
-<td align="center">大</td>
-<td align="center">小</td>
-</tr>
-<tr>
-<td align="center">动态性，并发性，处理同步/互斥</td>
-<td align="center">二者相同</td>
-<td align="center">二者相同</td>
-</tr>
-</tbody></table>
-<p>引入线程减小了系统的基本工作单位粒度，目的是：</p>
-<ul>
-<li>实现进程内部的并发执行，提供并行程度</li>
-<li>减少处理器切换带来的开销</li>
-<li>简化进程通信方式</li>
-</ul>
-<h4 id="1、线程的控制与类型"><a href="#1、线程的控制与类型" class="headerlink" title="1、线程的控制与类型"></a>1、线程的控制与类型</h4><p>对线程实施管理，控制的模块称作线程包</p>
-<p>根据线程包的实现方式，将线程划分为：</p>
-<ul>
-<li><p>用户级线程：由用户态的线程包来管控，而内核中不识别这种线程</p>
-<ul>
-<li>优点：切换时不需要进入到内核</li>
-<li>缺点：某一个线程在内核上阻塞的时候，会导致全部进程阻塞。</li>
-</ul>
-</li>
-<li><p>系统级线程：使用内核提供的线程包来管控</p>
-<ul>
-<li>优点：某线程在内核上阻塞时，同进程的其他线程仍然可以运行。</li>
-<li>缺点：切换时不需要进入内核。</li>
-</ul>
-</li>
-</ul>
-<h4 id="2、进程的常用细化方法"><a href="#2、进程的常用细化方法" class="headerlink" title="2、进程的常用细化方法"></a>2、进程的常用细化方法</h4><p>将进程细化为线程需要根据实际应用的需要，主要的细化方法有：</p>
-<ul>
-<li><p>分派/处理模型（Dispatcher/Worker Model）</p>
-<p>由一个分派线程Dispatcher负责接收工作需求，然后将工作任务分派给工作线程Worker来完成动作。</p>
-</li>
-<li><p>队列模型Team Model</p>
-<p>将进程细化为具有独立关系的线程，各自完成独立的任务</p>
-</li>
-<li><p>管道模型Pipeline Model</p>
-<p>将完整进程中有序的各执行步骤作为线程，依次顺序运行（流水线）</p>
-</li>
-</ul>
-<h1 id="三、调度"><a href="#三、调度" class="headerlink" title="三、调度"></a>三、调度</h1><p>调度Scheduling是管理的一种方法，一种决策。目的是通过一种合理的，有效的安排方式，提供资源(比如工作，人力 ，车辆等)的利用率。</p>
-<p>操作系统中关注的调度问题有4种：</p>
-<ul>
-<li>作业调度(宏观)：考虑何时执行哪些作业(比如Hive的数据抽取脚本)</li>
-<li>进程调度(微观)：考虑将哪个就绪进程转换为运行状态</li>
-<li>交换调度(中级)：考虑将进程如何在内/外存储器之间交换</li>
-<li>设备调度：考虑让哪个进程唤醒使用设备。</li>
-</ul>
-<h3 id="1、调度的性能指标"><a href="#1、调度的性能指标" class="headerlink" title="1、调度的性能指标"></a>1、调度的性能指标</h3><p>评价调度的效果，常使用一组性能指标：</p>
-<h4 id="1、周转时间和平均周转时间"><a href="#1、周转时间和平均周转时间" class="headerlink" title="1、周转时间和平均周转时间"></a>1、周转时间和平均周转时间</h4><p>从处理过程的完成时间来进行评价(批处理系统)，处理过程Ji的周转时间；Ti=Ji的完成时刻-Ji的提交时刻</p>
-<p>一批(n个)处理过程的平均周转时间：T=∑Ti/n</p>
-<h4 id="2、带权周转时间"><a href="#2、带权周转时间" class="headerlink" title="2、带权周转时间"></a>2、带权周转时间</h4><p>周转时间并不直接体现某处理过程耗时的合理性。</p>
-<p>处理过程Ji的带权周转时间：Twi=Ti/Tri</p>
-<p>一批(n个)处理过程的平均带权周转时间：Tw=∑Twi/n</p>
-<h4 id="3、响应时间"><a href="#3、响应时间" class="headerlink" title="3、响应时间"></a>3、响应时间</h4><p>从处理过程的响应速度来进行评价，常用在分时系统，实时系统</p>
-<p>处理过程Ji的响应时间：</p>
-<p>Ri=Ji第一次对用户做出响应的时刻-Ji的提交时刻</p>
-<h4 id="4、其他性能指标"><a href="#4、其他性能指标" class="headerlink" title="4、其他性能指标"></a>4、其他性能指标</h4><ul>
-<li>公平合理：安排公平，用户满意</li>
-<li>资源利用率(并行度)：资源闲置的情况</li>
-<li>吞吐量：单位时间完成处理过程的数量</li>
-</ul>
-<h3 id="2、作业调度算法"><a href="#2、作业调度算法" class="headerlink" title="2、作业调度算法"></a>2、作业调度算法</h3><h4 id="1、先到先服务FCFS-First-Come-First-Served"><a href="#1、先到先服务FCFS-First-Come-First-Served" class="headerlink" title="1、先到先服务FCFS(First Come First Served)"></a>1、先到先服务FCFS(First Come First Served)</h4><p>思想：排队</p>
-<p>特点：</p>
-<ul>
-<li>公平合理</li>
-<li>算法简单，容易实现</li>
-<li>服务质量欠佳(不利于短作业)</li>
-</ul>
-<h4 id="2、短作业优先SJF-Shortest-Job-First"><a href="#2、短作业优先SJF-Shortest-Job-First" class="headerlink" title="2、短作业优先SJF(Shortest Job First)"></a>2、短作业优先SJF(Shortest Job First)</h4><p>思想：减少共同等待时间</p>
-<p>特点：</p>
-<ul>
-<li>实现最小的平均周转时间</li>
-<li>吞吐量大</li>
-<li>存在饥饿现象</li>
-<li>算法简单，但实现困难</li>
-</ul>
-<h4 id="3、高响应比优先HRN-Highest-Response-ratio-Next"><a href="#3、高响应比优先HRN-Highest-Response-ratio-Next" class="headerlink" title="3、高响应比优先HRN(Highest Response-ratio Next)"></a>3、高响应比优先HRN(Highest Response-ratio Next)</h4><p>思想：通过考虑作业以等待的时间解决SJF的饥饿问题</p>
-<p>响应比R=作业等待时间/作业大小</p>
-<p>作业等待时间=系统当前时间-作业提交时刻</p>
-<h3 id="3、进程调度方式"><a href="#3、进程调度方式" class="headerlink" title="3、进程调度方式"></a>3、进程调度方式</h3><p>进程调度：在采用并发执行方式的系统中，决定正在运行的进程何时将处理器使用权交给就绪队列中的哪个进程。</p>
-<p>进程调度方式指操作系统何时实行调度，也就是处理器使用权何时可能切换，可分为：</p>
-<ul>
-<li>非抢占式：除非进程由于自身原因或者外部(非操作系统的)原因交出处理器使用权，否则一直运行直到结束，非剥夺的</li>
-<li>抢占式：操作系统定期检查系统状态(定期调度)，按照某种原则主动将进程暂停并将处理器使用权交给下个进程。剥夺式</li>
-</ul>
-<h3 id="4、进程调度算法"><a href="#4、进程调度算法" class="headerlink" title="4、进程调度算法"></a>4、进程调度算法</h3><p>进程调度算法考虑调度进行时的行为，也就是如何判断是否真正发生处理器使用权切换，以及切换时选择哪个进程。</p>
-<h4 id="1、先来先服务FCFS"><a href="#1、先来先服务FCFS" class="headerlink" title="1、先来先服务FCFS"></a>1、先来先服务FCFS</h4><ul>
-<li>调度时不修改就绪队列，并且总是选择队首。</li>
-<li>FCFS基于非抢占调度方式<ul>
-<li>FCFS进程调度的优缺点类似FCFS的作业调度。（公平，容易实现，服务质量欠佳）</li>
-</ul>
-</li>
-</ul>
-<h4 id="2、时间片轮转RR（Round-Robin）"><a href="#2、时间片轮转RR（Round-Robin）" class="headerlink" title="2、时间片轮转RR（Round-Robin）"></a>2、时间片轮转RR（Round-Robin）</h4><ul>
-<li><p>RR基于抢占调度方式，它的实现依赖与计时器中断。</p>
-</li>
-<li><p>进程每次被选中时分配一个时间片，调度时判断其时间片是否用尽，如果用尽，则将其移到就绪队列末尾，否则不修改就绪队列。并且总是选择队首。</p>
-</li>
-<li><p>时间片长度为T，如果就绪队列中已经存在了n个进程，则提交新进程的最长响应时间：R=Txn</p>
-</li>
-<li><p>应用RR算法的关键是根据实际需要确定T的值：</p>
-<ul>
-<li>T太长则响应时间太长</li>
-<li>T太短则进程切换太频繁，系统开销加大。</li>
-</ul>
-</li>
-</ul>
-<h4 id="3、优先级算法Priority"><a href="#3、优先级算法Priority" class="headerlink" title="3、优先级算法Priority"></a>3、优先级算法Priority</h4><ul>
-<li><p>为每个进程赋予一个优先数，调度时总是选择优先数最高的进程。</p>
-</li>
-<li><p>可基于抢占式调度，也可以基于非抢占式调度：</p>
-<ul>
-<li>抢占式调度：可以保证总是执行高优先级进程</li>
-<li>非抢占式调度：仅能保证当前一个进程阻塞或者结束时总能选择优先级最高的进程。</li>
-</ul>
-</li>
-<li><p>优先级调度的关键是进程优先数的配置。按照优先数配置的特点，优先级算法分为：</p>
-<ul>
-<li>静态优先级算法：进程优先数在进程创建时确定，并不可改变。</li>
-<li>动态优先级算法：进程优先数在创建进程时被赋初始值，运行中可以根据系统状态改变。</li>
-</ul>
-</li>
-<li><p>通过不同的优先数配置策略，优先级算法可以灵活的体现各种算法思想FCFS，SJF</p>
-</li>
-<li><p>经验：IO繁忙型的进程应该被赋予高优先级用来提供系统的并行度。</p>
-</li>
-</ul>
-<h4 id="5、实时系统的进程调度"><a href="#5、实时系统的进程调度" class="headerlink" title="5、实时系统的进程调度"></a>5、实时系统的进程调度</h4><p>实时系统需要对周期性或者非周期性发生的时间作出处理，其对处理正确性和时效性要求十分苛刻。</p>
-<p>不同类型的时间对于时效性的要求各异，可表达为以下时间参数：</p>
-<ul>
-<li>就绪时限：事件发生时到相应处理进程被创建的时间长度要求。</li>
-<li>开始时限：事件发生时到相应处理进程第一次运行的时间长度要求</li>
-<li>完成时限：事件发生时到相应处理进程完成的时间长度要求。</li>
-<li>处理时间：某些特殊事件要求定期触发处理过程。</li>
-</ul>
-<h3 id="5、可调度以及条件"><a href="#5、可调度以及条件" class="headerlink" title="5、可调度以及条件"></a>5、可调度以及条件</h3><ul>
-<li><p>对于一组事件，如果存在某种处理方式，让其中每个事件的时限要求都可以得到满足，就说明这组事件是可调度的Schedulable。否则，如果无论用何种方式，都至少有一个事件无法满足时限要求，则说明这组事件是不可调度的。</p>
-</li>
-<li><p>可调度的一个必要条件：u&gt;r，u表示系统单位时间内可以处理的事件数（处理能力），r表示单位事件内到达的事件数。</p>
-</li>
-</ul>
-<h1 id="四、死锁"><a href="#四、死锁" class="headerlink" title="四、死锁"></a>四、死锁</h1><p>一组进程都处于阻塞状态，其中的任一进程阻塞状态的解除都依赖与另一进程的后续操作 。这种系统状态叫做死锁DeadLock。</p>
-<h3 id="1、死锁的分类："><a href="#1、死锁的分类：" class="headerlink" title="1、死锁的分类："></a>1、死锁的分类：</h3><ul>
-<li>资源死锁：由于相互等待临界资源而导致的死锁</li>
-<li>通信死锁：由于相互等待通信导致的死锁</li>
-<li>控制死锁：由于系统或者用户的特殊控制导致的死锁</li>
-</ul>
-<h3 id="2、死锁的特点"><a href="#2、死锁的特点" class="headerlink" title="2、死锁的特点"></a>2、死锁的特点</h3><ul>
-<li>偶发性：由于特殊的并发执行顺序导致，是小概率事件</li>
-<li>非消耗：死锁的相关进程处于阻塞状态，不占用处理器</li>
-<li>程序无关：并非个别程序设计的错误，而是系统运行的错误。</li>
-</ul>
-<h3 id="3、死锁的原因"><a href="#3、死锁的原因" class="headerlink" title="3、死锁的原因"></a>3、死锁的原因</h3><p>资源死锁的根本原因是可用资源的数量小于所需资源的数量。</p>
-<p>但不可能靠无限制的增加资源数量来根本性的解决死锁问题。</p>
-<p>死锁的发生的必要条件：</p>
-<ul>
-<li>互斥条件：死锁的相关进程都是互斥的</li>
-<li>不剥夺条件：当进程申请资源时不能剥夺其他进程正在使用的资源</li>
-<li>请求与保持(部分分配)条件：进程在申请资源不成功的时候仍然保持已经申请的资源。</li>
-<li>环路等待条件：进程相互等待关系形成环路。</li>
-</ul>
-<h3 id="4、死锁的预防"><a href="#4、死锁的预防" class="headerlink" title="4、死锁的预防"></a>4、死锁的预防</h3><p>通过在资源分配的时候采取一系列的限制措施，来破坏4个必要条件之一，就可以避免死锁的发生。</p>
-<ul>
-<li><p>互斥条件的破坏</p>
-<ul>
-<li>方法：不允许申请临界资源</li>
-<li>缺点：临界资源需要转化为非临界资源才能被申请和使用，大部分情况下无法实现。</li>
-</ul>
-</li>
-<li><p>不剥夺条件的破坏</p>
-<ul>
-<li>方法：允许进程申请资源时剥夺其他进程正在使用的资源</li>
-<li>缺点：被剥夺资源的进程不可预期的打断，系统需要处理回退。缺乏公平性，反复剥夺与被剥夺</li>
-</ul>
-</li>
-<li><p>请求与保持条件的破坏</p>
-<ul>
-<li><p>方法1：资源暂时归还</p>
-<ul>
-<li><p>进程申请资源不成功时，暂时归还已经分配的资源。</p>
-</li>
-<li><p>缺点：系统需要处理回退，反复申请与归还。</p>
-</li>
-</ul>
-</li>
-<li><p>方法2：静态分配</p>
-<ul>
-<li>进程需要一次性申请完所有可能使用的资源</li>
-<li>缺点：难以预知需要使用的资源，降低资源利用率。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>环路等待条件的破坏</p>
-<ul>
-<li><p>方法1：单请求方式</p>
-<ul>
-<li>资源申请不允许嵌套，但可以一次申请多个，归还旧的资源后方可以申请新资源。</li>
-<li>缺点：同时需要多个资源时只能实行小范围内的静态分配。</li>
-</ul>
-</li>
-<li><p>方法2：按序分配</p>
-<ul>
-<li>对资源编号，进程只允许申请比当前已拥有资源编号更大的资源。</li>
-<li>缺点：如果使用大编号资源的段内需要使用小编号资源，则只能实行小范围内的静态分配。而且，编号管理也困难。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="5、死锁的经典问题"><a href="#5、死锁的经典问题" class="headerlink" title="5、死锁的经典问题"></a>5、死锁的经典问题</h3><p>哲学家用餐问题</p>
-<h3 id="6、死锁的避免"><a href="#6、死锁的避免" class="headerlink" title="6、死锁的避免"></a>6、死锁的避免</h3><p>进程可以自由的动态的，申请资源，但是分配资源的时候对可能发生的死锁，进行预测，来决定是否立即分配。</p>
-<p>死锁的避免具有以下特点：</p>
-<ul>
-<li>原理上是通过预测潜在的死锁</li>
-<li>不影响程序设计</li>
-<li>临界资源分配并非空闲让进</li>
-</ul>
-<h3 id="7、银行家算法"><a href="#7、银行家算法" class="headerlink" title="7、银行家算法"></a>7、银行家算法</h3><ul>
-<li><p>初始化，计算资源可用量Avaiable和当前需求矩阵Need，</p>
-<ul>
-<li>Available=Total-∑Used</li>
-<li>Need=Max-Used</li>
-</ul>
-</li>
-<li><p>合法检查，检查资源申请与需求矩阵的相容性，未通过则报错，Request&lt;=Need</p>
-</li>
-<li><p>资源检查，检查请求的资源是否可用，未通过则阻塞进程P。Request&lt;=Avaiable</p>
-</li>
-<li><p>预分配，嘉定Request得到满足</p>
-<ul>
-<li>Available=Available-Request</li>
-<li>Used=Used+Request</li>
-<li>Need=Need-Request</li>
-</ul>
-</li>
-<li><p>安全状态检查，检查预分配后的状态是否为安全状态。</p>
-</li>
-</ul>
-<p>某系统有<font color="red">4类资源</font>A,B,C,D，数量分别是8,10,9,12。当前有<font color="red">5个进程</font>P1，P2，P3，P4，P5。<font color="red">最大需求矩阵Max</font>和<font color="red">当前分配矩阵Used</font>如下：<br>$$<br>Max = \left[ \matrix{  4 &amp; 6 &amp; 3 &amp; 8\  3 &amp; 3 &amp; 5 &amp; 2\  6 &amp; 6 &amp; 0 &amp; 9\ 3 &amp; 4 &amp; 8 &amp; 5\ 4 &amp; 3 &amp; 2 &amp; 2  } \right]<br>$$</p>
-<p>$$<br>Used = \left[ \matrix{  1 &amp; 1 &amp; 0 &amp; 2\  2 &amp; 2 &amp; 4 &amp; 0\  0 &amp; 5 &amp; 0 &amp; 1\ 1 &amp; 1 &amp; 1 &amp; 5\ 2 &amp; 0 &amp; 2 &amp; 2  } \right]<br>$$</p>
-<ul>
-<li><p>在当前状态下，如果进程P1申请request=(1,0,1,0)，系统能否分配？</p>
-<ul>
-<li><p>资源总量(8,10,9,12)</p>
-<table>
-<thead>
-<tr>
-<th>进程</th>
-<th></th>
-<th></th>
-<th>Max</th>
-<th></th>
-<th></th>
-<th>Used</th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th>Need</th>
-<th></th>
-<th></th>
-<th>Avaiable</th>
-<th></th>
-<th></th>
-<th>Finished</th>
-</tr>
-</thead>
-<tbody><tr>
-<td></td>
-<td>A</td>
-<td>B</td>
-<td>C</td>
-<td>D</td>
-<td>A</td>
-<td>B</td>
-<td>C</td>
-<td>D</td>
-<td>A</td>
-<td>B</td>
-<td>C</td>
-<td>D</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td></td>
-</tr>
-<tr>
-<td>p1</td>
-<td>4</td>
-<td>6</td>
-<td>3</td>
-<td>8</td>
-<td>1</td>
-<td>1</td>
-<td>0</td>
-<td>2</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>p2</td>
-<td>3</td>
-<td>3</td>
-<td>5</td>
-<td>2</td>
-<td>2</td>
-<td>2</td>
-<td>4</td>
-<td>0</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>p3</td>
-<td>6</td>
-<td>6</td>
-<td>0</td>
-<td>9</td>
-<td>0</td>
-<td>5</td>
-<td>0</td>
-<td>1</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>p4</td>
-<td>3</td>
-<td>4</td>
-<td>8</td>
-<td>5</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>5</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>p5</td>
-<td>4</td>
-<td>3</td>
-<td>2</td>
-<td>2</td>
-<td>2</td>
-<td>0</td>
-<td>2</td>
-<td>2</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>在当前状态下，如果进程P3申请request=(1,0,0,1),系统能否分配？</li>
-</ul>
-<h1 id="五、存储管理"><a href="#五、存储管理" class="headerlink" title="五、存储管理"></a>五、存储管理</h1><h3 id="1、存储器的类型"><a href="#1、存储器的类型" class="headerlink" title="1、存储器的类型"></a>1、存储器的类型</h3><ul>
-<li>外存储器、磁带，离线存储，容量大，速度慢</li>
-<li>外存储器，磁盘，光盘等，主板外</li>
-<li>cache主存储器，主板类（存储器管理）</li>
-<li>寄存器cache，cpu内，速度块，容量小</li>
-</ul>
-<h3 id="2、程序的编码与装入"><a href="#2、程序的编码与装入" class="headerlink" title="2、程序的编码与装入"></a>2、程序的编码与装入</h3><ul>
-<li><p>程序（高级语言）</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a=<span class="number">10</span>;</span><br><span class="line">main()&#123;</span><br><span class="line">    <span class="keyword">int</span> b=a;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;b&lt;&lt;a;</span><br><span class="line">    <span class="built_in">cout</span>&lt;<span class="string">"hello"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>编译链接</p>
-</li>
-<li><p>程序（机器码）</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0~1			10</span><br><span class="line">2~8			hello.</span><br><span class="line">9				????	(将[0~1]压栈)</span><br><span class="line">10~13		????	(cout&lt;&lt;[esp]&lt;&lt;[0~1];)</span><br><span class="line">14~17		???? 装入(count&lt;&lt;[2~8];)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>运行时内存</p>
-<ul>
-<li>数据段：全局变量和敞亮</li>
-<li>代码段：指令存放处</li>
-<li>堆栈：局部变量存放处（由指令动态操作）</li>
-</ul>
-</li>
-</ul>
-<h3 id="3、逻辑地址与物理地址"><a href="#3、逻辑地址与物理地址" class="headerlink" title="3、逻辑地址与物理地址"></a>3、逻辑地址与物理地址</h3><p>​        程序在运行的时候被装入到内存中，其中的<font color="red">指令与数据</font>的<font color="red">位置</font>用地址值表示，<font color="red">地址值</font>的变现形式可分为：</p>
-<ul>
-<li><font color="red">逻辑（虚拟）地址</font>：指令或者数据在<font color="red">程序中的编号（位置）</font></li>
-<li><font color="red">物理地址</font>：指令或者数据<font color="red">内存中的位置</font></li>
-</ul>
-<table>
-<thead>
-<tr>
-<th align="center">物理地址</th>
-<th align="center">逻辑地址</th>
-<th align="center">程序（机器码）</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">10000~10001</td>
-<td align="center">0~1</td>
-<td align="center">10</td>
-</tr>
-<tr>
-<td align="center">10002~10008</td>
-<td align="center">2~8</td>
-<td align="center">hello</td>
-</tr>
-<tr>
-<td align="center">10009</td>
-<td align="center">9</td>
-<td align="center">(将[0~1]压栈；)</td>
-</tr>
-<tr>
-<td align="center">10010~10013</td>
-<td align="center">10~13</td>
-<td align="center">（cout&lt;&lt;[esp]&lt;&lt;[0~1];）</td>
-</tr>
-<tr>
-<td align="center">10014~10017</td>
-<td align="center">14~17</td>
-<td align="center">(cout&lt;&lt;[2~8];)</td>
-</tr>
-</tbody></table>
-<h3 id="4、重定位（地址转换）"><a href="#4、重定位（地址转换）" class="headerlink" title="4、重定位（地址转换）"></a>4、重定位（地址转换）</h3><p>​        若程序中的变量与指令用逻辑地址加以引用，则为了在运行的时候正确访问这些变量或者指令，需要进行重定位（或者叫地址转换），来确定实际的物理地址。</p>
-<p>​        根据地址转换操作的时机，重定位分为：</p>
-<ul>
-<li><p><font color="red">静态重定位</font>：操作系统在<font color="red">装入程序时候</font>修改其中所引用的逻辑地址值为物理地址值–由<font color="red">操作系统</font>实现。</p>
-</li>
-<li><p><font color="red">动态重定位</font>：在运行过程中需要做访问操作的时候才进行地址转换–由cpu的<font color="red">存储管理单元MMU</font>自动实现，操作系统只登记MMU进行重定位时需要的相关信息。</p>
-</li>
-</ul>
-<p>个人理解，Java的反射机制，可以在运行的时候，获取Class信息，想必底层实现原理就是利用的动态重定位吧。</p>
-<h3 id="5、静态重定位与动态重定位的特点对比："><a href="#5、静态重定位与动态重定位的特点对比：" class="headerlink" title="5、静态重定位与动态重定位的特点对比："></a>5、静态重定位与动态重定位的特点对比：</h3><table>
-<thead>
-<tr>
-<th align="center"></th>
-<th align="center">静态重定位</th>
-<th align="center">动态重定位</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">硬件支持</td>
-<td align="center">不需要</td>
-<td align="center">需要</td>
-</tr>
-<tr>
-<td align="center">操作系统的工作</td>
-<td align="center">装入时修改程序</td>
-<td align="center">登记MMU所需要信息</td>
-</tr>
-<tr>
-<td align="center">程序装入</td>
-<td align="center">被修改</td>
-<td align="center">直接装入</td>
-</tr>
-<tr>
-<td align="center">程序运行时移动</td>
-<td align="center">困难</td>
-<td align="center">容易</td>
-</tr>
-<tr>
-<td align="center">程序的不连续装入</td>
-<td align="center">困难</td>
-<td align="center">容易</td>
-</tr>
-<tr>
-<td align="center">其他技术支持（动态链接、虚拟存储等）</td>
-<td align="center">难以实现</td>
-<td align="center">容易实现</td>
-</tr>
-</tbody></table>
-<h3 id="6、存储器管理的关键问题"><a href="#6、存储器管理的关键问题" class="headerlink" title="6、存储器管理的关键问题"></a>6、存储器管理的关键问题</h3><p>​        <font color="red">存储器管理</font>主要是对用户空间进行管理，目的是为了提供主存储器的利用率，方便用户对主存储器的使用。</p>
-<p>​        存储器管理的关键问题：</p>
-<h5 id="1、存储空间的分配与回收"><a href="#1、存储空间的分配与回收" class="headerlink" title="1、存储空间的分配与回收"></a>1、存储空间的分配与回收</h5><ul>
-<li>设计合理的数据结构以记录存储空间的分配情况</li>
-<li>设计合理的算法来提高存储器的利用率（装入尽可能多的程序）</li>
-</ul>
-<h5 id="2、重定位方式的确定"><a href="#2、重定位方式的确定" class="headerlink" title="2、重定位方式的确定"></a>2、重定位方式的确定</h5><ul>
-<li>决定采用静态重定位或者动态重定位，并进行相应的工作</li>
-</ul>
-<h5 id="3、实现保护与共享"><a href="#3、实现保护与共享" class="headerlink" title="3、实现保护与共享"></a>3、实现保护与共享</h5><ul>
-<li><p>存储空间保护使得各进程不能访问彼此的存储空间，主要方法有：</p>
-<ul>
-<li><p>利用出其里的特权级，防止跨级访问</p>
-</li>
-<li><p>利用MMU的界限寄存器规则，防止同级访问</p>
-</li>
-<li><p>操作系统设置和检查存储区域的保护键与当前进程的键以及操作是否匹配</p>
-</li>
-</ul>
-</li>
-<li><p>存储空间共享：</p>
-<ul>
-<li>提供进程间共享数据的途径</li>
-</ul>
-</li>
-</ul>
-<h5 id="4、实现虚拟存储技术"><a href="#4、实现虚拟存储技术" class="headerlink" title="4、实现虚拟存储技术"></a>4、实现虚拟存储技术</h5><h3 id="7、存储器管理的方法"><a href="#7、存储器管理的方法" class="headerlink" title="7、存储器管理的方法"></a>7、存储器管理的方法</h3><h4 id="1、从程序的角度分为："><a href="#1、从程序的角度分为：" class="headerlink" title="1、从程序的角度分为："></a>1、从程序的角度分为：</h4><ul>
-<li>非分段管理：将进程的数据、代码、堆栈作为一个完整的逻辑空间</li>
-<li>分段管理：将进程的数据、代码、堆栈、各自作为独立的逻辑空间</li>
-</ul>
-<h4 id="2、从内存分配的角度分为："><a href="#2、从内存分配的角度分为：" class="headerlink" title="2、从内存分配的角度分为："></a>2、从内存分配的角度分为：</h4><ul>
-<li>分区管理：一个逻辑空间对应物理空间中一个分区，连续分配</li>
-<li>分页管理：一个逻辑空间对应物理空间中多个分页，可不连续分配。</li>
-<li>段页式管理：比较先进复杂的综合方法。</li>
-</ul>
-<h3 id="8、单一连续区存储管理"><a href="#8、单一连续区存储管理" class="headerlink" title="8、单一连续区存储管理"></a>8、单一连续区存储管理</h3><p>​        操作系统占用内核空间之外，将整个用户空间看做一个内存区域，一次只能装入一道用户程序，只有用户区中的程序运行完毕方可以装入下一道程序。</p>
-<p>也就是说，一个内存，有系统区，还有用户区。系统区，存储一个操作系统信息。</p>
-<ul>
-<li><p>常用静态重定位</p>
-</li>
-<li><p>管理简单</p>
-</li>
-<li><p>不需要复杂硬件支持</p>
-</li>
-<li><p>只允许单任务</p>
-<p>为了实现单一连续区存储管理，或者其他任何存储管理的方法，<font color="red">操作系统采用的请求表来记录请求装入内存的程序信息</font>。</p>
-<table>
-<thead>
-<tr>
-<th align="center">程序标识</th>
-<th align="center">需要的空间长度（虚拟地址空间大小）</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">A</td>
-<td align="center">50K</td>
-</tr>
-<tr>
-<td align="center">B</td>
-<td align="center">90K</td>
-</tr>
-<tr>
-<td align="center">C</td>
-<td align="center">130K</td>
-</tr>
-<tr>
-<td align="center">D</td>
-<td align="center">10K</td>
-</tr>
-<tr>
-<td align="center">E</td>
-<td align="center">165K</td>
-</tr>
-</tbody></table>
-</li>
-</ul>
-<h3 id="9、固定分区存储管理"><a href="#9、固定分区存储管理" class="headerlink" title="9、固定分区存储管理"></a>9、固定分区存储管理</h3><p>​        操作系统占用内核空间之外，<font color="red">将整个用户空间划分为若干个固定大小的区域（大小可不相等）</font>。多道程序分别装入不同的分区内，一道程序只能装入一个分区，而一个分区也只能分配给一道程序。</p>
-<p>​        为了实现固定分区存储管理，操作系统必须记录各分区的位置和使用情况，采用关键数据结构–分区说明表（DPT）</p>
-<table>
-<thead>
-<tr>
-<th align="center">区号</th>
-<th align="center">长度</th>
-<th align="center">起始地址</th>
-<th align="center">状态</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">1</td>
-<td align="center">75K</td>
-<td align="center">32K</td>
-<td align="center">0</td>
-</tr>
-<tr>
-<td align="center">2</td>
-<td align="center">30K</td>
-<td align="center">107K</td>
-<td align="center">0</td>
-</tr>
-<tr>
-<td align="center">3</td>
-<td align="center">140K</td>
-<td align="center">137K</td>
-<td align="center">0</td>
-</tr>
-<tr>
-<td align="center">4</td>
-<td align="center">11K</td>
-<td align="center">277K</td>
-<td align="center">0</td>
-</tr>
-</tbody></table>
-<p>​        固定分区存储管理一般采用静态重定位，配合界限寄存器法防止各进程彼此访问存储区域（存储保护）。</p>
-<p>​        利用MMU的界限寄存器规则，防止同级间房屋内，操作系统设置和检查存储区域的保护建与当前进程的键是否匹配。</p>
-<p>​        固定分区存储管理的特点：</p>
-<ul>
-<li>支持多道程序设计</li>
-<li>并发执行进程数受到分区数限制</li>
-<li>程序可用空间受分区大小限制</li>
-<li>存储区存在“碎片”</li>
-<li>长作业优先、输入队列法</li>
-</ul>
-<h3 id="10、可变分区存储管理"><a href="#10、可变分区存储管理" class="headerlink" title="10、可变分区存储管理"></a>10、可变分区存储管理</h3><p>​        在程序装入时选择一个空闲区域并在其中动态创建一个分区来装入程序。</p>
-<p>​        为了实现可变分区存储管理，操作系统需要记录空闲内存区域的位置，可采用以下两种数据结构：</p>
-<h5 id="1、可用表"><a href="#1、可用表" class="headerlink" title="1、可用表"></a>1、可用表</h5><p>类似分区说明表DPT，但是其中的记录是变化的，并且状态1表示空闲，而状态0表示记录无效（预留着存储位置）</p>
-<table>
-<thead>
-<tr>
-<th align="center">起始地址</th>
-<th align="center">长度</th>
-<th align="center">状态</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">152K</td>
-<td align="center">10K</td>
-<td align="center">1</td>
-</tr>
-<tr>
-<td align="center">172K</td>
-<td align="center">116K</td>
-<td align="center">1</td>
-</tr>
-<tr>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">0</td>
-</tr>
-<tr>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">0</td>
-</tr>
-<tr>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">0</td>
-</tr>
-</tbody></table>
-<ul>
-<li>缺点：可用表的长度受到了限制，从而导致表示的空闲区个数受到限制，影响并发的进程个数</li>
-</ul>
-<h5 id="2、空闲区链表"><a href="#2、空闲区链表" class="headerlink" title="2、空闲区链表"></a>2、空闲区链表</h5><p>用链表的形式来记录空闲区</p>
-<p>ps：怪不得面试的时候，让手写LRU算法，而LRU算法也是用链表实现的。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FreeNode</span>&#123;</span></span><br><span class="line">    <span class="keyword">long</span> start;<span class="comment">//分区的起始地址</span></span><br><span class="line">    <span class="keyword">long</span> length;<span class="comment">//分区的长度</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">FreeNode</span> *<span class="title">next</span>;</span><span class="comment">//向下指针</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="3、可变分区存储管理空间分配算法"><a href="#3、可变分区存储管理空间分配算法" class="headerlink" title="3、可变分区存储管理空间分配算法"></a>3、可变分区存储管理空间分配算法</h5><p>当程序请求装入的时候，进行空间分配的算法：</p>
-<ul>
-<li>最先适应法FF：依次查找空闲区，选择收个足够大的空闲区装入程序。</li>
-<li>最佳适应法BF：在所有足够装入程序的空闲区中选择最小者</li>
-<li>最坏适应法WF就：在所有足够装入程序的空闲区中选择最大者</li>
-</ul>
-<h5 id="4、空间分配算法优缺点："><a href="#4、空间分配算法优缺点：" class="headerlink" title="4、空间分配算法优缺点："></a>4、空间分配算法优缺点：</h5><p>三种算法的优势和缺点：</p>
-<ul>
-<li>最先适应法FF：分配速度最快，但是堆内存使用没有规划。</li>
-<li>最佳适应法BF：找到的空闲区与请求最匹配，对大程序的装入有充分的准备，但是容易产生外碎片。</li>
-<li>最坏适应法WF：不容易产生外碎片，但是容易造成大程序装入的失败。</li>
-</ul>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/01/%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/">展开全文 >></a>
+      <a class="article-more-a" href="2018/12/11/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">展开全文 >></a>
     </p>
     
 
@@ -2650,7 +797,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" target="_blank">大数据</a>
+	  <a class="article-title" href="2018/10/05/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" target="_blank">大数据</a>
   
     </h1>
   
@@ -2658,8 +805,8 @@
 
   
   
-<a href="2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
+<a href="2018/10/05/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" class="archive-article-date">
+        <time datetime="2018-10-05T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-05</time>
 </a>
 
   
@@ -2757,7 +904,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/">展开全文 >></a>
+      <a class="article-more-a" href="2018/10/05/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/">展开全文 >></a>
     </p>
     
 
@@ -2792,7 +939,7 @@
 
 
   
-    <article id="post-docker使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Kafka的应用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -2800,7 +947,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="2019/11/01/docker%E4%BD%BF%E7%94%A8/" target="_blank">Docker的使用</a>
+	  <a class="article-title" href="2018/10/03/Kafka%E7%9A%84%E5%BA%94%E7%94%A8/" target="_blank">Kafka的应用</a>
   
     </h1>
   
@@ -2808,8 +955,8 @@
 
   
   
-<a href="2019/11/01/docker%E4%BD%BF%E7%94%A8/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
+<a href="2018/10/03/Kafka%E7%9A%84%E5%BA%94%E7%94%A8/" class="archive-article-date">
+        <time datetime="2018-10-03T02:44:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-03</time>
 </a>
 
   
@@ -2821,23 +968,391 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、docker的使用"><a href="#一、docker的使用" class="headerlink" title="一、docker的使用"></a>一、docker的使用</h1><h4 id="1、docker添加镜像加速文件"><a href="#1、docker添加镜像加速文件" class="headerlink" title="1、docker添加镜像加速文件"></a>1、docker添加镜像加速文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/docker</span><br><span class="line"><span class="meta">#</span><span class="bash">如果没有daemon.json文件，需要新建一个</span></span><br><span class="line">sudo touch daemon.json</span><br><span class="line">sudo vim daemon.json</span><br><span class="line"><span class="meta">#</span><span class="bash">daemon.json添加以下配置，然后保存</span></span><br><span class="line">&#123;"registry-mirrors":["https://registry.docker-cn.com"]&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash">重启服务</span></span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+    <h1 id="一、Kafka的应用"><a href="#一、Kafka的应用" class="headerlink" title="一、Kafka的应用"></a>一、Kafka的应用</h1><h3 id="1、Spark-Spark-Streaming-实时计算"><a href="#1、Spark-Spark-Streaming-实时计算" class="headerlink" title="1、Spark/Spark Streaming 实时计算"></a>1、Spark/Spark Streaming 实时计算</h3><p>充当消费者，消费Kafka的消息。也就是说Spark大约有90%的数据会来自kafka。</p>
+<h3 id="2、kafka有两种消息发送模式"><a href="#2、kafka有两种消息发送模式" class="headerlink" title="2、kafka有两种消息发送模式"></a>2、kafka有两种消息发送模式</h3><h4 id="2-1、点对点（一对一）模式。"><a href="#2-1、点对点（一对一）模式。" class="headerlink" title="2.1、点对点（一对一）模式。"></a>2.1、点对点（一对一）模式。</h4><p>只能一个生产者，一个消费者这样，消费者消费一条数据，然后表示接收到了，然后再回复一个确认收到，则消费一条数据，消息队列就删掉一条数据。如果想要多个消费者消费消息，就不行了。</p>
+<h4 id="2-2、发布订阅（publish-subscribe-）"><a href="#2-2、发布订阅（publish-subscribe-）" class="headerlink" title="2.2、发布订阅（publish/subscribe ）"></a>2.2、发布订阅（publish/subscribe ）</h4><p>​        发布订阅有两种，一种是生产者把消息发送到队列里，然后主动推送消息给消费者，有点类似你订阅的微信公众号，只要有新的消息就会推送给消费者。但是这种机制有一个缺点就是，比如你生产者生产消息的速度是100M/s，但是，你多个消费者可能处理消息的速度都不一样，有的50M/s，有的200M/s，而直接推送消息这种方式，处理速度慢的消费者就会直接崩掉。而处理速度快的又会造成很大的资源浪费。第二种是消费者主动拉取数据，会根据自身数据处理速度拉取。但是有问题，消费者要隔一段时间的轮询消息队列，看有没有新的消息产生。假如某种情况下，这样也容易造成一些资源浪费。kafka的发布订阅方式是消费者主动拉取数据。</p>
+<h3 id="3、Kafka中的相关定义"><a href="#3、Kafka中的相关定义" class="headerlink" title="3、Kafka中的相关定义"></a>3、Kafka中的相关定义</h3><h4 id="3-1、Offset"><a href="#3-1、Offset" class="headerlink" title="3.1、Offset"></a>3.1、Offset</h4><p>​        作用就是记录消费位，比如你消费到第6条，broker挂了，它会保存记录到zookeeper 里，kafka的0.9版本之前都是保存在zk中，之后就直接保存在kafka里也就是本地存储。不管你保存在zk也好，也是本地kafka集群也好，offset都是用来管理消息消费偏移量的<br>为什么要改保存到kafka集群本地呢？你zk存的好好的，首先消费者本身跟kafka直接连接的，我在kafka里面获取数据的同时，还要维护跟zk的连接，首先消费者是以拉取的方式获取消息的，本身拉取速度是非常快的，可能你消费者一秒要拉取消息好几次，还要跟zk这边打交道好几次，这样太频繁了，就会影响效率，而zk本身是来提供各大框架之间润滑技的作用，那你此时这么高并发的请求，存到zk里面也不好，后来把offset存到本地，这个本地不是本地磁盘，而是存到kafka本地。kafka存数据是存在topic 里面，kafka存消息是存到磁盘上的，默认保留七天，配置文件里写的是168个小时</p>
+<h4 id="3-2、topic"><a href="#3-2、topic" class="headerlink" title="3.2、topic"></a>3.2、topic</h4><p>​        看成是一个消息队列，因为生产者消费者面向的都是一个topic。</p>
+<ul>
+<li><p>partition分区</p>
+<p>为了实现扩展性，一个非常大的topic主题，会分布到多个broker（服务器）上。一个topic可以分为多个分区partition，而每个partition是一个有序队列。</p>
+</li>
+<li><p>replication是副本</p>
+<p>为保证集群中，当某个节点发生故障时，保证节点上的数据不丢失，而且kafka还能继续工作，kafka提供了副本机制，也就是一个topic的每一个分区，都有许多个副本。也就是一个leader和许多个follower。当然follower肯定不能再同一个broker，不然副本毫无意义。</p>
+</li>
+<li><p>leader副本</p>
+<p>leader是每个分区多个副本的主，生产者发送数据的对象，以及消费者消费数据的对象都是leader。每个分区多个副本的从，实时的从leader主副本同步数据，保持和leader数据同步，当某个leader分区挂了，某一个follwer从副本会成为新的leader分区启动kafka之前要先启动zk，因为kafka依赖于zk</p>
+</li>
+<li><p>消费者组consumer group</p>
+</li>
+</ul>
+<p>也就是同一个消费者组里面的消费者，消费topic不同分区，也就是不能消费同一个分区的数据</p>
+<h4 id="3-3、关于leader何时向follwer发送ack"><a href="#3-3、关于leader何时向follwer发送ack" class="headerlink" title="3.3、关于leader何时向follwer发送ack"></a>3.3、关于leader何时向follwer发送ack</h4><p>​        有两种想法，一是，半数以上的follwer同步完成数据，leader发送ack，但是这种解决方案，至少需要2n+1台服务器。容易造成资源浪费，还有很多重复的副本。第二种解决方案是，所有的服务器都同步完成，也就是总共有n+1台服务器，但是这样仍然有一个问题，就是，假如同步过程中，有一个follwer可能由于网络问题，长时间的没有和leader同步数据，这样就要一直等下去，容易造成资源浪费，因此就出现了ISR机制。kafka使用的是第二种方案<br>​        leader维护一个ISR（in sync replication set）叫做和follwer保持同步的集合，当ISR中的follwer和leader同步数据完成后，leader就会发出ack给follower。如果follwer长时间没有向leader同步数据，则这个follwer就会被踢出ISR，replica.lag.time.max.ms这个参数决定follwer的这个长时间的最大限度（默认值是10000ms，也就是10s之内同步完，否则被踢出isr）。如果leader挂了，就会选择follwer作为新的leader。选举follwer作为新的leader的时候，是看消息条数最多的，作为新的。因为数据越多的丢数据越少。</p>
+<ul>
+<li>ack的应答机制<br>  对某些不重要的数据，可靠性要求不是很高的数据，能够容忍少量丢失数据。所以，没必要等ISR中的的follwer都同步完数据。Kafka提供了3种可靠性级别，可以让用户使用的时候，对可靠性和延迟进行权衡。</li>
+</ul>
 
-<h4 id="2、查看docker的版本"><a href="#2、查看docker的版本" class="headerlink" title="2、查看docker的版本"></a>2、查看docker的版本</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker查找镜像</span></span><br><span class="line">sudo docker search mysql</span><br><span class="line"><span class="meta">#</span><span class="bash">查看本地下载的镜像</span></span><br><span class="line">sudo docker images</span><br><span class="line"><span class="meta">#</span><span class="bash">查看本地正在运行的镜像</span></span><br><span class="line">sudo docker ps -a</span><br></pre></td></tr></table></figure>
+    
 
-<h4 id="3、使用docker拉取镜像"><a href="#3、使用docker拉取镜像" class="headerlink" title="3、使用docker拉取镜像"></a>3、使用docker拉取镜像</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo docker pull redis:5.0.6</span><br><span class="line">sudo docker pull nginx</span><br><span class="line">sudo docker pull mysql:8.0.18</span><br><span class="line"><span class="meta">#</span><span class="bash">删除拉取的镜像</span></span><br><span class="line">sudo docker image rm mysql:8.0.18</span><br></pre></td></tr></table></figure>
+    
 
-<h4 id="4、使用docker安装并运行nginx"><a href="#4、使用docker安装并运行nginx" class="headerlink" title="4、使用docker安装并运行nginx"></a>4、使用docker安装并运行nginx</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sudo docker search nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">pull的时候，后面不追加冒号和版本号，默认是最新的latest版本</span></span><br><span class="line">sudo docker pull nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">运行nginx</span></span><br><span class="line">sudo docker run --name victor-nginx-test -p 8081:80 -d nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">victor-nginx-test是容器名称</span></span><br><span class="line">-d，设置容器在后台一直运行</span><br><span class="line">-p，端口进行映射，将本地的8081端口映射到容器内部的80端口</span><br><span class="line"><span class="meta">#</span><span class="bash">执行玩上面那条命令后，会生成一串字符串45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89，这个表示容器的id，一般作为日志的文件名来查看启动信息等</span></span><br><span class="line">sudo docker logs 45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89</span><br><span class="line"><span class="meta">#</span><span class="bash">停止nginx</span></span><br><span class="line">sudo docker ps</span><br><span class="line"><span class="meta">#</span><span class="bash">复制对应容器的id,然后停止镜像</span></span><br><span class="line">sudo docker stop 45faac1c8dca</span><br><span class="line"><span class="meta">#</span><span class="bash">删除镜像</span></span><br><span class="line">sudo docker rm 45faac1c8dca</span><br></pre></td></tr></table></figure>
+    
 
-<h4 id="5、使用docker部署项目"><a href="#5、使用docker部署项目" class="headerlink" title="5、使用docker部署项目"></a>5、使用docker部署项目</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">首先创建一个文件夹，里面包含3个子文件夹</span></span><br><span class="line">sudo mkdir -p ~/桌面/nginx/www ~/桌面/nginx/logs ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">首先你要直到容器的id，</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">复制docker容器里的nginx默认配置文件信息，到你的本地刚创建的conf文件夹目录下</span></span><br><span class="line">sudo docker cp76d9d74d071e:/etc/nginx/nginx.conf ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">部署项目，到docker里的nginx</span></span><br><span class="line">sudo docker run -p 8082:80 --name victor-nginx-web -v ~/桌面/nginx/www:/usr/share/nginx/html -v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v ~/桌面/nginx/logs:/var/log/nginx -d nginx</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">命令说明</span></span><br><span class="line">-p 8082:80  是把你容器里的nginx的80端口映射到你本地主机的8082端口</span><br><span class="line">--name victor-nginx-web  是把容器重命名我们自己喜欢的名字</span><br><span class="line">-v ~/桌面/nginx/www:/usr/share/nginx/html   是把我们本地创建的项目 的www目录挂在到容器的/usr/share/nginx/html</span><br><span class="line">-v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf 是吧我们创建的nginx.conf挂在到容器的/etc/nginx/nginx.conf</span><br><span class="line">-v ~/桌面/nginx/logs:/var/log/nginx 是把我们自己创建的logs挂在到容器的/var/log/nginx</span><br><span class="line">-d nginx :是设置容器一直后台运行</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">执行完命令后，会生成一串字符串，用这个字符串表示日志id，可以使用</span></span><br><span class="line">sudo docker logs 76d9d74d071e8b2d8499a56691587eef3e2f19d4fddeb5a3e26e5d9338856e10</span><br></pre></td></tr></table></figure>
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
-<h4 id="6、使用docker安装mysql并运行"><a href="#6、使用docker安装mysql并运行" class="headerlink" title="6、使用docker安装mysql并运行"></a>6、使用docker安装mysql并运行</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉去mysql的镜像</span></span><br><span class="line">sudo docker pull mysql:5.7</span><br><span class="line"><span class="meta">#</span><span class="bash">本地创建一个文件夹，用来映射容器的mysql</span></span><br><span class="line">sudo mkdir -p ~/桌面/mydata/mysql/log ~/桌面/mydata/mysql/conf ~/桌面/mydata/mysql/data</span><br><span class="line"><span class="meta">#</span><span class="bash">给创建好的文件夹开权限</span></span><br><span class="line">sudo chmod 777 -R ~/桌面/mydata/</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动mysql</span></span><br><span class="line">sudo docker run -p 3305:3306 --name mysql -v ~/桌面/mydata/mysql/log:/var/log/mysql -v ~/桌面/mydata/mysql/data:/var/lib/mysql -v ~/桌面/mydata/mysql/conf:/etc/mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7</span><br><span class="line"><span class="meta">#</span><span class="bash">查看镜像，如果存在，或者端口被占用，则换为3305映射容器的端口</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">先删除被占用名字的容器镜像id，然后重新执行启动命令</span></span><br><span class="line">sudo docker rm3bf96e1f8a95</span><br><span class="line"><span class="meta">#</span><span class="bash">进入运行mysql的docker容器</span></span><br><span class="line">sudo docker exec -it mysql /bin/bash</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#######以下是mysql的命令操作</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">使用mysql 命令打开客户端</span></span><br><span class="line">mysql -uroot -proot --default-character-set=utf8</span><br><span class="line"><span class="meta">#</span><span class="bash">查看数据库</span></span><br><span class="line">show databases;</span><br><span class="line">create database test character set utf8;</span><br><span class="line">use test;</span><br><span class="line">create table ();</span><br><span class="line"><span class="meta">#</span><span class="bash">退出mysql命令操作</span></span><br><span class="line">\q</span><br><span class="line"><span class="meta">#</span><span class="bash">退出mysql运行的docker容器</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+    
 
-<h4 id="7、使用docker安装并运行redis"><a href="#7、使用docker安装并运行redis" class="headerlink" title="7、使用docker安装并运行redis"></a>7、使用docker安装并运行redis</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">docker拉取redis</span></span><br><span class="line">sudo docker pull redis:3.2</span><br><span class="line"><span class="meta">#</span><span class="bash">本地创建一个redis文件夹存放数据</span></span><br><span class="line">sudo mkdir -p ~/桌面/mydata/redis/data</span><br><span class="line"><span class="meta">#</span><span class="bash">更改文件件执行权限</span></span><br><span class="line">sudo chmod 777 -R ~/桌面/mydata/redis</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动redis</span></span><br><span class="line">sudo docker run -p 6379:6379 --name redis -v ~/桌面/mydata/redis/data:/data -d redis:3.2 redis-server --appendonly yes</span><br><span class="line"><span class="meta">#</span><span class="bash">进入redis容器使用redis-cli命令进行连接</span></span><br><span class="line">sudo docker exec -it redis redis-cli</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">####以下为redis的命令</span></span></span><br><span class="line">ping</span><br><span class="line">set a 100</span><br><span class="line">get a</span><br><span class="line"><span class="meta">#</span><span class="bash">退出redis</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="2018/10/03/Kafka%E7%9A%84%E5%BA%94%E7%94%A8/">展开全文 >></a>
+    </p>
+    
 
-<h4 id="8、使用docker安装并运行rabbitmq"><a href="#8、使用docker安装并运行rabbitmq" class="headerlink" title="8、使用docker安装并运行rabbitmq"></a>8、使用docker安装并运行rabbitmq</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉取docker镜像</span></span><br><span class="line">sudo docker pull rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动rabbitmq</span></span><br><span class="line">sudo docker run --name rabbitmq --publish 5671:5671 --publish 5672:5672 --publish 4369:4369 --publish 25672:25672 --publish 15672:15672 --publish 15671:15671 -d rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">Ubuntu的防火墙暴露端口15672</span></span><br><span class="line">sudo ufw allow 15672</span><br><span class="line"><span class="meta">#</span><span class="bash">开启防火墙</span></span><br><span class="line">sudo ufw enable</span><br><span class="line"><span class="meta">#</span><span class="bash">重新加载</span></span><br><span class="line">sudo ufw reload</span><br><span class="line"><span class="meta">#</span><span class="bash">查看防火墙状态</span></span><br><span class="line">sudo ufw status</span><br><span class="line"><span class="meta">#</span><span class="bash">进入到rabbitmq的连接</span></span><br><span class="line">sudo docker exec -it rabbitmq /bin/bash</span><br><span class="line"><span class="meta">#</span><span class="bash">然后输入如下命令，开启rabbitmq的管理后台</span></span><br><span class="line">rabbitmq-plugins enable rabbitmq_management</span><br><span class="line"><span class="meta">#</span><span class="bash">浏览器输入rabbitmq的管理后台页面</span></span><br><span class="line">http://localhost:15672</span><br><span class="line">用户名密码：guest guest</span><br><span class="line"><span class="meta">#</span><span class="bash">退出</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
 
 
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-Hive1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="2018/10/02/Hive1/" target="_blank">Hive基本概念</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="2018/10/02/Hive1/" class="archive-article-date">
+        <time datetime="2018-10-02T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-02</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="Hive基本概念"><a href="#Hive基本概念" class="headerlink" title="Hive基本概念"></a>Hive基本概念</h1><h3 id="1-1、什么是Hive"><a href="#1-1、什么是Hive" class="headerlink" title="1.1、什么是Hive"></a>1.1、什么是Hive</h3><p>Hive：由Facebook开源用于海量结构化日志的数据统计（Hive是分析框架，它不能存储数据的）</p>
+<p>Hive是基于Hadoop的一个<strong>数据仓库工具</strong>，可以将<strong>结构化的数据文件映射为一张表</strong>，并提供<strong>类SQL</strong>查询功能。</p>
+<p><strong>本质：将HQL转化成MapReduce程序</strong></p>
+<ul>
+<li>数据仓库通过SQL进行统计分析</li>
+<li>将SQL语言中常用的操作（select,where,group等）用MapReduce写成很多模板</li>
+<li>所有的MapReduce模板封装在Hive中</li>
+<li>client客户端，用户根据业务需求编写相应的SQL语句</li>
+<li>然后会去Hive中找对应的MapReduce模板</li>
+<li>通过Hive框架匹配出相应的MapReduce模板</li>
+<li>运行MapReduce程序，生成相应的分析结果</li>
+</ul>
+<p>Hive可以看做是Hadoop的客户端，装一个就够了啊，Hive它有不存储数据，不做计算，它就将HQL转化为MapReduce</p>
+<p>Hive处理的数据存储在HDFS</p>
+<p>Hive分析数据底层的实现是MapReduce</p>
+<p>执行程序运行在Yarn上</p>
+<h3 id="1-2、Hive的优缺点"><a href="#1-2、Hive的优缺点" class="headerlink" title="1.2、Hive的优缺点"></a>1.2、Hive的优缺点</h3><h4 id="1-2-1、优点"><a href="#1-2-1、优点" class="headerlink" title="1.2.1、优点"></a>1.2.1、优点</h4><ul>
+<li><p>操作接口采用类SQL语法，提供快速开发的能力（简单，容易上手）</p>
+</li>
+<li><p>避免了去写MapReduce，减少开发人员得 学习成本</p>
+</li>
+<li><p>HIve的执行延迟比较高，因此HIve常用数据分析，对实时性要求不高的场合</p>
+<p>比如你凌晨一两点，启动一个定时脚本，跑一下数据，实时性不高，不是那种你来一条数据，就立马处理的那种，就是说它可以处理，但是给反馈，交互出结果比较慢，因为它跑MR，而MR整个启动，提交啊，切片啊非常的慢，所以它应用的场景一般是离线</p>
+</li>
+<li><p>Hive优势在于处理大数据，对于处理小数据没有优势，因为Hive的执行延迟比较高，启动太慢</p>
+</li>
+<li><p>Hive支持用户自定义函数，用户可以根据自己的需求来实现自己的函数</p>
+</li>
+</ul>
+<h4 id="1-2-2、缺点"><a href="#1-2-2、缺点" class="headerlink" title="1.2.2、缺点"></a>1.2.2、缺点</h4><h5 id="1、Hive的HQL表达能力有限"><a href="#1、Hive的HQL表达能力有限" class="headerlink" title="1、Hive的HQL表达能力有限"></a>1、Hive的HQL表达能力有限</h5><ul>
+<li>迭代式算法无法表达</li>
+<li>数据挖掘方面不擅长</li>
+</ul>
+<h5 id="2、Hive的效率比较低"><a href="#2、Hive的效率比较低" class="headerlink" title="2、Hive的效率比较低"></a>2、Hive的效率比较低</h5><ul>
+<li>Hive自动生成的MapReduce作业，通常情况下不够智能化</li>
+<li>Hive调优比较困难，粒度比较粗</li>
+</ul>
+<h3 id="1-3、Hive架构原理"><a href="#1-3、Hive架构原理" class="headerlink" title="1.3、Hive架构原理"></a>1.3、Hive架构原理</h3><p><img src="/2018/10/02/Hive1/Hive.png" alt></p>
+<p>CLI：命令行接口，以命令行的形式输入SQL语句进行数据操作，有点类似shell</p>
+<p>Meta store：元数据存储，就是存的是表跟数据之间的位置对应关系，有点类似索引，Hive不会存储Meta store，会存在mysql或者Derby中</p>
+<p>Meta store作用：客户端连接Meta store服务，Meta store再去连接Mysql数据库来存取元数据，有了Meta store服务，就可以有多个客户端可以同时连接，而切这些客户端不需要知道MySQL的数据库用户名和密码，只需要连接Meta store服务就行。</p>
+<p>因为Meta store的元数据不断的修改，更新，所以Hive元数据不适合存在HDFS中，一般存在RDBMS中</p>
+<p>HIve没有专门的数据存储格式，也没有为数据建立索引，Hive中所有数据都存储在HDFS中</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="2018/10/02/Hive1/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-Hive" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="2018/10/01/Hive/" target="_blank">Hive的使用</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="2018/10/01/Hive/" class="archive-article-date">
+        <time datetime="2018-10-01T05:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="Hive"><a href="#Hive" class="headerlink" title="Hive"></a>Hive</h2><ul>
+<li>Hive由Facebook实现并开源</li>
+<li>是基于Hadoop的一个数据仓库工具</li>
+<li>可以将结构化的数据映射为一张数据库表</li>
+<li>提供HQL(Hive SQL)查询功能</li>
+<li>底层数据是存在HDFS上</li>
+<li>Hive的本质是将SQL语句转换为MapReduct任务进行</li>
+<li>使得不熟悉MapReduce的用户很方便的利用HQL的处理和计算HDFS上的结构化的数据，适用于离线的批量数据计算。</li>
+</ul>
+<h4 id="数据仓库（Data-Warehouse）"><a href="#数据仓库（Data-Warehouse）" class="headerlink" title="数据仓库（Data Warehouse）"></a>数据仓库（Data Warehouse）</h4><p>是一个面向主题的，集成的Intergrated，相对稳定的Non-Volatile，反映历史变化的Time Variant的数据集合。</p>
+<p>Hive依赖于HDFS存储数据，Hive将HQL转换成MapReduce执行，所以说Hive是基于Hadoop的一个数据仓库工具，实质上就是一个基于HDFS的MapReduce计算框架，对存储在HDFS中的数据进行分析和管理 。</p>
+<h4 id="使用Hive"><a href="#使用Hive" class="headerlink" title="使用Hive"></a>使用Hive</h4><ul>
+<li><p>直接使用MapReduce的问题：</p>
+<ul>
+<li>人员学习成本太高</li>
+<li>项目周期要求太短</li>
+<li>MapReduce实现复杂查询逻辑的开发难度太大</li>
+</ul>
+</li>
+<li><p>使用Hive</p>
+<ul>
+<li>更友好的接口：操作借口采用类SQL的语法，快速开发能力</li>
+<li>学习成本低：避免了写MapReduce，减少开发学习成本</li>
+<li>更好的扩展性：可自由扩展集群规模而不需要重启服务，用于还可以自定义函数</li>
+</ul>
+</li>
+<li><p>Hive使用场景</p>
+<ul>
+<li>Hive与传统的关系型SQL不同，支持绝大多数的语句DDL，DML以及聚集函数，连接查询，条件查询。</li>
+<li>Hive不适合联机事务处理，不提供实时查询功能，适用于基于大量不可变的批处理作业。</li>
+</ul>
+</li>
+<li><p>Hive的使用</p>
+<ul>
+<li><p>不支持Insert into，Update，Delete操作</p>
+</li>
+<li><p>不支持等值连接</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> a,<span class="keyword">table</span> b <span class="keyword">where</span> a.id=b.id;</span><br><span class="line"><span class="comment">/*Hive中*/</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> a <span class="keyword">join</span> <span class="keyword">table</span> b <span class="keyword">on</span> a.id=b.id;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="2018/10/01/Hive/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-开发中-MySQL的问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="2018/08/14/%E5%BC%80%E5%8F%91%E4%B8%AD-MySQL%E7%9A%84%E9%97%AE%E9%A2%98/" target="_blank">MySQL的问题</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="2018/08/14/%E5%BC%80%E5%8F%91%E4%B8%AD-MySQL%E7%9A%84%E9%97%AE%E9%A2%98/" class="archive-article-date">
+        <time datetime="2018-08-14T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-14</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h3 id="MySQL的问题"><a href="#MySQL的问题" class="headerlink" title="MySQL的问题"></a>MySQL的问题</h3><h4 id="1、重置id问题"><a href="#1、重置id问题" class="headerlink" title="1、重置id问题"></a>1、重置id问题</h4><p>由于在使用mysql，设计表的时候，设置了id自增，然后删除了数据后，再次新增数据时，就会出现id累计的情况，重置清空id，可以使用truncate</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#重置清空id，让id从1开始自增</span><br><span class="line">truncate table t_student</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、Insert-ignore的使用"><a href="#2、Insert-ignore的使用" class="headerlink" title="2、Insert ignore的使用"></a>2、Insert ignore的使用</h4><p>表要求有：primary key，或者有unique索引</p>
+<p>Insert ignore会忽略已存在的数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert ignore into t_student(name,age,class) values(&quot;test&quot;,19,&quot;计算机&quot;);</span><br></pre></td></tr></table></figure>
 
 
     
@@ -2857,13 +1372,153 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
-      		 
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="2018/08/14/%E5%BC%80%E5%8F%91%E4%B8%AD-MySQL%E7%9A%84%E9%97%AE%E9%A2%98/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-一、G1垃圾回收器介绍" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="2018/07/21/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" target="_blank">G1垃圾回收</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="2018/07/21/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" class="archive-article-date">
+        <time datetime="2018-07-21T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-21</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h3 id="一、G1垃圾回收器介绍"><a href="#一、G1垃圾回收器介绍" class="headerlink" title="一、G1垃圾回收器介绍"></a>一、G1垃圾回收器介绍</h3><p>为了解决CMS算法产生空间碎片和其他一系列的问题缺陷，HotSpot虚拟机团队提出了另外一种垃圾回收策略，G1（Garbage First）算法。通过参数-XX:+UserG1GC来启用。这个算法在JDK7被正式推出。</p>
+<p>G1垃圾回收算法主要应用在多CPU大内存的服务中，在满足高吞吐量的同事，尽可能的满足垃圾回收时的暂停时间，G1的设计应用场景：</p>
+<ul>
+<li>垃圾收集线程和应用线程并发执行，和CMS一样。</li>
+<li>空闲内存亚索时避免冗长的暂停时间</li>
+<li>应用需要更多可预测的GC暂停时间</li>
+<li>不希望牺牲太多的吞吐性能</li>
+<li>不需要很大的java堆</li>
+</ul>
+<h3 id="1、堆内存结构："><a href="#1、堆内存结构：" class="headerlink" title="1、堆内存结构："></a>1、堆内存结构：</h3><h4 id="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："><a href="#1、以往的垃圾回收算法，比如CMS，堆内存结构如下：" class="headerlink" title="1、以往的垃圾回收算法，比如CMS，堆内存结构如下："></a>1、以往的垃圾回收算法，比如CMS，堆内存结构如下：</h4><p>年轻代/新生代：eden space+2个survivor</p>
+<p>老年代：old space</p>
+<p>持久代：1.8之前的perm space</p>
+<p>元空间：1.8之后的metaspace(元空间)</p>
+<p>上面这些space必须是地址连续的空间。</p>
+<h4 id="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"><a href="#2、在G1算法中，采用了另一种完全不同的方式组织堆内存" class="headerlink" title="2、在G1算法中，采用了另一种完全不同的方式组织堆内存"></a>2、在G1算法中，采用了另一种完全不同的方式组织堆内存</h4><p>堆内存被划分成多个大小相等的内存块Region，每个Region是逻辑连续的一段内存。</p>
+<p>每个Region被标记了E,S,O,H，说明每个Region在运行时都充当了一种角色，其中H是以往算法中没有的，它代表Humongous，这表示这些Region存储的是巨型对象。当新建对象大小超过Region大小一半的时候，直接在新的一个或者多个连续Region中分配，并标记为H。</p>
+<h4 id="3、Region"><a href="#3、Region" class="headerlink" title="3、Region"></a>3、Region</h4><p>堆内存中一个Region的大小可以通过-XX:G1HeapRegionSize参数指定，大小区间只能是1M,2M,4M,8M,16M,32M，总之是2的幂次方，如果G1HeapRegionSize为默认值，则在堆初始化时计算Region的实际大小。</p>
+<p>默认把堆内存按照2048份均分，最后得到一个合理的大小。</p>
+<h3 id="2、GC模式"><a href="#2、GC模式" class="headerlink" title="2、GC模式"></a>2、GC模式</h3><p>G1中提供了3种模式垃圾回收模式，young GC,mixed GC和full GC。在不同的条件下被触发</p>
+<h4 id="1、young-GC"><a href="#1、young-GC" class="headerlink" title="1、young GC"></a>1、young GC</h4><p>发生在年轻代的GC算法，一般对象（除了巨型对象），都是在eden region中分配内存，当所有的eden region被消耗殆尽无法再申请内存的时候，就会触发一次young GC，这种触发机制和之前的young GC差不多，执行玩一次young GC，活跃对象会被拷贝到survivor region或者晋升到old region中，空闲的region会被放入空闲列表中，等待下次被使用。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-XX:MaxGCPauseMillis</td>
+<td>设置G1收集过程目标时间，默认200ms</td>
+</tr>
+<tr>
+<td>-XX:G1NewSizePercent</td>
+<td>新生代最小值，默认值5%</td>
+</tr>
+<tr>
+<td>-XX:G1MaxNewSizePercent</td>
+<td>新生代最大值，默认值60%</td>
+</tr>
+</tbody></table>
+<h4 id="2、mixed-GC"><a href="#2、mixed-GC" class="headerlink" title="2、mixed GC"></a>2、mixed GC</h4><p>当越来越多的对象晋升到老年代old region时，为了避免堆内存被消耗殆尽，虚拟机会触发一个混合的垃圾收集器，也就是mixed GC；这个算法不是一个old GC，除了回收整个young region，还会回收一部分old region。注：只是一部分老年代，而不是全部老年代，可以选择哪些old region进行收集，从而可以对垃圾回收的耗时时间进行控制。</p>
+<p>mixed GC什么时候被触发？</p>
+<p>有点类似cms的触发机制 ，如果添加了以下参数：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">-XX:CMSInitiatingOccupancyFraction=80</span></span><br><span class="line"><span class="deletion">-XX:+UserCMSInitiatingOccupancyOnly</span></span><br></pre></td></tr></table></figure>
+
+<p>当CMS的老年代的使用率达到80%时，就会触发一次cms gc。</p>
+<p>相对的，mixed gc中也有一个阈值参数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:InitiatingHeapOccupancyPercent</span><br></pre></td></tr></table></figure>
+
+<p>当老年代大小占整个堆大小百分比达到该阈值时，会触发一次mixed gc。</p>
+<h4 id="3、mixed-GC执行过程"><a href="#3、mixed-GC执行过程" class="headerlink" title="3、mixed GC执行过程"></a>3、mixed GC执行过程</h4><ul>
+<li>initial remark：初始标记过程，整个过程STW（Stop-The-World，在执行垃圾回收算法的时候，Java应用程序的其他所有线程都被挂起，Java中一种全局暂停现象，全局停顿，所有Java代码停止，native代码可以执行，但是不饿能够和JVM交互）标记了从GC Root可达的对象</li>
+<li>concurrent marking：并发标记过程，整个过程gc collector线程与应用线程可以并行执行，标记出GC Root可达对象衍生出来的存活的对象，并收集各个Region的存活对象信息。</li>
+<li>remark：最终标记过程，整个过程STW，标记出哪些在并发标记过程中遗漏的，或者内部引用发生变化的对象。</li>
+<li>clean up：垃圾清除过程，如果发现一个Region中没有存活对象，则把该Regioon加入到空闲列表中。</li>
+</ul>
+<h4 id="4、full-GC"><a href="#4、full-GC" class="headerlink" title="4、full GC"></a>4、full GC</h4><p>如果对象内存分配速度过快，mixed GC来不及回收，导致老年代old Region被填满，就会触发一次full gc。</p>
+<p>G1的full GC算法就是单线程的执行serial old gc，会导致异常长时间的暂停时间，需要进行不断的调优，尽可能的避免full GC。</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Docker</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -2873,7 +1528,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="2019/11/01/docker%E4%BD%BF%E7%94%A8/">展开全文 >></a>
+      <a class="article-more-a" href="2018/07/21/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/">展开全文 >></a>
     </p>
     
 

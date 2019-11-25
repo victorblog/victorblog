@@ -210,7 +210,7 @@
 
 
   
-    <article id="post-一、分布式锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-缓存穿透，缓存击穿，缓存雪崩" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -218,7 +218,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="../../2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_blank">分布式锁</a>
+	  <a class="article-title" href="../../2018/06/16/%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%EF%BC%8C%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%EF%BC%8C%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9/" target="_blank">缓存常识总结</a>
   
     </h1>
   
@@ -226,8 +226,8 @@
 
   
   
-<a href="../../2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
+<a href="../../2018/06/16/%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%EF%BC%8C%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%EF%BC%8C%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9/" class="archive-article-date">
+        <time datetime="2018-06-16T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-16</time>
 </a>
 
   
@@ -239,44 +239,165 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、分布式锁"><a href="#一、分布式锁" class="headerlink" title="一、分布式锁"></a>一、分布式锁</h1><p>在单机场景下，可以使用Java里的内置所来实现进行同步。但是在分布式场景下，需要同步的进程可能位于不同的节点上，那么就需要使用分布式锁。</p>
-<p>阻塞所通常使用互斥量来实现：</p>
+    <h2 id="一、缓存穿透，缓存击穿，缓存雪崩"><a href="#一、缓存穿透，缓存击穿，缓存雪崩" class="headerlink" title="一、缓存穿透，缓存击穿，缓存雪崩"></a>一、缓存穿透，缓存击穿，缓存雪崩</h2><h3 id="1、缓存穿透"><a href="#1、缓存穿透" class="headerlink" title="1、缓存穿透"></a>1、缓存穿透</h3><p>缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的</p>
+<p>并且出于容错考虑，从存储层查不到数据则不写入缓存，这将导致这个</p>
+<p>不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大的时候，可能DB就</p>
+<p>挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
 <ul>
-<li>互斥量mutex为0表示有其他进程在使用锁，此时处于锁定状态。</li>
-<li>互斥量mutex为1表示未锁定状态。</li>
+<li><p>解决方案</p>
+<p>有很多种方法可以有效的解决缓存穿透的问题，最常见的就是<strong>布隆过滤器</strong></p>
+<p>将所有可能存在的数据hash到一个足够大的bitmap位示图中，一个一定不存在的数据会</p>
+<p>被这个bitmap过滤掉，从而避免了对底层存储系统的查询压力。另外也有一个更为简单</p>
+<p>粗暴的方法(我们采用的就是这种)，如果一个查询返回的数据为空(不管是数据不存在，还是系统故障)</p>
+<p>仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过5min</p>
+</li>
 </ul>
-<p>1和0可以用一个整形值表示，也可以用某个数据是否存在表示。</p>
-<h2 id="1、数据库的唯一索引"><a href="#1、数据库的唯一索引" class="headerlink" title="1、数据库的唯一索引"></a>1、数据库的唯一索引</h2><p>获取锁时向表中插入一条记录，释放锁时删除这条记录。唯一索引可以保证该记录只被插入一次，那么就可以用这个记录是否存在来判断是否在锁定状态。</p>
-<p>存在以下几个问题：</p>
+<h3 id="2、缓存雪崩"><a href="#2、缓存雪崩" class="headerlink" title="2、缓存雪崩"></a>2、缓存雪崩</h3><p>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求</p>
+<p>全部发到DB，DB瞬时压力过重雪崩。</p>
 <ul>
-<li>锁没有失效时间，解锁失败的话，其他进程无法再获得该锁。</li>
-<li>只能是非阻塞锁，插入失败直接就报错，无法重试。</li>
-<li>不可重入，已经获得锁的进程也必须重新获取锁。</li>
+<li><p>解决方案</p>
+<p>缓存失效时的雪崩效应对底层系统的冲击非常可怕，大多数系统设计者考虑用加锁</p>
+<p>或者队列的方式保证缓存的单线程(进程)写，从而避免失效时大量的并发请求落到</p>
+<p>底层存储系统上，这里分享一个简单方案：将缓存失效时间分散开，比如我们可以在原有失效</p>
+<p>时间基础上增加一个随机值，比如1-5min随机，这样每一个缓存的过期时间的重复率就会降低</p>
+<p>就很难引发集体失效的事件。</p>
+</li>
 </ul>
-<h2 id="2、Redis的SETNX指令"><a href="#2、Redis的SETNX指令" class="headerlink" title="2、Redis的SETNX指令"></a>2、Redis的SETNX指令</h2><p>使用SETNX（set if not exist）指令插入一个键值对，如果key已经存在，那么会返回false，否则插入成功并返回true。</p>
-<p>SETNX指令和数据库的唯一索引类似，保证了只存在一个key的键值对，那么可以用一个key的键值对是否存在来判断是否存于锁定状态。</p>
-<p>EXPIRE指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引方式中释放锁失败的问题。也就是数据库的唯一索引解决方案的升级而已，只是可以设置过期时间。</p>
-<h2 id="3、Redis的RedLock算法"><a href="#3、Redis的RedLock算法" class="headerlink" title="3、Redis的RedLock算法"></a>3、Redis的RedLock算法</h2><p>使用了多个Redis实例来实现分布式锁，这是为了保证在发生单点故障时仍然可用。多个Redis实例实现，也就是即使一台Redis挂了，还可以有其他的服务可用。</p>
+<h3 id="3、缓存击穿"><a href="#3、缓存击穿" class="headerlink" title="3、缓存击穿"></a>3、缓存击穿</h3><p>对于一些设置了过期时间的key，如果这些key可能会在某些时间点被超高并发的访问，是一种</p>
+<p>非常热点数据，这个时候，需要考虑一个问题：缓存被击穿的问题，这个和缓存雪崩的区别</p>
+<p>在于，缓存击穿针对某一key缓存，缓存雪崩是很多key</p>
+<p>缓存在某个时间点过期的时候，恰好在这时间点对这个key有大量的并发请求过来，这些请求</p>
+<p>发现缓存过期一般都会从后端DB加载数据并回设到缓存，这个时候大并发的请求可能会瞬间把</p>
+<p>后端DB压垮。</p>
 <ul>
-<li>尝试从N个互相独立的Redis实例中获取锁。</li>
-<li>计算获取锁消耗的时间，只有当这个时间小于锁的过期时间，并且从大多数(N/2+1)，半数以上的实例上获取锁，那么就认为获取锁成功了。</li>
-<li>如果锁获取失败，就到每个实例上释放锁。</li>
+<li><p>解决方案</p>
+<p>1、使用互斥锁mutex key</p>
+<p>常用的做法是：使用mutex，就是在缓存失效的时候，判断拿出来的值为空，不是立即去load db</p>
+<p>而是先使用缓存工具的某些带成功操作返回值得操作，比如redis的setnx</p>
+<p>去set一个mutex key。当操作返回成功时，在进行load db的操作，并回设缓存，否则，就重试</p>
+<p>整个get缓存的方法。</p>
+<p>setnx==set if not exists的缩写。也就是只有不存在的时候才设置，可以利用它来实现缓存击穿</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">get</span><span class="params">(String key)</span></span>&#123;</span><br><span class="line">    String value=redis.get(key);</span><br><span class="line">    <span class="keyword">if</span>(value==<span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="comment">//设置3min的超时，防止del操作失败的时候，下次缓存过期一直不能load db</span></span><br><span class="line">        <span class="keyword">if</span>(redis.setnx(key_mutex,<span class="number">1</span>,<span class="number">3</span>*<span class="number">60</span>)==<span class="number">1</span>)&#123;<span class="comment">//代表设置成功</span></span><br><span class="line">            vlaue=db.get(key);</span><br><span class="line">            redis.set(key,value,expire_secs);</span><br><span class="line">            redls.del(key_mutex);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;<span class="comment">//这个时候代表同时候的其他线程已经load db并回设到缓存了，这个时候，重试获取缓存值就行。</span></span><br><span class="line">            sleep(<span class="number">50</span>);</span><br><span class="line">            get(key);<span class="comment">//重试</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> vlaue;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
 </ul>
-<h2 id="4、Zookeeper的有序节点"><a href="#4、Zookeeper的有序节点" class="headerlink" title="4、Zookeeper的有序节点"></a>4、Zookeeper的有序节点</h2><h3 id="1、Zookeeper抽象模型"><a href="#1、Zookeeper抽象模型" class="headerlink" title="1、Zookeeper抽象模型"></a>1、Zookeeper抽象模型</h3><p>Zookeeper提供了一种树型结构的命名空间，/app1/p_1节点的父节点为app1。有点类似linux系统文件系统，文件目录树</p>
-<h3 id="2、节点类型"><a href="#2、节点类型" class="headerlink" title="2、节点类型"></a>2、节点类型</h3><ul>
-<li>永久节点：不会因为会话结束或者超时而消失。</li>
-<li>临时节点：如果会话结束或者超时就会消失。</li>
-<li>有序节点：会在节点名的后面加上一个数字后缀，并且是有序的。例如生成的有序节点为/lock/node-0000000000，它的下一个有序节点就是/lock/node-0000000001，以此类推。</li>
+<h3 id="4、为什么要用redis缓存"><a href="#4、为什么要用redis缓存" class="headerlink" title="4、为什么要用redis缓存"></a>4、为什么要用redis缓存</h3><p>Redis就是一个数据库，不过传统数据库不同是Redis数据是存在内存中。</p>
+<p>Redis被广泛用于缓存方向，Redis也经常用来做分布式锁。</p>
+<h3 id="5、为什么要用Redis而不用map-guava做缓存？"><a href="#5、为什么要用Redis而不用map-guava做缓存？" class="headerlink" title="5、为什么要用Redis而不用map/guava做缓存？"></a>5、为什么要用Redis而不用map/guava做缓存？</h3><p>缓存分本地缓存和分布式缓存。Java中使用自带的map或者guava实现的是本地的缓存，轻量快速，生命周期随着JVM的销毁而结束，并且在多实例的情况下，每个实例都需要各自保存一份缓存，缓存不具有一致性。</p>
+<p>使用Redis或者memcached之类是分布式缓存，在多实例情况下，各实例共用一份缓存数据，缓存具有一致性。</p>
+<p>缺点：Redis需要保持服务的高可用，整个程序架构比较复杂。</p>
+<h3 id="6、Redis和Memcached的区别"><a href="#6、Redis和Memcached的区别" class="headerlink" title="6、Redis和Memcached的区别"></a>6、Redis和Memcached的区别</h3><ul>
+<li><p>Redis支持更丰富的数据类型，也就意味着支持更复杂的应用场景</p>
+<p>不仅仅是支持简单的key、value数据，同时还提供list，set，zset，hash等数据的存储。memached支持简单的数据类型，string</p>
+</li>
+<li><p>Redis支持数据的持久化，可以将内存中的数据保存在磁盘中，重启的时候可以再次加载进行使用，而Memecached把数据全部存在内存之中，重启就没了。</p>
+</li>
+<li><p>集群模式：Memcached没有原生的集群模式，需要依靠客户端来实现往集群中分片写入数据。大师Redis是原生支持cluster模式的</p>
+</li>
+<li><p>Memcache是多线程，非阻塞IO复用的网络模型</p>
+</li>
+<li><p>Redis使用单线程的多路IO复用模型</p>
+</li>
 </ul>
-<h3 id="3、监听器"><a href="#3、监听器" class="headerlink" title="3、监听器"></a>3、监听器</h3><p>为一个节点注册监听器，在节点状态发生改变的时候，会给客户端发送消息 。</p>
-<h3 id="4、分布式锁实现"><a href="#4、分布式锁实现" class="headerlink" title="4、分布式锁实现"></a>4、分布式锁实现</h3><ul>
-<li>创建一个目录/lock。</li>
-<li>当一个客户端需要获取锁时，在/lock下创建临时的且有序的子节点。</li>
-<li>客户端获取/lock下的子节点列表，判断自己创建的子节点是否为当前子节点列表中序号最小的子节点，如果是则认为获得锁。否则监听自己的前一个子节点，获得子节点的变更通知后重复此步骤直到获取锁为止。</li>
-<li>执行业务代码，完成后，删除对应的子节点。</li>
+<h3 id="7、Redis常见数据结构以及使用场景分析"><a href="#7、Redis常见数据结构以及使用场景分析" class="headerlink" title="7、Redis常见数据结构以及使用场景分析"></a>7、Redis常见数据结构以及使用场景分析</h3><ul>
+<li><p>String</p>
+<p>常用命令：set,get,decr,incr,mget</p>
+<p>String数据结构是简单的key-value，value可以是String，也可以是数字。</p>
+<p>常规key-value缓存应用，常规计数，微博数，粉丝数。</p>
+</li>
+<li><p>Hash</p>
+<p>常用命令：hget，hset，hgetall</p>
+<p>hash是一个string类型的field和value的映射表</p>
+<p>hash特别适合用来存储对象。可以用hash数据结构来存储用户信息，商品信息</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">key=javatest12343</span><br><span class="line">value=&#123;</span><br><span class="line">    'id':1,</span><br><span class="line">    'name':'vitor',</span><br><span class="line">    'age':12,</span><br><span class="line">    'locatoin':'shanghai'</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>List</p>
+<p>常用命令：lpush，rpush，lpop，lrange</p>
+<p>list就是链表，Redis list的应用场景非常多，比如微博的关注列表，粉丝列表，消息列表等功能都是用Redis的list结构来实现</p>
+<p>Redis list的实现是一个双向链表，既可以支持反向查找和遍历，但是带了额外的内存开销。</p>
+<p>还可以利用list实现简单的高性能分页。</p>
+</li>
+<li><p>Set</p>
+<p>常用命令：sadd,spop,smembers,sunion等</p>
+<p>set对外提供的功能与list类似是一个列表功能。只不过set可以自动去重</p>
+</li>
+<li><p>Sorted Set</p>
+<p>常用命令：zadd,zrange,zrem,zcard</p>
+<p>和set相比，sorted set增加了一个权重参数score，使得集合的元素能够按照score进行排序。比如在直播系统中，实时排行信息包含直播间在线用户列表，各种礼物排行榜，弹幕消息。</p>
+</li>
 </ul>
-<h3 id="5、会话超时"><a href="#5、会话超时" class="headerlink" title="5、会话超时"></a>5、会话超时</h3><p>如果一个已经获的锁的会话超时了，因为创建的是临时节点，所以该会话对应的临时节点会被删除，其他会话就可以获取锁。可以看到zookeeper分布式锁不会出现数据库的唯一索引的分布式锁释放锁失败的问题。</p>
-<h3 id="6、羊群效应"><a href="#6、羊群效应" class="headerlink" title="6、羊群效应"></a>6、羊群效应</h3><p>一个节点未获得锁，只需要监听自己前一个子节点，这是因为如果监听所有的子节点，那么任意一个子节点状态改变，其他所有子节点都会收到通知(羊群效应)，而我们秩序网它的后一个子节点收到通知。</p>
+<h3 id="8、Redis设置过期时间"><a href="#8、Redis设置过期时间" class="headerlink" title="8、Redis设置过期时间"></a>8、Redis设置过期时间</h3><p>Redis中有个设置时间过期的功能，对存储在Redis数据库中的值可以设置一个过期时间。作为一个缓存数据库，这是非常实用的，如我们一般项目中的token或者一些登录信息，尤其是短信验证码都是有时间限制的，按照传统的数据库处理方式，一般都是自己判断过期，这样会严重影响项目性能。</p>
+<p>所以，我们set key的时候，都可以给一个expire time过期时间，通过过期时间我们可以指定这个key可以存活的事件。如果假设你设置了一批key只能存活1个小时，那么接下来1个小时后，redis怎么删除key？</p>
+<h4 id="1、定期删除-惰性删除"><a href="#1、定期删除-惰性删除" class="headerlink" title="1、定期删除+惰性删除"></a>1、定期删除+惰性删除</h4><ul>
+<li><p>定期删除:redis默认是每隔100ms就随机抽取一些设置了过期时间的key，检查是否过期，如果过期就删除。</p>
+<p>这里是随机抽取的，因为随机抽取，假如redis存了几十万的key，每隔100ms就遍历所有的设置过期时间的key话，就会给cpu带来很大复杂</p>
+</li>
+<li><p>惰性删除：定期删除可能会导致很多过期key到了时间并没有被删除掉。就有了惰性删除。假如你的过期key，靠定期删除没有被删除掉，还停留在内存里，除非你的系统去查一下那个key，才会被redis给删除掉。这就是所谓的惰性删除。</p>
+<p>但是仅仅通过设置过期时间还是有问题的，如果定期删除漏掉了很多过期的key，然后也没有及时去查，也就没有惰性删除。如果大量过期key堆积在内存里，导致redis内存耗尽，redis内存的淘汰机制就出现了。</p>
+</li>
+</ul>
+<h4 id="2、Redis内存淘汰机制"><a href="#2、Redis内存淘汰机制" class="headerlink" title="2、Redis内存淘汰机制"></a>2、Redis内存淘汰机制</h4><p>MySQL里有2000w数据，Redis中只存20w的数据，如何保证Redis中的数据都是热点数据？</p>
+<p>Redis.conf中有相关注释</p>
+<ul>
+<li>Redis提供6中数据淘汰策略：<ul>
+<li>volatile-lru：从已设置过期时间的数据集（server.db[i].expires）中挑选最近最少使用的数据淘汰。</li>
+<li>volatile-ttl:从已设置过期时间的数据集（server.db[i].expires)中挑选将要过期的数据淘汰</li>
+<li>volatile-random：从已设置过期时间的数据集中任意选择数据进行淘汰</li>
+<li>allkeys-lru:当内存不足以容纳新写入数据的时候，在key空间中，移除最近最少使用的key（这是最常用的）</li>
+<li>allkey-radom：从数据集（server.db[i].dict）中任意选择数据淘汰</li>
+<li>volatile-lfu:从已设置过期时间的数据集（server.db[i].expires）中挑选最不经常使用的数据淘汰</li>
+<li>allkeys-lfu:当内存不足容纳新写入数据，在key空间，移除最不经常使用的key</li>
+</ul>
+</li>
+</ul>
+<p>​    注：redis设置过期时间以及内存淘汰机制</p>
+<h4 id="3、Redis持久化机制（怎么保证Redis挂掉之后再重启数据可以进行恢复）"><a href="#3、Redis持久化机制（怎么保证Redis挂掉之后再重启数据可以进行恢复）" class="headerlink" title="3、Redis持久化机制（怎么保证Redis挂掉之后再重启数据可以进行恢复）"></a>3、Redis持久化机制（怎么保证Redis挂掉之后再重启数据可以进行恢复）</h4><p>很多时候我们需要持久化数据也就是将内存中的数据写入到硬盘里面，大部分原因是为了之后重用数据（比如重启机器，机器故障之后恢复数据），或者是为了防止系统故障而将数据备份到一个远程位置</p>
+<p>Redis不同于Memcached重点是Redis可以持久化，支持两种不同持久化操作。</p>
+<ul>
+<li><p>快照（Snapshotting RDB）：</p>
+<p>Redis可以通过创建快照来获取存储在内存里面的数据在某个时间点的副本。Redis创建快照后，可以对快照进行备份，可以将快照复制到其他服务器从而创建具有相同数据的服务器副本（Redis主从结构，主要用来提供Redis性能），还可以将快照留在原地以便重启服务器的时候使用。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">在900s之后，如果至少有1个key发生变化，redis就会自动触发BGSAVE命令创建快照</span></span><br><span class="line">save 900 1</span><br><span class="line"><span class="meta">#</span><span class="bash">在300s之后，如果至少有10个key发生变化，redis就会自动触发BGSAVE命令</span></span><br><span class="line">save 300 10</span><br><span class="line"><span class="meta">#</span><span class="bash">在60s之后如果有1w个key发生变化，redis就会自动触发BGSAVE命令</span></span><br><span class="line">save 60 10000</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>追加文件（append-only file,AOF）</p>
+<p>与快照持久化相比，AOF持久化的实时性更好，因此也成为主流的持久化方案。</p>
+<p>默认情况下redis没有开启AOF方式持久化</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">appendonly yes</span><br></pre></td></tr></table></figure>
+
+<p>开启AOF持久化后每执行一条会更改redis中的数据的命令，redis就会将该命令写入硬盘中的AOF文件。AOF文件的保存位置和RDB文件位置相同都是通过dir参数设置</p>
+<p>默认文件名为appendonly.aof</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">每次有数据修改发生都会写入aof，这样会严重降低redis的速度</span></span><br><span class="line">appendfsync always</span><br><span class="line"><span class="meta">#</span><span class="bash">每秒钟同步一次，显式的将多个写命令同步到硬盘</span></span><br><span class="line">appendfsync everysec</span><br><span class="line"><span class="meta">#</span><span class="bash">让操作系统决定何时同步</span></span><br><span class="line">appendfsync no</span><br></pre></td></tr></table></figure>
+
+<p>为了兼顾数据和写入性能，用户可以考虑appendfsync everysec选项，让redis每秒同步一次AOF文件，redis性能几乎没收到任何影响。即使系统崩溃，用户也最多只会丢失一秒之内产生的数据。当硬盘忙于执行写入操作，redis还会放慢自己的速度来适应硬盘的最大写入速度。</p>
+</li>
+<li><p>Redis4.0对于持久化机制的优化</p>
+<p>4.0开始支持RDB和AOF的混合持久化（默认关闭，可以通过配置项aof-use-rdb-preamble开启）</p>
+<p>混合持久化开启，AOF重写的时候就会直接把RDB的内容写到AOF文件开头。这样的好处可以结合RDB和AOF的优点，可以快速加载同时避免丢失过多的数据。</p>
+<p>缺点是：AOF里面的RDB部分也不是AOF的压缩格式，可读性差。</p>
+</li>
+<li><p>AOF重写</p>
+<p>AOF重写可以产生一个新的AOF文件，这个新的文件和原有的AOF文件所保存的数据库状态一样，但是体积更小</p>
+<p>AOF重写是一个有歧义的名字，功能是通过读取数据库中的键值来实现。程序无需对现有的AOF文件进行任何读入，分析重写，</p>
+</li>
+</ul>
+<h4 id="4、Redis事务"><a href="#4、Redis事务" class="headerlink" title="4、Redis事务"></a>4、Redis事务</h4><p>redis通过multi，exec，watch等命令来实现事务transaction功能。</p>
+<p>事务提供了一种将多个命令请求打包，然后一次性，按顺序执行多个命令的机制。</p>
+<h4 id="5、解决Redis的并发竞争key的问题"><a href="#5、解决Redis的并发竞争key的问题" class="headerlink" title="5、解决Redis的并发竞争key的问题"></a>5、解决Redis的并发竞争key的问题</h4><p>所谓redis的并发竞争key的问题也就是多个系统同时对一个key进行操作，但是最后执行的顺序和我们期望的顺序不同。也就导致了结果的不同</p>
+<p>解决方案：</p>
+<p>​    分布式锁zookeeper和redis都可以实现分布式锁。如果不存在redis的并发竞争key问题及，不要使用分布式锁，这样影响性能。</p>
+<p>​    基于zookeeper临时有序结点可以实现的分布式锁</p>
+<p>大致思想：每个客户端对某方法加锁时，在zookeeper上的与该方法对应的指定节点的目录下，生成一个唯一的瞬时有序结点。</p>
+<p>判断是否获取锁的方式很简单，只需要判断有序结点中序号最小的一个。当释放所得时候，只要将这个瞬时结点删除就行。同时也避免服务挂了导致锁无法释放，从而产生死锁问题。</p>
+<h3 id="什么是RedLock"><a href="#什么是RedLock" class="headerlink" title="什么是RedLock"></a>什么是RedLock</h3><p>特性：</p>
+<ul>
+<li>安全性：互斥访问，也就是永远只有一个client能拿到锁</li>
+<li>避免死锁：最终client都可能拿到锁，不会出现死锁的情况，原本锁住某资源的client crash或者出现了网络分区</li>
+<li>容错性：只要大部分redis结点存活就可以正常提供服务。</li>
+</ul>
 
     
 
@@ -303,7 +424,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="../../2019/11/01/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">展开全文 >></a>
+      <a class="article-more-a" href="../../2018/06/16/%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%EF%BC%8C%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%EF%BC%8C%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9/">展开全文 >></a>
     </p>
     
 
@@ -338,7 +459,7 @@
 
 
   
-    <article id="post-一、UDF的使用手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-分布式锁的3种实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -346,7 +467,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="../../2019/11/01/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" target="_blank">UDF自定义函数</a>
+	  <a class="article-title" href="../../2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/" target="_blank">分布式锁的使用</a>
   
     </h1>
   
@@ -354,8 +475,8 @@
 
   
   
-<a href="../../2019/11/01/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
+<a href="../../2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/" class="archive-article-date">
+        <time datetime="2018-06-15T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-15</time>
 </a>
 
   
@@ -367,235 +488,166 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、UDF的使用手册"><a href="#一、UDF的使用手册" class="headerlink" title="一、UDF的使用手册"></a>一、UDF的使用手册</h1><h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><p>Hive中，提供了丰富的内置函数，比如<font color="red">trim(),cast(),max(),count(),coalesce()</font>等之外，    还允许用户用java开发自定义的UDF函数。</p>
-<h4 id="1-1、开发自定义UDF函数的2种方式："><a href="#1-1、开发自定义UDF函数的2种方式：" class="headerlink" title="1.1、开发自定义UDF函数的2种方式："></a>1.1、开发自定义UDF函数的2种方式：</h4><ul>
-<li>继承org.apache.hadoop.hive.ql.exec.UDF;</li>
-<li>继承org.apache.hadoop.hive.ql.udf.generic.GenericUDF; </li>
+    <h1 id="一、分布式锁"><a href="#一、分布式锁" class="headerlink" title="一、分布式锁"></a>一、分布式锁</h1><h3 id="1、为什么要使用分布式锁"><a href="#1、为什么要使用分布式锁" class="headerlink" title="1、为什么要使用分布式锁"></a>1、为什么要使用分布式锁</h3><p>​    如果需要对一个共享变量进行多线程同步访问的时候，可以使用java多线程进行运行。</p>
+<p>​    如果是单机应用，也就是所有的请求都会分配到当前服务器的JVM内部，然后映射为操作系统的线程进行处理，而这个共享变量只是在这个JVM内部的一块内存空间。</p>
+<p>​    后续业务发展，需要做集群，一个应用需要部署好几台机器然后做负载均衡。</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E5%9C%BA%E6%99%AF.png" alt></p>
+<p>一个共享变量A，存在JVM1，JVM2，JVM3，这3个JVM内存中，这个变量A主要体现是在一个类中的一个成员变量，是一个有状态的对象。</p>
+<p>比如UserController中的一个int类型的成员变量。如果不加任何控制的话，变量A同时都会在JVM分配一块内存，3个请求发过来，同时对这个变量操作，显然结果是不对的。即使不是同时发过来，3个请求分别操作3个不同JVM内存区域的数据，变量A之间不共享的话，也不具有可见性的话，处理结果也是不对的。</p>
+<h3 id="2、解决问题"><a href="#2、解决问题" class="headerlink" title="2、解决问题"></a>2、解决问题</h3><p>​    为了保证一个方法或者属性在高并发情况下的同一时间只能被同一个线程运行，在传统单体应用单机部署的情况下，可以使用Java并发处理相关的API（比如ReentrantLock，Synchronized）进行互斥控制。在单机环境中，Java中提供了很多并发处理的API。但是随着业务发展的需要，原来的单机部署的系统被演化为分布式集群系统后，由于分布式系统多线程，多进程并且分布在不同机器上，这将使得原单机部署情况下的并发控制锁策略失效，单纯的Java API并不能呢提供分布式锁的能力。为了解决这个问题就需要一种跨JVM的互斥机制来控制共享资源的访问，这就是分布式锁要解决的问题。</p>
+<h3 id="3、分布式锁具备的条件"><a href="#3、分布式锁具备的条件" class="headerlink" title="3、分布式锁具备的条件"></a>3、分布式锁具备的条件</h3><ul>
+<li>在分布式系统环境下，一个方法在同一时间只能被一个机器的一个线程执行。</li>
+<li>高可用的获取锁与释放锁</li>
+<li>高性能的获取锁与释放锁</li>
+<li>具备可重入特性</li>
+<li>具备锁失效机制，防止死锁</li>
+<li>具备非阻塞锁特性，也就是没有获取到锁将直接返回获取锁失败。</li>
 </ul>
-<h4 id="1-2、总结："><a href="#1-2、总结：" class="headerlink" title="1.2、总结："></a>1.2、总结：</h4><ul>
-<li>针对简单数据类型：<font color="red">String,Integer等，可以使用UDF</font>。</li>
-<li>针对复杂数据类型：<font color="red">Array,Map,Struct等，可以使用GenericUDF</font></li>
-<li>GenericUDF还可以在函数开始之前和结束之后做一些初始化和关闭的处理操作。</li>
-</ul>
-<h3 id="2、UDF"><a href="#2、UDF" class="headerlink" title="2、UDF"></a>2、UDF</h3><p>使用UDF实现对String类型的字符串取HashMD5</p>
-<h3 id="3、GenericUDF"><a href="#3、GenericUDF" class="headerlink" title="3、GenericUDF"></a>3、GenericUDF</h3>
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2019/11/01/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-一、大数据离线部分总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%A6%BB%E7%BA%BF%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93/" target="_blank">大数据离线部分</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%A6%BB%E7%BA%BF%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93/" class="archive-article-date">
-        <time datetime="2019-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-01</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、大数据离线部分总结"><a href="#一、大数据离线部分总结" class="headerlink" title="一、大数据离线部分总结"></a>一、大数据离线部分总结</h1><h3 id="1、HDFS"><a href="#1、HDFS" class="headerlink" title="1、HDFS"></a>1、HDFS</h3><ul>
-<li>HDFS的架构部分以及工作原理<ul>
-<li>NameNode：负责管理元数据，将信息保存在内存中</li>
-<li>DataNode：保存数据，以块的形式保存，启动后需要定时的向NameNode发送心跳，报告自身存储的Block块信息。</li>
-<li>SecondNameNode：二级节点，负责合并请求。分担NameNode工作。</li>
-</ul>
-</li>
-</ul>
-<h3 id="2、Spark容错机制"><a href="#2、Spark容错机制" class="headerlink" title="2、Spark容错机制"></a>2、Spark容错机制</h3><p>分布式数据集的容错性有2种方式：数据检查和记录数据的更新。</p>
-<p>面向大规模数据分析，数据检查点操作成本很高，需要通过数据中心的网络连接在机器之前复制庞大的数据集，而网络带宽往往比内存带宽低很多，同事还需要消耗更多的存储资源。</p>
-<h3 id="3、YARN的总结"><a href="#3、YARN的总结" class="headerlink" title="3、YARN的总结"></a>3、YARN的总结</h3><p>YARN（Yet Another Resource Negotiator）：另一种资源协调者。</p>
-<h4 id="3-1、使用YARN的背景"><a href="#3-1、使用YARN的背景" class="headerlink" title="3.1、使用YARN的背景"></a>3.1、使用YARN的背景</h4><p>​    旧版本MapReduce中的JobTracker/TaskTracker在可扩展性、内存消耗、可靠性和线程模型方面存在很多问题，需要开发者做很多调整来修复。后来Hadoop开发者对这些问题进行了修复，可是也因而带来的成本却越来越高，为了从根本上解决旧版本的MapReduce存在的问题，从Hadoop 0.23.0版本开始，Hadoop的MapReduce框架就大改动。Hadoop新的MapReduce框架被叫做MapReduce V2，也叫YARN。</p>
-<h4 id="3-2、为什么要使用YARN"><a href="#3-2、为什么要使用YARN" class="headerlink" title="3.2、为什么要使用YARN"></a>3.2、为什么要使用YARN</h4><p>​    与旧版本的MapReduce比较，YARN采用了一种分层的集群框架。</p>
+<h3 id="4、分布式锁的3种实现方式"><a href="#4、分布式锁的3种实现方式" class="headerlink" title="4、分布式锁的3种实现方式"></a>4、分布式锁的3种实现方式</h3><p>​    目前大型网站应用都是分布式部署，分布式场景中的数据一致性问题一直是一个重要的问题。出现了CAP定理。任何一个分布式系统都无法同时满足一致性(Consistency)，可用性(Availablility)，分区容忍性(Partition tolerance)，只能同时满足2个。</p>
+<p>​    目前在绝大多数场景中，都是需要牺牲强一致性来换取系统的高可用性，系统往往只需要保证最终一致性就行。也就是只要这个最终时间是在用户可以接受的范围内就行。</p>
+<p>​    在很多场景中，我们为了保证数据的最终一致性，需要很多技术支持。比如分布式事务，分布式锁。需要保证一个方法在同一个时间内只能被同一个线程执行。</p>
 <ul>
-<li>解决了NameNode的单点故障问题，可以通过配置NameNode高可用来解决</li>
-<li>提出了HDFS联邦，通过HDFS联邦可以让多个NameNode分别管理不同的目录，从而实现访问隔离以及横向扩展。</li>
-<li>将资源管理和应用程序管理ApplicationManager分离开。用ResourceManager管理资源，用ApplicationMaster负责管理程序。（YARN的核心思想）</li>
-<li>具有向后兼容特点，运行在MR1上的Job不需要做任何修改就可以运行在YARN上。</li>
-<li>YARN是一个框架管理器，用户可以将各种计算框架移植到YARN上，统一由YARNJ进行管理和资源调度。目前YARN支持的计算框架有：MapReduce，Storm，Spark，Flink等。</li>
+<li>基于数据库实现分布式锁</li>
+<li>基于缓存Redis等，实现分布式锁</li>
+<li>基于Zookeeper实现分布式锁</li>
 </ul>
-<h4 id="3-2、YARN的基本架构"><a href="#3-2、YARN的基本架构" class="headerlink" title="3.2、YARN的基本架构"></a>3.2、YARN的基本架构</h4><ul>
-<li><p>YARN的核心思想：将功能分开，ResourceManager进程完成整个集群的资源管理和调度。ApplicationMaster进程负责应用程序的相关事务，比如任务调度，容错，任务监控等。</p>
+<h4 id="1、基于数据库实现排它锁-互斥锁"><a href="#1、基于数据库实现排它锁-互斥锁" class="headerlink" title="1、基于数据库实现排它锁(互斥锁)"></a>1、基于数据库实现排它锁(互斥锁)</h4><h5 id="1-1、解决方法1：使用唯一索引约束。"><a href="#1-1、解决方法1：使用唯一索引约束。" class="headerlink" title="1.1、解决方法1：使用唯一索引约束。"></a>1.1、解决方法1：使用唯一索引约束。</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`method_lock`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`method_lock`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'主键'</span>,</span><br><span class="line">  <span class="string">`method_name`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'锁定的方法名'</span>,</span><br><span class="line">  <span class="string">`update_time`</span> <span class="built_in">timestamp</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">  <span class="string">`PRIMARY KEY (`</span><span class="keyword">id</span><span class="string">`),</span></span><br><span class="line"><span class="string">  UNIQUE KEY `</span>uidx_method_name<span class="string">` (`</span>method_name<span class="string">`) USING BTREE</span></span><br><span class="line"><span class="string">) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='锁定中的方法';</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--获取锁</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> method_lock(method_name,<span class="keyword">desc</span>) <span class="keyword">values</span>(<span class="string">'xxxService'</span>,<span class="string">'methodName'</span>;)</span><br></pre></td></tr></table></figure>
+
+<p>这种解决方法，对method_name做了唯一性约束，这里如果有多个请求同时提交到数据库的话，数据库会保证只有一个操作可以成功。</p>
+<h5 id="1-2、解决方法2：先获取锁的信息，然后更新状态。"><a href="#1-2、解决方法2：先获取锁的信息，然后更新状态。" class="headerlink" title="1.2、解决方法2：先获取锁的信息，然后更新状态。"></a>1.2、解决方法2：先获取锁的信息，然后更新状态。</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`method_lock`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`method_lock`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'主键'</span>,</span><br><span class="line">  <span class="string">`method_name`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'锁定的方法名'</span>,</span><br><span class="line">  <span class="string">`state`</span> <span class="built_in">tinyint</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'1:未分配；2：已分配'</span>,</span><br><span class="line">  <span class="string">`update_time`</span> <span class="built_in">timestamp</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">  <span class="string">`version`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'版本号'</span>,</span><br><span class="line">  <span class="string">`PRIMARY KEY (`</span><span class="keyword">id</span><span class="string">`),</span></span><br><span class="line"><span class="string">  UNIQUE KEY `</span>uidx_method_name<span class="string">` (`</span>method_name<span class="string">`) USING BTREE</span></span><br><span class="line"><span class="string">) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='锁定中的方法';</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--先获取锁的信息</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,method_name,state,<span class="keyword">version</span> <span class="keyword">from</span> method_lock <span class="keyword">where</span> state=<span class="number">1</span> <span class="keyword">and</span> method_name=<span class="string">'methodName'</span>;</span><br><span class="line"><span class="comment">--占有锁</span></span><br><span class="line"><span class="keyword">update</span> method_lock <span class="keyword">set</span> state=<span class="number">2</span>,<span class="keyword">version</span>=<span class="number">2</span>,update_time=<span class="keyword">now</span>()</span><br><span class="line"><span class="keyword">where</span> method_name=<span class="string">'methodName'</span> <span class="keyword">and</span> state=<span class="number">1</span> <span class="keyword">and</span> <span class="keyword">version</span>=<span class="number">2</span>;</span><br><span class="line"><span class="comment">--如果没有更新影响到的这一行数据，说明这个资源已经被别人占位了。</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="1-3、这2种方案都是有弊端"><a href="#1-3、这2种方案都是有弊端" class="headerlink" title="1.3、这2种方案都是有弊端"></a>1.3、这2种方案都是有弊端</h5><ul>
+<li><p>缺点：</p>
 <ul>
-<li>系统中所有应用资源调度的最终决定权是ResourceManager担当的。</li>
-<li>每个应用的ApplicationMaster实际上是框架指定的库，它从ResourceManager调度资源，和Node Manager一块执行监控任务。</li>
-<li>NodeManager通过心跳信息向ResourceManager汇报自己所在节点的资源使用情况。</li>
+<li>这把锁很依赖数据库的可用性，如果数据库是单个节点，一旦数据库挂了，则业务系统不可用了。</li>
+<li>这把锁还没有失效时间，一旦解锁失败(更新state状态失败)，就会导致锁记录一直在数据库中，其他线程无法获取锁。</li>
+<li>这把锁是非阻塞的，因为数是insert操作，一旦插入失败就会直接报错，没有获取锁的线程就不会进入到等待队列，要想再次获取锁就必须再次触发获取锁的操作。</li>
+<li>这把锁是不可重入的，同一个线程在没有释放锁之前无法再次得到这个所，因为数据已经在数据库中存在了。</li>
 </ul>
 </li>
-<li><p>在旧版本的MapReduce(MR1)中，JobTracker有2个功能：一个是资源管理，另一个是作业调度。</p>
+<li><p>解决方案：</p>
+<ul>
+<li>数据库是单点的话，可以数据库集群，然后数据之前进行同步，一旦挂掉，快速切换到备份库上。</li>
+<li>没有失效时间，可以搞一个定时任务，每隔一段时间把数据库中的超时的数据delete。</li>
+<li>他是非阻塞的，可以搞一个while循环，直到insert成功后再返回。</li>
+<li>它是不可重入的，可以在数据库表上加一个字段，记录当前获取锁的机器的主机信息和线程信息，那么下次获取锁的时候可以先查询数据库，如果当前及其的主机信息和线程信息在数据库可以查到的话，直接把锁分配给他就行了。</li>
+</ul>
 </li>
 </ul>
+<h4 id="2、基于Redis实现分布式锁"><a href="#2、基于Redis实现分布式锁" class="headerlink" title="2、基于Redis实现分布式锁"></a>2、基于Redis实现分布式锁</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 获取锁使用的命令：</span></span></span><br><span class="line">SET resource_name_value NX PX 30000</span><br></pre></td></tr></table></figure>
 
-    
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> RedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String LOCK=<span class="string">"distribute_key"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">test</span><span class="params">(String lockKey)</span></span>&#123;</span><br><span class="line">    Boolean lock=<span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加锁的时候，在try块中，尝试获取锁，在finaly块中释放锁。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">//如果key不存在，则新增，如果存在则不改变已经有的值</span></span><br><span class="line">      lock = redisTemplate.opsForValue().setIfAbsent(lockKey, LOCK);</span><br><span class="line">      log.info(<span class="string">"test方法是否获取到锁："</span> + lock);</span><br><span class="line">      <span class="keyword">if</span> (lock) &#123;</span><br><span class="line">          <span class="comment">//todo 业务逻辑</span></span><br><span class="line">          redisTemplate.expire(lockKey, <span class="number">1</span>, TimeUnit.MINUTES);</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          log.info(<span class="string">"test方法没有获取到锁，不执行任务！"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">      <span class="keyword">if</span>(lock)&#123;</span><br><span class="line">          redisTemplate.delete(lockKey);</span><br><span class="line">          log.info(<span class="string">"test方法任务结束，释放锁！"</span>);</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">          log.info(<span class="string">"test方法没获取到锁，不需要释放锁！"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-    
+<h5 id="2-1、弊端"><a href="#2-1、弊端" class="headerlink" title="2.1、弊端"></a>2.1、弊端</h5><p>首先是这主从结构存在明显的竞争状态：</p>
+<p>客户端A从master获取到锁，在master将锁同步到slave之前，master挂掉了，slave节点被晋级为master节点，客户端B取的了同一个资源被客户端A已经获取到的另外一个锁。安全失效。</p>
+<h4 id="3、基于Zookeeper实现"><a href="#3、基于Zookeeper实现" class="headerlink" title="3、基于Zookeeper实现"></a>3、基于Zookeeper实现</h4><p>​    Zookeeper中有节点的概念，Zk的数据存储结构就像一棵树，这棵树由节点组成，节点叫Znode，有点类似Linux的文件系统结构。</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zookeeper%E8%8A%82%E7%82%B9%E7%BB%93%E6%9E%84.jpeg" alt></p>
+<p>​    Znode有4种类型：</p>
+<ul>
+<li><p>持久节点Persistent</p>
+<p>默认的节点类型，创建节点的客户端与zk断开连接后，这个节点仍然存在。</p>
+</li>
+<li><p>持久节点顺序节点Persistent_Sequential</p>
+<p>顺序节点，就是在创建节点的时候，zk根据创建的时间顺序给该节点名称进行编号。</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zookeeper%E4%B8%AD%E7%9A%84%E9%A1%BA%E5%BA%8F%E8%8A%82%E7%82%B9.jpeg" alt></p>
+</li>
+<li><p>临时节点Ephemeral</p>
+<p>和持久节点相反，当创建节点的客户端与zk断开后，临时节点会被删除。</p>
+</li>
+</ul>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zookeeper%E5%88%9B%E5%BB%BA%E4%B8%B4%E6%97%B6%E8%8A%82%E7%82%B9.jpeg" alt></p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/../../%E6%A1%8C%E9%9D%A2/md/images/%E5%88%9B%E5%BB%BA%E8%8A%82%E7%82%B9%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8Ezk%E6%96%AD%E5%BC%80.jpeg" alt></p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E4%B8%B4%E6%97%B6%E8%8A%82%E7%82%B9%E4%BC%9A%E8%A2%AB%E5%88%A0%E9%99%A4.jpeg" alt></p>
+<ul>
+<li><p>临时顺序节点（Ephemeral_Sequential）</p>
+<p>临时顺序节点就是结合了临时节点和顺序节点的特点：在创建临时节点的时候，zk根据创建的时间顺序给节点名称进行编号，当创建节点的客户端与zk断开连接后，临时顺序节点被删除。</p>
+</li>
+</ul>
+<h5 id="3-1、Zookeeper分布式锁的原理"><a href="#3-1、Zookeeper分布式锁的原理" class="headerlink" title="3.1、Zookeeper分布式锁的原理"></a>3.1、Zookeeper分布式锁的原理</h5><p>Zk分布式锁使用的是临时顺序节点，也就是客户端断开连接后，会删除该节点，然后客户端创建节点的时候，会按照时间顺序来对临时节点命名。</p>
+<ul>
+<li><p>获取锁</p>
+<ul>
+<li>首先在zk中创建一个持久节点ParentLock，当第一个客户端想要获取锁的时候，需要在ParentLock这个节点下面创建临时顺序节点Lock1。</li>
+</ul>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zk%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%EF%BC%9A%E8%8E%B7%E5%8F%96%E9%94%81.jpeg" alt></p>
+</li>
+</ul>
+<ul>
+<li><p>Client1查找ParnentLock下面所有的临时顺序节点并排序，然后判断自己创建的节点Lock1是不是顺序最靠前的一个节点。如果是第一个节点，就成功获取锁。</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%88%A4%E6%96%AD%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E7%9A%84%E8%8A%82%E7%82%B9%E6%98%AF%E4%B8%8D%E6%98%AF%E7%AC%AC%E4%B8%80%E4%B8%AA.jpeg" alt></p>
+</li>
+<li><p>这个时候，再有一个客户端Client2前来获取锁，首先在ParentLock下再创建一个临时顺序节点Lock2</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%86%8D%E6%9C%89%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AFClient2%E6%9D%A5%E8%8E%B7%E5%8F%96%E9%94%81%EF%BC%8C%E5%85%88%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%B4%E6%97%B6%E9%A1%BA%E5%BA%8F%E8%8A%82%E7%82%B9Lock2.jpeg" alt></p>
+</li>
+<li><p>Client2查找ParnentLock下面所有的临时顺序节点并排序，判断它自己创建的节点Lock2是不是顺序最靠前的一个，结果发现节点Lock2并不是最小的。于是，Client2向排序仅仅比他靠前的节点Lock1注册Watcher，用来监听Lock1节点是否存在。这意味者此时Client2抢锁失败，进入了等待状态。</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client2%E5%90%91%E6%AF%94%E4%BB%96%E9%9D%A0%E5%89%8D%E7%9A%84Lock1%E6%B3%A8%E5%86%8CWatcher%EF%BC%8C%E6%84%8F%E5%91%B3%E7%9D%80%E6%8A%A2%E9%94%81%E5%A4%B1%E8%B4%A5%EF%BC%8C%E8%BF%9B%E5%85%A5%E7%AD%89%E5%BE%85%E7%8A%B6%E6%80%81.jpeg" alt></p>
+</li>
+<li><p>假如这个时候，又有一个客户端Client3前来获取锁，则在ParentLock下再创建一个临时顺序节点Lock3</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%8F%88%E6%9D%A5%E4%B8%80%E4%B8%AAClient3%E6%9D%A5%E8%8E%B7%E5%8F%96%E9%94%81%EF%BC%8C%E5%88%99%E5%85%88%E5%9C%A8ParentLock%E4%B8%AD%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E4%B8%B4%E6%97%B6%E9%A1%BA%E5%BA%8F%E8%8A%82%E7%82%B9.jpeg" alt></p>
+</li>
+<li><p>Client3查找ParentLock下面所有的临时顺序节点并排序，判断自己所创建的节点Lock3是不是顺序最靠前的一个，结果同样发现节点Lock3并不是最小的。</p>
+<p>于是，Client3向排序仅仅比他靠前的节点Lock2注册Watcher，用来监听Lock2节点是否存在，这意味这Client3同样抢锁失败，进入了等待状态。</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client3%E5%90%91%E6%AF%94%E8%87%AA%E5%B7%B1%E9%9D%A0%E5%89%8D%E7%9A%84%E8%8A%82%E7%82%B9Lock2%E6%B3%A8%E5%86%8CWatcher%EF%BC%8C%E6%8A%A2%E9%94%81%E5%A4%B1%E8%B4%A5%EF%BC%8C%E8%BF%9B%E5%85%A5%E7%AD%89%E5%BE%85%E7%8A%B6%E6%80%81.jpeg" alt></p>
+</li>
+<li><p>这样就形成了，Client1获取了锁，Client2监听了Lock1，Client3监听额Lock2。从而形成了一个等待队列，很像Java中ReentrantLock所依赖的。</p>
+</li>
+</ul>
+<ul>
+<li><p>释放锁</p>
+<ul>
+<li><p>1、任务完成，客户端显示释放</p>
+<p>当任务完成后，Client1会显示调用删除节点Lock1的指令。</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client1%E4%BB%BB%E5%8A%A1%E5%AE%8C%E6%88%90%EF%BC%8C%E4%BC%9A%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9Lock1.jpeg" alt></p>
+</li>
+<li><p>2、任务执行过程中，客户端崩溃</p>
+<p>得到锁的Client1在执行任务过程中，突然挂了，则会断开与Zk服务端的连接，根据临时节点的特性，它自己创建的节点也会被自动删除。</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client1%E8%BF%90%E8%A1%8C%E4%B8%AD%E7%AA%81%E7%84%B6%E6%8C%82%E4%BA%86%EF%BC%8C%E5%88%99zk%E4%BC%9A%E8%87%AA%E5%8A%A8%E5%88%A0%E9%99%A4%E5%AE%83%E7%9A%84%E8%8A%82%E7%82%B9.jpeg" alt></p>
+<p>由于Client2一直监听者Lock1的存在状态，当Lock1节点被删除后，Client2会立刻得到通知，这时候Client2会再次查ParentLock下面的所有节点，确认自己创建的节点Lock22是不是目前最小的节点，如果是最小，则Client2就成功获取了锁。</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client2%E7%9B%91%E5%90%ACLock1%E7%9A%84%E8%8A%82%E7%82%B9%E5%AD%98%E5%9C%A8%E7%8A%B6%E6%80%81%EF%BC%8CLock1%E8%8A%82%E7%82%B9%E8%A2%AB%E5%88%A0%E9%99%A4%EF%BC%8CClient2%E4%BC%9A%E7%AB%8B%E5%88%BB%E5%BE%97%E5%88%B0%E9%80%9A%E7%9F%A5%EF%BC%8C%E7%84%B6%E5%90%8Eclient2%E5%9C%A8%E6%9F%A5%E8%AF%A2ParentLock%E4%B8%8B%E9%9D%A2%E6%89%80%E6%9C%89%E8%8A%82%E7%82%B9%E5%B9%B6%E6%8E%92%E5%BA%8F%EF%BC%8C%E7%A1%AE%E4%BF%9D%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E7%9A%84%E8%8A%82%E7%82%B9%E6%98%AF%E7%AC%AC%E4%B8%80%E4%B8%AA.jpeg" alt></p>
+<p>同理，如果Client2也因为任务完成或者节点崩溃而删除了Lock2，那么Client3会收到通知。</p>
+<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%90%8C%E7%90%86Client3.jpeg" alt></p>
+<p>最终，Client3成功获取锁。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="3-2、实现方法"><a href="#3-2、实现方法" class="headerlink" title="3.2、实现方法"></a>3.2、实现方法</h5><p>可以直接使用zk第三方库Curator客户端，这个客户端封装了一个可重入的锁服务。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * InterProcessMutex是分布式锁的实现，acquire方法用户获取锁，release释放锁</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> InterProcessMutex interProcessMutex;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(<span class="keyword">long</span> timeout,TimeUnit unit)</span></span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            interProcessMutex.acquire(timeout,unit);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ExecutorCompletionService executorService;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">unLock</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            interProcessMutex.release();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">//executorService.schedule(new Cleaner(client,path),delayTimeForClean,TimeUnit.MILLISECONDS);</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2019/11/01/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%A6%BB%E7%BA%BF%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-开发中-MySQL的问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2019/10/08/%E5%BC%80%E5%8F%91%E4%B8%AD-MySQL%E7%9A%84%E9%97%AE%E9%A2%98/" target="_blank">MySQL的问题</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2019/10/08/%E5%BC%80%E5%8F%91%E4%B8%AD-MySQL%E7%9A%84%E9%97%AE%E9%A2%98/" class="archive-article-date">
-        <time datetime="2019-10-08T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-08</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h3 id="MySQL的问题"><a href="#MySQL的问题" class="headerlink" title="MySQL的问题"></a>MySQL的问题</h3><h4 id="1、重置id问题"><a href="#1、重置id问题" class="headerlink" title="1、重置id问题"></a>1、重置id问题</h4><p>由于在使用mysql，设计表的时候，设置了id自增，然后删除了数据后，再次新增数据时，就会出现id累计的情况，重置清空id，可以使用truncate</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#重置清空id，让id从1开始自增</span><br><span class="line">truncate table t_student</span><br></pre></td></tr></table></figure>
-
-<h4 id="2、Insert-ignore的使用"><a href="#2、Insert-ignore的使用" class="headerlink" title="2、Insert ignore的使用"></a>2、Insert ignore的使用</h4><p>表要求有：primary key，或者有unique索引</p>
-<p>Insert ignore会忽略已存在的数据</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert ignore into t_student(name,age,class) values(&quot;test&quot;,19,&quot;计算机&quot;);</span><br></pre></td></tr></table></figure>
-
+<ul>
+<li><p>缺点：</p>
+<p>​    性能上，并没有缓存那么高，因为每次在创建锁和释放锁的过程中，都需要动态创建按，销毁临时顺序节点来实现锁功能。zk中创建和删除节点只能通过leader服务器来执行，然后将数据同步到所有的follwer服务器上。</p>
+<p>​    使用zk也有可能带来并发问题，只是并不常见。由于网络抖动，客户端与zk集群的session连接断了，那么zk以为客户端挂了，就会删除临时节点，这时候其他客户端就可以获取到分布式锁了。也有可能产生并发问题，并不常见，因为zk有重试机制，一旦zk集群检测不到客户端的心跳，你就会重试，Curator客户端（操作zk的客户端）支持多种重试策略    ，多次重试之后还是不行的话，就会删除临时节点。因此，选择一个合适的重试策略也很重要，要在锁的粒度和并发之前找一个平衡。</p>
+</li>
+</ul>
+<h3 id="5、总结"><a href="#5、总结" class="headerlink" title="5、总结"></a>5、总结</h3><table>
+<thead>
+<tr>
+<th align="center">分布式锁</th>
+<th align="center">优点</th>
+<th align="center">缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Zk</td>
+<td align="center">1、有封装好的框架，容易实现。2、有等待锁的队列，大大提升抢锁效率。</td>
+<td align="center">添加和删除节点性能比较低</td>
+</tr>
+<tr>
+<td align="center">Redis</td>
+<td align="center">Set和Del执行的性能比较高</td>
+<td align="center">1、实现复杂，需要考虑超时，原子性，误删的情况。2、没有等待锁的队列，只能在客户端自旋来等待，效率比较低。</td>
+</tr>
+</tbody></table>
+<h3 id="6、3种方案比较使用"><a href="#6、3种方案比较使用" class="headerlink" title="6、3种方案比较使用"></a>6、3种方案比较使用</h3><p>3种方法，就如同CAP一样，在复杂性，可靠性，性能等方面无法同事满足。应该根据不同应用场景，选择最合适的分布式锁。</p>
+<h4 id="6-1、从理解的难易程度上，从低到高"><a href="#6-1、从理解的难易程度上，从低到高" class="headerlink" title="6.1、从理解的难易程度上，从低到高"></a>6.1、从理解的难易程度上，从低到高</h4><p>数据库——-&gt;Redis——-&gt;Zk</p>
+<h4 id="6-2、从实现的复杂程度上，从低到高"><a href="#6-2、从实现的复杂程度上，从低到高" class="headerlink" title="6.2、从实现的复杂程度上，从低到高"></a>6.2、从实现的复杂程度上，从低到高</h4><p>zk————-&gt;Redis——-&gt;数据库</p>
+<h4 id="6-3、从性能角度，从低到高"><a href="#6-3、从性能角度，从低到高" class="headerlink" title="6.3、从性能角度，从低到高"></a>6.3、从性能角度，从低到高</h4><p>数据库————–&gt;zk———&gt;Redis</p>
+<h4 id="6-4、从可靠性角度，从低到高"><a href="#6-4、从可靠性角度，从低到高" class="headerlink" title="6.4、从可靠性角度，从低到高"></a>6.4、从可靠性角度，从低到高</h4><p>zk—————&gt;Redis—————&gt;数据库</p>
 
     
 
@@ -622,7 +674,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="../../2019/10/08/%E5%BC%80%E5%8F%91%E4%B8%AD-MySQL%E7%9A%84%E9%97%AE%E9%A2%98/">展开全文 >></a>
+      <a class="article-more-a" href="../../2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/">展开全文 >></a>
     </p>
     
 
@@ -657,7 +709,7 @@
 
 
   
-    <article id="post-Hive" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-分布式理论" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -665,7 +717,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="../../2019/10/01/Hive/" target="_blank">Hive的使用</a>
+	  <a class="article-title" href="../../2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" target="_blank">分布式常识总结</a>
   
     </h1>
   
@@ -673,8 +725,8 @@
 
   
   
-<a href="../../2019/10/01/Hive/" class="archive-article-date">
-        <time datetime="2019-10-01T05:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-01</time>
+<a href="../../2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" class="archive-article-date">
+        <time datetime="2018-06-14T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-14</time>
 </a>
 
   
@@ -686,297 +738,56 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h2 id="Hive"><a href="#Hive" class="headerlink" title="Hive"></a>Hive</h2><ul>
-<li>Hive由Facebook实现并开源</li>
-<li>是基于Hadoop的一个数据仓库工具</li>
-<li>可以将结构化的数据映射为一张数据库表</li>
-<li>提供HQL(Hive SQL)查询功能</li>
-<li>底层数据是存在HDFS上</li>
-<li>Hive的本质是将SQL语句转换为MapReduct任务进行</li>
-<li>使得不熟悉MapReduce的用户很方便的利用HQL的处理和计算HDFS上的结构化的数据，适用于离线的批量数据计算。</li>
-</ul>
-<h4 id="数据仓库（Data-Warehouse）"><a href="#数据仓库（Data-Warehouse）" class="headerlink" title="数据仓库（Data Warehouse）"></a>数据仓库（Data Warehouse）</h4><p>是一个面向主题的，集成的Intergrated，相对稳定的Non-Volatile，反映历史变化的Time Variant的数据集合。</p>
-<p>Hive依赖于HDFS存储数据，Hive将HQL转换成MapReduce执行，所以说Hive是基于Hadoop的一个数据仓库工具，实质上就是一个基于HDFS的MapReduce计算框架，对存储在HDFS中的数据进行分析和管理 。</p>
-<h4 id="使用Hive"><a href="#使用Hive" class="headerlink" title="使用Hive"></a>使用Hive</h4><ul>
-<li><p>直接使用MapReduce的问题：</p>
+    <h1 id="一、基础知识"><a href="#一、基础知识" class="headerlink" title="一、基础知识"></a>一、基础知识</h1><h2 id="1、分布式基础理论"><a href="#1、分布式基础理论" class="headerlink" title="1、分布式基础理论"></a>1、分布式基础理论</h2><h3 id="1、什么是分布式系统？"><a href="#1、什么是分布式系统？" class="headerlink" title="1、什么是分布式系统？"></a>1、什么是分布式系统？</h3><p>《分布式系统原理与范型》定义：</p>
+<p>分布式系统是若干独立计算机的<strong>集合</strong>，这些计算机对于用户来说就像<strong>单个相关系统</strong>。</p>
+<p>分布式系统(distributed system)是建立在<strong>网络</strong>之上的软件系统</p>
+<p>eg：比如我们在使用京东商城进行购物的时候，我们登陆京东商城完成整个购物。对于我们的用户使用来说，我们体会到的是一个完整的京东商城系统。实际上京东商城后面有成千上万台独立的计算机为我们提供服务。这些所有计算机合起来它构成了一个完整的京东商城系统。京东商城它是一个分布式系统。</p>
+<h3 id="2、为什么要有分布式系统？"><a href="#2、为什么要有分布式系统？" class="headerlink" title="2、为什么要有分布式系统？"></a>2、为什么要有分布式系统？</h3><p>随着互联网的发展，网站应用的规模不断扩大，常规的垂直应用架构已经无法应对，分布式服务架构以及流动计算架构势在必行，亟需<strong>一个治理系统</strong>确保架构有条不紊的演进。</p>
+<p>eg：比如我们的应用是淘宝级别的，可能没有任何一台服务器能抵挡得住像双11那么大的用户量，每秒要处理几十万的数据。有几个亿的实时数据处理。面对这种情况怎么办呢？我们既然有一个超大型系统，把这个大型系统划分成一个个的小功能模块，把这些功能模块分布在各个计算机上，那这么多的计算机就合起来组成一个完整的系统为我们提供服务。这就是我们分布式的架构思想。毕竟三个臭皮匠，顶个诸葛亮，这么多的计算机合起来就能抵御住非常大的流量。在这种情况下，我们把大型系统，分成一个个小模块(小服务)。而这些小模块(小服务)之间也有着千丝万缕的关系。比如A可能要用到B。而B呢可能要用到C，C可能要用到D，D回过头又得用到B等等。这么复杂的关系我们亟需要一个治理系统来维护我们这个复杂的关系，保证我们系统有条不紊的进行。而我们的Dubbo就能维护和治理这些复杂的关系。那么有了dubbo，我们就能轻而易举的使用分布式的思想来架构我们一个应用。</p>
+<h3 id="3、应用架构的发展演变"><a href="#3、应用架构的发展演变" class="headerlink" title="3、应用架构的发展演变"></a>3、应用架构的发展演变</h3><p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/%E5%8F%91%E5%B1%95%E6%BC%94%E5%8F%98.png" alt></p>
 <ul>
-<li>人员学习成本太高</li>
-<li>项目周期要求太短</li>
-<li>MapReduce实现复杂查询逻辑的开发难度太大</li>
-</ul>
+<li><p><strong>单一应用架构</strong></p>
+<p>当网站流量很小时，只需要一个应用，将所有功能都部署在一起，以减少部署节点和成本。此时，用于简化增删改查工作量的数据访问框架(ORM)是关键。</p>
+<p>比如：超市的收银系统，公司的一些管理系统，一些小型的网站应用等等。比如我们有一个小型的购物网站，它只能少量的人来提供服务，流量很小。比如网站里面有非常多的功能：用户，商品，订单。由于我们网站访问量还是很小的，我们没必要把它做成一个大型的分布式应用。所以说，我们可以将所有的功能都放在一个应用里面。然后将整个应用打包部署放在服务器里。开发简单，部署也简单。某一天网站的访问量大，服务器受不了了。我们可以再来一个服务器，同样都来跑这个应用。两个服务器一起来分担流量压力。</p>
+<p>但是单一应用会带来一些缺点：1、扩展不容易，比如某个功能模块修改了，我们要把整个应用重新打包部署到服务器上。服务器如果有多台，我们就扩展不容易。2、我们协同开发也不容易，大家都去改这一个应用，可能都会改乱，不利于我们应用的维护。</p>
 </li>
-<li><p>使用Hive</p>
-<ul>
-<li>更友好的接口：操作借口采用类SQL的语法，快速开发能力</li>
-<li>学习成本低：避免了写MapReduce，减少开发学习成本</li>
-<li>更好的扩展性：可自由扩展集群规模而不需要重启服务，用于还可以自定义函数</li>
-</ul>
+<li><p>垂直应用架构</p>
+<p>当我们的应用规模不断扩大。比如我们以前的应用只要10Mb</p>
+<p>我们应用不断扩大到了500Mb，还是单体应用放在一个服务器里面。单台服务器跑这么大的应用，压力也是很大，光靠增加每一个服务器，已经不能带来性能上的极大提升了。那么接下来就要重新考虑一下我们应用的架构方式。我们就来到第二阶段，叫垂直的应用架构(Vertical Application)。</p>
+<p>我们可以将那么大的单体应用，垂直拆分成几个互不相干的小应用。这些小应用独立部署在每一个服务器上。哪一个小应用的功能增加了，我们只改这些小应用，包括这些小应用流量很大了，我们把它多放在几台服务器上。垂直拆分的好处：</p>
+<p>1、我们分工合作很容易，每一个人负责开发和维护不同的应用。这样就互不干扰。</p>
+<p>2、性能扩展也是很容易的，比如我们的用户应用访问量增大了。我们就把它多复制上几份放到几台服务器上。我们三五台服务器上一起来跑。我们扩展是很容易的。不像是之前的单体应用，一扩展就带上整个应用。我们只是扩展小应用，想要扩展哪一部分就扩展这一个应用就行了，其他的应用先不用动。但是呢？即使是这样的架构也是有一些缺点的：因为每一个小的应用都是完整的，包含界面，业务逻辑，数据库等等。但是呢？我们市场上对界面的要求会经常发生变化，美工天天会改这个页面，一个页面一改，我们整个应用都要重新部署，现在没法做到：1、界面和业务逻辑的实现分离。2、我们应用后来也会增多。垂直应用从用户模块，商品模块，订单模块，增多到支付模块，物流模块等等，这种情况下，我们不能理想情况下，让应用跟应用直接会互相独立。我们的订单可能会用到用户，因为我们创建订单的时候，可能会访问到用户，包括订单还要用到商品的信息。而物流，支付可能会用到订单的一些内容。我们会发现，应用与应用之间可能会进行交互。</p>
+<p>3、应用不可能完全的独立。大量的应用之间需要交互。</p>
+<p>接下来我们怎么办呢？可以采取分布式的应用架构(Distributed Service)，当我们的垂直应用越来越多，应用之间还会进行交互，我们可以把它们的核心业务单独的抽取出来。</p>
 </li>
-<li><p>Hive使用场景</p>
-<ul>
-<li>Hive与传统的关系型SQL不同，支持绝大多数的语句DDL，DML以及聚集函数，连接查询，条件查询。</li>
-<li>Hive不适合联机事务处理，不提供实时查询功能，适用于基于大量不可变的批处理作业。</li>
-</ul>
+<li><p>分布式服务架构(Distributed Service)</p>
+<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84.jpg" alt></p>
+<p>用户的应用抽取出用户的界面web和用户的业务逻辑。订单的界面web和订单的业务逻辑等等。这样做的好处是业务逻辑不变的情况下，我们只想改界面，那界面的服务器重新启动一下，我们的核心的业务逻辑还在其他服务器上。比如我们的用户界面，它要展示我们的用户信息，还要展示商品信息。只需要调对应的服务业务就行了。包括业务之间也可能需要互调。但是现在还要一个最大的问题：我们的用户的Web可能在A服务器上，用户的业务可能放在B服务器上，订单放在C服务器上等。如果我们的A服务器要去调B服务器的功能，我们以前写在一个应用里面，A调B，那直接A调B的方法就行了，我们叫进程内通讯，因为他们都在一个服务器上，都是同一个tomcat,同一个进程内通讯。但是现在我们发现A跟B已经分割两地了，它在两处了，这两处我们代码之间如何互调呢?我们把这个调用称为RPC(远程过程调用)。也就是说分布式应用架构下，最核心的难点是RPC远程过程调用，以及如何拆分业务，提升业务的复用程度，那么此时一个好的<strong>分布式服务框架(RPC)</strong>，帮我们来解决远程过程调用的这个框架，就能极大的简化我们的开发。那么这样的架构就会高枕无忧了吗？随着我们的业务不断增加，我们分拆的服务也越来越多，有成千上万的服务器，再来跑各种不同的服务，而出现的一些资源浪费情况，就尤为严重，比如我们的用户业务，这块的访问量比较小，有100台服务器在跑，而我们的商品业务，它的访问量比较大却只有10台服务器在跑，那我们呢就应该有一个能基于我们访问压力的调度中心，能帮我们实时的来监控这些数据，来动态的调度，提高我们这个系统的资源利用率，你跑的服务器有点多了，我们来减上几台，让更多的服务器取来跑业务量更大的这些业务，这个时候呢，就可以采用流动计算架构(Elastic Computing)。</p>
 </li>
-<li><p>Hive的使用</p>
-<ul>
-<li><p>不支持Insert into，Update，Delete操作</p>
-</li>
-<li><p>不支持等值连接</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> a,<span class="keyword">table</span> b <span class="keyword">where</span> a.id=b.id;</span><br><span class="line"><span class="comment">/*Hive中*/</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> a <span class="keyword">join</span> <span class="keyword">table</span> b <span class="keyword">on</span> a.id=b.id;</span><br></pre></td></tr></table></figure>
-
+<li><p>流动计算架构(Elastic Computing)</p>
+<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/%E8%B0%83%E5%BA%A6%E4%B8%AD%E5%BF%83.jpg" alt>    服务调度中心，负责维护服务之间的复杂关系以及实时管理我们整个服务集群。比如说A服务器访问量大了，我给A冬天的多来几台服务器。第一台有100个请求，第二台2个请求，第三台有10000个请求，那么下次进来的时候，就找比较闲的服务器来处理请求，比如第二台，提高我们整个服务集群的利用率。</p>
 </li>
 </ul>
+<h3 id="4、RPC"><a href="#4、RPC" class="headerlink" title="4、RPC"></a>4、RPC</h3><ul>
+<li><p><strong>什么叫RPC</strong></p>
+<p>RPC(Remote Procedure Call)：是指远程过程调用，是一种进程间通信方式，它是一种技术思想，而不是规范。它允许程序调用另一个地址空间(通常是共享网络的另一台机器)的过程或者函数。而不是程序员显式的编码这个远程调用的细节。即程序员无论是调用本地的还是远程的函数，本质上编写的调用代码基本相同。</p>
+</li>
+<li><p><strong>RPC基本原理</strong></p>
+<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/RPC%E5%8E%9F%E7%90%86.jpg" alt></p>
+<p>过程：A想要调用B服务器的应用，A先跟B服务器在网络建立一个Socket连接，然后将我们要调用B的一些信息，B的哪个方法，包括方法名，用的参数是什么，把这些信息传递给B服务器，然后B服务器上Server stub这个小助手收到这些信息，一看A想要调用我里面的信息，它就将这个方法一调用，包括调这个方法用到的参数，也通过网络传递了过来，那我们调方法的时候也将参数传过去，我们B服务器里面的Server stub将方法调用完，调用完以后，方法会有一个返回值，然后这个返回值也通过网络传输给A，A收到返回值以后，A的client stub小助手把这个返回值给我们Client functions。</p>
+<p>整个RPC的核心：A，B两个服务器之间建立网络之间，它们之间进行通信，这样的话A想要用B里面的服务，就像A给B发送一个请求一样，B的方法将响应的结果，交给A。</p>
 </li>
 </ul>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2019/10/01/Hive/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-Hive1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2019/10/01/Hive1/" target="_blank">Hive基本概念</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2019/10/01/Hive1/" class="archive-article-date">
-        <time datetime="2019-10-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-01</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="Hive基本概念"><a href="#Hive基本概念" class="headerlink" title="Hive基本概念"></a>Hive基本概念</h1><h3 id="1-1、什么是Hive"><a href="#1-1、什么是Hive" class="headerlink" title="1.1、什么是Hive"></a>1.1、什么是Hive</h3><p>Hive：由Facebook开源用于海量结构化日志的数据统计（Hive是分析框架，它不能存储数据的）</p>
-<p>Hive是基于Hadoop的一个<strong>数据仓库工具</strong>，可以将<strong>结构化的数据文件映射为一张表</strong>，并提供<strong>类SQL</strong>查询功能。</p>
-<p><strong>本质：将HQL转化成MapReduce程序</strong></p>
-<ul>
-<li>数据仓库通过SQL进行统计分析</li>
-<li>将SQL语言中常用的操作（select,where,group等）用MapReduce写成很多模板</li>
-<li>所有的MapReduce模板封装在Hive中</li>
-<li>client客户端，用户根据业务需求编写相应的SQL语句</li>
-<li>然后会去Hive中找对应的MapReduce模板</li>
-<li>通过Hive框架匹配出相应的MapReduce模板</li>
-<li>运行MapReduce程序，生成相应的分析结果</li>
-</ul>
-<p>Hive可以看做是Hadoop的客户端，装一个就够了啊，Hive它有不存储数据，不做计算，它就将HQL转化为MapReduce</p>
-<p>Hive处理的数据存储在HDFS</p>
-<p>Hive分析数据底层的实现是MapReduce</p>
-<p>执行程序运行在Yarn上</p>
-<h3 id="1-2、Hive的优缺点"><a href="#1-2、Hive的优缺点" class="headerlink" title="1.2、Hive的优缺点"></a>1.2、Hive的优缺点</h3><h4 id="1-2-1、优点"><a href="#1-2-1、优点" class="headerlink" title="1.2.1、优点"></a>1.2.1、优点</h4><ul>
-<li><p>操作接口采用类SQL语法，提供快速开发的能力（简单，容易上手）</p>
-</li>
-<li><p>避免了去写MapReduce，减少开发人员得 学习成本</p>
-</li>
-<li><p>HIve的执行延迟比较高，因此HIve常用数据分析，对实时性要求不高的场合</p>
-<p>比如你凌晨一两点，启动一个定时脚本，跑一下数据，实时性不高，不是那种你来一条数据，就立马处理的那种，就是说它可以处理，但是给反馈，交互出结果比较慢，因为它跑MR，而MR整个启动，提交啊，切片啊非常的慢，所以它应用的场景一般是离线</p>
-</li>
-<li><p>Hive优势在于处理大数据，对于处理小数据没有优势，因为Hive的执行延迟比较高，启动太慢</p>
-</li>
-<li><p>Hive支持用户自定义函数，用户可以根据自己的需求来实现自己的函数</p>
-</li>
-</ul>
-<h4 id="1-2-2、缺点"><a href="#1-2-2、缺点" class="headerlink" title="1.2.2、缺点"></a>1.2.2、缺点</h4><h5 id="1、Hive的HQL表达能力有限"><a href="#1、Hive的HQL表达能力有限" class="headerlink" title="1、Hive的HQL表达能力有限"></a>1、Hive的HQL表达能力有限</h5><ul>
-<li>迭代式算法无法表达</li>
-<li>数据挖掘方面不擅长</li>
-</ul>
-<h5 id="2、Hive的效率比较低"><a href="#2、Hive的效率比较低" class="headerlink" title="2、Hive的效率比较低"></a>2、Hive的效率比较低</h5><ul>
-<li>Hive自动生成的MapReduce作业，通常情况下不够智能化</li>
-<li>Hive调优比较困难，粒度比较粗</li>
-</ul>
-<h3 id="1-3、Hive架构原理"><a href="#1-3、Hive架构原理" class="headerlink" title="1.3、Hive架构原理"></a>1.3、Hive架构原理</h3><p><img src="/2019/10/01/Hive1/Hive.png" alt></p>
-<p>CLI：命令行接口，以命令行的形式输入SQL语句进行数据操作，有点类似shell</p>
-<p>Meta store：元数据存储，就是存的是表跟数据之间的位置对应关系，有点类似索引，Hive不会存储Meta store，会存在mysql或者Derby中</p>
-<p>Meta store作用：客户端连接Meta store服务，Meta store再去连接Mysql数据库来存取元数据，有了Meta store服务，就可以有多个客户端可以同时连接，而切这些客户端不需要知道MySQL的数据库用户名和密码，只需要连接Meta store服务就行。</p>
-<p>因为Meta store的元数据不断的修改，更新，所以Hive元数据不适合存在HDFS中，一般存在RDBMS中</p>
-<p>HIve没有专门的数据存储格式，也没有为数据建立索引，Hive中所有数据都存储在HDFS中</p>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2019/10/01/Hive1/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-双指针" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2019/09/01/%E5%8F%8C%E6%8C%87%E9%92%88/" target="_blank">双指针</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2019/09/01/%E5%8F%8C%E6%8C%87%E9%92%88/" class="archive-article-date">
-        <time datetime="2019-09-01T01:23:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-01</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h2 id="算法中的双指针使用"><a href="#算法中的双指针使用" class="headerlink" title="算法中的双指针使用"></a>算法中的双指针使用</h2><p>双指针主要用来遍历数组，两个指针指向不同的元素，从而协同完成任务。</p>
-<h3 id="1、有序数组的Tow-Sum"><a href="#1、有序数组的Tow-Sum" class="headerlink" title="1、有序数组的Tow Sum"></a>1、有序数组的Tow Sum</h3><p><a href="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/description/">LeetCode的TowSum</a></p>
-<p>题目描述：有序数组，找出两个数组，让和为target</p>
-<p>算法思想：使用双指针，一个指针指向值较小的元素，一个指针指向值较大的元素，指向值较小元素的指针从头向后开始遍历，指向较大的指针从后向前开始遍历。</p>
-<ul>
-<li>如果两个指针指向元素的和sum==target，返回结果位置</li>
-<li>如果sum&gt;target，则移动较大的指针</li>
-<li>如果sum&lt;target，则移动较小的指针</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] numbers,<span class="keyword">int</span> target)&#123;</span><br><span class="line">    <span class="keyword">int</span> i=<span class="number">0</span>,j=numbers.length-<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i&lt;j)&#123;</span><br><span class="line">        <span class="keyword">int</span> sum=numbers[i]+numbers[j];</span><br><span class="line">        <span class="keyword">if</span>(sum==target)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i+<span class="number">1</span>,j+<span class="number">1</span>&#125;;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(sum&lt;target)&#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            j--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2、两数的平方和"><a href="#2、两数的平方和" class="headerlink" title="2、两数的平方和"></a>2、两数的平方和</h3><p><a href="https://leetcode.com/problems/sum-of-square-numbers/description/">LeetCode</a></p>
-<p>题目描述：判断一个数是否为两个数的平方和</p>
-<p>算法思想：还是使用两个指针，一个指针为0，一个指针为和的sqrt</p>
-<ul>
-<li>如果两个指针指向元素的和powSum==target，返回结果位置</li>
-<li>如果powSum&gt;target，则移动较大的指针</li>
-<li>如果powSum&lt;target，则移动较小的指针</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">judgeSquerSum</span><span class="params">(<span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i=<span class="number">0</span>,j=(<span class="keyword">int</span>)Math.sqrt(target);</span><br><span class="line">    <span class="keyword">while</span>(i&lt;=j)&#123;<span class="comment">//此处有等号，不然target=2的时候，没有等号就返回false</span></span><br><span class="line">        <span class="keyword">int</span> sum=i*i+j*j;</span><br><span class="line">        <span class="keyword">if</span>(sum==target)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(sum&lt;target)&#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            j--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="判断链表是否有环"><a href="#判断链表是否有环" class="headerlink" title="判断链表是否有环"></a>判断链表是否有环</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasCycle</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode slow=head,fast=head;<span class="comment">//声明两个临时指针，都指向head</span></span><br><span class="line">        <span class="keyword">while</span>(fast!=<span class="keyword">null</span>&amp;&amp;fast.next!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            slow=slow.next;</span><br><span class="line">            fast=fast.next.next;</span><br><span class="line">            <span class="keyword">if</span>(slow==fast)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
+<h3 id="5、dubbo"><a href="#5、dubbo" class="headerlink" title="5、dubbo"></a>5、dubbo</h3><p>​    dubbo是一款高性能、轻量级的开源Java RPC框架，提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，以及服务自动注册和发现。</p>
+<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/dubbo%E7%9A%84%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
+<p>​    register：服务注册中心。</p>
+<p>​    provider：服务提供者</p>
+<p>​    consumer：服务消费者，消费我们提供的服务。</p>
+<p>​    container：指的是dubbo框架容器。</p>
+<p>​    monitor：是监控中心，服务提供者provider，服务消费者的一些监控信息都会发到监控中心。</p>
+<h3 id="6、zookeeper注册中心"><a href="#6、zookeeper注册中心" class="headerlink" title="6、zookeeper注册中心"></a>6、zookeeper注册中心</h3><h3 id="7、dubbo的Monitor监控中心"><a href="#7、dubbo的Monitor监控中心" class="headerlink" title="7、dubbo的Monitor监控中心"></a>7、dubbo的Monitor监控中心</h3><p><a href="https://github.com/apache/incubator-dubbo-admin">GitHub地址</a></p>
+<p>然后用mvn clean package打成一个jar包，然后在控制台用java -jar的命令启动就行。</p>
+<p>注意：启动监控中心，之前必须启动zookeeper，否则，导致监控中心失败。</p>
 
     
 
@@ -1003,7 +814,120 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="../../2019/09/01/%E5%8F%8C%E6%8C%87%E9%92%88/">展开全文 >></a>
+      <a class="article-more-a" href="../../2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-JVM相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2018/06/13/JVM%E7%9B%B8%E5%85%B3/" target="_blank">JVM相关</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2018/06/13/JVM%E7%9B%B8%E5%85%B3/" class="archive-article-date">
+        <time datetime="2018-06-13T02:46:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-13</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="一、JVM相关的笔记"><a href="#一、JVM相关的笔记" class="headerlink" title="一、JVM相关的笔记"></a>一、JVM相关的笔记</h2><p>简历上可以写，熟悉JVM架构与GC垃圾回收机制，以及相应的参数调优，有过在Linux上进行系统优化的经验。</p>
+<p>面试官让你谈谈jvm优化，我是根据淘宝周志明那哥们写的那本深入理解java虚拟机书，99*%的优化的是堆Heap，1%的优化的是方法区Method Area，虚拟机栈Stack是私有的，不可能优化，最多是栈溢出StackOverFlow，调整一下栈的大小<font color="red">-xss参数</font><br><font color="red">静态变量+常量+类信息+运行时常量池</font>存在方法区。方法区一般放的是<font color="red">类的构造函数和接口的代码。所有定义的方法的信息都保存在方法区。</font><br>引用存在虚拟机栈里。实例变量存在堆里面。</p>
+<h3 id="1、栈"><a href="#1、栈" class="headerlink" title="1、栈"></a>1、栈</h3><p>​    栈，也叫栈内存，主管java程序的运行，是在线程创建是创建，它的生命周期跟随线程的生命周期，线程结束栈内存也就释放，对于栈来说，不存在垃圾回收，生命周期和线程一致，是线程私有的。<br>   基本类型变量和对象的引用变量，都是在函数的栈内存里分配。</p>
+<h4 id="1-1、栈存储的是什么？"><a href="#1-1、栈存储的是什么？" class="headerlink" title="1.1、栈存储的是什么？"></a>1.1、栈存储的是什么？</h4><p>   栈是先进后出，比如你main方法调用test1，test1调用test2，等等，所以main在最底下，可以看作一个栈帧对应一个方法。<br>    栈帧里面存3种类型变量：</p>
+<ul>
+<li>本地变量（local variables），输入参数和输出参数，以及方法内的变量。</li>
+<li>栈操作（ operand stack）出栈和入栈的操作</li>
+<li>栈帧数据（Frame data）：包括类文件，方法等，言下之意，每一个方法就是一个栈帧。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span></span>&#123;</span><br><span class="line">    <span class="comment">//test的栈帧在上面，直接如此调用，把栈给撑爆了，所以栈溢出</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">          test();</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="comment">//main方法的栈帧在最底部</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] Args)</span></span>&#123;</span><br><span class="line">         test();</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line"> <span class="comment">//死循环，或者循环递归调用,出现的异常java.lang.StackOverflowError</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2、堆Heap"><a href="#2、堆Heap" class="headerlink" title="2、堆Heap"></a>2、堆Heap</h3><p>​    一个JVM实例只存在一个堆内存，堆内存大小是可以调节的。类加载器读取了类文件后，需要把类、方法、成员变量存在堆内存中，保存所有引用类型的真实信息，以方便执行器执行，堆内存分为三个部分：</p>
+<h4 id="2-1、Young-generation-space-新生代-young"><a href="#2-1、Young-generation-space-新生代-young" class="headerlink" title="2.1、Young generation space 新生代 young"></a>2.1、Young generation space 新生代 young</h4><p>新生代分为3个区：</p>
+<ul>
+<li>Eden space伊甸区</li>
+<li>Survivor 0 space 幸存0区</li>
+<li>Survivor 1 space 幸存1区</li>
+</ul>
+<h4 id="2-2、Tenure-generation-space-养老区-Old"><a href="#2-2、Tenure-generation-space-养老区-Old" class="headerlink" title="2.2、Tenure generation space 养老区 Old"></a>2.2、Tenure generation space 养老区 Old</h4><h4 id="2-3、Permanent-space-永久区-Perm"><a href="#2-3、Permanent-space-永久区-Perm" class="headerlink" title="2.3、Permanent space 永久区 Perm"></a>2.3、Permanent space 永久区 Perm</h4><h2 id="二、3种JVM"><a href="#二、3种JVM" class="headerlink" title="二、3种JVM"></a>二、3种JVM</h2><ul>
+<li>SUN公司的HotSpot虚拟机</li>
+<li>BEA公司的JRockit虚拟机</li>
+<li>IBM公司的J9VM虚拟机</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2018/06/13/JVM%E7%9B%B8%E5%85%B3/">展开全文 >></a>
     </p>
     
 
@@ -1046,7 +970,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="../../2019/07/21/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/" target="_blank">JVM探究</a>
+	  <a class="article-title" href="../../2018/06/12/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/" target="_blank">JVM探究</a>
   
     </h1>
   
@@ -1054,8 +978,8 @@
 
   
   
-<a href="../../2019/07/21/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/" class="archive-article-date">
-        <time datetime="2019-07-21T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-21</time>
+<a href="../../2018/06/12/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/" class="archive-article-date">
+        <time datetime="2018-06-12T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-12</time>
 </a>
 
   
@@ -1256,7 +1180,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="../../2019/07/21/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/">展开全文 >></a>
+      <a class="article-more-a" href="../../2018/06/12/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/">展开全文 >></a>
     </p>
     
 
@@ -1291,7 +1215,7 @@
 
 
   
-    <article id="post-Java版数据结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -1299,7 +1223,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="../../2019/07/02/Java%E7%89%88%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" target="_blank">Java数据结构</a>
+	  <a class="article-title" href="../../2018/06/11/Java%E9%94%81/" target="_blank">Java的锁分类</a>
   
     </h1>
   
@@ -1307,8 +1231,8 @@
 
   
   
-<a href="../../2019/07/02/Java%E7%89%88%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="archive-article-date">
-        <time datetime="2019-07-02T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-02</time>
+<a href="../../2018/06/11/Java%E9%94%81/" class="archive-article-date">
+        <time datetime="2018-06-11T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-11</time>
 </a>
 
   
@@ -1320,110 +1244,118 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="1、数据结构的特性"><a href="#1、数据结构的特性" class="headerlink" title="1、数据结构的特性"></a>1、数据结构的特性</h1><table>
-<thead>
-<tr>
-<th>数据结构</th>
-<th>优点</th>
-<th>缺点</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>数组</td>
-<td>插入快，如果知道下标，可以非常快速的存取</td>
-<td>删除慢，大小固定</td>
-</tr>
-<tr>
-<td>有序数组</td>
-<td>比无序的数组查找快</td>
-<td>删除和插入慢，大小固定</td>
-</tr>
-<tr>
-<td>栈</td>
-<td>先进后出的存取方式</td>
-<td>存取其他项很慢</td>
-</tr>
-<tr>
-<td>队列</td>
-<td>先进先出的存取方式</td>
-<td>存取其他项很慢</td>
-</tr>
-<tr>
-<td>二叉树</td>
-<td>查找、插入、删除都快（如果树保持平衡）</td>
-<td>删除算法复杂</td>
-</tr>
-<tr>
-<td>红-黑树</td>
-<td>查找、插入、删除都快。树总是平衡的</td>
-<td>算法复杂</td>
-</tr>
-<tr>
-<td>2-3-4树</td>
-<td>查找、插入、删除都快、树总是平衡的。类似的树对磁盘存储有用</td>
-<td>算法复杂</td>
-</tr>
-<tr>
-<td>哈希表</td>
-<td>如果关键字已知，则存储极快，插入快</td>
-<td>删除满，如果不知道关键字则存储很慢，对存储空间使用不充分</td>
-</tr>
-<tr>
-<td>堆</td>
-<td>插入、删除快。对大数据项的存取很快</td>
-<td>对其他数据项存取慢</td>
-</tr>
-<tr>
-<td>图</td>
-<td>对现实世界建模</td>
-<td>有些算法慢且复杂</td>
-</tr>
-</tbody></table>
-<h2 id="1-1、数组"><a href="#1-1、数组" class="headerlink" title="1.1、数组"></a>1.1、数组</h2><ul>
-<li><p>创建数组</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Java中数组作为对象处理。创建数组使用new关键字</span></span><br><span class="line"><span class="comment">一旦创建数组，数组大小便不可改变</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">int</span>[] arr=<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
+    <h3 id="一、Java锁分类"><a href="#一、Java锁分类" class="headerlink" title="一、Java锁分类"></a>一、Java锁分类</h3><h4 id="1、乐观锁"><a href="#1、乐观锁" class="headerlink" title="1、乐观锁"></a>1、乐观锁</h4><ul>
+<li><p>乐观锁是一种乐观思想，认为<font color="red">读多写少，遇到并发写的可能性低，每次拿数据的时候都认为别人不会修改，所以不会上锁</font>。</p>
 </li>
-<li><p>访问数组数据项</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*数组数据项通过方括号的下标来访问*/</span></span><br><span class="line">arr[<span class="number">0</span>]=<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+<li><p>但是在更新的时候会判断一下在期间别人有没有去更新这个数据，采取在写时先读出当前版本号，然后加锁操作。比较跟上一次的版本号，如果一样则更新，如果失败则要重复读-比较-写的操作。</p>
 </li>
-<li><p>数组初始化</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] arr=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br></pre></td></tr></table></figure>
+<li><p>Java的乐观锁基本都是通过CAS操作实现的。CAS是一种更新的原子操作，比较当前值是否一样，一样则更新，否则失败。</p>
+</li>
+</ul>
+<h4 id="2、悲观锁"><a href="#2、悲观锁" class="headerlink" title="2、悲观锁"></a>2、悲观锁</h4><ul>
+<li><p>悲观锁就是悲观思想，认为写多，遇到并发写的可能性高，每次去拿数据的时候都认为别人会修改，所以每次在读写数据的时候都会上锁，这样别人想读写这个数据就会block直到拿到锁。java中的悲观锁就是</p>
+</li>
+<li><p>synchronized，AQS框架下的锁则是先尝试CAS乐观锁去获取锁，获取不到才会转换为悲观锁，比如RetreenLock。</p>
+</li>
+</ul>
+<h4 id="3、自旋锁"><a href="#3、自旋锁" class="headerlink" title="3、自旋锁"></a>3、自旋锁</h4><ul>
+<li><p>自选锁原理非常简单，如果持有锁的线程能在很短时间内释放锁资源，那么那些等待竞争锁的线程就不需要做内核态和用户态之间的切换进行阻塞挂起状态，他们只需要等一等（自旋），等持有锁的线程释放锁后就可以立即获取到锁，这样就避免了用户线程和内核的切换消耗。</p>
+</li>
+<li><p>线程自旋需要消耗CPU，说白了就是让CPU再做无用功，如果一直获取不到锁，那么线程也不能一直占用CPU自旋做无用功，所以需要设定一个自旋等待的最大时间。</p>
+</li>
+<li><p>如果持有锁的线程执行的时间超过自旋等待的最大时间仍没有释放锁，就会导致其他的线程在最大等待时间内还是获取不到锁，这时其他线程就会停止自旋进入阻塞状态。</p>
+</li>
+<li><p><font color="red">自旋锁是一种思想，一般需要配合CAS使用</font></p>
+</li>
+<li><p><font color="red">java.util.concurrent.atomic包下的原子类是自旋锁</font></p>
+</li>
+</ul>
+<h4 id="4、可重入锁"><a href="#4、可重入锁" class="headerlink" title="4、可重入锁"></a>4、可重入锁</h4><ul>
+<li>不可重入的话，一个锁在嵌套中使用会把自己锁死</li>
+<li>synchronized和ReentrantLock都是可重入锁，可以放心用</li>
+</ul>
+<h4 id="5公平锁-非公平所"><a href="#5公平锁-非公平所" class="headerlink" title="5公平锁/非公平所"></a>5公平锁/非公平所</h4><ul>
+<li>synchronized是非公平锁，ReentrantLock默认构造函数也是非公平锁</li>
+<li>非公平锁的性能比公平锁性能高很多</li>
+</ul>
+<h4 id="6、互斥锁-共享锁"><a href="#6、互斥锁-共享锁" class="headerlink" title="6、互斥锁/共享锁"></a>6、互斥锁/共享锁</h4><ul>
+<li>互斥与共享的概念简单，任何语言都存在</li>
+</ul>
+<h4 id="7、偏向锁-轻量级锁-重量级锁"><a href="#7、偏向锁-轻量级锁-重量级锁" class="headerlink" title="7、偏向锁/轻量级锁/重量级锁"></a>7、偏向锁/轻量级锁/重量级锁</h4><ul>
+<li>synchronized底层优化，偏向锁、轻量级锁是针对重量级锁做优化而提出来的定义</li>
+<li>这些优化大部分情况下对于开发来讲是透明的，默认开启的</li>
+</ul>
+<h4 id="8、分段锁"><a href="#8、分段锁" class="headerlink" title="8、分段锁"></a>8、分段锁</h4><ul>
+<li>分段锁不是一种实际的锁，而是一种思想</li>
+<li>ConcurrentHashMap是实现锁分段机制</li>
+</ul>
+<h4 id="9、锁优化"><a href="#9、锁优化" class="headerlink" title="9、锁优化"></a>9、锁优化</h4><h5 id="9-1、减少锁持有时间"><a href="#9-1、减少锁持有时间" class="headerlink" title="9.1、减少锁持有时间"></a>9.1、减少锁持有时间</h5><p>只用在要求线程安全的程序上加锁</p>
+<h5 id="9-2、减小锁粒度"><a href="#9-2、减小锁粒度" class="headerlink" title="9.2、减小锁粒度"></a>9.2、减小锁粒度</h5><p>将大对象(被多线程访问的对象)，拆分成小对象，大大增加并行度，降低锁竞争。降低锁竞争，偏向锁，轻量级锁成功率才会提高。最典型的减小锁粒度的例子就是：分段锁ConcurrentHashMap。</p>
+<h4 id="10、锁分离"><a href="#10、锁分离" class="headerlink" title="10、锁分离"></a>10、锁分离</h4><ul>
+<li><font color="red"> 常见的锁分离就是读写锁ReadWriteLock</font>，根据功能进行分离成读锁和写锁，这样读读不互斥，读写互斥，写写互斥，保证了线程安全，还提高了性能。</li>
+<li>LinkedBlockingQueue从头部取出数据，从尾部放数据。</li>
+</ul>
+<h4 id="11、锁粗化"><a href="#11、锁粗化" class="headerlink" title="11、锁粗化"></a>11、锁粗化</h4><p>为了保证多线程间的有效并发，会要求每个线程持有锁的时间尽量短，也就是在使用公共资源后，应该立即释放锁。<font color="red">如果对同一个锁不停地进行请求，同步和释放，本身也会消耗系统的资源，反而不利于性能的优化</font></p>
+<h4 id="12、锁消除"><a href="#12、锁消除" class="headerlink" title="12、锁消除"></a>12、锁消除</h4><p>锁消除是在编译器级别的事情，如果发现不可能被共享的对象，就可以消除这些对象的加锁操作，多数是因为编码不规范引起的。</p>
+<h3 id="二、Java常用锁"><a href="#二、Java常用锁" class="headerlink" title="二、Java常用锁"></a>二、Java常用锁</h3><ul>
+<li>synchronized</li>
+<li>ReentrantLock</li>
+<li>ReadWriteLock</li>
+<li>Semaphore</li>
+</ul>
+<h4 id="synchronized"><a href="#synchronized" class="headerlink" title="synchronized"></a>synchronized</h4><ul>
+<li>按照加锁范围大小，分为类锁和对象锁</li>
+<li>按加锁方法，分为代码块加锁和方法加锁</li>
+</ul>
+<p>注：<font color="red">对象锁只会影响单个对象，类锁会影响这个类下的所有对象</font></p>
+<h5 id="1、分析"><a href="#1、分析" class="headerlink" title="1、分析"></a>1、分析</h5><ul>
+<li>每个对象都有一个monitor对象，加锁就是在竞争monitor对象</li>
+<li>代码块加锁是在前后分别加上monitorenter和monitorexit指令来实现的</li>
+<li>方法加锁是通过一个标记位来判断的</li>
+</ul>
+<h5 id="2、误解"><a href="#2、误解" class="headerlink" title="2、误解"></a>2、误解</h5><ul>
+<li><p>JDK1.5，synchronized是一个重量级加锁操作，需要调用操作系统的接口，则导致性能低，给线程加锁消耗的时间比有用操作消耗时间要多。</p>
+</li>
+<li><p>JDK1.6，synchronized进行了锁优化，有自旋锁，锁消除 ，锁粗化，轻量级锁，偏向锁等，效率有了提高。而之后的JDK1.7,1.8都对关键字的实现原理实现了优化。</p>
+</li>
+</ul>
+<h5 id="3、总结"><a href="#3、总结" class="headerlink" title="3、总结"></a>3、总结</h5><ul>
+<li>引入了偏向锁和轻量级锁，都是在对象头中有标记位，不需要经过操作系统加锁</li>
+<li>锁可以从偏向锁升级到轻量级锁，再升级到重量级锁。这种升级过程叫做锁膨胀</li>
+<li>JDK1.6中默认是开启偏向锁和轻量级锁，可以通过-XX:UseraBiasedLocking来禁用偏向锁</li>
+</ul>
+<h4 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h4><h5 id="1、使用"><a href="#1、使用" class="headerlink" title="1、使用"></a>1、使用</h5><ul>
+<li>lock.lock()和lock.unlock()</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> lock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantLock;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>:</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: VictorDan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 18-11-20 下午4:15</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span>: 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LockTest</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LockTest</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                lock.lock();</span><br><span class="line">                flag++;</span><br><span class="line">            &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                lock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        LockTest lockTest1=<span class="keyword">new</span> LockTest(<span class="string">"thread1"</span>);</span><br><span class="line">        LockTest lockTest2=<span class="keyword">new</span> LockTest(<span class="string">"thread1"</span>);</span><br><span class="line">        lockTest1.start();</span><br><span class="line">        lockTest2.start();</span><br><span class="line">        lockTest1.join();</span><br><span class="line">        lockTest2.join();</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 如果不加锁，则flag为小于20000的任意数</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        System.out.println(flag);<span class="comment">//2000</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-</li>
-</ul>
-<h2 id="1-2、有序数组"><a href="#1-2、有序数组" class="headerlink" title="1.2、有序数组"></a>1.2、有序数组</h2><ul>
-<li><p>有序数组特点</p>
-<p>有序数组按照数组元素一定的顺序排列，方便使用二分查找来查找数组中特定的元素。有序数组提高了查询效率，并没有提高删除和插入元素的效率。</p>
-</li>
-</ul>
-<h2 id="1-3、查找算法"><a href="#1-3、查找算法" class="headerlink" title="1.3、查找算法"></a>1.3、查找算法</h2><ul>
-<li><p>线性查找</p>
-<p>查找的时候，将要查找的数一个个的与数组中的元素比较，直到找到要找的数。</p>
-</li>
-<li><p>二分查找（折半查找）</p>
-<p>不断的将有序数组进行对半分割，每次拿中间位置的数和要查找的数进行比较：</p>
 <ul>
-<li>target&lt;middle,target在数组的前半段。</li>
-<li>target&gt;middle,target在数组的后半段</li>
-<li>target==middle,target就是中间数</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">二分查找索引（前提：有序）</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">long</span> value)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> middle=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> left=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> right=size-<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">        middle=(left+right)/<span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(arr[middle]==value)&#123;</span><br><span class="line">            <span class="keyword">return</span> middle;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(left&gt;right)&#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;<span class="comment">//不存在</span></span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(arr[middle]&gt;value)&#123;</span><br><span class="line">                right=middle-<span class="number">1</span>;<span class="comment">//在左半部分</span></span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                left=middle+<span class="number">1</span>;<span class="comment">//在右半部分</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<li><p>lock.tryLock(long timeout, TimeUnit unit)</p>
+<p>尝试获取锁，在时间范围内没有拿到就会返回false，不会永久构成死锁。</p>
 </li>
 </ul>
-<h2 id="1-4、栈和队列"><a href="#1-4、栈和队列" class="headerlink" title="1.4、栈和队列"></a>1.4、栈和队列</h2><p>​    栈和队列都是抽象数据类型（Abstract Data Type，ADT），既可以用数组实现，又可以用链表实现。</p>
-<h3 id="1-4-1、栈"><a href="#1-4-1、栈" class="headerlink" title="1.4.1、栈"></a>1.4.1、栈</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStack</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span>[] arr;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> top;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestStack</span><span class="params">()</span></span>&#123;</span><br><span class="line">        arr=<span class="keyword">new</span> <span class="keyword">long</span>[<span class="number">100</span>];</span><br><span class="line">        top=-<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestStack</span><span class="params">(<span class="keyword">int</span> maxSize)</span></span>&#123;</span><br><span class="line">        arr=<span class="keyword">new</span> <span class="keyword">long</span>[maxSize];</span><br><span class="line">        top=-<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">long</span> value)</span></span>&#123;</span><br><span class="line">        arr[++top]=value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">pop</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> arr[top--];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">peek</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> arr[top];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (top==-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (top==arr.length-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.anjuke.ai;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantLock;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>:</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: VictorDan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 18-11-20 下午4:24</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span>: 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TryLock</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TryLock</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (lock.tryLock(<span class="number">5</span>, TimeUnit.SECONDS)) &#123;</span><br><span class="line">                Thread.sleep(<span class="number">6000</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="keyword">this</span>.getName() + <span class="string">" get lock failed"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (lock.isHeldByCurrentThread()) &#123;</span><br><span class="line">                System.out.println(<span class="string">"lock.isHeldByCurrentThread: "</span> + <span class="keyword">this</span>.getName());</span><br><span class="line">                lock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        TryLock t1 = <span class="keyword">new</span> TryLock(<span class="string">"TryLockTest1"</span>);</span><br><span class="line">        TryLock t2 = <span class="keyword">new</span> TryLock(<span class="string">"TryLockTest2"</span>);</span><br><span class="line"></span><br><span class="line">        t1.start();</span><br><span class="line">        t2.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//TryLockTest2 get lock failed</span></span><br><span class="line"><span class="comment">//lock.isHeldByCurrentThread: TryLockTest1</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="1-4-2、链表"><a href="#1-4-2、链表" class="headerlink" title="1.4.2、链表"></a>1.4.2、链表</h3><ul>
-<li><p>链结点：一个链结点（Link，结点）是某个类的对象，该对象中包含对下一个链结点引用的字段（next）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*结点定义*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Link</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">long</span> data;<span class="comment">//data域</span></span><br><span class="line">    <span class="keyword">public</span> Link next;<span class="comment">//next Link in list</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Link</span><span class="params">(<span class="keyword">long</span> data)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.data=data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayLink</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(data+<span class="string">"---&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>公平锁：<ul>
+<li>一般锁是不公平的，不一定先来的线程先得到锁，后来的锁就后得到锁，不公平锁可能会产生饥饿现象</li>
+<li>公平锁就是先来先服务。不会产生饥饿现象，但是公平所性能比费公平所性能差很多</li>
+</ul>
 </li>
-<li><p>单链表（LinkList）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkList</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Link first;<span class="comment">//定义头结点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LinkList</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.first=<span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertFirst</span><span class="params">(<span class="keyword">long</span> value)</span></span>&#123;</span><br><span class="line">        Link newLink=<span class="keyword">new</span> Link(value);</span><br><span class="line">        newLink.next=first;</span><br><span class="line">        first=newLink;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Link <span class="title">deleteFirst</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(first==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Link temp=first;</span><br><span class="line">        first=first.next;</span><br><span class="line">        <span class="keyword">return</span> temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayList</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Link current=first;</span><br><span class="line">        <span class="keyword">while</span>(current!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            current.displayLink();</span><br><span class="line">            current=current.next</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ReentrantLock lock = <span class="keyword">new</span> ReentrantLock(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
 
-
-
+<h5 id="2、分析"><a href="#2、分析" class="headerlink" title="2、分析"></a>2、分析</h5><ul>
+<li><p>ReentrantLock是基于AQS实现的，而AQS的基础是CAS。所以搞定AQS，就搞定了ReentrantLock。</p>
 </li>
+<li><p>ReentrantLock分为公平锁和非公平锁</p>
+</li>
+<li><p>而ReentrantLock，CountDownLatch，Semaphore都是通过AQS实现的</p>
+</li>
+</ul>
+<h5 id="3、总结-1"><a href="#3、总结-1" class="headerlink" title="3、总结"></a>3、总结</h5><ul>
+<li>synchronized能做的，ReentrantLock都能做，并且还能做很多，但是synchronized仍有用武之地</li>
+<li>ReentrantLock相比synchronized的优势是可中断，公平锁，多个锁。这种情况下使用ReentrantLock。只要是synchronized能做到的，还是使用synchronized</li>
 </ul>
 
     
@@ -1451,7 +1383,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="../../2019/07/02/Java%E7%89%88%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">展开全文 >></a>
+      <a class="article-more-a" href="../../2018/06/11/Java%E9%94%81/">展开全文 >></a>
     </p>
     
 
@@ -1486,7 +1418,7 @@
 
 
   
-    <article id="post-Java面试" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-消息队列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -1494,7 +1426,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="../../2019/07/01/Java%E9%9D%A2%E8%AF%95/" target="_blank">Java的常识总结</a>
+	  <a class="article-title" href="../../2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" target="_blank">消息队列</a>
   
     </h1>
   
@@ -1502,8 +1434,8 @@
 
   
   
-<a href="../../2019/07/01/Java%E9%9D%A2%E8%AF%95/" class="archive-article-date">
-        <time datetime="2019-07-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
+<a href="../../2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" class="archive-article-date">
+        <time datetime="2018-05-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-01</time>
 </a>
 
   
@@ -1515,109 +1447,67 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h2 id="一、Java的常识总结"><a href="#一、Java的常识总结" class="headerlink" title="一、Java的常识总结"></a>一、Java的常识总结</h2><h4 id="1、final、finally、finalize的区别"><a href="#1、final、finally、finalize的区别" class="headerlink" title="1、final、finally、finalize的区别"></a>1、final、finally、finalize的区别</h4><ul>
-<li><p>final：修饰类、方法、变量</p>
+    <h2 id="大数据技术之Kafka"><a href="#大数据技术之Kafka" class="headerlink" title="大数据技术之Kafka"></a>大数据技术之Kafka</h2><h3 id="1、Kafka概述"><a href="#1、Kafka概述" class="headerlink" title="1、Kafka概述"></a>1、Kafka概述</h3><h4 id="1-1、消息队列"><a href="#1-1、消息队列" class="headerlink" title="1.1、消息队列"></a>1.1、消息队列</h4><p><img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.png" alt></p>
+<h4 id="1-2、为什么要用消息队列？"><a href="#1-2、为什么要用消息队列？" class="headerlink" title="1.2、为什么要用消息队列？"></a>1.2、为什么要用消息队列？</h4><ul>
+<li><strong>解耦</strong>：也即是客户端A跟B不用直连，通过中间件。达到解耦</li>
+<li><strong>冗余</strong>：消息队列可以进行数据备份，它本身可以缓冲数据</li>
+<li><strong>扩展性</strong>：消息队列可以进行集群</li>
+<li><strong>灵活性&amp;峰值处理能力</strong>：机器扩展多了，峰值处理能力自然提高</li>
+<li><strong>可恢复性</strong>：因为你数据可备份的，消息丢了一个，可以恢复的</li>
+<li><strong>顺序保证</strong>：队列先进先出，它有顺序。</li>
+<li><strong>缓冲</strong>：均衡两边的速度，这边数据冗余了。可以进行备份缓冲。</li>
+<li><strong>异步通信</strong>：比如你A挂了，并不会影响B</li>
+</ul>
+<h4 id="1-3三种消息队列对比："><a href="#1-3三种消息队列对比：" class="headerlink" title="1.3三种消息队列对比："></a>1.3三种消息队列对比：</h4><h5 id="1-3-1、ActiveMQ，RabbitMQ，Kafka"><a href="#1-3-1、ActiveMQ，RabbitMQ，Kafka" class="headerlink" title="1.3.1、ActiveMQ，RabbitMQ，Kafka"></a>1.3.1、ActiveMQ，RabbitMQ，Kafka</h5><ul>
+<li><p><strong>ActiveMQ中，消费者消费完消息后，队列Queue中，这条消息立即被删除</strong>。</p>
+<p>而ActiveMQ，它的队列是存在内存中。普通的消息队列是存在队列Queue中，然后存在内存中。Kafka是持久化到磁盘中，Kafka是以partition为单位进行消费的，而普通消息队列是一条一条进行消费的。</p>
+</li>
+</ul>
+<p><img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/ActiveMQ.jpg" alt></p>
 <ul>
-<li>修饰类：类不能被其他类继承</li>
-<li>修饰方法：方法锁定，防止其他继承类进行更改</li>
-<li>修饰变量：表示为常量，只能被赋值一次，不能更改，而且必须要初始化。</li>
-</ul>
-</li>
-<li><p>finally：只有与finally对应的try语句块得到执行的情况下，finally语句块才能执行。如果在执行try之前，方法发生异常，则finally不会执行。</p>
-</li>
-<li><p>finalize：是java.lang.Object定义的，每一个方法都有finalize方法</p>
-<p>方法是在gc启动的时候，被调用。凡是new出来的对象，gc都能搞定，一般情况下我们又不会用new以外的方式去创建对象，所以一般是不需要程序员去实现finalize。</p>
+<li><p>RabbitMQ多了一段Exchange，路由交换机。有4中工作机制。**</p>
+<p><img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/RabbitMQ.jpg" alt></p>
+<p>​    当producer生产了3条消息，每个队列中不会都拿到这3条消息的，它是根据路由机制进行匹配的，有4中路由机制，fanout，direct，topic，headers。4种路由机制。</p>
 </li>
 </ul>
-<h4 id="2、HashMap与Hashtable"><a href="#2、HashMap与Hashtable" class="headerlink" title="2、HashMap与Hashtable"></a>2、HashMap与Hashtable</h4><ul>
-<li>线程是否安全：HashMap非线程安全，Hashtable线程安全。Hashtable的方法内部都是由synchronized修饰。保证线程安全建议使用ConcurrentHashMap</li>
-<li>HashMap可以用null作为一个key键，但是只有一个，value为null可以有一个或者多个。<font color="red">Hashtable如果put进去的key为null就会报空指针。</font></li>
-<li>HashMap默认的初始化为16，每次扩容会变为原来的2倍。JDK1.8以后的HashMap解决哈希冲突的时候，链表的长度默认值为8，<font color="red">如果超过8的时候，链表会转化为红黑树，用来减少搜索时间</font>。</li>
-</ul>
-<h4 id="3、HashMap和HashSet"><a href="#3、HashMap和HashSet" class="headerlink" title="3、HashMap和HashSet"></a>3、HashMap和HashSet</h4><p>​    HashSet底层是基于HashMap实现。</p>
-<table>
-<thead>
-<tr>
-<th>HashMap</th>
-<th>HashSet</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>实现Map接口</td>
-<td>实现Set接口</td>
-</tr>
-<tr>
-<td>存key-value</td>
-<td>存Object</td>
-</tr>
-<tr>
-<td>调用put()添加</td>
-<td>调用add()添加</td>
-</tr>
-</tbody></table>
-<p>HashSet检查重复：当add的时候，HashSet会先计算对象的hashcode值来判断对象加入的位置。</p>
-<p>也即是先判断hashcode值，如果hashcode相同，则调用equals()方法，如果为true，则相同,HashsSet就不会加入操作成功。</p>
+<p>​    topic是以点为分隔符进行通配，*是匹配一个单词，#是匹配多个单词。</p>
 <ul>
-<li>HashMap多线程操作导致死循环问题，因为<font color="red">多线程并发情况下Rehash会造成元素之间形成一个循环链表。</font></li>
-</ul>
-<h4 id="4、ConcurrentHashMap"><a href="#4、ConcurrentHashMap" class="headerlink" title="4、ConcurrentHashMap"></a>4、ConcurrentHashMap</h4><p>JDK1.8的ConcurrentHashMap取消了Segment分段锁，采用CAS和synchronized来保证并发安全。数据结构和1.8的HashMap类似，数组+链表/红黑二叉树。</p>
-<p>当链表长度超过8，链表（查找复杂度O(N)）将转换为红黑树（查找复杂度O(longN)）</p>
-<p>synchronized只锁定当前链表或者红黑二叉树的首节点，这样只要hash不冲突，就不会产生并发，效率又提升了N倍。</p>
-<h4 id="5、线程"><a href="#5、线程" class="headerlink" title="5、线程"></a>5、线程</h4><p>线程是一个比进程更小的执行单位，一个进程在其执行的过程中可以产生多个线程。</p>
-<p>与进程不同的是，类的多个线程共享进程的堆Heap和方法区Method Area资源。</p>
-<p>每个线程都有自己的程序计数器PC，虚拟机栈Stack，本地方法栈Native Method Stack。</p>
-<p>一个进程中可以有多个线程，多个线程共享进程的堆和方法区（JDK1.8以后的没有方法区，从JVM移到本地成为元空间MetaSpace）</p>
-<ul>
-<li><p>程序计数器PC：字节码解释器通过改变程序计数器来读取指令，主要是为了线程切换后能恢复到正确的执行位置。</p>
-</li>
-<li><p>虚拟机栈和本地方法栈</p>
-<ul>
-<li>虚拟机栈：每个java方法在执行的同时会创建一个栈帧用来存储局部变量表，操作数栈，常量池引用的信息。</li>
-<li>本地方法栈：虚拟机栈是为Java方法也就是字节码服务，本地方法栈为虚拟机用到的Native方法服务。</li>
-</ul>
-</li>
-<li><p>堆和方法区</p>
-<p>是所有线程共享的资源，堆是进程中最大的一块内存，主要用来存放新创建的对象，所有对象都在这里分配内存，用来存放新创建的对象。</p>
-<p>方法区：用来存放已被加载的类信息，常量，静态变量。</p>
+<li><p><strong>Kafka，当消费者消费完消息后，不会被立即删除，它有避免重复消费，和避免内存溢出</strong>，Kafka是以文件的方式进行存储的，存储在磁盘中，所以永远不会内存溢出。可能会存在磁盘满了，磁盘满了，可以加集群，然后进行备份，就是partition可以备份到另一台机器中。在kafka中是以zookeeper来管理集群的。</p>
+<p><strong>kafka消费是以partition为单位进行消费的。</strong>所以所，kafka适合数据量更大的时候的处理。</p>
+<p>而RabbitMQ它的消息存在内存中，如果消息超过长度，就会内存溢出。而kafka不会，消息存在磁盘中。</p>
 </li>
 </ul>
-<h4 id="6、sleep-方法和wait-方法"><a href="#6、sleep-方法和wait-方法" class="headerlink" title="6、sleep()方法和wait()方法"></a>6、sleep()方法和wait()方法</h4><p>wait()方法是java.lang.Object里的方法，用来线程间交互/通信</p>
-<p>sleep()是thread的方法。sleep方法没有释放锁，wait会释放锁，导致其他进程占用锁。</p>
-<p>wait()方法被调用后，线程不会自动苏醒，需要别的线程调用同一个对象上的notify()或者notifyAll()方法。</p>
-<p>sleep()方法执行完后，线程会自动苏醒。</p>
-<h4 id="7、start-方法和run-方法"><a href="#7、start-方法和run-方法" class="headerlink" title="7、start()方法和run()方法"></a>7、start()方法和run()方法</h4><p>Thread thread=new Thread();线程就进入了新建装填，调用了start()方法，就会启动一个线程进入就绪状态。当分配到时间片就可以运行了。</p>
-<p>start()：执行线程相应的准备工作，然后自动执行run()方法的内容。</p>
-<p>直接执行run()，会把run()方法当成一个main主线程的普通方法去执行，并不会再某个线程中执行它。</p>
-<p>run方法只是thread的一个普通方法调用，还是在主线程里执行。</p>
-<h4 id="8、synchronized关键字"><a href="#8、synchronized关键字" class="headerlink" title="8、synchronized关键字"></a>8、synchronized关键字</h4><p>synchronized关键字可以保证被修饰的方法、代码块在任何时刻都只有一个线程执行。</p>
-<p>JDK1.6之前，synchronized属于重量锁，因为使用监视器monitor，它是依赖于操作系统Mutex lock。需要进行线程切换从用户态到和心态。</p>
-<p>JDK1.6之后，引入了锁优化，自选锁，锁消除，锁粗化，偏向锁。等减少了锁操作的开销。</p>
-<h4 id="9、synchronized和ReentrantLock"><a href="#9、synchronized和ReentrantLock" class="headerlink" title="9、synchronized和ReentrantLock"></a>9、synchronized和ReentrantLock</h4><p>都是可重入锁：自己可以再次获取自己的内部锁，比如一个线程获得了某个对象的锁，此时这个对象锁还没有释放，当再次想要获取这个对象的锁还是可以获取的，如果不可重入，就会死锁。</p>
-<p>ReentrantLock是JDK层面实现的，需要用lock()和unlock()方法配合try/finally语句块。</p>
-<p>ReentrantLock增加的高级功能：</p>
+<h5 id="1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景"><a href="#1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景" class="headerlink" title="1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景"></a>1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景</h5><p>​    <img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.jpg" alt></p>
+<p>或者你这个库存当时没有了，可以调用别的地方的库存，然后重新分配库存。但是kafka就没有这样的好处。</p>
+<p>订单太多，可能会导致内存溢出，RabbitMQ中有一个partition是网络分区，用来做网络集群的，与kafka的partition不同，因此可以做集群部署。</p>
+<h4 id="1-4、什么是Kafka"><a href="#1-4、什么是Kafka" class="headerlink" title="1.4、什么是Kafka"></a>1.4、什么是Kafka</h4><p>流式计算中，Kafka用来缓存数据，Storm通过消费Kafka的数据进行计算。</p>
 <ul>
-<li><p>等待可中断：lock.lockInterruptibly();</p>
+<li><p>Apache Kafka是一个开源消息系统，由<strong>Scala</strong>写成</p>
 </li>
-<li><p>可实现公平锁：ReentrantLock(boolean fair)://值为true，则为公平锁。</p>
+<li><p>Kafka是由LinkedIn公司开发</p>
 </li>
-<li><p>可实现选择性通知：需要借助Condition接口和newCondition()，来实现线程通信</p>
-<p>和wait()与notify()/notifyAll()原理类似。而Condition的singnalAll()方法会唤醒所有线程。</p>
+<li><p>Kafka是一个<strong>分布式消息队列</strong>，kafka对消息保存时根据<strong>Topic</strong>进行归类，发送消息者叫<strong>Producer</strong></p>
+<p>消息接收者叫<strong>Consumer</strong>。此外Kafka集群有多个Kafka实例组成，每个实例(server)叫<strong>broker</strong>。</p>
+</li>
+<li><p>不管是kafka集群，还是consumer都依赖与<strong>zookeeper</strong>集群保存一些meta信息，保证系统可用性。</p>
 </li>
 </ul>
-<h4 id="10、volatile关键字"><a href="#10、volatile关键字" class="headerlink" title="10、volatile关键字"></a>10、volatile关键字</h4><p>Java的内存模型总是从主存（共享内存）读取变量，保证内存可见性CAS。</p>
-<p>防止指令重排序。</p>
-<h2 id="二、HTTP请求头"><a href="#二、HTTP请求头" class="headerlink" title="二、HTTP请求头"></a>二、HTTP请求头</h2><p>http请求头，http客户程序（浏览器），向服务器发送请求的时候必须指明请求类型（GET或者POST），如果必要还可以选择发送其他的请求头。</p>
-<ul>
-<li>Accept：浏览器可以接受的MIME类型</li>
-<li>Accept-Charset：浏览器可接受的字符集</li>
-<li>Accept-Encoding：浏览器能够进行解码的数据编码方式，比如gzip。Servlet能够向支持gzip的浏览器返回经过gzip编码的HTML页面，许多情形下可以减少5到10倍的下载时间</li>
-<li>Accept-Language：浏览器所希望的语言种类，当服务器能够提供一种以上的语言版本时使用。</li>
-<li>Authorization：授权信息，通常出现在服务器发送的token中</li>
-<li>Connection：表示是否需要持久连接，如果Servlet看到这里的值为Keep-Alive，或者请求使用的是Http1.1（默认为持久连接）</li>
-<li>Cookie：最重要的请求头信息之一</li>
-<li>Host：初始URL中的主机和端口</li>
-<li>Referer：包含一个URL，用户从该URL代表的页面出发访问当前请求的页面</li>
-<li>User-Agent：浏览器类型，如果Servlet返回的内容与浏览器类型有关则该值非常有用。</li>
+<h4 id="1-5、Kafka架构"><a href="#1-5、Kafka架构" class="headerlink" title="1.5、Kafka架构"></a>1.5、Kafka架构</h4><p><img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
+<p><img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E6%9E%B6%E6%9E%84.png" alt></p>
+<p>partition分区：作负载均衡用。</p>
+<p>replication：备份。</p>
+<p>一个消费者可以消费多个topic，<strong>同一个组里面的消费者，不能消费同一个partition分区的数据</strong>。但是你不同的组里面，还是可以消费同一个partition分区的数据。</p>
+<p>Consumer A与Consumer B属于通过一个消费者组，Partition0被Consumer A消费，就不能被Consumer B消费。</p>
+<p>zookeeper：Consumer的集群依赖的，kafka集群的构建依赖于zookeeper，消费者也需要，上次消费到哪了，也要给zookeeper存一份。</p>
+<h4 id="1-6、kafka的专业术语"><a href="#1-6、kafka的专业术语" class="headerlink" title="1.6、kafka的专业术语"></a>1.6、kafka的专业术语</h4><ul>
+<li><strong>massage</strong>： kafka中最基本的传递对象，有固定格式。</li>
+<li><strong>topic</strong>： 一类消息，如page view，click行为等。</li>
+<li><strong>producer</strong>： 产生信息的主体，可以是服务器日志信息等。</li>
+<li><strong>consumer</strong>： 消费producer产生话题消息的主体。</li>
+<li><strong>broker</strong>： 消息处理结点，多个broker组成kafka集群。</li>
+<li><strong>partition</strong>： topic的物理分组，每个partition都是一个有序队列。</li>
+<li><strong>segment</strong>： 多个大小相等的段组成了一个partition。</li>
+<li><strong>offset</strong>： 一个连续的用于定位被追加到分区的每一个消息的序列号，最大值为64位的long大小，19位数字字符长度</li>
 </ul>
 
     
@@ -1645,7 +1535,326 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="../../2019/07/01/Java%E9%9D%A2%E8%AF%95/">展开全文 >></a>
+      <a class="article-more-a" href="../../2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-一、UDF的使用手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2018/04/13/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" target="_blank">UDF自定义函数</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2018/04/13/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" class="archive-article-date">
+        <time datetime="2018-04-13T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-13</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、UDF的使用手册"><a href="#一、UDF的使用手册" class="headerlink" title="一、UDF的使用手册"></a>一、UDF的使用手册</h1><h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><p>Hive中，提供了丰富的内置函数，比如<font color="red">trim(),cast(),max(),count(),coalesce()</font>等之外，    还允许用户用java开发自定义的UDF函数。</p>
+<h4 id="1-1、开发自定义UDF函数的2种方式："><a href="#1-1、开发自定义UDF函数的2种方式：" class="headerlink" title="1.1、开发自定义UDF函数的2种方式："></a>1.1、开发自定义UDF函数的2种方式：</h4><ul>
+<li>继承org.apache.hadoop.hive.ql.exec.UDF;</li>
+<li>继承org.apache.hadoop.hive.ql.udf.generic.GenericUDF; </li>
+</ul>
+<h4 id="1-2、总结："><a href="#1-2、总结：" class="headerlink" title="1.2、总结："></a>1.2、总结：</h4><ul>
+<li>针对简单数据类型：<font color="red">String,Integer等，可以使用UDF</font>。</li>
+<li>针对复杂数据类型：<font color="red">Array,Map,Struct等，可以使用GenericUDF</font></li>
+<li>GenericUDF还可以在函数开始之前和结束之后做一些初始化和关闭的处理操作。</li>
+</ul>
+<h3 id="2、UDF"><a href="#2、UDF" class="headerlink" title="2、UDF"></a>2、UDF</h3><p>使用UDF实现对String类型的字符串取HashMD5</p>
+<h3 id="3、GenericUDF"><a href="#3、GenericUDF" class="headerlink" title="3、GenericUDF"></a>3、GenericUDF</h3>
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2018/04/13/%E4%B8%80%E3%80%81UDF%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-git开发规范" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2017/11/03/git%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/" target="_blank">git开发规范</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2017/11/03/git%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/" class="archive-article-date">
+        <time datetime="2017-11-03T07:23:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-03</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h3 id="1、配置SSH"><a href="#1、配置SSH" class="headerlink" title="1、配置SSH"></a>1、配置SSH</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">配置用户名，邮箱</span></span><br><span class="line">git config --global user.name "xxx"</span><br><span class="line">git config --global user.email "xxx@163.com"</span><br><span class="line"><span class="meta">#</span><span class="bash">设置pull代码为rebase</span></span><br><span class="line">git config --global --bool pull.rebase true</span><br><span class="line"><span class="meta">#</span><span class="bash">设置git <span class="built_in">log</span>的格式</span></span><br><span class="line">alias gl='git log --graph --pretty=format:'\''%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset'\'' --abbrev-commit --date=relative'</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">生成秘钥</span></span><br><span class="line">ssh-keygen -t rsa </span><br><span class="line"><span class="meta">#</span><span class="bash">查看公钥</span></span><br><span class="line">cat ~/.ssh/id_rsa.pub</span><br><span class="line"><span class="meta">#</span><span class="bash">把key赋值到git的settings的SSH keys</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2、rebase代码"><a href="#2、rebase代码" class="headerlink" title="2、rebase代码"></a>2、rebase代码</h3><p>​        除了master分支，其他分支拉最新master代码，要加上rebase，保证代码整洁性，都在一条线上。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">切换到当前你自己的分支，获取最新的代码</span></span><br><span class="line">git branch consult</span><br><span class="line"><span class="meta">#</span><span class="bash">rebase远程master分支的最新代码，合并到你自己的分支</span></span><br><span class="line">git rebase origin/master</span><br><span class="line"><span class="meta">#</span><span class="bash">如果出现冲突，则需要解决冲突</span></span><br><span class="line">git diff -w</span><br><span class="line"><span class="meta">#</span><span class="bash">解决冲突文件</span></span><br><span class="line">vim 冲突文件</span><br><span class="line">git rebase origin/master</span><br><span class="line">git rebase --continue</span><br><span class="line">git add .</span><br><span class="line">git log</span><br><span class="line"><span class="meta">#</span><span class="bash">然后fetch到当前分支</span></span><br><span class="line">git fetch</span><br><span class="line"><span class="meta">#</span><span class="bash">然后push到自己的分支</span></span><br><span class="line">git push origin consult</span><br><span class="line"><span class="meta">#</span><span class="bash">push不上去的时候，直接强push(慎用)</span></span><br><span class="line">git push -f origin consult</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、合并自己的分支代码到master"><a href="#3、合并自己的分支代码到master" class="headerlink" title="3、合并自己的分支代码到master"></a>3、合并自己的分支代码到master</h3><p>​        合并自己分支的代码到master的时候，需要git merge –no-ff xxx</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">切换分支到master</span></span><br><span class="line">git checkout master</span><br><span class="line"><span class="meta">#</span><span class="bash">合并自己分支代码到master分支</span></span><br><span class="line">git merge --no-ff consult</span><br><span class="line"><span class="meta">#</span><span class="bash">合并完之后，查看下日志，有没有自己分支的代码</span></span><br><span class="line">git log</span><br><span class="line"><span class="meta">#</span><span class="bash">查看分支状态</span></span><br><span class="line">git status</span><br><span class="line"><span class="meta">#</span><span class="bash">合并都增加准备提交</span></span><br><span class="line">git add .</span><br><span class="line"><span class="meta">#</span><span class="bash">本地提交</span></span><br><span class="line">git commit -m "合并分支consult"</span><br><span class="line"><span class="meta">#</span><span class="bash">然后远程push到master分支</span></span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2017/11/03/git%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-docker使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2017/11/01/docker%E4%BD%BF%E7%94%A8/" target="_blank">Docker的使用</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2017/11/01/docker%E4%BD%BF%E7%94%A8/" class="archive-article-date">
+        <time datetime="2017-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、docker的使用"><a href="#一、docker的使用" class="headerlink" title="一、docker的使用"></a>一、docker的使用</h1><h4 id="1、docker添加镜像加速文件"><a href="#1、docker添加镜像加速文件" class="headerlink" title="1、docker添加镜像加速文件"></a>1、docker添加镜像加速文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/docker</span><br><span class="line"><span class="meta">#</span><span class="bash">如果没有daemon.json文件，需要新建一个</span></span><br><span class="line">sudo touch daemon.json</span><br><span class="line">sudo vim daemon.json</span><br><span class="line"><span class="meta">#</span><span class="bash">daemon.json添加以下配置，然后保存</span></span><br><span class="line">&#123;"registry-mirrors":["https://registry.docker-cn.com"]&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash">重启服务</span></span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、查看docker的版本"><a href="#2、查看docker的版本" class="headerlink" title="2、查看docker的版本"></a>2、查看docker的版本</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker查找镜像</span></span><br><span class="line">sudo docker search mysql</span><br><span class="line"><span class="meta">#</span><span class="bash">查看本地下载的镜像</span></span><br><span class="line">sudo docker images</span><br><span class="line"><span class="meta">#</span><span class="bash">查看本地正在运行的镜像</span></span><br><span class="line">sudo docker ps -a</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、使用docker拉取镜像"><a href="#3、使用docker拉取镜像" class="headerlink" title="3、使用docker拉取镜像"></a>3、使用docker拉取镜像</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo docker pull redis:5.0.6</span><br><span class="line">sudo docker pull nginx</span><br><span class="line">sudo docker pull mysql:8.0.18</span><br><span class="line"><span class="meta">#</span><span class="bash">删除拉取的镜像</span></span><br><span class="line">sudo docker image rm mysql:8.0.18</span><br></pre></td></tr></table></figure>
+
+<h4 id="4、使用docker安装并运行nginx"><a href="#4、使用docker安装并运行nginx" class="headerlink" title="4、使用docker安装并运行nginx"></a>4、使用docker安装并运行nginx</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sudo docker search nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">pull的时候，后面不追加冒号和版本号，默认是最新的latest版本</span></span><br><span class="line">sudo docker pull nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">运行nginx</span></span><br><span class="line">sudo docker run --name victor-nginx-test -p 8081:80 -d nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">victor-nginx-test是容器名称</span></span><br><span class="line">-d，设置容器在后台一直运行</span><br><span class="line">-p，端口进行映射，将本地的8081端口映射到容器内部的80端口</span><br><span class="line"><span class="meta">#</span><span class="bash">执行玩上面那条命令后，会生成一串字符串45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89，这个表示容器的id，一般作为日志的文件名来查看启动信息等</span></span><br><span class="line">sudo docker logs 45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89</span><br><span class="line"><span class="meta">#</span><span class="bash">停止nginx</span></span><br><span class="line">sudo docker ps</span><br><span class="line"><span class="meta">#</span><span class="bash">复制对应容器的id,然后停止镜像</span></span><br><span class="line">sudo docker stop 45faac1c8dca</span><br><span class="line"><span class="meta">#</span><span class="bash">删除镜像</span></span><br><span class="line">sudo docker rm 45faac1c8dca</span><br></pre></td></tr></table></figure>
+
+<h4 id="5、使用docker部署项目"><a href="#5、使用docker部署项目" class="headerlink" title="5、使用docker部署项目"></a>5、使用docker部署项目</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">首先创建一个文件夹，里面包含3个子文件夹</span></span><br><span class="line">sudo mkdir -p ~/桌面/nginx/www ~/桌面/nginx/logs ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">首先你要直到容器的id，</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">复制docker容器里的nginx默认配置文件信息，到你的本地刚创建的conf文件夹目录下</span></span><br><span class="line">sudo docker cp76d9d74d071e:/etc/nginx/nginx.conf ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">部署项目，到docker里的nginx</span></span><br><span class="line">sudo docker run -p 8082:80 --name victor-nginx-web -v ~/桌面/nginx/www:/usr/share/nginx/html -v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v ~/桌面/nginx/logs:/var/log/nginx -d nginx</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">命令说明</span></span><br><span class="line">-p 8082:80  是把你容器里的nginx的80端口映射到你本地主机的8082端口</span><br><span class="line">--name victor-nginx-web  是把容器重命名我们自己喜欢的名字</span><br><span class="line">-v ~/桌面/nginx/www:/usr/share/nginx/html   是把我们本地创建的项目 的www目录挂在到容器的/usr/share/nginx/html</span><br><span class="line">-v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf 是吧我们创建的nginx.conf挂在到容器的/etc/nginx/nginx.conf</span><br><span class="line">-v ~/桌面/nginx/logs:/var/log/nginx 是把我们自己创建的logs挂在到容器的/var/log/nginx</span><br><span class="line">-d nginx :是设置容器一直后台运行</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">执行完命令后，会生成一串字符串，用这个字符串表示日志id，可以使用</span></span><br><span class="line">sudo docker logs 76d9d74d071e8b2d8499a56691587eef3e2f19d4fddeb5a3e26e5d9338856e10</span><br></pre></td></tr></table></figure>
+
+<h4 id="6、使用docker安装mysql并运行"><a href="#6、使用docker安装mysql并运行" class="headerlink" title="6、使用docker安装mysql并运行"></a>6、使用docker安装mysql并运行</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉去mysql的镜像</span></span><br><span class="line">sudo docker pull mysql:5.7</span><br><span class="line"><span class="meta">#</span><span class="bash">本地创建一个文件夹，用来映射容器的mysql</span></span><br><span class="line">sudo mkdir -p ~/桌面/mydata/mysql/log ~/桌面/mydata/mysql/conf ~/桌面/mydata/mysql/data</span><br><span class="line"><span class="meta">#</span><span class="bash">给创建好的文件夹开权限</span></span><br><span class="line">sudo chmod 777 -R ~/桌面/mydata/</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动mysql</span></span><br><span class="line">sudo docker run -p 3305:3306 --name mysql -v ~/桌面/mydata/mysql/log:/var/log/mysql -v ~/桌面/mydata/mysql/data:/var/lib/mysql -v ~/桌面/mydata/mysql/conf:/etc/mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7</span><br><span class="line"><span class="meta">#</span><span class="bash">查看镜像，如果存在，或者端口被占用，则换为3305映射容器的端口</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">先删除被占用名字的容器镜像id，然后重新执行启动命令</span></span><br><span class="line">sudo docker rm3bf96e1f8a95</span><br><span class="line"><span class="meta">#</span><span class="bash">进入运行mysql的docker容器</span></span><br><span class="line">sudo docker exec -it mysql /bin/bash</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#######以下是mysql的命令操作</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">使用mysql 命令打开客户端</span></span><br><span class="line">mysql -uroot -proot --default-character-set=utf8</span><br><span class="line"><span class="meta">#</span><span class="bash">查看数据库</span></span><br><span class="line">show databases;</span><br><span class="line">create database test character set utf8;</span><br><span class="line">use test;</span><br><span class="line">create table ();</span><br><span class="line"><span class="meta">#</span><span class="bash">退出mysql命令操作</span></span><br><span class="line">\q</span><br><span class="line"><span class="meta">#</span><span class="bash">退出mysql运行的docker容器</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<h4 id="7、使用docker安装并运行redis"><a href="#7、使用docker安装并运行redis" class="headerlink" title="7、使用docker安装并运行redis"></a>7、使用docker安装并运行redis</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">docker拉取redis</span></span><br><span class="line">sudo docker pull redis:3.2</span><br><span class="line"><span class="meta">#</span><span class="bash">本地创建一个redis文件夹存放数据</span></span><br><span class="line">sudo mkdir -p ~/桌面/mydata/redis/data</span><br><span class="line"><span class="meta">#</span><span class="bash">更改文件件执行权限</span></span><br><span class="line">sudo chmod 777 -R ~/桌面/mydata/redis</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动redis</span></span><br><span class="line">sudo docker run -p 6379:6379 --name redis -v ~/桌面/mydata/redis/data:/data -d redis:3.2 redis-server --appendonly yes</span><br><span class="line"><span class="meta">#</span><span class="bash">进入redis容器使用redis-cli命令进行连接</span></span><br><span class="line">sudo docker exec -it redis redis-cli</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">####以下为redis的命令</span></span></span><br><span class="line">ping</span><br><span class="line">set a 100</span><br><span class="line">get a</span><br><span class="line"><span class="meta">#</span><span class="bash">退出redis</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<h4 id="8、使用docker安装并运行rabbitmq"><a href="#8、使用docker安装并运行rabbitmq" class="headerlink" title="8、使用docker安装并运行rabbitmq"></a>8、使用docker安装并运行rabbitmq</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉取docker镜像</span></span><br><span class="line">sudo docker pull rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动rabbitmq</span></span><br><span class="line">sudo docker run --name rabbitmq --publish 5671:5671 --publish 5672:5672 --publish 4369:4369 --publish 25672:25672 --publish 15672:15672 --publish 15671:15671 -d rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">Ubuntu的防火墙暴露端口15672</span></span><br><span class="line">sudo ufw allow 15672</span><br><span class="line"><span class="meta">#</span><span class="bash">开启防火墙</span></span><br><span class="line">sudo ufw enable</span><br><span class="line"><span class="meta">#</span><span class="bash">重新加载</span></span><br><span class="line">sudo ufw reload</span><br><span class="line"><span class="meta">#</span><span class="bash">查看防火墙状态</span></span><br><span class="line">sudo ufw status</span><br><span class="line"><span class="meta">#</span><span class="bash">进入到rabbitmq的连接</span></span><br><span class="line">sudo docker exec -it rabbitmq /bin/bash</span><br><span class="line"><span class="meta">#</span><span class="bash">然后输入如下命令，开启rabbitmq的管理后台</span></span><br><span class="line">rabbitmq-plugins enable rabbitmq_management</span><br><span class="line"><span class="meta">#</span><span class="bash">浏览器输入rabbitmq的管理后台页面</span></span><br><span class="line">http://localhost:15672</span><br><span class="line">用户名密码：guest guest</span><br><span class="line"><span class="meta">#</span><span class="bash">退出</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+
+
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Docker</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2017/11/01/docker%E4%BD%BF%E7%94%A8/">展开全文 >></a>
     </p>
     
 
