@@ -1113,7 +1113,7 @@
 <h3 id="10、destroy-method自配置清理"><a href="#10、destroy-method自配置清理" class="headerlink" title="10、destroy-method自配置清理"></a>10、destroy-method自配置清理</h3><ul>
 <li>如果这个Bean的Spring配置中配置了destroy-method属性，会自动调用它配置的销毁方法。对应的<font color="red">注解是@PreDestroy</font></li>
 </ul>
-<h3 id="11、总结"><a href="#11、总结" class="headerlink" title="11、总结"></a>11、总结</h3><p>![](Spring-Bean生命周期/Spring Bean的生命周期.png)</p>
+<h3 id="11、总结"><a href="#11、总结" class="headerlink" title="11、总结"></a>11、总结</h3><p><img src="/2017/07/25/Spring-Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/Spring-Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png" alt></p>
 <p>bean的配置文件中，bean标签有2个重要属性</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"person"</span> <span class="attr">class</span>=<span class="string">"com.bean.Person"</span> <span class="attr">init-method</span>=<span class="string">"init"</span> <span class="attr">destroy-method</span>=<span class="string">"destroy"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
 
