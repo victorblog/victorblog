@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://victorblog.github.io">
-  <title>操作系统 | VictorDan</title>
+  <title>分布式锁 | VictorDan</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="操作系统">
+  <meta name="description" content="分布式锁">
 <meta name="keywords" content="Java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="操作系统">
-<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2017&#x2F;06&#x2F;21&#x2F;%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0&#x2F;index.html">
+<meta property="og:title" content="分布式锁">
+<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;06&#x2F;15&#x2F;%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
-<meta property="og:description" content="操作系统">
+<meta property="og:description" content="分布式锁">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-25T02:59:29.783Z">
+<meta property="og:updated_time" content="2019-11-25T05:51:07.361Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
@@ -198,14 +198,14 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-一、操作系统概述" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-一、分布式锁" class="article article-type-post " itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
   
   
     <h1 class="article-title" itemprop="name">
-      操作系统
+      分布式锁
     </h1>
   
 
@@ -218,7 +218,7 @@
         </span>
 
 <a href="" class="archive-article-date">
-        <time datetime="2017-06-21T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-21</time>
+        <time datetime="2018-06-15T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-15</time>
 </a>
 
   
@@ -231,7 +231,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">11.8k字</span>
+      <span class="post-count">1.1k字</span>
     </span>
   </span>
 
@@ -240,7 +240,7 @@
     <span class="post-meta-item-icon">
       <i class="icon-book icon"></i>
       <span class="post-meta-item-text"> 阅读时长≈</span>
-      <span class="post-count">41分</span>
+      <span class="post-count">3分</span>
     </span>
   </span>
 </div>
@@ -251,1151 +251,44 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、操作系统概述"><a href="#一、操作系统概述" class="headerlink" title="一、操作系统概述"></a>一、操作系统概述</h1><h3 id="1、指令权限与工作模式"><a href="#1、指令权限与工作模式" class="headerlink" title="1、指令权限与工作模式"></a>1、指令权限与工作模式</h3><p>处理器能处理的指令分为：</p>
-<ul>
-<li>特权指令：需要特殊权限才可以使用的指令，通常涉及系统安全。</li>
-<li>非特权指令：任何情况下都可以使用的指令。</li>
-</ul>
-<p>处理器的控制寄存器中用专门的位标识当前的工作模式：</p>
-<ul>
-<li>核心态(管态)：已获得特殊权限的状态，能够执行所有指令。</li>
-<li>用户态(目态)：只能指令非特权指令。</li>
-</ul>
-<p>事实上，现代处理器通常具有更多层权限和工作模式。从高到低划分为特权级0(管态)，特权级1，特权级2，特权级3(目态)。</p>
-<h3 id="2、内存空间与操作系统的内核"><a href="#2、内存空间与操作系统的内核" class="headerlink" title="2、内存空间与操作系统的内核"></a>2、内存空间与操作系统的内核</h3><p>处理器处于<strong>核心态</strong>时可以将内存的不同区段分别设置为两种类型：</p>
-<ul>
-<li>内核(系统)空间：其中存储的程序将运行在核心态上，从而可以使用所有指令，且可以访问所有内存空间数据。</li>
-<li>用户空间：其中存储的程序将运行在用户态上，于是只能使用非特权指令，且只能访问用户空间数据。</li>
-</ul>
-<p>操作系统通常在启动时指定内核空间，并将其核心程序放置在内核空间内。操作系统的这一部分叫内核，操作系统的其他部分叫核外部分。</p>
-<h3 id="3、操作系统的内核"><a href="#3、操作系统的内核" class="headerlink" title="3、操作系统的内核"></a>3、操作系统的内核</h3><p>操作系统的内核通常包含以下程序和数据：</p>
-<ul>
-<li>与硬件密切相关的操作</li>
-<li>关键数据结构</li>
-<li>基本中断处理程序</li>
-<li>使用频繁的功能模块</li>
-</ul>
-<p>操作系统的内核具有两个基本特点：</p>
-<ul>
-<li>常驻内存</li>
-<li>运行在核心态</li>
-</ul>
-<h3 id="4、固件"><a href="#4、固件" class="headerlink" title="4、固件"></a>4、固件</h3><p>操作系统的启动依赖于一组称作固件（Firmware）的特殊软件。</p>
-<p>固件存储在只读存储器ROM中，也可以将部分程序或者数据存储在硬盘中。</p>
-<p>与PC启动相关的固件有BIOS和UEFI，他们在计算机启动时首先被运行，并运行基本硬件的检查，装入操作系统引导程序，提供基本硬件驱动程序和中断处理程序等。</p>
-<h3 id="5、基本输入输出系统-BIOS"><a href="#5、基本输入输出系统-BIOS" class="headerlink" title="5、基本输入输出系统(BIOS)"></a>5、基本输入输出系统(BIOS)</h3><p>BIOS包含3个部分：</p>
-<ul>
-<li>POST自检程序：计算机启动后识别硬件配置、自检、初始化。</li>
-<li>基本启动程序：在存储介质中查找有效的主引导程序，如果找到，将它读入内存[0000:7C00]处并开始执行，从而引导操作系统启动。</li>
-<li>基本硬件驱动程序以及中断处理程序：用来在未加载操作系统时识别和控制基本IO设置(键盘、鼠标、显卡、硬盘等)</li>
-</ul>
-<p>硬盘的主引导记录MBR</p>
-<h4 id="5-1、基于BIOS的操作系统启动过程"><a href="#5-1、基于BIOS的操作系统启动过程" class="headerlink" title="5.1、基于BIOS的操作系统启动过程"></a>5.1、基于BIOS的操作系统启动过程</h4><ul>
-<li>硬件自检</li>
-<li>加载驱动</li>
-<li>基本启动程序</li>
-<li>主引导程序(440字节)</li>
-<li>引导程序(512字节)</li>
-<li>操作系统装载程序</li>
-<li>操作系统</li>
-</ul>
-<p>操作系统装载程序Loader的作用：</p>
-<ul>
-<li>进一步检查和配置系统硬件。</li>
-<li>建立内核空间，装入操作系统内核，并初始化数据。</li>
-<li>加载用户登录程序和人机交互环境。</li>
-</ul>
-<h3 id="6、统一的可扩展固件接口UEFI"><a href="#6、统一的可扩展固件接口UEFI" class="headerlink" title="6、统一的可扩展固件接口UEFI"></a>6、统一的可扩展固件接口UEFI</h3><p>Intel公司在1997年新推出的高性能处理器，计划设计一种可扩展的、标准化的固件接口规划EFI(Extensible Firmware Interface)，用来计算机系统的启动以及提供与操作系统的接口。在2006年EFI发展成UEFI(Unified EFI)。</p>
-<p>UEFI的特点：</p>
-<ul>
-<li>驱动程序环境DXE</li>
-<li>磁盘管理采用GUID分区方法</li>
-<li>UEFI应用程序</li>
-</ul>
-<h4 id="6-1、基于UEFI的操作系统启动过程"><a href="#6-1、基于UEFI的操作系统启动过程" class="headerlink" title="6.1、基于UEFI的操作系统启动过程"></a>6.1、基于UEFI的操作系统启动过程</h4><p>UEFI体系包含2部分内容：</p>
-<ul>
-<li>平台初始化框架：包含了支持系统启动的底层程序，包含：安全检查、硬件自检和初始化、DXE、启动管理器。</li>
-<li>UEFI映像(UEFI Image):一组在框架的支持下可执行的程序，包括启动管理器、操作系统装载程序、临时操作系统装载程序、EFI应用程序、设备驱动程序。</li>
-</ul>
-<p>UEFI固件的启动过程：</p>
-<ul>
-<li>安全检查</li>
-<li>Pre-EFI</li>
-<li>加载DXE</li>
-<li>启动管理器</li>
-<li>临时操作系统装载程序</li>
-<li>EFI应用程序</li>
-<li>操作系统装载程序</li>
-<li>操作系统</li>
-</ul>
-<h3 id="7、GUID硬盘分区方式"><a href="#7、GUID硬盘分区方式" class="headerlink" title="7、GUID硬盘分区方式"></a>7、GUID硬盘分区方式</h3><p>UEFI采用GUID硬盘分区方式，优点是：</p>
-<ul>
-<li>扇区块号为64位，消除2TB限制。</li>
-<li>磁盘分区数不受4个限制，最多划分128个分区</li>
-<li>分区扇区数为64位，消除2TB限制</li>
-<li>自带备份，增加可靠性</li>
-<li>采用CRC32校验，增加完整性</li>
-<li>每个分区都有唯一标识GUID</li>
-</ul>
-<h3 id="8、操作系统的用户接口–命令接口"><a href="#8、操作系统的用户接口–命令接口" class="headerlink" title="8、操作系统的用户接口–命令接口"></a>8、操作系统的用户接口–命令接口</h3><p>命令接口是人机交互的主要途径</p>
-<h4 id="8-1、按命令接口在操作系统内的实现方式，分为"><a href="#8-1、按命令接口在操作系统内的实现方式，分为" class="headerlink" title="8.1、按命令接口在操作系统内的实现方式，分为"></a>8.1、按命令接口在操作系统内的实现方式，分为</h4><ul>
-<li>内部命令：内核完成的命令</li>
-<li>外部命令：由其他应用程序完成的命令</li>
-</ul>
-<h4 id="8-2、按命令接口的使用方式，分为："><a href="#8-2、按命令接口的使用方式，分为：" class="headerlink" title="8.2、按命令接口的使用方式，分为："></a>8.2、按命令接口的使用方式，分为：</h4><ul>
-<li><p>脱机命令：预先编写好，送交执行后无法立即反馈的命令接口形式。</p>
-<p>比如批处理系统中的JCL</p>
-</li>
-<li><p>联机命令：交互式执行，能够立即得到反馈的命令接口形式。</p>
-<p>比如分时操作系统的交互式命令接口。又可细分为字符命令、菜单命令和图标命令。</p>
-</li>
-</ul>
-<h3 id="9、操作系统的用户接口–程序接口-系统调用"><a href="#9、操作系统的用户接口–程序接口-系统调用" class="headerlink" title="9、操作系统的用户接口–程序接口(系统调用)"></a>9、操作系统的用户接口–程序接口(系统调用)</h3><h4 id="9-1、系统调用的简介"><a href="#9-1、系统调用的简介" class="headerlink" title="9.1、系统调用的简介"></a>9.1、系统调用的简介</h4><p>程序接口是程序员在编写应用程序时使用操作系统功能的接口。目前，程序接口通常通过系统调用System Call方式实现。</p>
-<p>系统调用在不同的上下文中，可能表示2种含义：</p>
-<ul>
-<li>一组由操作系统设计者编写的内核中的子程序，用来封装程序员可能使用到的操作系统功能。</li>
-<li>程序员在编程中对这些子程序进行调用的行为</li>
-</ul>
-<p>系统调用所涉及的子程序属于操作系统内核的一部分，保存在内存空间中，应用程序不能直接访问，于是需要通过特殊方式才能实现系统调用。</p>
-<h4 id="9-2、系统调用的实现："><a href="#9-2、系统调用的实现：" class="headerlink" title="9.2、系统调用的实现："></a>9.2、系统调用的实现：</h4><ul>
-<li><p>放置调用号标识</p>
-</li>
-<li><p>访管指令：发出表示系统调用请求的中断或者陷阱</p>
-</li>
-<li><p>处理器保护程序现场，转向中断处理（内核态）</p>
-</li>
-<li><p>中断处理程序识别中断为系统调用请求，于是转向内核的访管指令处理程序</p>
-</li>
-<li><p>访管指令处理程序在地址入口表中查找所请求的调用号对应的内核子程序的入口地址。</p>
-</li>
-<li><p>从查找到的地址开始执行内核子程序(系统调用)并得到结果。</p>
-</li>
-<li><p>恢复应用程序现场，返回用户态。</p>
-</li>
-</ul>
-<h4 id="9-3、系统调用与用户子程序对比"><a href="#9-3、系统调用与用户子程序对比" class="headerlink" title="9.3、系统调用与用户子程序对比"></a>9.3、系统调用与用户子程序对比</h4><table>
-<thead>
-<tr>
-<th align="center">对比项目</th>
-<th align="center">系统调用</th>
-<th align="center">用户子程序</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">运行环境</td>
-<td align="center">内核态（管态）</td>
-<td align="center">用户态(目态)</td>
-</tr>
-<tr>
-<td align="center">访问方式</td>
-<td align="center">访管指令（中断或者陷阱）</td>
-<td align="center">直接跳转、返回</td>
-</tr>
-<tr>
-<td align="center">与主程序关系</td>
-<td align="center">与主程序分开、独立</td>
-<td align="center">同一进程地址空间</td>
-</tr>
-<tr>
-<td align="center">共享性</td>
-<td align="center">可以在多个进程间共享</td>
-<td align="center">同一进程内部调用</td>
-</tr>
-</tbody></table>
-<h1 id="二、进程管理"><a href="#二、进程管理" class="headerlink" title="二、进程管理"></a>二、进程管理</h1><h3 id="1、程序与系统的工作流程"><a href="#1、程序与系统的工作流程" class="headerlink" title="1、程序与系统的工作流程"></a>1、程序与系统的工作流程</h3><p>程序应具体2个基本特点：</p>
-<ul>
-<li>顺序性</li>
-<li>可再现性</li>
-</ul>
-<p>系统的工作流程分为顺序执行和并发执行</p>
-<ul>
-<li><p>顺序执行的工作方式具有2个特点：</p>
-<ul>
-<li>封闭性：独占全部资源，不受其他程序影响</li>
-<li>可再现性：重复运行的结果相同</li>
-</ul>
-</li>
-<li><p>并发执行的工作方式中，多道程序</p>
-<ul>
-<li>微观上看，轮流执行</li>
-<li>宏观上看，同时执行</li>
-</ul>
-</li>
-<li><p>并发执行的工作方式有3个特点：</p>
-<ul>
-<li>随机性：运行时情景随机</li>
-<li>不可再现性：重复运行结果可能不同</li>
-<li>相互制约：资源争夺和协作关系</li>
-</ul>
-</li>
-</ul>
-<h3 id="2、进程"><a href="#2、进程" class="headerlink" title="2、进程"></a>2、进程</h3><p>Dijkstra：一道程序在一个数据集上的一次执行过程，叫一个进程Process</p>
-<p>IBM：程序的运行过程成为任务Task</p>
-<p>进程和任务都是运行着程序的描述，二者可以互换使用，不加区别。</p>
-<p>进程的主要特征：</p>
-<ul>
-<li>动态性：具有生命周期，状态不断变化</li>
-<li>并发性：可以并发执行</li>
-<li>独立性：互相独立，只能访问自身的内存空间</li>
-<li>结构性：不同的进程可抽象出相同的属性，从而抽象结构相同</li>
-<li>异步性：运行时情况不可预知</li>
-</ul>
-<h3 id="3、进程的动态性"><a href="#3、进程的动态性" class="headerlink" title="3、进程的动态性"></a>3、进程的动态性</h3><p>进程的3种状态</p>
-<ul>
-<li>就绪：能够运行但却未在被处理器处理的状态</li>
-<li>运行：正在被处理器处理的状态</li>
-<li>阻塞：由于各种原因(IO操作、资源缺乏等)暂时无法运行的状态。</li>
-</ul>
-<h3 id="4、进程信息的描述–PCB"><a href="#4、进程信息的描述–PCB" class="headerlink" title="4、进程信息的描述–PCB"></a>4、进程信息的描述–PCB</h3><p>进程控制块PCB：是操作系统用来描述进程信息的数据结构，由3部分组成：</p>
-<ul>
-<li><p>基本信息部分：</p>
-<ul>
-<li>进程名：通常是程序名</li>
-<li>进程标识符PID：操作系统用来识别进程的唯一标识</li>
-<li>用户标识：创建进程的用户标识</li>
-<li>进程状态：运行、就绪或者阻塞</li>
-</ul>
-</li>
-<li><p>管理信息部分：</p>
-<ul>
-<li>程序和数据地址：程序和数据在内存中的位置信息</li>
-<li>IO操作相关参数：进程进行IO操作时的参数</li>
-<li>进程通信信息：用来进程间通信的消息队列指针等。</li>
-</ul>
-</li>
-<li><p>控制信息部分：</p>
-<ul>
-<li>现场信息：进程离开运行状态时，保存进程现场以备恢复。</li>
-<li>调度参数：与进程调度相关的参考信息，如优先级、运行时间等</li>
-<li>同步、互斥信号量：用来保证进程间同步、互斥关系的信息。</li>
-</ul>
-</li>
-</ul>
-<h3 id="5、PCB队列和进程管理"><a href="#5、PCB队列和进程管理" class="headerlink" title="5、PCB队列和进程管理"></a>5、PCB队列和进程管理</h3><p>操作系统用PCB来描述进程信息，并利用2种PCB队列来组织这些PCB:</p>
-<ul>
-<li>就绪队列：就绪进程的PCB组成的队列，按照进程性质或者优先级，系统中可以有多个就绪队列，用来提高进程调度算法选择进程的效率。在多处理器系统中，就绪队列也叫请求队列，每个处理器都有独立的请求队列。</li>
-<li>等待队列：阻塞进程的PCB组成队列，按照阻塞原因，系统中可以有多个等待对了。方便在阻塞原因解除的时候统一调整进程状态。</li>
-</ul>
-<h3 id="6、原语"><a href="#6、原语" class="headerlink" title="6、原语"></a>6、原语</h3><p>改变进程状态操作不应该被打断，也就是具有原子性。</p>
-<p>原语是特殊的程序段，这样的程序段中的所有指令要么全部执行要么一个都不执行。原语就是具有原子性的程序段。</p>
-<ul>
-<li>原语可以被看做广义的指令，指令都具有原子性</li>
-<li>原语中的指令若执行不成功，系统需要回退到原语执行前的状态。</li>
-<li>定义原语是为了保证系统运行的一致性。</li>
-</ul>
-<h3 id="7、进程控制–创建"><a href="#7、进程控制–创建" class="headerlink" title="7、进程控制–创建"></a>7、进程控制–创建</h3><p>进程控制通过一组原语来实现，包括进程的创建、撤销、阻塞、唤醒和切换。</p>
-<h4 id="1、进程的创建原语Create用来创建一个进程"><a href="#1、进程的创建原语Create用来创建一个进程" class="headerlink" title="1、进程的创建原语Create用来创建一个进程"></a>1、进程的创建原语Create用来创建一个进程</h4><p>Create可能在以下情况下被使用：</p>
-<ul>
-<li>按照作业调度程序的作业步规定</li>
-<li>按照用户提交的命令</li>
-<li>用户程序使用了创建进程的系统调用比如Unix的fork</li>
-</ul>
-<p>Create被使用时完成以下操作：</p>
-<ul>
-<li>建立PCB</li>
-<li>生成进程标识符PID</li>
-<li>初始化进程和PCB</li>
-<li>将PCB加入适当的就绪队列</li>
-</ul>
-<h3 id="8、进程控制–撤销"><a href="#8、进程控制–撤销" class="headerlink" title="8、进程控制–撤销"></a>8、进程控制–撤销</h3><h4 id="1、进程的撤销原语Destroy用来结束一个进程"><a href="#1、进程的撤销原语Destroy用来结束一个进程" class="headerlink" title="1、进程的撤销原语Destroy用来结束一个进程"></a>1、进程的撤销原语Destroy用来结束一个进程</h4><p>Destroy可能在以下情况下被使用：</p>
-<ul>
-<li>进程执行完毕</li>
-<li>进程出错而结束</li>
-<li>父进程结束</li>
-<li>人为终止</li>
-</ul>
-<p>Destroy被使用时完成以下操作：</p>
-<ul>
-<li>进程资源回收</li>
-<li>删除进程PCB</li>
-</ul>
-<h3 id="9、进程控制–阻塞"><a href="#9、进程控制–阻塞" class="headerlink" title="9、进程控制–阻塞"></a>9、进程控制–阻塞</h3><h4 id="1、进程的阻塞原语Block用来让一个进程进入阻塞状态"><a href="#1、进程的阻塞原语Block用来让一个进程进入阻塞状态" class="headerlink" title="1、进程的阻塞原语Block用来让一个进程进入阻塞状态"></a>1、进程的阻塞原语Block用来让一个进程进入阻塞状态</h4><p>Block在阻塞原因发生时被使用。</p>
-<p>Block被使用时完成以下操作：</p>
-<ul>
-<li>修改进程状态为阻塞状态</li>
-<li>将进程的现场保存，以备恢复</li>
-<li>将进程PCB加入合适的等待队列</li>
-</ul>
-<h3 id="10、进程控制–唤醒"><a href="#10、进程控制–唤醒" class="headerlink" title="10、进程控制–唤醒"></a>10、进程控制–唤醒</h3><h4 id="1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态"><a href="#1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态" class="headerlink" title="1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态"></a>1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态</h4><p>Wakeup在阻塞原因解除时被使用。</p>
-<p>Wakeup被使用时完成以下操作：</p>
-<ul>
-<li>将进程PCB从等待队列中移除</li>
-<li>修改进程状态为就绪状态</li>
-<li>将进程PCB加入合适的就绪队列</li>
-</ul>
-<p>阻塞原因解除后，进程未必可以直接运行，因此合理的唤醒原语并不会将阻塞状态直接修改为运行状态。</p>
-<h3 id="11、进程控制–切换"><a href="#11、进程控制–切换" class="headerlink" title="11、进程控制–切换"></a>11、进程控制–切换</h3><p>进程切换使处理器的控制权在进程之间专员，无法通过操作系统内核独立完成，必须借助硬件来实现。</p>
-<p>进程：系统调用（系统调用中断），外部因素（IO中断，异常），调度维护（计时器中断），然后进程进入中断、异常处理机制。然后在通过内核功能，控制原语，进程调度等。</p>
-<h3 id="12、相关进程间的制约关系–间接制约"><a href="#12、相关进程间的制约关系–间接制约" class="headerlink" title="12、相关进程间的制约关系–间接制约"></a>12、相关进程间的制约关系–间接制约</h3><p>间接制约关系：仅由于使用相同的资源而造成的制约。</p>
-<p>比如：2个进程p1和p2分别使用同一台打印机，逐行打印各自文本。</p>
-<h4 id="1、间接制约与临界资源"><a href="#1、间接制约与临界资源" class="headerlink" title="1、间接制约与临界资源"></a>1、间接制约与临界资源</h4><ul>
-<li><p>在操作系统的控制下，进程对系统资源的访问逻辑上需要经历3个步骤：申请、使用、归还。</p>
-</li>
-<li><p>某些系统资源，在进程从申请到归还的周期中只能允许此进程独占，否则将造成运行错误。则称这样的资源为临界资源。</p>
-<p>常见的临界资源有：打印机，存储单元，文件等。</p>
-</li>
-<li><p>间接制约实质上是一组并发进程共享某种临界资源的制约关系。</p>
-</li>
-</ul>
-<h4 id="2、间接制约与护持关系"><a href="#2、间接制约与护持关系" class="headerlink" title="2、间接制约与护持关系"></a>2、间接制约与护持关系</h4><ul>
-<li><p>临界区Critical Section/Critical Region：是指进程对应的程序中访问临界资源的一段程序代码，即进程从申请资源开始到归还资源为止的一段程序代码。</p>
-</li>
-<li><p>对于一组(在某资源上)存在间接制约关系的并发进程，可以通过建立一种机制来避免制约关系导致的运行错误：当一个进程在这种临界资源对应的临界区内执行时，其他要求进入相关临界区的进程必须等待。</p>
-</li>
-<li><p>上面的机制得以建立，则称这些并发进程为互斥进程，它们之间建立了护持关系。</p>
-</li>
-</ul>
-<h4 id="3、临界区管理"><a href="#3、临界区管理" class="headerlink" title="3、临界区管理"></a>3、临界区管理</h4><p>实现互斥关系的关键是对临界区的执行进行有效控制。</p>
-<p>临界区管理的准则有：</p>
-<ul>
-<li>空闲让进：如果进程请求进入临界区，而没有其他进程在相关临界区内执行，则允许进入。</li>
-<li>忙则等待：如果有进程在临界区内执行，则其他要求进入相关临界区的进程都需要等待。</li>
-<li>有限等待：对于要求进入临界区的进程，等待的时间应该是有限的</li>
-<li>让权等待：当一个进程离开临界区时，应该让请求进入相关临界区的下一个进程进入临界区执行。</li>
-</ul>
-<h4 id="4、互斥关系的实现–加锁机制"><a href="#4、互斥关系的实现–加锁机制" class="headerlink" title="4、互斥关系的实现–加锁机制"></a>4、互斥关系的实现–加锁机制</h4><p>加锁机制由3个要素组成：锁变量key，加锁操作lock(key)和解锁操作unlock(key)</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">lock(key)&#123;</span><br><span class="line">    <span class="keyword">while</span>(key==<span class="number">1</span>);</span><br><span class="line">    key=<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">unlock(key)&#123;</span><br><span class="line">    key=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>这个机制中，锁变量key=1时表示上锁状态，key=0为未上锁。</p>
-</li>
-<li><p>当进程申请资源时需要对资源加锁，若资源已经上锁，则上锁操作 将进行反复测试也就是反复等待，直到资源被解锁了；当进程归还资源的时候需要对资源解锁。</p>
-</li>
-<li><p>高级语言，软件实现的加锁机制并不能实现真正的加锁，因为加锁操作内部仍可能被打断。</p>
-</li>
-</ul>
-<p>加锁机制的缺陷：</p>
-<ul>
-<li>存在忙等待现象，浪费了处理器时间</li>
-<li>存在饥饿现象，进程等待时间可能无限长</li>
-<li>多个锁变量的加锁操作可能导致进程死锁</li>
-</ul>
-<h4 id="5、互斥关系的实现–信号量机制"><a href="#5、互斥关系的实现–信号量机制" class="headerlink" title="5、互斥关系的实现–信号量机制"></a>5、互斥关系的实现–信号量机制</h4><p>信号量机制由3个要素组成：信号量s，原语p和原语v</p>
-<p>也就是所谓的pv操作</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">semaphore</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> value;<span class="comment">//信号量的值</span></span><br><span class="line">    PCB *bq;/由于该信号量而阻塞的进程队列PCB队列，(阻塞队列/等待队列)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">p(s)&#123;</span><br><span class="line">    s.value=s.value<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">if</span>(s.value&lt;<span class="number">0</span>)</span><br><span class="line">        blocked(s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">v(s)&#123;</span><br><span class="line">    s.value=s.value+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(s.value&lt;=<span class="number">0</span>)</span><br><span class="line">        wakeup(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>信号量机制中，s.value&gt;0表示资源就绪，否则就表示有其他进程在使用或者请求使用资源。</p>
-</li>
-<li><p>进程请求资源时需要使用原语p，如果资源不空闲，则进入由于s而导致的等待队列。直到正在使用资源的进程归还资源时，使用原语v将它唤醒。</p>
-</li>
-</ul>
-<p>信号量机制相比于加锁机制的优势：</p>
-<ul>
-<li>信号量机制把等待资源的进程设置为阻塞状态，而不是忙等待，提高了处理器的利用率。</li>
-<li>信号量机制中由操作系统原语wakeup唤醒进程，可以采取一定策略，比如短作业优先，而不是像加锁机制一样，抢先者得到处理器，这样可以避免饥饿现象的发生。</li>
-</ul>
-<h3 id="13、相关进程间的制约关系–直接制约"><a href="#13、相关进程间的制约关系–直接制约" class="headerlink" title="13、相关进程间的制约关系–直接制约"></a>13、相关进程间的制约关系–直接制约</h3><p>直接制约关系：由于进程协作关系造成的制约。</p>
-<p>某任务需要通过循环使用read、move、write，3个操作将源磁盘上的数据文件，复制到目标磁盘。一次操作处理一个文件。</p>
-<ul>
-<li>如果这3个操作在同一个进程中顺序执行，则当进行IO操作read,write的时候，进程就处在阻塞状态了。</li>
-<li>如果这3个操作，分别建立进程，并发执行，则会节约运行时间。</li>
-<li>然后，由于并发执行的时候这3个操作执行顺序的随机性，可能会造成重复拷贝文件或者遗漏文件的错误。</li>
-</ul>
-<h4 id="1、直接制约与同步关系"><a href="#1、直接制约与同步关系" class="headerlink" title="1、直接制约与同步关系"></a>1、直接制约与同步关系</h4><ul>
-<li><p>对于一组存在直接制约关系的并发进程，为了避免制约关系导致的运行错误，应该让各个进程中代码的运行顺序服从其内在要求，需要建立进程间单向或者相互的依赖关系。</p>
-</li>
-<li><p>如果一组进程中的每一个进程都要与其他至少一个进程建立了单向或者相互的依赖关系，则把这组进程叫同步进程，这组进程之间建立了同步关系。</p>
-</li>
-</ul>
-<h4 id="2、同步关系的实现–信号量机制"><a href="#2、同步关系的实现–信号量机制" class="headerlink" title="2、同步关系的实现–信号量机制"></a>2、同步关系的实现–信号量机制</h4><ul>
-<li><p>比如有代码段L1对L2有依赖，可以将L2的一次执行看做一种资源的归还，而L1的执行，需要申请使用这种资源。</p>
-</li>
-<li><p>于是，可以类似用信号量机制来实现同步关系：在L1执行之前先执行原语p，而在L2执行后执行原语v。</p>
-</li>
-<li><p>与互斥关系不同的是，L1使用资源后并不归还。</p>
-</li>
-</ul>
-<h4 id="3、文件拷贝问题–同步关系的实现"><a href="#3、文件拷贝问题–同步关系的实现" class="headerlink" title="3、文件拷贝问题–同步关系的实现"></a>3、文件拷贝问题–同步关系的实现</h4><ul>
-<li>read中的代码段L1</li>
-<li>L1将文件src的内容存到缓冲区buf1</li>
-<li>然后Move中的代码段L2</li>
-<li>L2读出buf1中的内容</li>
-<li>然后Move中的代码段L3，再把读出的内容写到buf2</li>
-<li>最后write中的代码段L4，再从buf2中读的内容写到别的文件</li>
-</ul>
-<p>初始化的时候：先S1=1,S2=0,S3=0,S4=0，P他们刚开始只能S1进行使用处理器资源，其他的都加入到阻塞队列了。</p>
-<p>首先Read进程是p(S1),因为S1初始化必须为1，P操作，先是做减1操作，然后再做判断S1是否小于0，如果小于0，先加入到阻塞队列。</p>
-<p>为了顺序执行，我们先把S1初始化为1，刚开始S1是1，减1操作后，S1变为0了。此时就是Read进程的L1代码段在使用处理器资源。</p>
-<p>当L1的代码段执行完后，需要进行Move了，此时也就是L1已经让出处理器资源，则需要先把S2给唤醒，需要V以下S2。唤醒S2之后S2做加1操作，然后再P(S2)就得到了处理器资源，然后等到P(S2)减1操作，执行完后，等同理。</p>
-<h3 id="14、进程同步总结"><a href="#14、进程同步总结" class="headerlink" title="14、进程同步总结"></a>14、进程同步总结</h3><ul>
-<li>控制并发进程的互斥，同步关系，保证他们能够正确执行，称作进程同步，实现集成同步的方法叫做进程同步机制。</li>
-<li>操作系统需要为程序提供进程同步机制，而当需要处理互斥/同步关系时才决定如何使用这些机制。</li>
-<li>用于实现互斥关系，针对间接制约的进程同步关系：加锁机制、信号量机制</li>
-<li>用于实现同步关系，针对直接制约的进程同步关系：信号量机制。</li>
-<li>除了加锁机制、信号量机制之外，常用的进程同步机制还有：标志位机制，管程机制等。</li>
-</ul>
-<h3 id="15、生产者、消费者问题"><a href="#15、生产者、消费者问题" class="headerlink" title="15、生产者、消费者问题"></a>15、生产者、消费者问题</h3><p>用两个进程Pro和Con分别表示生产者和消费者，用数组B[]表示最大库存为k的仓库，</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">slot=k;<span class="comment">//正信号量表示还有多少个空位</span></span><br><span class="line">item=<span class="number">0</span>;<span class="comment">//需要消费的</span></span><br><span class="line">Pro()&#123;</span><br><span class="line">    生产货物;</span><br><span class="line">    p(slot);</span><br><span class="line">    查找B中任意空位in;</span><br><span class="line">    将货物放入B[in];</span><br><span class="line">    v(item);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Con()&#123;</span><br><span class="line">    p(item);</span><br><span class="line">    查找B中任意存有货物的位置out;</span><br><span class="line">    取出获取B[out];</span><br><span class="line">    v(slot);</span><br><span class="line">    消费货物；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="16、从信号量到进程通信"><a href="#16、从信号量到进程通信" class="headerlink" title="16、从信号量到进程通信"></a>16、从信号量到进程通信</h3><ul>
-<li>进程的独立性：不同进程无法互相访问代码和数据。</li>
-<li>进程需要相互写作必须能够通信（也就是共享受）。</li>
-<li>信号量就是一种常见的共享受–低级通信</li>
-<li>信号量数据结构的存放位置并不是yoghurt进程的私有空间，而是内核空间，信号量使用前需要向内核申请，用来获得信号量标识。</li>
-</ul>
-<h4 id="1、共享存储区通信"><a href="#1、共享存储区通信" class="headerlink" title="1、共享存储区通信"></a>1、共享存储区通信</h4><ul>
-<li><p>共享存储区通信：进程根据需要向内核申请<strong>位于内核空间的共享存储区，并将此区域映射到发送进程与接收进程的地址空间</strong>，使得发送，接收进程可以通过共享存储区进行通信。</p>
-</li>
-<li><p>共享存储区中的数据存取没有固定模式，需要注意根据实际情况处理同步/互斥关系。</p>
-</li>
-</ul>
-<h4 id="2、信箱通信"><a href="#2、信箱通信" class="headerlink" title="2、信箱通信"></a>2、信箱通信</h4><ul>
-<li><p>信箱通信：在内核空间中建立专门区域作为信箱，信箱划分有限个信格，每个信格可存放一条信息（信件）。每个信箱可由多个发送进程与接收进程共享 ，发送进程用send操作将信息放入信格中，接收进程用receive操作从信格中取出信息。</p>
-</li>
-<li><p>与共享存储区通信相比，信箱通信的数据存取模式固定，其实现是一个多生产者消费者的PC问题。</p>
-</li>
-</ul>
-<h4 id="3、消息缓冲通信"><a href="#3、消息缓冲通信" class="headerlink" title="3、消息缓冲通信"></a>3、消息缓冲通信</h4><ul>
-<li><p>消息缓冲通信：内核空间中为每个进程配备一个消息队列MQ，并记录在进程的PCB中。发送进程通过send操作将信息封到一个消息缓冲区中，并追加到接收进程的消息队列中。接收进程通过receive操作收取自身消息队中的信息。</p>
-</li>
-<li><p>消息缓冲区包含：</p>
-<ul>
-<li>发送进程的标识pid</li>
-<li>正文大小size</li>
-<li>正文data</li>
-<li>向下指针next</li>
-</ul>
-</li>
-<li><p>与信箱通信比较，消息缓冲通信中的消息队列属于进程。消息缓冲通信是一种直接通信，当接收进程没有开启的时候，通信不成功。</p>
-</li>
-</ul>
-<h4 id="4、管道通信"><a href="#4、管道通信" class="headerlink" title="4、管道通信"></a>4、管道通信</h4><ul>
-<li>管道通信：通信双方共享一个文件，发送进程向文件中写入数据，接收进程从中读出数据，从而实现通信。共享的文件叫做管道。</li>
-<li>管道通信中的共享数据并不是存放在内核空间中，而是存放在管道(文件)中，需要注意维护数据的安全问题。</li>
-<li>管道通信中的管道文件，和共享存储区类似，并没有固定数据存取模式，所以需要注意根据实际情况处理互斥同步关系。</li>
-<li>管道通信可以使用远程文件作为管道，所以，这样通信方式不局限于单机系统。</li>
-</ul>
-<h3 id="17、线程"><a href="#17、线程" class="headerlink" title="17、线程"></a>17、线程</h3><p>把进程细化成若干个可以独立运行的实体，每一个实体叫做一个线程Thread。</p>
-<p>线程和进程的比较</p>
-<table>
-<thead>
-<tr>
-<th align="center">对比项目</th>
-<th align="center">进程</th>
-<th align="center">线程</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">独立拥有的资源</td>
-<td align="center">处理器控制权和其他资源</td>
-<td align="center">处理器控制权</td>
-</tr>
-<tr>
-<td align="center">内存访问</td>
-<td align="center">不同享</td>
-<td align="center">同进程内共享</td>
-</tr>
-<tr>
-<td align="center">切换时的开销</td>
-<td align="center">大</td>
-<td align="center">小</td>
-</tr>
-<tr>
-<td align="center">动态性，并发性，处理同步/互斥</td>
-<td align="center">二者相同</td>
-<td align="center">二者相同</td>
-</tr>
-</tbody></table>
-<p>引入线程减小了系统的基本工作单位粒度，目的是：</p>
-<ul>
-<li>实现进程内部的并发执行，提供并行程度</li>
-<li>减少处理器切换带来的开销</li>
-<li>简化进程通信方式</li>
-</ul>
-<h4 id="1、线程的控制与类型"><a href="#1、线程的控制与类型" class="headerlink" title="1、线程的控制与类型"></a>1、线程的控制与类型</h4><p>对线程实施管理，控制的模块称作线程包</p>
-<p>根据线程包的实现方式，将线程划分为：</p>
-<ul>
-<li><p>用户级线程：由用户态的线程包来管控，而内核中不识别这种线程</p>
-<ul>
-<li>优点：切换时不需要进入到内核</li>
-<li>缺点：某一个线程在内核上阻塞的时候，会导致全部进程阻塞。</li>
-</ul>
-</li>
-<li><p>系统级线程：使用内核提供的线程包来管控</p>
-<ul>
-<li>优点：某线程在内核上阻塞时，同进程的其他线程仍然可以运行。</li>
-<li>缺点：切换时不需要进入内核。</li>
-</ul>
-</li>
-</ul>
-<h4 id="2、进程的常用细化方法"><a href="#2、进程的常用细化方法" class="headerlink" title="2、进程的常用细化方法"></a>2、进程的常用细化方法</h4><p>将进程细化为线程需要根据实际应用的需要，主要的细化方法有：</p>
-<ul>
-<li><p>分派/处理模型（Dispatcher/Worker Model）</p>
-<p>由一个分派线程Dispatcher负责接收工作需求，然后将工作任务分派给工作线程Worker来完成动作。</p>
-</li>
-<li><p>队列模型Team Model</p>
-<p>将进程细化为具有独立关系的线程，各自完成独立的任务</p>
-</li>
-<li><p>管道模型Pipeline Model</p>
-<p>将完整进程中有序的各执行步骤作为线程，依次顺序运行（流水线）</p>
-</li>
-</ul>
-<h1 id="三、调度"><a href="#三、调度" class="headerlink" title="三、调度"></a>三、调度</h1><p>调度Scheduling是管理的一种方法，一种决策。目的是通过一种合理的，有效的安排方式，提供资源(比如工作，人力 ，车辆等)的利用率。</p>
-<p>操作系统中关注的调度问题有4种：</p>
-<ul>
-<li>作业调度(宏观)：考虑何时执行哪些作业(比如Hive的数据抽取脚本)</li>
-<li>进程调度(微观)：考虑将哪个就绪进程转换为运行状态</li>
-<li>交换调度(中级)：考虑将进程如何在内/外存储器之间交换</li>
-<li>设备调度：考虑让哪个进程唤醒使用设备。</li>
-</ul>
-<h3 id="1、调度的性能指标"><a href="#1、调度的性能指标" class="headerlink" title="1、调度的性能指标"></a>1、调度的性能指标</h3><p>评价调度的效果，常使用一组性能指标：</p>
-<h4 id="1、周转时间和平均周转时间"><a href="#1、周转时间和平均周转时间" class="headerlink" title="1、周转时间和平均周转时间"></a>1、周转时间和平均周转时间</h4><p>从处理过程的完成时间来进行评价(批处理系统)，处理过程Ji的周转时间；Ti=Ji的完成时刻-Ji的提交时刻</p>
-<p>一批(n个)处理过程的平均周转时间：T=∑Ti/n</p>
-<h4 id="2、带权周转时间"><a href="#2、带权周转时间" class="headerlink" title="2、带权周转时间"></a>2、带权周转时间</h4><p>周转时间并不直接体现某处理过程耗时的合理性。</p>
-<p>处理过程Ji的带权周转时间：Twi=Ti/Tri</p>
-<p>一批(n个)处理过程的平均带权周转时间：Tw=∑Twi/n</p>
-<h4 id="3、响应时间"><a href="#3、响应时间" class="headerlink" title="3、响应时间"></a>3、响应时间</h4><p>从处理过程的响应速度来进行评价，常用在分时系统，实时系统</p>
-<p>处理过程Ji的响应时间：</p>
-<p>Ri=Ji第一次对用户做出响应的时刻-Ji的提交时刻</p>
-<h4 id="4、其他性能指标"><a href="#4、其他性能指标" class="headerlink" title="4、其他性能指标"></a>4、其他性能指标</h4><ul>
-<li>公平合理：安排公平，用户满意</li>
-<li>资源利用率(并行度)：资源闲置的情况</li>
-<li>吞吐量：单位时间完成处理过程的数量</li>
-</ul>
-<h3 id="2、作业调度算法"><a href="#2、作业调度算法" class="headerlink" title="2、作业调度算法"></a>2、作业调度算法</h3><h4 id="1、先到先服务FCFS-First-Come-First-Served"><a href="#1、先到先服务FCFS-First-Come-First-Served" class="headerlink" title="1、先到先服务FCFS(First Come First Served)"></a>1、先到先服务FCFS(First Come First Served)</h4><p>思想：排队</p>
-<p>特点：</p>
-<ul>
-<li>公平合理</li>
-<li>算法简单，容易实现</li>
-<li>服务质量欠佳(不利于短作业)</li>
-</ul>
-<h4 id="2、短作业优先SJF-Shortest-Job-First"><a href="#2、短作业优先SJF-Shortest-Job-First" class="headerlink" title="2、短作业优先SJF(Shortest Job First)"></a>2、短作业优先SJF(Shortest Job First)</h4><p>思想：减少共同等待时间</p>
-<p>特点：</p>
-<ul>
-<li>实现最小的平均周转时间</li>
-<li>吞吐量大</li>
-<li>存在饥饿现象</li>
-<li>算法简单，但实现困难</li>
-</ul>
-<h4 id="3、高响应比优先HRN-Highest-Response-ratio-Next"><a href="#3、高响应比优先HRN-Highest-Response-ratio-Next" class="headerlink" title="3、高响应比优先HRN(Highest Response-ratio Next)"></a>3、高响应比优先HRN(Highest Response-ratio Next)</h4><p>思想：通过考虑作业以等待的时间解决SJF的饥饿问题</p>
-<p>响应比R=作业等待时间/作业大小</p>
-<p>作业等待时间=系统当前时间-作业提交时刻</p>
-<h3 id="3、进程调度方式"><a href="#3、进程调度方式" class="headerlink" title="3、进程调度方式"></a>3、进程调度方式</h3><p>进程调度：在采用并发执行方式的系统中，决定正在运行的进程何时将处理器使用权交给就绪队列中的哪个进程。</p>
-<p>进程调度方式指操作系统何时实行调度，也就是处理器使用权何时可能切换，可分为：</p>
-<ul>
-<li>非抢占式：除非进程由于自身原因或者外部(非操作系统的)原因交出处理器使用权，否则一直运行直到结束，非剥夺的</li>
-<li>抢占式：操作系统定期检查系统状态(定期调度)，按照某种原则主动将进程暂停并将处理器使用权交给下个进程。剥夺式</li>
-</ul>
-<h3 id="4、进程调度算法"><a href="#4、进程调度算法" class="headerlink" title="4、进程调度算法"></a>4、进程调度算法</h3><p>进程调度算法考虑调度进行时的行为，也就是如何判断是否真正发生处理器使用权切换，以及切换时选择哪个进程。</p>
-<h4 id="1、先来先服务FCFS"><a href="#1、先来先服务FCFS" class="headerlink" title="1、先来先服务FCFS"></a>1、先来先服务FCFS</h4><ul>
-<li>调度时不修改就绪队列，并且总是选择队首。</li>
-<li>FCFS基于非抢占调度方式<ul>
-<li>FCFS进程调度的优缺点类似FCFS的作业调度。（公平，容易实现，服务质量欠佳）</li>
-</ul>
-</li>
-</ul>
-<h4 id="2、时间片轮转RR（Round-Robin）"><a href="#2、时间片轮转RR（Round-Robin）" class="headerlink" title="2、时间片轮转RR（Round-Robin）"></a>2、时间片轮转RR（Round-Robin）</h4><ul>
-<li><p>RR基于抢占调度方式，它的实现依赖与计时器中断。</p>
-</li>
-<li><p>进程每次被选中时分配一个时间片，调度时判断其时间片是否用尽，如果用尽，则将其移到就绪队列末尾，否则不修改就绪队列。并且总是选择队首。</p>
-</li>
-<li><p>时间片长度为T，如果就绪队列中已经存在了n个进程，则提交新进程的最长响应时间：R=Txn</p>
-</li>
-<li><p>应用RR算法的关键是根据实际需要确定T的值：</p>
-<ul>
-<li>T太长则响应时间太长</li>
-<li>T太短则进程切换太频繁，系统开销加大。</li>
-</ul>
-</li>
-</ul>
-<h4 id="3、优先级算法Priority"><a href="#3、优先级算法Priority" class="headerlink" title="3、优先级算法Priority"></a>3、优先级算法Priority</h4><ul>
-<li><p>为每个进程赋予一个优先数，调度时总是选择优先数最高的进程。</p>
-</li>
-<li><p>可基于抢占式调度，也可以基于非抢占式调度：</p>
-<ul>
-<li>抢占式调度：可以保证总是执行高优先级进程</li>
-<li>非抢占式调度：仅能保证当前一个进程阻塞或者结束时总能选择优先级最高的进程。</li>
-</ul>
-</li>
-<li><p>优先级调度的关键是进程优先数的配置。按照优先数配置的特点，优先级算法分为：</p>
-<ul>
-<li>静态优先级算法：进程优先数在进程创建时确定，并不可改变。</li>
-<li>动态优先级算法：进程优先数在创建进程时被赋初始值，运行中可以根据系统状态改变。</li>
-</ul>
-</li>
-<li><p>通过不同的优先数配置策略，优先级算法可以灵活的体现各种算法思想FCFS，SJF</p>
-</li>
-<li><p>经验：IO繁忙型的进程应该被赋予高优先级用来提供系统的并行度。</p>
-</li>
-</ul>
-<h4 id="5、实时系统的进程调度"><a href="#5、实时系统的进程调度" class="headerlink" title="5、实时系统的进程调度"></a>5、实时系统的进程调度</h4><p>实时系统需要对周期性或者非周期性发生的时间作出处理，其对处理正确性和时效性要求十分苛刻。</p>
-<p>不同类型的时间对于时效性的要求各异，可表达为以下时间参数：</p>
-<ul>
-<li>就绪时限：事件发生时到相应处理进程被创建的时间长度要求。</li>
-<li>开始时限：事件发生时到相应处理进程第一次运行的时间长度要求</li>
-<li>完成时限：事件发生时到相应处理进程完成的时间长度要求。</li>
-<li>处理时间：某些特殊事件要求定期触发处理过程。</li>
-</ul>
-<h3 id="5、可调度以及条件"><a href="#5、可调度以及条件" class="headerlink" title="5、可调度以及条件"></a>5、可调度以及条件</h3><ul>
-<li><p>对于一组事件，如果存在某种处理方式，让其中每个事件的时限要求都可以得到满足，就说明这组事件是可调度的Schedulable。否则，如果无论用何种方式，都至少有一个事件无法满足时限要求，则说明这组事件是不可调度的。</p>
-</li>
-<li><p>可调度的一个必要条件：u&gt;r，u表示系统单位时间内可以处理的事件数（处理能力），r表示单位事件内到达的事件数。</p>
-</li>
-</ul>
-<h1 id="四、死锁"><a href="#四、死锁" class="headerlink" title="四、死锁"></a>四、死锁</h1><p>一组进程都处于阻塞状态，其中的任一进程阻塞状态的解除都依赖与另一进程的后续操作 。这种系统状态叫做死锁DeadLock。</p>
-<h3 id="1、死锁的分类："><a href="#1、死锁的分类：" class="headerlink" title="1、死锁的分类："></a>1、死锁的分类：</h3><ul>
-<li>资源死锁：由于相互等待临界资源而导致的死锁</li>
-<li>通信死锁：由于相互等待通信导致的死锁</li>
-<li>控制死锁：由于系统或者用户的特殊控制导致的死锁</li>
-</ul>
-<h3 id="2、死锁的特点"><a href="#2、死锁的特点" class="headerlink" title="2、死锁的特点"></a>2、死锁的特点</h3><ul>
-<li>偶发性：由于特殊的并发执行顺序导致，是小概率事件</li>
-<li>非消耗：死锁的相关进程处于阻塞状态，不占用处理器</li>
-<li>程序无关：并非个别程序设计的错误，而是系统运行的错误。</li>
-</ul>
-<h3 id="3、死锁的原因"><a href="#3、死锁的原因" class="headerlink" title="3、死锁的原因"></a>3、死锁的原因</h3><p>资源死锁的根本原因是可用资源的数量小于所需资源的数量。</p>
-<p>但不可能靠无限制的增加资源数量来根本性的解决死锁问题。</p>
-<p>死锁的发生的必要条件：</p>
-<ul>
-<li>互斥条件：死锁的相关进程都是互斥的</li>
-<li>不剥夺条件：当进程申请资源时不能剥夺其他进程正在使用的资源</li>
-<li>请求与保持(部分分配)条件：进程在申请资源不成功的时候仍然保持已经申请的资源。</li>
-<li>环路等待条件：进程相互等待关系形成环路。</li>
-</ul>
-<h3 id="4、死锁的预防"><a href="#4、死锁的预防" class="headerlink" title="4、死锁的预防"></a>4、死锁的预防</h3><p>通过在资源分配的时候采取一系列的限制措施，来破坏4个必要条件之一，就可以避免死锁的发生。</p>
-<ul>
-<li><p>互斥条件的破坏</p>
-<ul>
-<li>方法：不允许申请临界资源</li>
-<li>缺点：临界资源需要转化为非临界资源才能被申请和使用，大部分情况下无法实现。</li>
-</ul>
-</li>
-<li><p>不剥夺条件的破坏</p>
-<ul>
-<li>方法：允许进程申请资源时剥夺其他进程正在使用的资源</li>
-<li>缺点：被剥夺资源的进程不可预期的打断，系统需要处理回退。缺乏公平性，反复剥夺与被剥夺</li>
-</ul>
-</li>
-<li><p>请求与保持条件的破坏</p>
-<ul>
-<li><p>方法1：资源暂时归还</p>
-<ul>
-<li><p>进程申请资源不成功时，暂时归还已经分配的资源。</p>
-</li>
-<li><p>缺点：系统需要处理回退，反复申请与归还。</p>
-</li>
-</ul>
-</li>
-<li><p>方法2：静态分配</p>
-<ul>
-<li>进程需要一次性申请完所有可能使用的资源</li>
-<li>缺点：难以预知需要使用的资源，降低资源利用率。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>环路等待条件的破坏</p>
-<ul>
-<li><p>方法1：单请求方式</p>
-<ul>
-<li>资源申请不允许嵌套，但可以一次申请多个，归还旧的资源后方可以申请新资源。</li>
-<li>缺点：同时需要多个资源时只能实行小范围内的静态分配。</li>
-</ul>
-</li>
-<li><p>方法2：按序分配</p>
-<ul>
-<li>对资源编号，进程只允许申请比当前已拥有资源编号更大的资源。</li>
-<li>缺点：如果使用大编号资源的段内需要使用小编号资源，则只能实行小范围内的静态分配。而且，编号管理也困难。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="5、死锁的经典问题"><a href="#5、死锁的经典问题" class="headerlink" title="5、死锁的经典问题"></a>5、死锁的经典问题</h3><p>哲学家用餐问题</p>
-<h3 id="6、死锁的避免"><a href="#6、死锁的避免" class="headerlink" title="6、死锁的避免"></a>6、死锁的避免</h3><p>进程可以自由的动态的，申请资源，但是分配资源的时候对可能发生的死锁，进行预测，来决定是否立即分配。</p>
-<p>死锁的避免具有以下特点：</p>
-<ul>
-<li>原理上是通过预测潜在的死锁</li>
-<li>不影响程序设计</li>
-<li>临界资源分配并非空闲让进</li>
-</ul>
-<h3 id="7、银行家算法"><a href="#7、银行家算法" class="headerlink" title="7、银行家算法"></a>7、银行家算法</h3><ul>
-<li><p>初始化，计算资源可用量Avaiable和当前需求矩阵Need，</p>
-<ul>
-<li>Available=Total-∑Used</li>
-<li>Need=Max-Used</li>
-</ul>
-</li>
-<li><p>合法检查，检查资源申请与需求矩阵的相容性，未通过则报错，Request&lt;=Need</p>
-</li>
-<li><p>资源检查，检查请求的资源是否可用，未通过则阻塞进程P。Request&lt;=Avaiable</p>
-</li>
-<li><p>预分配，嘉定Request得到满足</p>
-<ul>
-<li>Available=Available-Request</li>
-<li>Used=Used+Request</li>
-<li>Need=Need-Request</li>
-</ul>
-</li>
-<li><p>安全状态检查，检查预分配后的状态是否为安全状态。</p>
-</li>
-</ul>
-<p>某系统有<font color="red">4类资源</font>A,B,C,D，数量分别是8,10,9,12。当前有<font color="red">5个进程</font>P1，P2，P3，P4，P5。<font color="red">最大需求矩阵Max</font>和<font color="red">当前分配矩阵Used</font>如下：<br>$$<br>Max = \left[ \matrix{  4 &amp; 6 &amp; 3 &amp; 8\  3 &amp; 3 &amp; 5 &amp; 2\  6 &amp; 6 &amp; 0 &amp; 9\ 3 &amp; 4 &amp; 8 &amp; 5\ 4 &amp; 3 &amp; 2 &amp; 2  } \right]<br>$$</p>
-<p>$$<br>Used = \left[ \matrix{  1 &amp; 1 &amp; 0 &amp; 2\  2 &amp; 2 &amp; 4 &amp; 0\  0 &amp; 5 &amp; 0 &amp; 1\ 1 &amp; 1 &amp; 1 &amp; 5\ 2 &amp; 0 &amp; 2 &amp; 2  } \right]<br>$$</p>
-<ul>
-<li><p>在当前状态下，如果进程P1申请request=(1,0,1,0)，系统能否分配？</p>
-<ul>
-<li><p>资源总量(8,10,9,12)</p>
-<table>
-<thead>
-<tr>
-<th>进程</th>
-<th></th>
-<th></th>
-<th>Max</th>
-<th></th>
-<th></th>
-<th>Used</th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th>Need</th>
-<th></th>
-<th></th>
-<th>Avaiable</th>
-<th></th>
-<th></th>
-<th>Finished</th>
-</tr>
-</thead>
-<tbody><tr>
-<td></td>
-<td>A</td>
-<td>B</td>
-<td>C</td>
-<td>D</td>
-<td>A</td>
-<td>B</td>
-<td>C</td>
-<td>D</td>
-<td>A</td>
-<td>B</td>
-<td>C</td>
-<td>D</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td></td>
-</tr>
-<tr>
-<td>p1</td>
-<td>4</td>
-<td>6</td>
-<td>3</td>
-<td>8</td>
-<td>1</td>
-<td>1</td>
-<td>0</td>
-<td>2</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>p2</td>
-<td>3</td>
-<td>3</td>
-<td>5</td>
-<td>2</td>
-<td>2</td>
-<td>2</td>
-<td>4</td>
-<td>0</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>p3</td>
-<td>6</td>
-<td>6</td>
-<td>0</td>
-<td>9</td>
-<td>0</td>
-<td>5</td>
-<td>0</td>
-<td>1</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>p4</td>
-<td>3</td>
-<td>4</td>
-<td>8</td>
-<td>5</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>5</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>p5</td>
-<td>4</td>
-<td>3</td>
-<td>2</td>
-<td>2</td>
-<td>2</td>
-<td>0</td>
-<td>2</td>
-<td>2</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>在当前状态下，如果进程P3申请request=(1,0,0,1),系统能否分配？</li>
-</ul>
-<h1 id="五、存储管理"><a href="#五、存储管理" class="headerlink" title="五、存储管理"></a>五、存储管理</h1><h3 id="1、存储器的类型"><a href="#1、存储器的类型" class="headerlink" title="1、存储器的类型"></a>1、存储器的类型</h3><ul>
-<li>外存储器、磁带，离线存储，容量大，速度慢</li>
-<li>外存储器，磁盘，光盘等，主板外</li>
-<li>cache主存储器，主板类（存储器管理）</li>
-<li>寄存器cache，cpu内，速度块，容量小</li>
-</ul>
-<h3 id="2、程序的编码与装入"><a href="#2、程序的编码与装入" class="headerlink" title="2、程序的编码与装入"></a>2、程序的编码与装入</h3><ul>
-<li><p>程序（高级语言）</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a=<span class="number">10</span>;</span><br><span class="line">main()&#123;</span><br><span class="line">    <span class="keyword">int</span> b=a;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;b&lt;&lt;a;</span><br><span class="line">    <span class="built_in">cout</span>&lt;<span class="string">"hello"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>编译链接</p>
-</li>
-<li><p>程序（机器码）</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0~1			10</span><br><span class="line">2~8			hello.</span><br><span class="line">9				????	(将[0~1]压栈)</span><br><span class="line">10~13		????	(cout&lt;&lt;[esp]&lt;&lt;[0~1];)</span><br><span class="line">14~17		???? 装入(count&lt;&lt;[2~8];)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>运行时内存</p>
-<ul>
-<li>数据段：全局变量和敞亮</li>
-<li>代码段：指令存放处</li>
-<li>堆栈：局部变量存放处（由指令动态操作）</li>
-</ul>
-</li>
-</ul>
-<h3 id="3、逻辑地址与物理地址"><a href="#3、逻辑地址与物理地址" class="headerlink" title="3、逻辑地址与物理地址"></a>3、逻辑地址与物理地址</h3><p>​        程序在运行的时候被装入到内存中，其中的<font color="red">指令与数据</font>的<font color="red">位置</font>用地址值表示，<font color="red">地址值</font>的变现形式可分为：</p>
-<ul>
-<li><font color="red">逻辑（虚拟）地址</font>：指令或者数据在<font color="red">程序中的编号（位置）</font></li>
-<li><font color="red">物理地址</font>：指令或者数据<font color="red">内存中的位置</font></li>
-</ul>
-<table>
-<thead>
-<tr>
-<th align="center">物理地址</th>
-<th align="center">逻辑地址</th>
-<th align="center">程序（机器码）</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">10000~10001</td>
-<td align="center">0~1</td>
-<td align="center">10</td>
-</tr>
-<tr>
-<td align="center">10002~10008</td>
-<td align="center">2~8</td>
-<td align="center">hello</td>
-</tr>
-<tr>
-<td align="center">10009</td>
-<td align="center">9</td>
-<td align="center">(将[0~1]压栈；)</td>
-</tr>
-<tr>
-<td align="center">10010~10013</td>
-<td align="center">10~13</td>
-<td align="center">（cout&lt;&lt;[esp]&lt;&lt;[0~1];）</td>
-</tr>
-<tr>
-<td align="center">10014~10017</td>
-<td align="center">14~17</td>
-<td align="center">(cout&lt;&lt;[2~8];)</td>
-</tr>
-</tbody></table>
-<h3 id="4、重定位（地址转换）"><a href="#4、重定位（地址转换）" class="headerlink" title="4、重定位（地址转换）"></a>4、重定位（地址转换）</h3><p>​        若程序中的变量与指令用逻辑地址加以引用，则为了在运行的时候正确访问这些变量或者指令，需要进行重定位（或者叫地址转换），来确定实际的物理地址。</p>
-<p>​        根据地址转换操作的时机，重定位分为：</p>
-<ul>
-<li><p><font color="red">静态重定位</font>：操作系统在<font color="red">装入程序时候</font>修改其中所引用的逻辑地址值为物理地址值–由<font color="red">操作系统</font>实现。</p>
-</li>
-<li><p><font color="red">动态重定位</font>：在运行过程中需要做访问操作的时候才进行地址转换–由cpu的<font color="red">存储管理单元MMU</font>自动实现，操作系统只登记MMU进行重定位时需要的相关信息。</p>
-</li>
-</ul>
-<p>个人理解，Java的反射机制，可以在运行的时候，获取Class信息，想必底层实现原理就是利用的动态重定位吧。</p>
-<h3 id="5、静态重定位与动态重定位的特点对比："><a href="#5、静态重定位与动态重定位的特点对比：" class="headerlink" title="5、静态重定位与动态重定位的特点对比："></a>5、静态重定位与动态重定位的特点对比：</h3><table>
-<thead>
-<tr>
-<th align="center"></th>
-<th align="center">静态重定位</th>
-<th align="center">动态重定位</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">硬件支持</td>
-<td align="center">不需要</td>
-<td align="center">需要</td>
-</tr>
-<tr>
-<td align="center">操作系统的工作</td>
-<td align="center">装入时修改程序</td>
-<td align="center">登记MMU所需要信息</td>
-</tr>
-<tr>
-<td align="center">程序装入</td>
-<td align="center">被修改</td>
-<td align="center">直接装入</td>
-</tr>
-<tr>
-<td align="center">程序运行时移动</td>
-<td align="center">困难</td>
-<td align="center">容易</td>
-</tr>
-<tr>
-<td align="center">程序的不连续装入</td>
-<td align="center">困难</td>
-<td align="center">容易</td>
-</tr>
-<tr>
-<td align="center">其他技术支持（动态链接、虚拟存储等）</td>
-<td align="center">难以实现</td>
-<td align="center">容易实现</td>
-</tr>
-</tbody></table>
-<h3 id="6、存储器管理的关键问题"><a href="#6、存储器管理的关键问题" class="headerlink" title="6、存储器管理的关键问题"></a>6、存储器管理的关键问题</h3><p>​        <font color="red">存储器管理</font>主要是对用户空间进行管理，目的是为了提供主存储器的利用率，方便用户对主存储器的使用。</p>
-<p>​        存储器管理的关键问题：</p>
-<h5 id="1、存储空间的分配与回收"><a href="#1、存储空间的分配与回收" class="headerlink" title="1、存储空间的分配与回收"></a>1、存储空间的分配与回收</h5><ul>
-<li>设计合理的数据结构以记录存储空间的分配情况</li>
-<li>设计合理的算法来提高存储器的利用率（装入尽可能多的程序）</li>
-</ul>
-<h5 id="2、重定位方式的确定"><a href="#2、重定位方式的确定" class="headerlink" title="2、重定位方式的确定"></a>2、重定位方式的确定</h5><ul>
-<li>决定采用静态重定位或者动态重定位，并进行相应的工作</li>
-</ul>
-<h5 id="3、实现保护与共享"><a href="#3、实现保护与共享" class="headerlink" title="3、实现保护与共享"></a>3、实现保护与共享</h5><ul>
-<li><p>存储空间保护使得各进程不能访问彼此的存储空间，主要方法有：</p>
-<ul>
-<li><p>利用出其里的特权级，防止跨级访问</p>
-</li>
-<li><p>利用MMU的界限寄存器规则，防止同级访问</p>
-</li>
-<li><p>操作系统设置和检查存储区域的保护键与当前进程的键以及操作是否匹配</p>
-</li>
-</ul>
-</li>
-<li><p>存储空间共享：</p>
-<ul>
-<li>提供进程间共享数据的途径</li>
-</ul>
-</li>
-</ul>
-<h5 id="4、实现虚拟存储技术"><a href="#4、实现虚拟存储技术" class="headerlink" title="4、实现虚拟存储技术"></a>4、实现虚拟存储技术</h5><h3 id="7、存储器管理的方法"><a href="#7、存储器管理的方法" class="headerlink" title="7、存储器管理的方法"></a>7、存储器管理的方法</h3><h4 id="1、从程序的角度分为："><a href="#1、从程序的角度分为：" class="headerlink" title="1、从程序的角度分为："></a>1、从程序的角度分为：</h4><ul>
-<li>非分段管理：将进程的数据、代码、堆栈作为一个完整的逻辑空间</li>
-<li>分段管理：将进程的数据、代码、堆栈、各自作为独立的逻辑空间</li>
-</ul>
-<h4 id="2、从内存分配的角度分为："><a href="#2、从内存分配的角度分为：" class="headerlink" title="2、从内存分配的角度分为："></a>2、从内存分配的角度分为：</h4><ul>
-<li>分区管理：一个逻辑空间对应物理空间中一个分区，连续分配</li>
-<li>分页管理：一个逻辑空间对应物理空间中多个分页，可不连续分配。</li>
-<li>段页式管理：比较先进复杂的综合方法。</li>
-</ul>
-<h3 id="8、单一连续区存储管理"><a href="#8、单一连续区存储管理" class="headerlink" title="8、单一连续区存储管理"></a>8、单一连续区存储管理</h3><p>​        操作系统占用内核空间之外，将整个用户空间看做一个内存区域，一次只能装入一道用户程序，只有用户区中的程序运行完毕方可以装入下一道程序。</p>
-<p>也就是说，一个内存，有系统区，还有用户区。系统区，存储一个操作系统信息。</p>
-<ul>
-<li><p>常用静态重定位</p>
-</li>
-<li><p>管理简单</p>
-</li>
-<li><p>不需要复杂硬件支持</p>
-</li>
-<li><p>只允许单任务</p>
-<p>为了实现单一连续区存储管理，或者其他任何存储管理的方法，<font color="red">操作系统采用的请求表来记录请求装入内存的程序信息</font>。</p>
-<table>
-<thead>
-<tr>
-<th align="center">程序标识</th>
-<th align="center">需要的空间长度（虚拟地址空间大小）</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">A</td>
-<td align="center">50K</td>
-</tr>
-<tr>
-<td align="center">B</td>
-<td align="center">90K</td>
-</tr>
-<tr>
-<td align="center">C</td>
-<td align="center">130K</td>
-</tr>
-<tr>
-<td align="center">D</td>
-<td align="center">10K</td>
-</tr>
-<tr>
-<td align="center">E</td>
-<td align="center">165K</td>
-</tr>
-</tbody></table>
-</li>
-</ul>
-<h3 id="9、固定分区存储管理"><a href="#9、固定分区存储管理" class="headerlink" title="9、固定分区存储管理"></a>9、固定分区存储管理</h3><p>​        操作系统占用内核空间之外，<font color="red">将整个用户空间划分为若干个固定大小的区域（大小可不相等）</font>。多道程序分别装入不同的分区内，一道程序只能装入一个分区，而一个分区也只能分配给一道程序。</p>
-<p>​        为了实现固定分区存储管理，操作系统必须记录各分区的位置和使用情况，采用关键数据结构–分区说明表（DPT）</p>
-<table>
-<thead>
-<tr>
-<th align="center">区号</th>
-<th align="center">长度</th>
-<th align="center">起始地址</th>
-<th align="center">状态</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">1</td>
-<td align="center">75K</td>
-<td align="center">32K</td>
-<td align="center">0</td>
-</tr>
-<tr>
-<td align="center">2</td>
-<td align="center">30K</td>
-<td align="center">107K</td>
-<td align="center">0</td>
-</tr>
-<tr>
-<td align="center">3</td>
-<td align="center">140K</td>
-<td align="center">137K</td>
-<td align="center">0</td>
-</tr>
-<tr>
-<td align="center">4</td>
-<td align="center">11K</td>
-<td align="center">277K</td>
-<td align="center">0</td>
-</tr>
-</tbody></table>
-<p>​        固定分区存储管理一般采用静态重定位，配合界限寄存器法防止各进程彼此访问存储区域（存储保护）。</p>
-<p>​        利用MMU的界限寄存器规则，防止同级间房屋内，操作系统设置和检查存储区域的保护建与当前进程的键是否匹配。</p>
-<p>​        固定分区存储管理的特点：</p>
-<ul>
-<li>支持多道程序设计</li>
-<li>并发执行进程数受到分区数限制</li>
-<li>程序可用空间受分区大小限制</li>
-<li>存储区存在“碎片”</li>
-<li>长作业优先、输入队列法</li>
-</ul>
-<h3 id="10、可变分区存储管理"><a href="#10、可变分区存储管理" class="headerlink" title="10、可变分区存储管理"></a>10、可变分区存储管理</h3><p>​        在程序装入时选择一个空闲区域并在其中动态创建一个分区来装入程序。</p>
-<p>​        为了实现可变分区存储管理，操作系统需要记录空闲内存区域的位置，可采用以下两种数据结构：</p>
-<h5 id="1、可用表"><a href="#1、可用表" class="headerlink" title="1、可用表"></a>1、可用表</h5><p>类似分区说明表DPT，但是其中的记录是变化的，并且状态1表示空闲，而状态0表示记录无效（预留着存储位置）</p>
-<table>
-<thead>
-<tr>
-<th align="center">起始地址</th>
-<th align="center">长度</th>
-<th align="center">状态</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">152K</td>
-<td align="center">10K</td>
-<td align="center">1</td>
-</tr>
-<tr>
-<td align="center">172K</td>
-<td align="center">116K</td>
-<td align="center">1</td>
-</tr>
-<tr>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">0</td>
-</tr>
-<tr>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">0</td>
-</tr>
-<tr>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">0</td>
-</tr>
-</tbody></table>
-<ul>
-<li>缺点：可用表的长度受到了限制，从而导致表示的空闲区个数受到限制，影响并发的进程个数</li>
-</ul>
-<h5 id="2、空闲区链表"><a href="#2、空闲区链表" class="headerlink" title="2、空闲区链表"></a>2、空闲区链表</h5><p>用链表的形式来记录空闲区</p>
-<p>ps：怪不得面试的时候，让手写LRU算法，而LRU算法也是用链表实现的。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FreeNode</span>&#123;</span></span><br><span class="line">    <span class="keyword">long</span> start;<span class="comment">//分区的起始地址</span></span><br><span class="line">    <span class="keyword">long</span> length;<span class="comment">//分区的长度</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">FreeNode</span> *<span class="title">next</span>;</span><span class="comment">//向下指针</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="3、可变分区存储管理空间分配算法"><a href="#3、可变分区存储管理空间分配算法" class="headerlink" title="3、可变分区存储管理空间分配算法"></a>3、可变分区存储管理空间分配算法</h5><p>当程序请求装入的时候，进行空间分配的算法：</p>
-<ul>
-<li>最先适应法FF：依次查找空闲区，选择收个足够大的空闲区装入程序。</li>
-<li>最佳适应法BF：在所有足够装入程序的空闲区中选择最小者</li>
-<li>最坏适应法WF就：在所有足够装入程序的空闲区中选择最大者</li>
-</ul>
-<h5 id="4、空间分配算法优缺点："><a href="#4、空间分配算法优缺点：" class="headerlink" title="4、空间分配算法优缺点："></a>4、空间分配算法优缺点：</h5><p>三种算法的优势和缺点：</p>
-<ul>
-<li>最先适应法FF：分配速度最快，但是堆内存使用没有规划。</li>
-<li>最佳适应法BF：找到的空闲区与请求最匹配，对大程序的装入有充分的准备，但是容易产生外碎片。</li>
-<li>最坏适应法WF：不容易产生外碎片，但是容易造成大程序装入的失败。</li>
-</ul>
+    <h1 id="一、分布式锁"><a href="#一、分布式锁" class="headerlink" title="一、分布式锁"></a>一、分布式锁</h1><p>在单机场景下，可以使用Java里的内置所来实现进行同步。但是在分布式场景下，需要同步的进程可能位于不同的节点上，那么就需要使用分布式锁。</p>
+<p>阻塞所通常使用互斥量来实现：</p>
+<ul>
+<li>互斥量mutex为0表示有其他进程在使用锁，此时处于锁定状态。</li>
+<li>互斥量mutex为1表示未锁定状态。</li>
+</ul>
+<p>1和0可以用一个整形值表示，也可以用某个数据是否存在表示。</p>
+<h2 id="1、数据库的唯一索引"><a href="#1、数据库的唯一索引" class="headerlink" title="1、数据库的唯一索引"></a>1、数据库的唯一索引</h2><p>获取锁时向表中插入一条记录，释放锁时删除这条记录。唯一索引可以保证该记录只被插入一次，那么就可以用这个记录是否存在来判断是否在锁定状态。</p>
+<p>存在以下几个问题：</p>
+<ul>
+<li>锁没有失效时间，解锁失败的话，其他进程无法再获得该锁。</li>
+<li>只能是非阻塞锁，插入失败直接就报错，无法重试。</li>
+<li>不可重入，已经获得锁的进程也必须重新获取锁。</li>
+</ul>
+<h2 id="2、Redis的SETNX指令"><a href="#2、Redis的SETNX指令" class="headerlink" title="2、Redis的SETNX指令"></a>2、Redis的SETNX指令</h2><p>使用SETNX（set if not exist）指令插入一个键值对，如果key已经存在，那么会返回false，否则插入成功并返回true。</p>
+<p>SETNX指令和数据库的唯一索引类似，保证了只存在一个key的键值对，那么可以用一个key的键值对是否存在来判断是否存于锁定状态。</p>
+<p>EXPIRE指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引方式中释放锁失败的问题。也就是数据库的唯一索引解决方案的升级而已，只是可以设置过期时间。</p>
+<h2 id="3、Redis的RedLock算法"><a href="#3、Redis的RedLock算法" class="headerlink" title="3、Redis的RedLock算法"></a>3、Redis的RedLock算法</h2><p>使用了多个Redis实例来实现分布式锁，这是为了保证在发生单点故障时仍然可用。多个Redis实例实现，也就是即使一台Redis挂了，还可以有其他的服务可用。</p>
+<ul>
+<li>尝试从N个互相独立的Redis实例中获取锁。</li>
+<li>计算获取锁消耗的时间，只有当这个时间小于锁的过期时间，并且从大多数(N/2+1)，半数以上的实例上获取锁，那么就认为获取锁成功了。</li>
+<li>如果锁获取失败，就到每个实例上释放锁。</li>
+</ul>
+<h2 id="4、Zookeeper的有序节点"><a href="#4、Zookeeper的有序节点" class="headerlink" title="4、Zookeeper的有序节点"></a>4、Zookeeper的有序节点</h2><h3 id="1、Zookeeper抽象模型"><a href="#1、Zookeeper抽象模型" class="headerlink" title="1、Zookeeper抽象模型"></a>1、Zookeeper抽象模型</h3><p>Zookeeper提供了一种树型结构的命名空间，/app1/p_1节点的父节点为app1。有点类似linux系统文件系统，文件目录树</p>
+<h3 id="2、节点类型"><a href="#2、节点类型" class="headerlink" title="2、节点类型"></a>2、节点类型</h3><ul>
+<li>永久节点：不会因为会话结束或者超时而消失。</li>
+<li>临时节点：如果会话结束或者超时就会消失。</li>
+<li>有序节点：会在节点名的后面加上一个数字后缀，并且是有序的。例如生成的有序节点为/lock/node-0000000000，它的下一个有序节点就是/lock/node-0000000001，以此类推。</li>
+</ul>
+<h3 id="3、监听器"><a href="#3、监听器" class="headerlink" title="3、监听器"></a>3、监听器</h3><p>为一个节点注册监听器，在节点状态发生改变的时候，会给客户端发送消息 。</p>
+<h3 id="4、分布式锁实现"><a href="#4、分布式锁实现" class="headerlink" title="4、分布式锁实现"></a>4、分布式锁实现</h3><ul>
+<li>创建一个目录/lock。</li>
+<li>当一个客户端需要获取锁时，在/lock下创建临时的且有序的子节点。</li>
+<li>客户端获取/lock下的子节点列表，判断自己创建的子节点是否为当前子节点列表中序号最小的子节点，如果是则认为获得锁。否则监听自己的前一个子节点，获得子节点的变更通知后重复此步骤直到获取锁为止。</li>
+<li>执行业务代码，完成后，删除对应的子节点。</li>
+</ul>
+<h3 id="5、会话超时"><a href="#5、会话超时" class="headerlink" title="5、会话超时"></a>5、会话超时</h3><p>如果一个已经获的锁的会话超时了，因为创建的是临时节点，所以该会话对应的临时节点会被删除，其他会话就可以获取锁。可以看到zookeeper分布式锁不会出现数据库的唯一索引的分布式锁释放锁失败的问题。</p>
+<h3 id="6、羊群效应"><a href="#6、羊群效应" class="headerlink" title="6、羊群效应"></a>6、羊群效应</h3><p>一个节点未获得锁，只需要监听自己前一个子节点，这是因为如果监听所有的子节点，那么任意一个子节点状态改变，其他所有子节点都会收到通知(羊群效应)，而我们秩序网它的后一个子节点收到通知。</p>
 
     
 
@@ -1442,7 +335,7 @@
         </li>
         <li>
           <strong>本文链接：</strong>
-          <a href="https://victorblog.github.io/2017/06/21/一、操作系统概述/" title="操作系统" target="_blank">https://victorblog.github.io/2017/06/21/一、操作系统概述/</a>
+          <a href="https://victorblog.github.io/2018/06/15/一、分布式锁/" title="分布式锁" target="_blank">https://victorblog.github.io/2018/06/15/一、分布式锁/</a>
         </li>
         <li>
           <strong>版权声明： </strong>
@@ -1517,7 +410,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://victorblog.github.io/2017/06/21/%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/" alt="微信分享二维码"> -->
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://victorblog.github.io/2018/06/15/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" alt="微信分享二维码"> -->
     </div>
 </div>
 
@@ -1532,18 +425,18 @@
 
 <nav id="article-nav">
   
-    <a href="../../../07/01/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="../%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          算法与数据结构
+          分布式锁的使用
         
       </div>
     </a>
   
   
-    <a href="../../11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">计算机网络</div>
+    <a href="../../14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">分布式常识总结</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -1570,7 +463,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、操作系统概述"><span class="toc-number">1.</span> <span class="toc-text">一、操作系统概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、指令权限与工作模式"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、指令权限与工作模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、内存空间与操作系统的内核"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、内存空间与操作系统的内核</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、操作系统的内核"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、操作系统的内核</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、固件"><span class="toc-number">1.0.4.</span> <span class="toc-text">4、固件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、基本输入输出系统-BIOS"><span class="toc-number">1.0.5.</span> <span class="toc-text">5、基本输入输出系统(BIOS)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1、基于BIOS的操作系统启动过程"><span class="toc-number">1.0.5.1.</span> <span class="toc-text">5.1、基于BIOS的操作系统启动过程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、统一的可扩展固件接口UEFI"><span class="toc-number">1.0.6.</span> <span class="toc-text">6、统一的可扩展固件接口UEFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1、基于UEFI的操作系统启动过程"><span class="toc-number">1.0.6.1.</span> <span class="toc-text">6.1、基于UEFI的操作系统启动过程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7、GUID硬盘分区方式"><span class="toc-number">1.0.7.</span> <span class="toc-text">7、GUID硬盘分区方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8、操作系统的用户接口–命令接口"><span class="toc-number">1.0.8.</span> <span class="toc-text">8、操作系统的用户接口–命令接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#8-1、按命令接口在操作系统内的实现方式，分为"><span class="toc-number">1.0.8.1.</span> <span class="toc-text">8.1、按命令接口在操作系统内的实现方式，分为</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2、按命令接口的使用方式，分为："><span class="toc-number">1.0.8.2.</span> <span class="toc-text">8.2、按命令接口的使用方式，分为：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9、操作系统的用户接口–程序接口-系统调用"><span class="toc-number">1.0.9.</span> <span class="toc-text">9、操作系统的用户接口–程序接口(系统调用)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#9-1、系统调用的简介"><span class="toc-number">1.0.9.1.</span> <span class="toc-text">9.1、系统调用的简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-2、系统调用的实现："><span class="toc-number">1.0.9.2.</span> <span class="toc-text">9.2、系统调用的实现：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-3、系统调用与用户子程序对比"><span class="toc-number">1.0.9.3.</span> <span class="toc-text">9.3、系统调用与用户子程序对比</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、进程管理"><span class="toc-number">2.</span> <span class="toc-text">二、进程管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、程序与系统的工作流程"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、程序与系统的工作流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、进程"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、进程的动态性"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、进程的动态性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、进程信息的描述–PCB"><span class="toc-number">2.0.4.</span> <span class="toc-text">4、进程信息的描述–PCB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、PCB队列和进程管理"><span class="toc-number">2.0.5.</span> <span class="toc-text">5、PCB队列和进程管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、原语"><span class="toc-number">2.0.6.</span> <span class="toc-text">6、原语</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7、进程控制–创建"><span class="toc-number">2.0.7.</span> <span class="toc-text">7、进程控制–创建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、进程的创建原语Create用来创建一个进程"><span class="toc-number">2.0.7.1.</span> <span class="toc-text">1、进程的创建原语Create用来创建一个进程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8、进程控制–撤销"><span class="toc-number">2.0.8.</span> <span class="toc-text">8、进程控制–撤销</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、进程的撤销原语Destroy用来结束一个进程"><span class="toc-number">2.0.8.1.</span> <span class="toc-text">1、进程的撤销原语Destroy用来结束一个进程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9、进程控制–阻塞"><span class="toc-number">2.0.9.</span> <span class="toc-text">9、进程控制–阻塞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、进程的阻塞原语Block用来让一个进程进入阻塞状态"><span class="toc-number">2.0.9.1.</span> <span class="toc-text">1、进程的阻塞原语Block用来让一个进程进入阻塞状态</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10、进程控制–唤醒"><span class="toc-number">2.0.10.</span> <span class="toc-text">10、进程控制–唤醒</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态"><span class="toc-number">2.0.10.1.</span> <span class="toc-text">1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11、进程控制–切换"><span class="toc-number">2.0.11.</span> <span class="toc-text">11、进程控制–切换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12、相关进程间的制约关系–间接制约"><span class="toc-number">2.0.12.</span> <span class="toc-text">12、相关进程间的制约关系–间接制约</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、间接制约与临界资源"><span class="toc-number">2.0.12.1.</span> <span class="toc-text">1、间接制约与临界资源</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、间接制约与护持关系"><span class="toc-number">2.0.12.2.</span> <span class="toc-text">2、间接制约与护持关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、临界区管理"><span class="toc-number">2.0.12.3.</span> <span class="toc-text">3、临界区管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、互斥关系的实现–加锁机制"><span class="toc-number">2.0.12.4.</span> <span class="toc-text">4、互斥关系的实现–加锁机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5、互斥关系的实现–信号量机制"><span class="toc-number">2.0.12.5.</span> <span class="toc-text">5、互斥关系的实现–信号量机制</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13、相关进程间的制约关系–直接制约"><span class="toc-number">2.0.13.</span> <span class="toc-text">13、相关进程间的制约关系–直接制约</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、直接制约与同步关系"><span class="toc-number">2.0.13.1.</span> <span class="toc-text">1、直接制约与同步关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、同步关系的实现–信号量机制"><span class="toc-number">2.0.13.2.</span> <span class="toc-text">2、同步关系的实现–信号量机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、文件拷贝问题–同步关系的实现"><span class="toc-number">2.0.13.3.</span> <span class="toc-text">3、文件拷贝问题–同步关系的实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14、进程同步总结"><span class="toc-number">2.0.14.</span> <span class="toc-text">14、进程同步总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15、生产者、消费者问题"><span class="toc-number">2.0.15.</span> <span class="toc-text">15、生产者、消费者问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16、从信号量到进程通信"><span class="toc-number">2.0.16.</span> <span class="toc-text">16、从信号量到进程通信</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、共享存储区通信"><span class="toc-number">2.0.16.1.</span> <span class="toc-text">1、共享存储区通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、信箱通信"><span class="toc-number">2.0.16.2.</span> <span class="toc-text">2、信箱通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、消息缓冲通信"><span class="toc-number">2.0.16.3.</span> <span class="toc-text">3、消息缓冲通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、管道通信"><span class="toc-number">2.0.16.4.</span> <span class="toc-text">4、管道通信</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#17、线程"><span class="toc-number">2.0.17.</span> <span class="toc-text">17、线程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、线程的控制与类型"><span class="toc-number">2.0.17.1.</span> <span class="toc-text">1、线程的控制与类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、进程的常用细化方法"><span class="toc-number">2.0.17.2.</span> <span class="toc-text">2、进程的常用细化方法</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、调度"><span class="toc-number">3.</span> <span class="toc-text">三、调度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、调度的性能指标"><span class="toc-number">3.0.1.</span> <span class="toc-text">1、调度的性能指标</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、周转时间和平均周转时间"><span class="toc-number">3.0.1.1.</span> <span class="toc-text">1、周转时间和平均周转时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、带权周转时间"><span class="toc-number">3.0.1.2.</span> <span class="toc-text">2、带权周转时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、响应时间"><span class="toc-number">3.0.1.3.</span> <span class="toc-text">3、响应时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、其他性能指标"><span class="toc-number">3.0.1.4.</span> <span class="toc-text">4、其他性能指标</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、作业调度算法"><span class="toc-number">3.0.2.</span> <span class="toc-text">2、作业调度算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、先到先服务FCFS-First-Come-First-Served"><span class="toc-number">3.0.2.1.</span> <span class="toc-text">1、先到先服务FCFS(First Come First Served)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、短作业优先SJF-Shortest-Job-First"><span class="toc-number">3.0.2.2.</span> <span class="toc-text">2、短作业优先SJF(Shortest Job First)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、高响应比优先HRN-Highest-Response-ratio-Next"><span class="toc-number">3.0.2.3.</span> <span class="toc-text">3、高响应比优先HRN(Highest Response-ratio Next)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、进程调度方式"><span class="toc-number">3.0.3.</span> <span class="toc-text">3、进程调度方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、进程调度算法"><span class="toc-number">3.0.4.</span> <span class="toc-text">4、进程调度算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、先来先服务FCFS"><span class="toc-number">3.0.4.1.</span> <span class="toc-text">1、先来先服务FCFS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、时间片轮转RR（Round-Robin）"><span class="toc-number">3.0.4.2.</span> <span class="toc-text">2、时间片轮转RR（Round-Robin）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、优先级算法Priority"><span class="toc-number">3.0.4.3.</span> <span class="toc-text">3、优先级算法Priority</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5、实时系统的进程调度"><span class="toc-number">3.0.4.4.</span> <span class="toc-text">5、实时系统的进程调度</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、可调度以及条件"><span class="toc-number">3.0.5.</span> <span class="toc-text">5、可调度以及条件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四、死锁"><span class="toc-number">4.</span> <span class="toc-text">四、死锁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、死锁的分类："><span class="toc-number">4.0.1.</span> <span class="toc-text">1、死锁的分类：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、死锁的特点"><span class="toc-number">4.0.2.</span> <span class="toc-text">2、死锁的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、死锁的原因"><span class="toc-number">4.0.3.</span> <span class="toc-text">3、死锁的原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、死锁的预防"><span class="toc-number">4.0.4.</span> <span class="toc-text">4、死锁的预防</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、死锁的经典问题"><span class="toc-number">4.0.5.</span> <span class="toc-text">5、死锁的经典问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、死锁的避免"><span class="toc-number">4.0.6.</span> <span class="toc-text">6、死锁的避免</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7、银行家算法"><span class="toc-number">4.0.7.</span> <span class="toc-text">7、银行家算法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#五、存储管理"><span class="toc-number">5.</span> <span class="toc-text">五、存储管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、存储器的类型"><span class="toc-number">5.0.1.</span> <span class="toc-text">1、存储器的类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、程序的编码与装入"><span class="toc-number">5.0.2.</span> <span class="toc-text">2、程序的编码与装入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、逻辑地址与物理地址"><span class="toc-number">5.0.3.</span> <span class="toc-text">3、逻辑地址与物理地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、重定位（地址转换）"><span class="toc-number">5.0.4.</span> <span class="toc-text">4、重定位（地址转换）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、静态重定位与动态重定位的特点对比："><span class="toc-number">5.0.5.</span> <span class="toc-text">5、静态重定位与动态重定位的特点对比：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、存储器管理的关键问题"><span class="toc-number">5.0.6.</span> <span class="toc-text">6、存储器管理的关键问题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、存储空间的分配与回收"><span class="toc-number">5.0.6.0.1.</span> <span class="toc-text">1、存储空间的分配与回收</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、重定位方式的确定"><span class="toc-number">5.0.6.0.2.</span> <span class="toc-text">2、重定位方式的确定</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3、实现保护与共享"><span class="toc-number">5.0.6.0.3.</span> <span class="toc-text">3、实现保护与共享</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4、实现虚拟存储技术"><span class="toc-number">5.0.6.0.4.</span> <span class="toc-text">4、实现虚拟存储技术</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7、存储器管理的方法"><span class="toc-number">5.0.7.</span> <span class="toc-text">7、存储器管理的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、从程序的角度分为："><span class="toc-number">5.0.7.1.</span> <span class="toc-text">1、从程序的角度分为：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、从内存分配的角度分为："><span class="toc-number">5.0.7.2.</span> <span class="toc-text">2、从内存分配的角度分为：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8、单一连续区存储管理"><span class="toc-number">5.0.8.</span> <span class="toc-text">8、单一连续区存储管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9、固定分区存储管理"><span class="toc-number">5.0.9.</span> <span class="toc-text">9、固定分区存储管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10、可变分区存储管理"><span class="toc-number">5.0.10.</span> <span class="toc-text">10、可变分区存储管理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、可用表"><span class="toc-number">5.0.10.0.1.</span> <span class="toc-text">1、可用表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、空闲区链表"><span class="toc-number">5.0.10.0.2.</span> <span class="toc-text">2、空闲区链表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3、可变分区存储管理空间分配算法"><span class="toc-number">5.0.10.0.3.</span> <span class="toc-text">3、可变分区存储管理空间分配算法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4、空间分配算法优缺点："><span class="toc-number">5.0.10.0.4.</span> <span class="toc-text">4、空间分配算法优缺点：</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、分布式锁"><span class="toc-number">1.</span> <span class="toc-text">一、分布式锁</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、数据库的唯一索引"><span class="toc-number">1.1.</span> <span class="toc-text">1、数据库的唯一索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、Redis的SETNX指令"><span class="toc-number">1.2.</span> <span class="toc-text">2、Redis的SETNX指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、Redis的RedLock算法"><span class="toc-number">1.3.</span> <span class="toc-text">3、Redis的RedLock算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4、Zookeeper的有序节点"><span class="toc-number">1.4.</span> <span class="toc-text">4、Zookeeper的有序节点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、Zookeeper抽象模型"><span class="toc-number">1.4.1.</span> <span class="toc-text">1、Zookeeper抽象模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、节点类型"><span class="toc-number">1.4.2.</span> <span class="toc-text">2、节点类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、监听器"><span class="toc-number">1.4.3.</span> <span class="toc-text">3、监听器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、分布式锁实现"><span class="toc-number">1.4.4.</span> <span class="toc-text">4、分布式锁实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、会话超时"><span class="toc-number">1.4.5.</span> <span class="toc-text">5、会话超时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、羊群效应"><span class="toc-number">1.4.6.</span> <span class="toc-text">6、羊群效应</span></a></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -1596,9 +489,9 @@
     <script src="https://giteement.oss-cn-beijing.aliyuncs.com/giteement.browser.js"></script>
   
   <script>
-  <!-- id: "操作系统" -->
+  <!-- id: "分布式锁" -->
   var giteement = new Giteement({
-    id: '20170621100600',
+    id: '20180615100600',
     owner: 'victorblog',
     repo: 'victorblog',
     backcall_uri: 'https://victorblog.github.io/',
@@ -1627,7 +520,7 @@
             <div id="toc-article" class="toc-article">
                 <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
                 <strong class="toc-title">文章目录</strong>
-                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、操作系统概述"><span class="toc-number">1.</span> <span class="toc-text">一、操作系统概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、指令权限与工作模式"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、指令权限与工作模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、内存空间与操作系统的内核"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、内存空间与操作系统的内核</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、操作系统的内核"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、操作系统的内核</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、固件"><span class="toc-number">1.0.4.</span> <span class="toc-text">4、固件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、基本输入输出系统-BIOS"><span class="toc-number">1.0.5.</span> <span class="toc-text">5、基本输入输出系统(BIOS)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1、基于BIOS的操作系统启动过程"><span class="toc-number">1.0.5.1.</span> <span class="toc-text">5.1、基于BIOS的操作系统启动过程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、统一的可扩展固件接口UEFI"><span class="toc-number">1.0.6.</span> <span class="toc-text">6、统一的可扩展固件接口UEFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1、基于UEFI的操作系统启动过程"><span class="toc-number">1.0.6.1.</span> <span class="toc-text">6.1、基于UEFI的操作系统启动过程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7、GUID硬盘分区方式"><span class="toc-number">1.0.7.</span> <span class="toc-text">7、GUID硬盘分区方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8、操作系统的用户接口–命令接口"><span class="toc-number">1.0.8.</span> <span class="toc-text">8、操作系统的用户接口–命令接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#8-1、按命令接口在操作系统内的实现方式，分为"><span class="toc-number">1.0.8.1.</span> <span class="toc-text">8.1、按命令接口在操作系统内的实现方式，分为</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2、按命令接口的使用方式，分为："><span class="toc-number">1.0.8.2.</span> <span class="toc-text">8.2、按命令接口的使用方式，分为：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9、操作系统的用户接口–程序接口-系统调用"><span class="toc-number">1.0.9.</span> <span class="toc-text">9、操作系统的用户接口–程序接口(系统调用)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#9-1、系统调用的简介"><span class="toc-number">1.0.9.1.</span> <span class="toc-text">9.1、系统调用的简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-2、系统调用的实现："><span class="toc-number">1.0.9.2.</span> <span class="toc-text">9.2、系统调用的实现：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-3、系统调用与用户子程序对比"><span class="toc-number">1.0.9.3.</span> <span class="toc-text">9.3、系统调用与用户子程序对比</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、进程管理"><span class="toc-number">2.</span> <span class="toc-text">二、进程管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、程序与系统的工作流程"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、程序与系统的工作流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、进程"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、进程的动态性"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、进程的动态性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、进程信息的描述–PCB"><span class="toc-number">2.0.4.</span> <span class="toc-text">4、进程信息的描述–PCB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、PCB队列和进程管理"><span class="toc-number">2.0.5.</span> <span class="toc-text">5、PCB队列和进程管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、原语"><span class="toc-number">2.0.6.</span> <span class="toc-text">6、原语</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7、进程控制–创建"><span class="toc-number">2.0.7.</span> <span class="toc-text">7、进程控制–创建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、进程的创建原语Create用来创建一个进程"><span class="toc-number">2.0.7.1.</span> <span class="toc-text">1、进程的创建原语Create用来创建一个进程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8、进程控制–撤销"><span class="toc-number">2.0.8.</span> <span class="toc-text">8、进程控制–撤销</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、进程的撤销原语Destroy用来结束一个进程"><span class="toc-number">2.0.8.1.</span> <span class="toc-text">1、进程的撤销原语Destroy用来结束一个进程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9、进程控制–阻塞"><span class="toc-number">2.0.9.</span> <span class="toc-text">9、进程控制–阻塞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、进程的阻塞原语Block用来让一个进程进入阻塞状态"><span class="toc-number">2.0.9.1.</span> <span class="toc-text">1、进程的阻塞原语Block用来让一个进程进入阻塞状态</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10、进程控制–唤醒"><span class="toc-number">2.0.10.</span> <span class="toc-text">10、进程控制–唤醒</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态"><span class="toc-number">2.0.10.1.</span> <span class="toc-text">1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11、进程控制–切换"><span class="toc-number">2.0.11.</span> <span class="toc-text">11、进程控制–切换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12、相关进程间的制约关系–间接制约"><span class="toc-number">2.0.12.</span> <span class="toc-text">12、相关进程间的制约关系–间接制约</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、间接制约与临界资源"><span class="toc-number">2.0.12.1.</span> <span class="toc-text">1、间接制约与临界资源</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、间接制约与护持关系"><span class="toc-number">2.0.12.2.</span> <span class="toc-text">2、间接制约与护持关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、临界区管理"><span class="toc-number">2.0.12.3.</span> <span class="toc-text">3、临界区管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、互斥关系的实现–加锁机制"><span class="toc-number">2.0.12.4.</span> <span class="toc-text">4、互斥关系的实现–加锁机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5、互斥关系的实现–信号量机制"><span class="toc-number">2.0.12.5.</span> <span class="toc-text">5、互斥关系的实现–信号量机制</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13、相关进程间的制约关系–直接制约"><span class="toc-number">2.0.13.</span> <span class="toc-text">13、相关进程间的制约关系–直接制约</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、直接制约与同步关系"><span class="toc-number">2.0.13.1.</span> <span class="toc-text">1、直接制约与同步关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、同步关系的实现–信号量机制"><span class="toc-number">2.0.13.2.</span> <span class="toc-text">2、同步关系的实现–信号量机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、文件拷贝问题–同步关系的实现"><span class="toc-number">2.0.13.3.</span> <span class="toc-text">3、文件拷贝问题–同步关系的实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14、进程同步总结"><span class="toc-number">2.0.14.</span> <span class="toc-text">14、进程同步总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15、生产者、消费者问题"><span class="toc-number">2.0.15.</span> <span class="toc-text">15、生产者、消费者问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16、从信号量到进程通信"><span class="toc-number">2.0.16.</span> <span class="toc-text">16、从信号量到进程通信</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、共享存储区通信"><span class="toc-number">2.0.16.1.</span> <span class="toc-text">1、共享存储区通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、信箱通信"><span class="toc-number">2.0.16.2.</span> <span class="toc-text">2、信箱通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、消息缓冲通信"><span class="toc-number">2.0.16.3.</span> <span class="toc-text">3、消息缓冲通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、管道通信"><span class="toc-number">2.0.16.4.</span> <span class="toc-text">4、管道通信</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#17、线程"><span class="toc-number">2.0.17.</span> <span class="toc-text">17、线程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、线程的控制与类型"><span class="toc-number">2.0.17.1.</span> <span class="toc-text">1、线程的控制与类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、进程的常用细化方法"><span class="toc-number">2.0.17.2.</span> <span class="toc-text">2、进程的常用细化方法</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、调度"><span class="toc-number">3.</span> <span class="toc-text">三、调度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、调度的性能指标"><span class="toc-number">3.0.1.</span> <span class="toc-text">1、调度的性能指标</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、周转时间和平均周转时间"><span class="toc-number">3.0.1.1.</span> <span class="toc-text">1、周转时间和平均周转时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、带权周转时间"><span class="toc-number">3.0.1.2.</span> <span class="toc-text">2、带权周转时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、响应时间"><span class="toc-number">3.0.1.3.</span> <span class="toc-text">3、响应时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、其他性能指标"><span class="toc-number">3.0.1.4.</span> <span class="toc-text">4、其他性能指标</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、作业调度算法"><span class="toc-number">3.0.2.</span> <span class="toc-text">2、作业调度算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、先到先服务FCFS-First-Come-First-Served"><span class="toc-number">3.0.2.1.</span> <span class="toc-text">1、先到先服务FCFS(First Come First Served)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、短作业优先SJF-Shortest-Job-First"><span class="toc-number">3.0.2.2.</span> <span class="toc-text">2、短作业优先SJF(Shortest Job First)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、高响应比优先HRN-Highest-Response-ratio-Next"><span class="toc-number">3.0.2.3.</span> <span class="toc-text">3、高响应比优先HRN(Highest Response-ratio Next)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、进程调度方式"><span class="toc-number">3.0.3.</span> <span class="toc-text">3、进程调度方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、进程调度算法"><span class="toc-number">3.0.4.</span> <span class="toc-text">4、进程调度算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、先来先服务FCFS"><span class="toc-number">3.0.4.1.</span> <span class="toc-text">1、先来先服务FCFS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、时间片轮转RR（Round-Robin）"><span class="toc-number">3.0.4.2.</span> <span class="toc-text">2、时间片轮转RR（Round-Robin）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、优先级算法Priority"><span class="toc-number">3.0.4.3.</span> <span class="toc-text">3、优先级算法Priority</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5、实时系统的进程调度"><span class="toc-number">3.0.4.4.</span> <span class="toc-text">5、实时系统的进程调度</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、可调度以及条件"><span class="toc-number">3.0.5.</span> <span class="toc-text">5、可调度以及条件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四、死锁"><span class="toc-number">4.</span> <span class="toc-text">四、死锁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、死锁的分类："><span class="toc-number">4.0.1.</span> <span class="toc-text">1、死锁的分类：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、死锁的特点"><span class="toc-number">4.0.2.</span> <span class="toc-text">2、死锁的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、死锁的原因"><span class="toc-number">4.0.3.</span> <span class="toc-text">3、死锁的原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、死锁的预防"><span class="toc-number">4.0.4.</span> <span class="toc-text">4、死锁的预防</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、死锁的经典问题"><span class="toc-number">4.0.5.</span> <span class="toc-text">5、死锁的经典问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、死锁的避免"><span class="toc-number">4.0.6.</span> <span class="toc-text">6、死锁的避免</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7、银行家算法"><span class="toc-number">4.0.7.</span> <span class="toc-text">7、银行家算法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#五、存储管理"><span class="toc-number">5.</span> <span class="toc-text">五、存储管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、存储器的类型"><span class="toc-number">5.0.1.</span> <span class="toc-text">1、存储器的类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、程序的编码与装入"><span class="toc-number">5.0.2.</span> <span class="toc-text">2、程序的编码与装入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、逻辑地址与物理地址"><span class="toc-number">5.0.3.</span> <span class="toc-text">3、逻辑地址与物理地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、重定位（地址转换）"><span class="toc-number">5.0.4.</span> <span class="toc-text">4、重定位（地址转换）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、静态重定位与动态重定位的特点对比："><span class="toc-number">5.0.5.</span> <span class="toc-text">5、静态重定位与动态重定位的特点对比：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、存储器管理的关键问题"><span class="toc-number">5.0.6.</span> <span class="toc-text">6、存储器管理的关键问题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、存储空间的分配与回收"><span class="toc-number">5.0.6.0.1.</span> <span class="toc-text">1、存储空间的分配与回收</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、重定位方式的确定"><span class="toc-number">5.0.6.0.2.</span> <span class="toc-text">2、重定位方式的确定</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3、实现保护与共享"><span class="toc-number">5.0.6.0.3.</span> <span class="toc-text">3、实现保护与共享</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4、实现虚拟存储技术"><span class="toc-number">5.0.6.0.4.</span> <span class="toc-text">4、实现虚拟存储技术</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7、存储器管理的方法"><span class="toc-number">5.0.7.</span> <span class="toc-text">7、存储器管理的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、从程序的角度分为："><span class="toc-number">5.0.7.1.</span> <span class="toc-text">1、从程序的角度分为：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、从内存分配的角度分为："><span class="toc-number">5.0.7.2.</span> <span class="toc-text">2、从内存分配的角度分为：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8、单一连续区存储管理"><span class="toc-number">5.0.8.</span> <span class="toc-text">8、单一连续区存储管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9、固定分区存储管理"><span class="toc-number">5.0.9.</span> <span class="toc-text">9、固定分区存储管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10、可变分区存储管理"><span class="toc-number">5.0.10.</span> <span class="toc-text">10、可变分区存储管理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、可用表"><span class="toc-number">5.0.10.0.1.</span> <span class="toc-text">1、可用表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、空闲区链表"><span class="toc-number">5.0.10.0.2.</span> <span class="toc-text">2、空闲区链表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3、可变分区存储管理空间分配算法"><span class="toc-number">5.0.10.0.3.</span> <span class="toc-text">3、可变分区存储管理空间分配算法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4、空间分配算法优缺点："><span class="toc-number">5.0.10.0.4.</span> <span class="toc-text">4、空间分配算法优缺点：</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、分布式锁"><span class="toc-number">1.</span> <span class="toc-text">一、分布式锁</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、数据库的唯一索引"><span class="toc-number">1.1.</span> <span class="toc-text">1、数据库的唯一索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、Redis的SETNX指令"><span class="toc-number">1.2.</span> <span class="toc-text">2、Redis的SETNX指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、Redis的RedLock算法"><span class="toc-number">1.3.</span> <span class="toc-text">3、Redis的RedLock算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4、Zookeeper的有序节点"><span class="toc-number">1.4.</span> <span class="toc-text">4、Zookeeper的有序节点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、Zookeeper抽象模型"><span class="toc-number">1.4.1.</span> <span class="toc-text">1、Zookeeper抽象模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、节点类型"><span class="toc-number">1.4.2.</span> <span class="toc-text">2、节点类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、监听器"><span class="toc-number">1.4.3.</span> <span class="toc-text">3、监听器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、分布式锁实现"><span class="toc-number">1.4.4.</span> <span class="toc-text">4、分布式锁实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、会话超时"><span class="toc-number">1.4.5.</span> <span class="toc-text">5、会话超时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、羊群效应"><span class="toc-number">1.4.6.</span> <span class="toc-text">6、羊群效应</span></a></li></ol></li></ol></li></ol>
            </div>
            <script type="text/javascript">
             function showToc(){

@@ -439,7 +439,7 @@
 
 
   
-    <article id="post-一、分布式锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-HBase" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -447,7 +447,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="2018/12/11/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_blank">分布式锁</a>
+	  <a class="article-title" href="2019/11/25/HBase/" target="_blank">HBase</a>
   
     </h1>
   
@@ -455,8 +455,8 @@
 
   
   
-<a href="2018/12/11/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="archive-article-date">
-        <time datetime="2018-12-11T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-11</time>
+<a href="2019/11/25/HBase/" class="archive-article-date">
+        <time datetime="2019-11-25T03:24:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-25</time>
 </a>
 
   
@@ -468,44 +468,110 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、分布式锁"><a href="#一、分布式锁" class="headerlink" title="一、分布式锁"></a>一、分布式锁</h1><p>在单机场景下，可以使用Java里的内置所来实现进行同步。但是在分布式场景下，需要同步的进程可能位于不同的节点上，那么就需要使用分布式锁。</p>
-<p>阻塞所通常使用互斥量来实现：</p>
+    <h1 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h1><p>​        由于关系型数据库用来解决数据存储和维护有关的问题。大数据出现后，大多公司实现处理大数据，并开始选择Hadoop的解决方案。Hadoop使用分布式文件系统HDFS，用来存储大数据，使用MapReduce来处理数据。</p>
+<p>​        Hadoop只能执行批量处理，而且是按顺序访问数据。也就是表明必须搜索整个数据集。如果想要处理结果在另一个庞大的数据，也是按照顺序处理一个巨大的数据集。为此，需要访问数据中的任何点的单元，也就是随机访问，出现新的解决方案。</p>
+<p>​        Hadoop随机存取数据库的应用，HBase，Cassandra，CouchDB，Dynamo，MongoDB都是一些存储大量数据和随机访问访问的非关系型数据库。</p>
 <ul>
-<li>互斥量mutex为0表示有其他进程在使用锁，此时处于锁定状态。</li>
-<li>互斥量mutex为1表示未锁定状态。</li>
+<li>海量数据存储成为瓶颈，单机无法负载大量数据</li>
+<li>单机IO读写请求成为海量数据存储，高并发，大规模的瓶颈</li>
+<li>随着数据规模越来越大，大量业务场景开始考虑数据存储横向水平扩展，让存储服务可以增加/删除 ，而大部分关系型数据库更专注在一台机器。</li>
 </ul>
-<p>1和0可以用一个整形值表示，也可以用某个数据是否存在表示。</p>
-<h2 id="1、数据库的唯一索引"><a href="#1、数据库的唯一索引" class="headerlink" title="1、数据库的唯一索引"></a>1、数据库的唯一索引</h2><p>获取锁时向表中插入一条记录，释放锁时删除这条记录。唯一索引可以保证该记录只被插入一次，那么就可以用这个记录是否存在来判断是否在锁定状态。</p>
-<p>存在以下几个问题：</p>
+<h1 id="二、HBase简介"><a href="#二、HBase简介" class="headerlink" title="二、HBase简介"></a>二、HBase简介</h1><p>​        HBase是BigTable的开源版本，使用Java编写的。是Apache Hadoop的数据库，建立在HDFS上，用来提供，高可靠，高性能，列存储，可伸缩，多版本的NoSQL的分布式数据库。可以实现对大型数据的实时、随机的读写访问。</p>
 <ul>
-<li>锁没有失效时间，解锁失败的话，其他进程无法再获得该锁。</li>
-<li>只能是非阻塞锁，插入失败直接就报错，无法重试。</li>
-<li>不可重入，已经获得锁的进程也必须重新获取锁。</li>
+<li>HBase依赖HDFS做底层的数据存储，BigTable依赖Google GFS做数据存储</li>
+<li>HBase依赖MapReduce进行数据计算，BigTable依赖Google MapReduce做数据计算</li>
+<li>HBase依赖Zookeeper做服务协调，BigTable依赖Google Chubby做服务协调</li>
 </ul>
-<h2 id="2、Redis的SETNX指令"><a href="#2、Redis的SETNX指令" class="headerlink" title="2、Redis的SETNX指令"></a>2、Redis的SETNX指令</h2><p>使用SETNX（set if not exist）指令插入一个键值对，如果key已经存在，那么会返回false，否则插入成功并返回true。</p>
-<p>SETNX指令和数据库的唯一索引类似，保证了只存在一个key的键值对，那么可以用一个key的键值对是否存在来判断是否存于锁定状态。</p>
-<p>EXPIRE指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引方式中释放锁失败的问题。也就是数据库的唯一索引解决方案的升级而已，只是可以设置过期时间。</p>
-<h2 id="3、Redis的RedLock算法"><a href="#3、Redis的RedLock算法" class="headerlink" title="3、Redis的RedLock算法"></a>3、Redis的RedLock算法</h2><p>使用了多个Redis实例来实现分布式锁，这是为了保证在发生单点故障时仍然可用。多个Redis实例实现，也就是即使一台Redis挂了，还可以有其他的服务可用。</p>
-<ul>
-<li>尝试从N个互相独立的Redis实例中获取锁。</li>
-<li>计算获取锁消耗的时间，只有当这个时间小于锁的过期时间，并且从大多数(N/2+1)，半数以上的实例上获取锁，那么就认为获取锁成功了。</li>
-<li>如果锁获取失败，就到每个实例上释放锁。</li>
+<h3 id="1、非关系型和关系型数据库"><a href="#1、非关系型和关系型数据库" class="headerlink" title="1、非关系型和关系型数据库"></a>1、非关系型和关系型数据库</h3><ul>
+<li>NoSQL：HBase，Redis，MongoDB</li>
+<li>RDBMS：MySQL，Oracle，SQL Server</li>
 </ul>
-<h2 id="4、Zookeeper的有序节点"><a href="#4、Zookeeper的有序节点" class="headerlink" title="4、Zookeeper的有序节点"></a>4、Zookeeper的有序节点</h2><h3 id="1、Zookeeper抽象模型"><a href="#1、Zookeeper抽象模型" class="headerlink" title="1、Zookeeper抽象模型"></a>1、Zookeeper抽象模型</h3><p>Zookeeper提供了一种树型结构的命名空间，/app1/p_1节点的父节点为app1。有点类似linux系统文件系统，文件目录树</p>
-<h3 id="2、节点类型"><a href="#2、节点类型" class="headerlink" title="2、节点类型"></a>2、节点类型</h3><ul>
-<li>永久节点：不会因为会话结束或者超时而消失。</li>
-<li>临时节点：如果会话结束或者超时就会消失。</li>
-<li>有序节点：会在节点名的后面加上一个数字后缀，并且是有序的。例如生成的有序节点为/lock/node-0000000000，它的下一个有序节点就是/lock/node-0000000001，以此类推。</li>
+<h3 id="2、HBase重点"><a href="#2、HBase重点" class="headerlink" title="2、HBase重点"></a>2、HBase重点</h3><ul>
+<li>HBase介于NoSQL和RDBMS之间，只能通过主键rowkey和主键的range来检索数据</li>
+<li>HBase查询数据功能很简单，不支持join等关键查询复杂操作，可以通过Hive支持来实现多表join</li>
+<li>HBase不支持复杂的事务，只支持行级事务</li>
+<li>HBase中纯支持的数据类型，byte[]，底层所有数据的存储都是字节数组</li>
+<li>HBase主要来存储结构化和半结构化的松散数据<ul>
+<li>结构化数据：数据结构字段清晰，比如数据库的表结构</li>
+<li>半结构化：具有一定结构，语义不太确定，比如html网页的数据。</li>
 </ul>
-<h3 id="3、监听器"><a href="#3、监听器" class="headerlink" title="3、监听器"></a>3、监听器</h3><p>为一个节点注册监听器，在节点状态发生改变的时候，会给客户端发送消息 。</p>
-<h3 id="4、分布式锁实现"><a href="#4、分布式锁实现" class="headerlink" title="4、分布式锁实现"></a>4、分布式锁实现</h3><ul>
-<li>创建一个目录/lock。</li>
-<li>当一个客户端需要获取锁时，在/lock下创建临时的且有序的子节点。</li>
-<li>客户端获取/lock下的子节点列表，判断自己创建的子节点是否为当前子节点列表中序号最小的子节点，如果是则认为获得锁。否则监听自己的前一个子节点，获得子节点的变更通知后重复此步骤直到获取锁为止。</li>
-<li>执行业务代码，完成后，删除对应的子节点。</li>
+</li>
 </ul>
-<h3 id="5、会话超时"><a href="#5、会话超时" class="headerlink" title="5、会话超时"></a>5、会话超时</h3><p>如果一个已经获的锁的会话超时了，因为创建的是临时节点，所以该会话对应的临时节点会被删除，其他会话就可以获取锁。可以看到zookeeper分布式锁不会出现数据库的唯一索引的分布式锁释放锁失败的问题。</p>
-<h3 id="6、羊群效应"><a href="#6、羊群效应" class="headerlink" title="6、羊群效应"></a>6、羊群效应</h3><p>一个节点未获得锁，只需要监听自己前一个子节点，这是因为如果监听所有的子节点，那么任意一个子节点状态改变，其他所有子节点都会收到通知(羊群效应)，而我们秩序网它的后一个子节点收到通知。</p>
+<h3 id="3、HBase的表"><a href="#3、HBase的表" class="headerlink" title="3、HBase的表"></a>3、HBase的表</h3><ul>
+<li>数据量大：一张表可以有上十亿行，上百万列的数据</li>
+<li>面向列：列（族）的存储和权限控制，列簇独立检索</li>
+<li>稀疏数据：对于null的空列，并不会占用存储空间，在设计表的时候可以非常稀疏</li>
+<li>无模式：每行都有一个可以排序的主键rowkey和任意多的列，列可以根据需要动态的增加，同一张表中不同的行可以有截然不同的列</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">Rowkey</th>
+<th align="right">ColumnFamily</th>
+<th align="left">:CF1</th>
+<th align="right">ColumnFamily</th>
+<th align="left">:CF2</th>
+<th align="center">TimeStamp</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"></td>
+<td align="right">Column:Name</td>
+<td align="left">Column:Alias</td>
+<td align="right">Column:Age</td>
+<td align="left">Column:Sex</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">rk001</td>
+<td align="right">zhangsan</td>
+<td align="left">shanghai</td>
+<td align="right">22</td>
+<td align="left">M</td>
+<td align="center">T1</td>
+</tr>
+<tr>
+<td align="center">rk002</td>
+<td align="right">lisi</td>
+<td align="left">beijing</td>
+<td align="right">25</td>
+<td align="left">F</td>
+<td align="center">T2</td>
+</tr>
+</tbody></table>
+<h4 id="3-1、RowKey的含义"><a href="#3-1、RowKey的含义" class="headerlink" title="3.1、RowKey的含义"></a>3.1、RowKey的含义</h4><h5 id="3-1-1、rowkey"><a href="#3-1-1、rowkey" class="headerlink" title="3.1.1、rowkey"></a>3.1.1、rowkey</h5><p>​        HBase中的rowkey和MySQL中的主键是完全一样的，来唯一的区分某一行的数据。</p>
+<h5 id="3-1-2、HBase支持3种查询方式："><a href="#3-1-2、HBase支持3种查询方式：" class="headerlink" title="3.1.2、HBase支持3种查询方式："></a>3.1.2、HBase支持3种查询方式：</h5><ul>
+<li>基于Rowkey单行查询</li>
+<li>基于Rowkey的范围扫描</li>
+<li>全表扫描</li>
+</ul>
+<h5 id="3-1-3、rowkey分析"><a href="#3-1-3、rowkey分析" class="headerlink" title="3.1.3、rowkey分析"></a>3.1.3、rowkey分析</h5><ul>
+<li><p>rowkey对HBase的性能影响很大，rowkey的设计也很重要，设计的时候需要考虑基于rowkey单行查询，还要考虑rowkey的范围查询。</p>
+</li>
+<li><p>rowkey行主键，可以是任意字符串，最大长度为64kb，实际中一般是10~100b，最好是16。HBase内部，rowkey保存为字节数组。HBase会对表中的数据按照rowkey进行字典序排序</p>
+</li>
+</ul>
+<h4 id="3-2、Column的含义"><a href="#3-2、Column的含义" class="headerlink" title="3.2、Column的含义"></a>3.2、Column的含义</h4><ul>
+<li>列，可以理解为MySQL的列</li>
+</ul>
+<h4 id="3-3、ColumnFamily的含义"><a href="#3-3、ColumnFamily的含义" class="headerlink" title="3.3、ColumnFamily的含义"></a>3.3、ColumnFamily的含义</h4><ul>
+<li>列族，HBase引入的定义</li>
+<li>HBase通过列族划分数据的存储，列族下面可以包含若干个列，实现灵活的数据存取。就如同一个家族一样，列族是由一个个列组成。</li>
+<li>HBase的表在创建的时候必须指定列族，就像你在MySQL创建表的时候必须指定具体的列一样。</li>
+<li>HBase的列族并不是越多越好，一般列族最好是小于等于3个，一般常用1个列族</li>
+</ul>
+<h4 id="3-4、TimeStamp的含义"><a href="#3-4、TimeStamp的含义" class="headerlink" title="3.4、TimeStamp的含义"></a>3.4、TimeStamp的含义</h4><ul>
+<li>TimeStamp是实现HBase多版本的关键。HBase中使用不同的TimeStamp来标识相同rowkey行对应的不同版本的数据。类似Hive表中的时间分区字段。</li>
+<li>HBase中通过rowkey和column确定一个存储单元为cell，每个cell保存同一份数据的多个版本。版本通过时间戳来索引。时间戳可以在HBase写入数据的时候自动赋值。为了避免数据版本冲突，必须自己生成具有唯一性的时间戳。一般每个cell中，不同版本的数据按照时间倒序，最新的数据在最前面。</li>
+<li>为了避免数据存太多版本造成存储和索引的负担，HBase还提供了2种版本回收方式<ul>
+<li>保存数据的最后n个版本</li>
+<li>保存最近一段时间内的版本(可以设置数据的生命周期TTL)</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-5、单元格Cell"><a href="#3-5、单元格Cell" class="headerlink" title="3.5、单元格Cell"></a>3.5、单元格Cell</h4><ul>
+<li>由rowkey，column，version唯一确定的单元。Cell中的数据是没有类型的，全部是字节码byte[]形式存储。</li>
+</ul>
 
     
 
@@ -522,7 +588,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
         		</li>
       		
 		</ul>
@@ -532,7 +598,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="2018/12/11/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">展开全文 >></a>
+      <a class="article-more-a" href="2019/11/25/HBase/">展开全文 >></a>
     </p>
     
 
@@ -1676,7 +1742,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2018-2019 Victor Dan
+    		&copy; 2017-2019 Victor Dan
     	</div>
       	<div class="footer-right">
 			
