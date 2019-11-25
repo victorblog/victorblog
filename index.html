@@ -218,7 +218,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="2018/10/04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_blank">Spark的学习</a>
+	  <a class="article-title" href="2018/10/04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_blank">Spark的使用</a>
   
     </h1>
   
@@ -239,7 +239,7 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、Spark-Core的学习"><a href="#一、Spark-Core的学习" class="headerlink" title="一、Spark Core的学习"></a>一、Spark Core的学习</h1><h4 id="1、下载并安装Spark"><a href="#1、下载并安装Spark" class="headerlink" title="1、下载并安装Spark"></a>1、下载并安装Spark</h4><p><a href="http://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz">下载链接</a></p>
+    <h1 id="一、Spark-Core的使用"><a href="#一、Spark-Core的使用" class="headerlink" title="一、Spark Core的使用"></a>一、Spark Core的使用</h1><h4 id="1、下载并安装Spark"><a href="#1、下载并安装Spark" class="headerlink" title="1、下载并安装Spark"></a>1、下载并安装Spark</h4><p><a href="http://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz">下载链接</a></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">安装spark相关命令</span></span><br><span class="line">cd /usr</span><br><span class="line">sudo mkdir spark</span><br><span class="line">cd ~/下载/软件安装包</span><br><span class="line">sudo mv spark-2.4.4-bin-hadoop2.7.tgz /usr/spark/</span><br><span class="line">cd /usr/spark/</span><br><span class="line">sudo tar -zxvf spark-2.4.4-bin-hadoop2.7.tgz</span><br><span class="line">cd spark-2.4.4-bin-hadoop2.7/</span><br><span class="line"><span class="meta">#</span><span class="bash">配置spark相关文件,切换到conf目录</span></span><br><span class="line">cd conf/</span><br><span class="line"><span class="meta">#</span><span class="bash">复制一个模板sh文件，设置spark的</span></span><br><span class="line">cp spark-env.sh.template spark-env.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">配置spark需要的jdk环境，以及使用的内存，核心数</span></span><br><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_201</span><br><span class="line">export SPARK_MASTER_IP=SparkMaster</span><br><span class="line">export SPARK_WORKER_MEMORY=2g</span><br><span class="line">export SPARK_WORKER_CORES=2</span><br><span class="line">export SPARK_WORKER_INSTANCES=1</span><br><span class="line">cp slaves.template slaves </span><br><span class="line"><span class="meta">#</span><span class="bash">配置spark的slave</span></span><br><span class="line">vim slaves</span><br></pre></td></tr></table></figure>
 
 <p><img src="/2018/10/04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/spark-env.sh%E9%85%8D%E7%BD%AE.png" alt></p>
