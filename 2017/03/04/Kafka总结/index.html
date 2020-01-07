@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://victorblog.github.io">
-  <title>Kafka的应用 | VictorDan</title>
+  <title>Kafka的总结 | VictorDan</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="一、Kafka的应用1、Spark&#x2F;Spark Streaming 实时计算充当消费者，消费Kafka的消息。也就是说Spark大约有90%的数据会来自kafka。 2、kafka有两种消息发送模式2.1、点对点（一对一）模式。只能一个生产者，一个消费者这样，消费者消费一条数据，然后表示接收到了，然后再回复一个确认收到，则消费一条数据，消息队列就删掉一条数据。如果想要多个消费者消费消息，就不行了。">
+  <meta name="description" content="Kafka的总结">
 <meta name="keywords" content="大数据">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kafka的应用">
-<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;10&#x2F;03&#x2F;Kafka%E7%9A%84%E5%BA%94%E7%94%A8&#x2F;index.html">
+<meta property="og:title" content="Kafka的总结">
+<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2017&#x2F;03&#x2F;04&#x2F;Kafka%E6%80%BB%E7%BB%93&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
-<meta property="og:description" content="一、Kafka的应用1、Spark&#x2F;Spark Streaming 实时计算充当消费者，消费Kafka的消息。也就是说Spark大约有90%的数据会来自kafka。 2、kafka有两种消息发送模式2.1、点对点（一对一）模式。只能一个生产者，一个消费者这样，消费者消费一条数据，然后表示接收到了，然后再回复一个确认收到，则消费一条数据，消息队列就删掉一条数据。如果想要多个消费者消费消息，就不行了。">
+<meta property="og:description" content="Kafka的总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-25T02:52:00.525Z">
+<meta property="og:updated_time" content="2020-01-07T10:31:24.364Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
@@ -198,14 +198,14 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Kafka的应用" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Kafka总结" class="article article-type-post " itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
   
   
     <h1 class="article-title" itemprop="name">
-      Kafka的应用
+      Kafka的总结
     </h1>
   
 
@@ -218,7 +218,7 @@
         </span>
 
 <a href="" class="archive-article-date">
-        <time datetime="2018-10-03T02:44:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-03</time>
+        <time datetime="2017-03-04T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-04</time>
 </a>
 
   
@@ -231,7 +231,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">1.5k字</span>
+      <span class="post-count">2.4k字</span>
     </span>
   </span>
 
@@ -240,7 +240,7 @@
     <span class="post-meta-item-icon">
       <i class="icon-book icon"></i>
       <span class="post-meta-item-text"> 阅读时长≈</span>
-      <span class="post-count">5分</span>
+      <span class="post-count">8分</span>
     </span>
   </span>
 </div>
@@ -251,28 +251,59 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、Kafka的应用"><a href="#一、Kafka的应用" class="headerlink" title="一、Kafka的应用"></a>一、Kafka的应用</h1><h3 id="1、Spark-Spark-Streaming-实时计算"><a href="#1、Spark-Spark-Streaming-实时计算" class="headerlink" title="1、Spark/Spark Streaming 实时计算"></a>1、Spark/Spark Streaming 实时计算</h3><p>充当消费者，消费Kafka的消息。也就是说Spark大约有90%的数据会来自kafka。</p>
-<h3 id="2、kafka有两种消息发送模式"><a href="#2、kafka有两种消息发送模式" class="headerlink" title="2、kafka有两种消息发送模式"></a>2、kafka有两种消息发送模式</h3><h4 id="2-1、点对点（一对一）模式。"><a href="#2-1、点对点（一对一）模式。" class="headerlink" title="2.1、点对点（一对一）模式。"></a>2.1、点对点（一对一）模式。</h4><p>只能一个生产者，一个消费者这样，消费者消费一条数据，然后表示接收到了，然后再回复一个确认收到，则消费一条数据，消息队列就删掉一条数据。如果想要多个消费者消费消息，就不行了。</p>
-<h4 id="2-2、发布订阅（publish-subscribe-）"><a href="#2-2、发布订阅（publish-subscribe-）" class="headerlink" title="2.2、发布订阅（publish/subscribe ）"></a>2.2、发布订阅（publish/subscribe ）</h4><p>​        发布订阅有两种，一种是生产者把消息发送到队列里，然后主动推送消息给消费者，有点类似你订阅的微信公众号，只要有新的消息就会推送给消费者。但是这种机制有一个缺点就是，比如你生产者生产消息的速度是100M/s，但是，你多个消费者可能处理消息的速度都不一样，有的50M/s，有的200M/s，而直接推送消息这种方式，处理速度慢的消费者就会直接崩掉。而处理速度快的又会造成很大的资源浪费。第二种是消费者主动拉取数据，会根据自身数据处理速度拉取。但是有问题，消费者要隔一段时间的轮询消息队列，看有没有新的消息产生。假如某种情况下，这样也容易造成一些资源浪费。kafka的发布订阅方式是消费者主动拉取数据。</p>
-<h3 id="3、Kafka中的相关定义"><a href="#3、Kafka中的相关定义" class="headerlink" title="3、Kafka中的相关定义"></a>3、Kafka中的相关定义</h3><h4 id="3-1、Offset"><a href="#3-1、Offset" class="headerlink" title="3.1、Offset"></a>3.1、Offset</h4><p>​        作用就是记录消费位，比如你消费到第6条，broker挂了，它会保存记录到zookeeper 里，kafka的0.9版本之前都是保存在zk中，之后就直接保存在kafka里也就是本地存储。不管你保存在zk也好，也是本地kafka集群也好，offset都是用来管理消息消费偏移量的<br>为什么要改保存到kafka集群本地呢？你zk存的好好的，首先消费者本身跟kafka直接连接的，我在kafka里面获取数据的同时，还要维护跟zk的连接，首先消费者是以拉取的方式获取消息的，本身拉取速度是非常快的，可能你消费者一秒要拉取消息好几次，还要跟zk这边打交道好几次，这样太频繁了，就会影响效率，而zk本身是来提供各大框架之间润滑技的作用，那你此时这么高并发的请求，存到zk里面也不好，后来把offset存到本地，这个本地不是本地磁盘，而是存到kafka本地。kafka存数据是存在topic 里面，kafka存消息是存到磁盘上的，默认保留七天，配置文件里写的是168个小时</p>
-<h4 id="3-2、topic"><a href="#3-2、topic" class="headerlink" title="3.2、topic"></a>3.2、topic</h4><p>​        看成是一个消息队列，因为生产者消费者面向的都是一个topic。</p>
+    <h1 id="1、Kafka有哪些特点？"><a href="#1、Kafka有哪些特点？" class="headerlink" title="1、Kafka有哪些特点？"></a>1、Kafka有哪些特点？</h1><ul>
+<li>高吞吐量、低延迟：Kafka每秒可以处理几十万条消息，它的延迟最低只有几ms，每个topic可以分多个partition，Consumer group对partition进行consume操作。</li>
+<li>可扩展性：Kafka集群支持热扩展</li>
+<li>持久性、可靠性：消息被持久化到本地磁盘，并且支持数据备份防止数据丢失。</li>
+<li>容错性：允许集群中节点失败，加入副本数为n，则允许n-1个节点失败</li>
+<li>高并发：支持数千个客户端同时读写</li>
+</ul>
+<h1 id="2、哪些场景下会选择Kafka？"><a href="#2、哪些场景下会选择Kafka？" class="headerlink" title="2、哪些场景下会选择Kafka？"></a>2、哪些场景下会选择Kafka？</h1><ul>
+<li>日志收集：公司用Kafka手机各种服务的log，通过Kafka以统一接口服务的方式开放给各种consumer，比如hadoop，HBase，Spark，Flink等</li>
+<li>消息系统：解耦生产者和消费者，缓存消息</li>
+<li>用户活动跟踪：Kafka经常被用来记录web用户或者app用户的各种活动，比如浏览网页，搜索，点击等活动，这些活动信息被各个服务器发布到kafka的topic中，然后订阅者通过订阅这些topic来做实时的监控分析，或者落到HDFS，数据仓库中做离线分析和挖掘。</li>
+<li>运营指标：Kafka经常用来记录运营监控数据。包括收集各种分布式应用的数据，生产各种操作的集中反馈，比如报警和报告。</li>
+<li>流式处理：spark streaming和Flink</li>
+</ul>
+<h1 id="3、Kafka分区的目的？"><a href="#3、Kafka分区的目的？" class="headerlink" title="3、Kafka分区的目的？"></a>3、Kafka分区的目的？</h1><p>partition分区对于kafka集群的好处是：实现负载均衡。分区对于消费者来说，可以提高并发度，提高效率。</p>
+<h1 id="4、Kafka是如何做到消息的有序性？"><a href="#4、Kafka是如何做到消息的有序性？" class="headerlink" title="4、Kafka是如何做到消息的有序性？"></a>4、Kafka是如何做到消息的有序性？</h1><p>kafka中的每个partition中的消息在写入的时候都是有序的，而且单独一个partition只能由一个消费者去消费。可以在里面保证消息的顺序性，但是分区之间的消息不保证有序的。</p>
+<h1 id="5、Kafka是如何保证数据可靠性和一致性？"><a href="#5、Kafka是如何保证数据可靠性和一致性？" class="headerlink" title="5、Kafka是如何保证数据可靠性和一致性？"></a>5、Kafka是如何保证数据可靠性和一致性？</h1><h3 id="5-1、数据可靠性"><a href="#5-1、数据可靠性" class="headerlink" title="5.1、数据可靠性"></a>5.1、数据可靠性</h3><h4 id="1、Topic分区副本"><a href="#1、Topic分区副本" class="headerlink" title="1、Topic分区副本"></a>1、Topic分区副本</h4><p>​        在kafka0.8.0之前，kafka是没有副本partition的概念的，那时人们只会用Kafka存储一些不重要的数据，因为没有副本，数据可能会丢失。但是随着业务发展，支持副本的功能越来越强大，为了保证数据的可靠性，kafka从0.8.0版本开始引入了分区副本。也就是每个分区可以人为的配置几个副本，比如在创建主题的时候指定replication-factor，也可以在Broker级别进行配置default.replication.factor，一般会设置为3个副本。</p>
+<p>​        kafka可以保证单个分区里的消息是有序的，分袂可以在线可用，可以离线不可用。在多个分区副本里面有一个副本是leader，其余的副本是follower，所有的读写操作都是经过leader进行的，同时follower会定期的去leader上复制数据。当leader挂了，其中一个follower会重新成为新的leader，通过分区副本，引入了数据冗余，同时提供了kafka的数据可靠性。</p>
+<p>​        kafka的分区副本架构是kafka可靠性保证的核心，把消息写入多个副本可以让kafka在发生崩溃的时候仍能保证消息的持久性。</p>
+<h4 id="2、Producer往Broker发送消息"><a href="#2、Producer往Broker发送消息" class="headerlink" title="2、Producer往Broker发送消息"></a>2、Producer往Broker发送消息</h4><p>​        如果我们要往kafka对应的topic发送消息，我们需要通过Producer完成，kafka主题对应了多个分区partition，每个分区下面又对应了多个副本。为了让用户设置数据可靠性，Kafka在Producer里面提供了消息确认机制。也就是说我们可以通过配置来决定消息发送到对应分区的几个副本才算消息发送成功。可以在定义Producer时通过acks参数指定。这个acks参数支持3个值：</p>
 <ul>
-<li><p>partition分区</p>
-<p>为了实现扩展性，一个非常大的topic主题，会分布到多个broker（服务器）上。一个topic可以分为多个分区partition，而每个partition是一个有序队列。</p>
+<li>acks=0：表示如果生产者能够通过网络把消息发送出去，那么就任务消息已经成功写入kafka。这种情况下还是有可能发生错误，比如发送的对象不能被序列化或者网卡发生故障，但如果是分区离线或者整个集群长时间不可用，那么就不会收到任何错误。在acks=0模式下的运行速度是非常快的，很多基准测试都是这个模式，你可以得到惊人的吞吐量和带宽利用率，不过这种模式，一定会丢失一些消息。</li>
+<li>acks=1:意味着如果leader在收到消息并把消息写到分区数据文件，并不一定同步到磁盘上时，会返回确认或者错误响应。这个模式下，如果发生正常的leader选举，生产者会在选举时收到一个LeaderNotAvaiableException异常，如果生产者能恰当的处理这个错误，它会重试发送消息，最终消息会安全到达新的Leader里。不过在这个模式下仍然可能丢失数据，比如消息已经成功写入Leader，但是在消息被赋值到follower副本之前Leader发生崩溃。</li>
+<li>acks=all:这个和旧版本参数request.required.acks=-1的意义一样：意味着Leader在返回确认或者错误响应之前，会等待所有同步副本都受到消息，如果和min.insync.replicas参数结合起来。就可以决定在返回确认前至少有多少个副本能够收到消息，生产者会一直重试直到消息被成功提交。不过这也是最慢的做法，因为生产者在继续发送其他消息之前需要等待所有副本都收到当前的消息。</li>
+</ul>
+<p>Producer发送消息还可以选择同步，producer.type=sync默认是同步。也可以配置成异步producer..type=async模式。如果设置成异步，虽然会极大的提高消息发送性能，但是这样会增加丢数据的风险。如果需要确保消息的可靠性，必须将producer.type=sync。</p>
+<h4 id="3、Leader选举"><a href="#3、Leader选举" class="headerlink" title="3、Leader选举"></a>3、Leader选举</h4><p>​        ISR（in-sync replicas）列表。每个分区的leader会维护一个ISR列表，ISR列表里面就是follower副本的Broker编号，之后跟的上Leader的follower副本才能加入到ISR里面，这个是通过replica.lag.time.max.ms参数配置的，只有ISR里的成员才有被选举为Leader的可能。</p>
+<p>​        当Leader 挂了，而且unclean.leader.election.enable=false情况下，kafka会从ISR列表中选择第一个follower作为新的leader，因为这个分区拥有最新的已经commit的消息，通过这个可以保证赢commit的消息的数据可靠性。</p>
+<p>​        为了保证数据的可靠性，至少需要配置以下几个参数：</p>
+<ul>
+<li>producer级别：acks=all(旧版本request.required.acks=-1)，同时发生模式改为同步producer.type=sync</li>
+<li>topic级别：设置replication.factor&gt;=3,并且min.insync.replicas&gt;=2</li>
+<li>broker级别：关闭不完全的leader选举，unclean.leader.election.enable=false;</li>
+</ul>
+<h3 id="5-2、数据一致性"><a href="#5-2、数据一致性" class="headerlink" title="5.2、数据一致性"></a>5.2、数据一致性</h3><p>​    此处的数据一致性是不论新的Leader还是新选举的Leader，consumer都能督导一样的数据。</p>
+<p>​        假如分区的副本partition为3，其中副本0是leader，副本1和副本2是follower，并且在ISR列表里面，虽然副本0已经写入了Message4，但是Consumer只能读到Message2。因为所有的ISR都同步了Message2，只有High Water Mark以上的消息才支持Consumer读取，而High Water Mark取决于ISR列表里面的偏移量最小的分区。类似木桶效应。</p>
+<p>​        这样做的原因是还没有被足够多副本赋值的消息被认为是不安全的，如果Leader发生崩溃，另一个副本成为新Leader，那么这些消息很可能丢失了。如果我们允许消费者读取这些消息，就可能会破坏一致性。试想，一个消费者从当前Leader也就是副本0读取并处理了Message4，这个时候Leader挂了，选举了副本1作为新的Leader，此时另一个消费者再去从新的Leader读取消息，发现这个消息其实并不存在，这就导致了数据不一致性问题。</p>
+<p>​        引入High Water Mark机制，会导致Broker间的消息赋值因为某些原因变慢，那么消息达到消费者的时间也会随之边长，因为我们会先等待消息复制完毕。延迟时间可以通过参数replica.lag.time.max.ms参数配置，它指定了副本在复制消息时可被允许的最大延迟时间。</p>
+<h1 id="6、ISR、OSR、AR是什么？"><a href="#6、ISR、OSR、AR是什么？" class="headerlink" title="6、ISR、OSR、AR是什么？"></a>6、ISR、OSR、AR是什么？</h1><ul>
+<li><p>ISR：In-Sync Replicas副本同步队列</p>
 </li>
-<li><p>replication是副本</p>
-<p>为保证集群中，当某个节点发生故障时，保证节点上的数据不丢失，而且kafka还能继续工作，kafka提供了副本机制，也就是一个topic的每一个分区，都有许多个副本。也就是一个leader和许多个follower。当然follower肯定不能再同一个broker，不然副本毫无意义。</p>
+<li><p>OSR：Out-of-Sync Replicas</p>
 </li>
-<li><p>leader副本</p>
-<p>leader是每个分区多个副本的主，生产者发送数据的对象，以及消费者消费数据的对象都是leader。每个分区多个副本的从，实时的从leader主副本同步数据，保持和leader数据同步，当某个leader分区挂了，某一个follwer从副本会成为新的leader分区启动kafka之前要先启动zk，因为kafka依赖于zk</p>
+<li><p>AR：Assigned Replicas所有副本</p>
 </li>
-<li><p>消费者组consumer group</p>
+<li><p>ISR由leader维护，follower从leader同步数据有一些延迟，超过相应的阈值会把follower剔除ISR，存入到OSR列表，新加入的follower也会先存放在OSR中。AR=ISR+OSR。</p>
 </li>
 </ul>
-<p>也就是同一个消费者组里面的消费者，消费topic不同分区，也就是不能消费同一个分区的数据</p>
-<h4 id="3-3、关于leader何时向follwer发送ack"><a href="#3-3、关于leader何时向follwer发送ack" class="headerlink" title="3.3、关于leader何时向follwer发送ack"></a>3.3、关于leader何时向follwer发送ack</h4><p>​        有两种想法，一是，半数以上的follwer同步完成数据，leader发送ack，但是这种解决方案，至少需要2n+1台服务器。容易造成资源浪费，还有很多重复的副本。第二种解决方案是，所有的服务器都同步完成，也就是总共有n+1台服务器，但是这样仍然有一个问题，就是，假如同步过程中，有一个follwer可能由于网络问题，长时间的没有和leader同步数据，这样就要一直等下去，容易造成资源浪费，因此就出现了ISR机制。kafka使用的是第二种方案<br>​        leader维护一个ISR（in sync replication set）叫做和follwer保持同步的集合，当ISR中的follwer和leader同步数据完成后，leader就会发出ack给follower。如果follwer长时间没有向leader同步数据，则这个follwer就会被踢出ISR，replica.lag.time.max.ms这个参数决定follwer的这个长时间的最大限度（默认值是10000ms，也就是10s之内同步完，否则被踢出isr）。如果leader挂了，就会选择follwer作为新的leader。选举follwer作为新的leader的时候，是看消息条数最多的，作为新的。因为数据越多的丢数据越少。</p>
-<ul>
-<li>ack的应答机制<br>  对某些不重要的数据，可靠性要求不是很高的数据，能够容忍少量丢失数据。所以，没必要等ISR中的的follwer都同步完数据。Kafka提供了3种可靠性级别，可以让用户使用的时候，对可靠性和延迟进行权衡。</li>
+<h1 id="7、LEO、HW、LSO、LW等分别代表什么？"><a href="#7、LEO、HW、LSO、LW等分别代表什么？" class="headerlink" title="7、LEO、HW、LSO、LW等分别代表什么？"></a>7、LEO、HW、LSO、LW等分别代表什么？</h1><ul>
+<li>LEO：是LogEndOffset的简称，代表当前日志文件中最后一条</li>
+<li>HW：水位或者水印watermark，也叫作高水位High Watermark。通常被用在流式处理领域，比如Flink，Spark等。用来表示元素或者事件在基于事件层面上的进度。在Kafka中，水位的概念反而与时间无关，而是和位置信息有关。严格而说，它表示的位置信息，也就是位移offset，取partition对应的ISR中最小的LEO为HW，Consumer最多只能消费到HW所在的位置上一条消息。</li>
+<li>LSO：是LastStableOffset简称，对未完成的事务而言，LSO的值等于事务中第一条消息的位置firstUnstableOffset，对已完成的事务而言，它的值和HW相同。</li>
+<li>LW：Low Watermark低水位，代表AR集合中最小的logStartOffset值。</li>
 </ul>
 
     
@@ -320,7 +351,7 @@
         </li>
         <li>
           <strong>本文链接：</strong>
-          <a href="https://victorblog.github.io/2018/10/03/Kafka的应用/" title="Kafka的应用" target="_blank">https://victorblog.github.io/2018/10/03/Kafka的应用/</a>
+          <a href="https://victorblog.github.io/2017/03/04/Kafka总结/" title="Kafka的总结" target="_blank">https://victorblog.github.io/2017/03/04/Kafka总结/</a>
         </li>
         <li>
           <strong>版权声明： </strong>
@@ -395,7 +426,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://victorblog.github.io/2018/10/03/Kafka%E7%9A%84%E5%BA%94%E7%94%A8/" alt="微信分享二维码"> -->
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://victorblog.github.io/2017/03/04/Kafka%E6%80%BB%E7%BB%93/" alt="微信分享二维码"> -->
     </div>
 </div>
 
@@ -410,18 +441,18 @@
 
 <nav id="article-nav">
   
-    <a href="../HBase/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="../Kafka%E7%9A%84%E5%BA%94%E7%94%A8/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          HBase
+          Kafka的应用
         
       </div>
     </a>
   
   
-    <a href="../../02/Hive1/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Hive基本概念</div>
+    <a href="../../01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">消息队列</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -448,7 +479,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、Kafka的应用"><span class="toc-number">1.</span> <span class="toc-text">一、Kafka的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、Spark-Spark-Streaming-实时计算"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、Spark/Spark Streaming 实时计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、kafka有两种消息发送模式"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、kafka有两种消息发送模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1、点对点（一对一）模式。"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">2.1、点对点（一对一）模式。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2、发布订阅（publish-subscribe-）"><span class="toc-number">1.0.2.2.</span> <span class="toc-text">2.2、发布订阅（publish/subscribe ）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、Kafka中的相关定义"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、Kafka中的相关定义</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1、Offset"><span class="toc-number">1.0.3.1.</span> <span class="toc-text">3.1、Offset</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、topic"><span class="toc-number">1.0.3.2.</span> <span class="toc-text">3.2、topic</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3、关于leader何时向follwer发送ack"><span class="toc-number">1.0.3.3.</span> <span class="toc-text">3.3、关于leader何时向follwer发送ack</span></a></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1、Kafka有哪些特点？"><span class="toc-number">1.</span> <span class="toc-text">1、Kafka有哪些特点？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2、哪些场景下会选择Kafka？"><span class="toc-number">2.</span> <span class="toc-text">2、哪些场景下会选择Kafka？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3、Kafka分区的目的？"><span class="toc-number">3.</span> <span class="toc-text">3、Kafka分区的目的？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4、Kafka是如何做到消息的有序性？"><span class="toc-number">4.</span> <span class="toc-text">4、Kafka是如何做到消息的有序性？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5、Kafka是如何保证数据可靠性和一致性？"><span class="toc-number">5.</span> <span class="toc-text">5、Kafka是如何保证数据可靠性和一致性？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1、数据可靠性"><span class="toc-number">5.0.1.</span> <span class="toc-text">5.1、数据可靠性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、Topic分区副本"><span class="toc-number">5.0.1.1.</span> <span class="toc-text">1、Topic分区副本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、Producer往Broker发送消息"><span class="toc-number">5.0.1.2.</span> <span class="toc-text">2、Producer往Broker发送消息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、Leader选举"><span class="toc-number">5.0.1.3.</span> <span class="toc-text">3、Leader选举</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2、数据一致性"><span class="toc-number">5.0.2.</span> <span class="toc-text">5.2、数据一致性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6、ISR、OSR、AR是什么？"><span class="toc-number">6.</span> <span class="toc-text">6、ISR、OSR、AR是什么？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7、LEO、HW、LSO、LW等分别代表什么？"><span class="toc-number">7.</span> <span class="toc-text">7、LEO、HW、LSO、LW等分别代表什么？</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -474,9 +505,9 @@
     <script src="https://giteement.oss-cn-beijing.aliyuncs.com/giteement.browser.js"></script>
   
   <script>
-  <!-- id: "Kafka的应用" -->
+  <!-- id: "Kafka的总结" -->
   var giteement = new Giteement({
-    id: '20181003104434',
+    id: '20170304100600',
     owner: 'victorblog',
     repo: 'victorblog',
     backcall_uri: 'https://victorblog.github.io/',
@@ -505,7 +536,7 @@
             <div id="toc-article" class="toc-article">
                 <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
                 <strong class="toc-title">文章目录</strong>
-                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、Kafka的应用"><span class="toc-number">1.</span> <span class="toc-text">一、Kafka的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、Spark-Spark-Streaming-实时计算"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、Spark/Spark Streaming 实时计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、kafka有两种消息发送模式"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、kafka有两种消息发送模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1、点对点（一对一）模式。"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">2.1、点对点（一对一）模式。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2、发布订阅（publish-subscribe-）"><span class="toc-number">1.0.2.2.</span> <span class="toc-text">2.2、发布订阅（publish/subscribe ）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、Kafka中的相关定义"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、Kafka中的相关定义</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1、Offset"><span class="toc-number">1.0.3.1.</span> <span class="toc-text">3.1、Offset</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、topic"><span class="toc-number">1.0.3.2.</span> <span class="toc-text">3.2、topic</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3、关于leader何时向follwer发送ack"><span class="toc-number">1.0.3.3.</span> <span class="toc-text">3.3、关于leader何时向follwer发送ack</span></a></li></ol></li></ol></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1、Kafka有哪些特点？"><span class="toc-number">1.</span> <span class="toc-text">1、Kafka有哪些特点？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2、哪些场景下会选择Kafka？"><span class="toc-number">2.</span> <span class="toc-text">2、哪些场景下会选择Kafka？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3、Kafka分区的目的？"><span class="toc-number">3.</span> <span class="toc-text">3、Kafka分区的目的？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4、Kafka是如何做到消息的有序性？"><span class="toc-number">4.</span> <span class="toc-text">4、Kafka是如何做到消息的有序性？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5、Kafka是如何保证数据可靠性和一致性？"><span class="toc-number">5.</span> <span class="toc-text">5、Kafka是如何保证数据可靠性和一致性？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1、数据可靠性"><span class="toc-number">5.0.1.</span> <span class="toc-text">5.1、数据可靠性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、Topic分区副本"><span class="toc-number">5.0.1.1.</span> <span class="toc-text">1、Topic分区副本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、Producer往Broker发送消息"><span class="toc-number">5.0.1.2.</span> <span class="toc-text">2、Producer往Broker发送消息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、Leader选举"><span class="toc-number">5.0.1.3.</span> <span class="toc-text">3、Leader选举</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2、数据一致性"><span class="toc-number">5.0.2.</span> <span class="toc-text">5.2、数据一致性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6、ISR、OSR、AR是什么？"><span class="toc-number">6.</span> <span class="toc-text">6、ISR、OSR、AR是什么？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7、LEO、HW、LSO、LW等分别代表什么？"><span class="toc-number">7.</span> <span class="toc-text">7、LEO、HW、LSO、LW等分别代表什么？</span></a></li></ol>
            </div>
            <script type="text/javascript">
             function showToc(){
@@ -532,7 +563,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017-2019 Victor Dan
+    		&copy; 2017-2020 Victor Dan
     	</div>
       	<div class="footer-right">
 			
@@ -680,11 +711,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
             
             <div class="clearfix"></div>

@@ -210,524 +210,6 @@
 
 
   
-    <article id="post-分布式锁的3种实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/" target="_blank">分布式锁的使用</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/" class="archive-article-date">
-        <time datetime="2018-06-15T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-15</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、分布式锁"><a href="#一、分布式锁" class="headerlink" title="一、分布式锁"></a>一、分布式锁</h1><h3 id="1、为什么要使用分布式锁"><a href="#1、为什么要使用分布式锁" class="headerlink" title="1、为什么要使用分布式锁"></a>1、为什么要使用分布式锁</h3><p>​    如果需要对一个共享变量进行多线程同步访问的时候，可以使用java多线程进行运行。</p>
-<p>​    如果是单机应用，也就是所有的请求都会分配到当前服务器的JVM内部，然后映射为操作系统的线程进行处理，而这个共享变量只是在这个JVM内部的一块内存空间。</p>
-<p>​    后续业务发展，需要做集群，一个应用需要部署好几台机器然后做负载均衡。</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E5%9C%BA%E6%99%AF.png" alt></p>
-<p>一个共享变量A，存在JVM1，JVM2，JVM3，这3个JVM内存中，这个变量A主要体现是在一个类中的一个成员变量，是一个有状态的对象。</p>
-<p>比如UserController中的一个int类型的成员变量。如果不加任何控制的话，变量A同时都会在JVM分配一块内存，3个请求发过来，同时对这个变量操作，显然结果是不对的。即使不是同时发过来，3个请求分别操作3个不同JVM内存区域的数据，变量A之间不共享的话，也不具有可见性的话，处理结果也是不对的。</p>
-<h3 id="2、解决问题"><a href="#2、解决问题" class="headerlink" title="2、解决问题"></a>2、解决问题</h3><p>​    为了保证一个方法或者属性在高并发情况下的同一时间只能被同一个线程运行，在传统单体应用单机部署的情况下，可以使用Java并发处理相关的API（比如ReentrantLock，Synchronized）进行互斥控制。在单机环境中，Java中提供了很多并发处理的API。但是随着业务发展的需要，原来的单机部署的系统被演化为分布式集群系统后，由于分布式系统多线程，多进程并且分布在不同机器上，这将使得原单机部署情况下的并发控制锁策略失效，单纯的Java API并不能呢提供分布式锁的能力。为了解决这个问题就需要一种跨JVM的互斥机制来控制共享资源的访问，这就是分布式锁要解决的问题。</p>
-<h3 id="3、分布式锁具备的条件"><a href="#3、分布式锁具备的条件" class="headerlink" title="3、分布式锁具备的条件"></a>3、分布式锁具备的条件</h3><ul>
-<li>在分布式系统环境下，一个方法在同一时间只能被一个机器的一个线程执行。</li>
-<li>高可用的获取锁与释放锁</li>
-<li>高性能的获取锁与释放锁</li>
-<li>具备可重入特性</li>
-<li>具备锁失效机制，防止死锁</li>
-<li>具备非阻塞锁特性，也就是没有获取到锁将直接返回获取锁失败。</li>
-</ul>
-<h3 id="4、分布式锁的3种实现方式"><a href="#4、分布式锁的3种实现方式" class="headerlink" title="4、分布式锁的3种实现方式"></a>4、分布式锁的3种实现方式</h3><p>​    目前大型网站应用都是分布式部署，分布式场景中的数据一致性问题一直是一个重要的问题。出现了CAP定理。任何一个分布式系统都无法同时满足一致性(Consistency)，可用性(Availablility)，分区容忍性(Partition tolerance)，只能同时满足2个。</p>
-<p>​    目前在绝大多数场景中，都是需要牺牲强一致性来换取系统的高可用性，系统往往只需要保证最终一致性就行。也就是只要这个最终时间是在用户可以接受的范围内就行。</p>
-<p>​    在很多场景中，我们为了保证数据的最终一致性，需要很多技术支持。比如分布式事务，分布式锁。需要保证一个方法在同一个时间内只能被同一个线程执行。</p>
-<ul>
-<li>基于数据库实现分布式锁</li>
-<li>基于缓存Redis等，实现分布式锁</li>
-<li>基于Zookeeper实现分布式锁</li>
-</ul>
-<h4 id="1、基于数据库实现排它锁-互斥锁"><a href="#1、基于数据库实现排它锁-互斥锁" class="headerlink" title="1、基于数据库实现排它锁(互斥锁)"></a>1、基于数据库实现排它锁(互斥锁)</h4><h5 id="1-1、解决方法1：使用唯一索引约束。"><a href="#1-1、解决方法1：使用唯一索引约束。" class="headerlink" title="1.1、解决方法1：使用唯一索引约束。"></a>1.1、解决方法1：使用唯一索引约束。</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`method_lock`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`method_lock`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'主键'</span>,</span><br><span class="line">  <span class="string">`method_name`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'锁定的方法名'</span>,</span><br><span class="line">  <span class="string">`update_time`</span> <span class="built_in">timestamp</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">  <span class="string">`PRIMARY KEY (`</span><span class="keyword">id</span><span class="string">`),</span></span><br><span class="line"><span class="string">  UNIQUE KEY `</span>uidx_method_name<span class="string">` (`</span>method_name<span class="string">`) USING BTREE</span></span><br><span class="line"><span class="string">) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='锁定中的方法';</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--获取锁</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> method_lock(method_name,<span class="keyword">desc</span>) <span class="keyword">values</span>(<span class="string">'xxxService'</span>,<span class="string">'methodName'</span>;)</span><br></pre></td></tr></table></figure>
-
-<p>这种解决方法，对method_name做了唯一性约束，这里如果有多个请求同时提交到数据库的话，数据库会保证只有一个操作可以成功。</p>
-<h5 id="1-2、解决方法2：先获取锁的信息，然后更新状态。"><a href="#1-2、解决方法2：先获取锁的信息，然后更新状态。" class="headerlink" title="1.2、解决方法2：先获取锁的信息，然后更新状态。"></a>1.2、解决方法2：先获取锁的信息，然后更新状态。</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`method_lock`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`method_lock`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">'主键'</span>,</span><br><span class="line">  <span class="string">`method_name`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'锁定的方法名'</span>,</span><br><span class="line">  <span class="string">`state`</span> <span class="built_in">tinyint</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'1:未分配；2：已分配'</span>,</span><br><span class="line">  <span class="string">`update_time`</span> <span class="built_in">timestamp</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">  <span class="string">`version`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'版本号'</span>,</span><br><span class="line">  <span class="string">`PRIMARY KEY (`</span><span class="keyword">id</span><span class="string">`),</span></span><br><span class="line"><span class="string">  UNIQUE KEY `</span>uidx_method_name<span class="string">` (`</span>method_name<span class="string">`) USING BTREE</span></span><br><span class="line"><span class="string">) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='锁定中的方法';</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--先获取锁的信息</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,method_name,state,<span class="keyword">version</span> <span class="keyword">from</span> method_lock <span class="keyword">where</span> state=<span class="number">1</span> <span class="keyword">and</span> method_name=<span class="string">'methodName'</span>;</span><br><span class="line"><span class="comment">--占有锁</span></span><br><span class="line"><span class="keyword">update</span> method_lock <span class="keyword">set</span> state=<span class="number">2</span>,<span class="keyword">version</span>=<span class="number">2</span>,update_time=<span class="keyword">now</span>()</span><br><span class="line"><span class="keyword">where</span> method_name=<span class="string">'methodName'</span> <span class="keyword">and</span> state=<span class="number">1</span> <span class="keyword">and</span> <span class="keyword">version</span>=<span class="number">2</span>;</span><br><span class="line"><span class="comment">--如果没有更新影响到的这一行数据，说明这个资源已经被别人占位了。</span></span><br></pre></td></tr></table></figure>
-
-<h5 id="1-3、这2种方案都是有弊端"><a href="#1-3、这2种方案都是有弊端" class="headerlink" title="1.3、这2种方案都是有弊端"></a>1.3、这2种方案都是有弊端</h5><ul>
-<li><p>缺点：</p>
-<ul>
-<li>这把锁很依赖数据库的可用性，如果数据库是单个节点，一旦数据库挂了，则业务系统不可用了。</li>
-<li>这把锁还没有失效时间，一旦解锁失败(更新state状态失败)，就会导致锁记录一直在数据库中，其他线程无法获取锁。</li>
-<li>这把锁是非阻塞的，因为数是insert操作，一旦插入失败就会直接报错，没有获取锁的线程就不会进入到等待队列，要想再次获取锁就必须再次触发获取锁的操作。</li>
-<li>这把锁是不可重入的，同一个线程在没有释放锁之前无法再次得到这个所，因为数据已经在数据库中存在了。</li>
-</ul>
-</li>
-<li><p>解决方案：</p>
-<ul>
-<li>数据库是单点的话，可以数据库集群，然后数据之前进行同步，一旦挂掉，快速切换到备份库上。</li>
-<li>没有失效时间，可以搞一个定时任务，每隔一段时间把数据库中的超时的数据delete。</li>
-<li>他是非阻塞的，可以搞一个while循环，直到insert成功后再返回。</li>
-<li>它是不可重入的，可以在数据库表上加一个字段，记录当前获取锁的机器的主机信息和线程信息，那么下次获取锁的时候可以先查询数据库，如果当前及其的主机信息和线程信息在数据库可以查到的话，直接把锁分配给他就行了。</li>
-</ul>
-</li>
-</ul>
-<h4 id="2、基于Redis实现分布式锁"><a href="#2、基于Redis实现分布式锁" class="headerlink" title="2、基于Redis实现分布式锁"></a>2、基于Redis实现分布式锁</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 获取锁使用的命令：</span></span></span><br><span class="line">SET resource_name_value NX PX 30000</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> RedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String LOCK=<span class="string">"distribute_key"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">test</span><span class="params">(String lockKey)</span></span>&#123;</span><br><span class="line">    Boolean lock=<span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加锁的时候，在try块中，尝试获取锁，在finaly块中释放锁。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">//如果key不存在，则新增，如果存在则不改变已经有的值</span></span><br><span class="line">      lock = redisTemplate.opsForValue().setIfAbsent(lockKey, LOCK);</span><br><span class="line">      log.info(<span class="string">"test方法是否获取到锁："</span> + lock);</span><br><span class="line">      <span class="keyword">if</span> (lock) &#123;</span><br><span class="line">          <span class="comment">//todo 业务逻辑</span></span><br><span class="line">          redisTemplate.expire(lockKey, <span class="number">1</span>, TimeUnit.MINUTES);</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          log.info(<span class="string">"test方法没有获取到锁，不执行任务！"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">      <span class="keyword">if</span>(lock)&#123;</span><br><span class="line">          redisTemplate.delete(lockKey);</span><br><span class="line">          log.info(<span class="string">"test方法任务结束，释放锁！"</span>);</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">          log.info(<span class="string">"test方法没获取到锁，不需要释放锁！"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-1、弊端"><a href="#2-1、弊端" class="headerlink" title="2.1、弊端"></a>2.1、弊端</h5><p>首先是这主从结构存在明显的竞争状态：</p>
-<p>客户端A从master获取到锁，在master将锁同步到slave之前，master挂掉了，slave节点被晋级为master节点，客户端B取的了同一个资源被客户端A已经获取到的另外一个锁。安全失效。</p>
-<h4 id="3、基于Zookeeper实现"><a href="#3、基于Zookeeper实现" class="headerlink" title="3、基于Zookeeper实现"></a>3、基于Zookeeper实现</h4><p>​    Zookeeper中有节点的概念，Zk的数据存储结构就像一棵树，这棵树由节点组成，节点叫Znode，有点类似Linux的文件系统结构。</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zookeeper%E8%8A%82%E7%82%B9%E7%BB%93%E6%9E%84.jpeg" alt></p>
-<p>​    Znode有4种类型：</p>
-<ul>
-<li><p>持久节点Persistent</p>
-<p>默认的节点类型，创建节点的客户端与zk断开连接后，这个节点仍然存在。</p>
-</li>
-<li><p>持久节点顺序节点Persistent_Sequential</p>
-<p>顺序节点，就是在创建节点的时候，zk根据创建的时间顺序给该节点名称进行编号。</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zookeeper%E4%B8%AD%E7%9A%84%E9%A1%BA%E5%BA%8F%E8%8A%82%E7%82%B9.jpeg" alt></p>
-</li>
-<li><p>临时节点Ephemeral</p>
-<p>和持久节点相反，当创建节点的客户端与zk断开后，临时节点会被删除。</p>
-</li>
-</ul>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zookeeper%E5%88%9B%E5%BB%BA%E4%B8%B4%E6%97%B6%E8%8A%82%E7%82%B9.jpeg" alt></p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/../../%E6%A1%8C%E9%9D%A2/md/images/%E5%88%9B%E5%BB%BA%E8%8A%82%E7%82%B9%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8Ezk%E6%96%AD%E5%BC%80.jpeg" alt></p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E4%B8%B4%E6%97%B6%E8%8A%82%E7%82%B9%E4%BC%9A%E8%A2%AB%E5%88%A0%E9%99%A4.jpeg" alt></p>
-<ul>
-<li><p>临时顺序节点（Ephemeral_Sequential）</p>
-<p>临时顺序节点就是结合了临时节点和顺序节点的特点：在创建临时节点的时候，zk根据创建的时间顺序给节点名称进行编号，当创建节点的客户端与zk断开连接后，临时顺序节点被删除。</p>
-</li>
-</ul>
-<h5 id="3-1、Zookeeper分布式锁的原理"><a href="#3-1、Zookeeper分布式锁的原理" class="headerlink" title="3.1、Zookeeper分布式锁的原理"></a>3.1、Zookeeper分布式锁的原理</h5><p>Zk分布式锁使用的是临时顺序节点，也就是客户端断开连接后，会删除该节点，然后客户端创建节点的时候，会按照时间顺序来对临时节点命名。</p>
-<ul>
-<li><p>获取锁</p>
-<ul>
-<li>首先在zk中创建一个持久节点ParentLock，当第一个客户端想要获取锁的时候，需要在ParentLock这个节点下面创建临时顺序节点Lock1。</li>
-</ul>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/zk%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%EF%BC%9A%E8%8E%B7%E5%8F%96%E9%94%81.jpeg" alt></p>
-</li>
-</ul>
-<ul>
-<li><p>Client1查找ParnentLock下面所有的临时顺序节点并排序，然后判断自己创建的节点Lock1是不是顺序最靠前的一个节点。如果是第一个节点，就成功获取锁。</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%88%A4%E6%96%AD%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E7%9A%84%E8%8A%82%E7%82%B9%E6%98%AF%E4%B8%8D%E6%98%AF%E7%AC%AC%E4%B8%80%E4%B8%AA.jpeg" alt></p>
-</li>
-<li><p>这个时候，再有一个客户端Client2前来获取锁，首先在ParentLock下再创建一个临时顺序节点Lock2</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%86%8D%E6%9C%89%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AFClient2%E6%9D%A5%E8%8E%B7%E5%8F%96%E9%94%81%EF%BC%8C%E5%85%88%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%B4%E6%97%B6%E9%A1%BA%E5%BA%8F%E8%8A%82%E7%82%B9Lock2.jpeg" alt></p>
-</li>
-<li><p>Client2查找ParnentLock下面所有的临时顺序节点并排序，判断它自己创建的节点Lock2是不是顺序最靠前的一个，结果发现节点Lock2并不是最小的。于是，Client2向排序仅仅比他靠前的节点Lock1注册Watcher，用来监听Lock1节点是否存在。这意味者此时Client2抢锁失败，进入了等待状态。</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client2%E5%90%91%E6%AF%94%E4%BB%96%E9%9D%A0%E5%89%8D%E7%9A%84Lock1%E6%B3%A8%E5%86%8CWatcher%EF%BC%8C%E6%84%8F%E5%91%B3%E7%9D%80%E6%8A%A2%E9%94%81%E5%A4%B1%E8%B4%A5%EF%BC%8C%E8%BF%9B%E5%85%A5%E7%AD%89%E5%BE%85%E7%8A%B6%E6%80%81.jpeg" alt></p>
-</li>
-<li><p>假如这个时候，又有一个客户端Client3前来获取锁，则在ParentLock下再创建一个临时顺序节点Lock3</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%8F%88%E6%9D%A5%E4%B8%80%E4%B8%AAClient3%E6%9D%A5%E8%8E%B7%E5%8F%96%E9%94%81%EF%BC%8C%E5%88%99%E5%85%88%E5%9C%A8ParentLock%E4%B8%AD%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E4%B8%B4%E6%97%B6%E9%A1%BA%E5%BA%8F%E8%8A%82%E7%82%B9.jpeg" alt></p>
-</li>
-<li><p>Client3查找ParentLock下面所有的临时顺序节点并排序，判断自己所创建的节点Lock3是不是顺序最靠前的一个，结果同样发现节点Lock3并不是最小的。</p>
-<p>于是，Client3向排序仅仅比他靠前的节点Lock2注册Watcher，用来监听Lock2节点是否存在，这意味这Client3同样抢锁失败，进入了等待状态。</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client3%E5%90%91%E6%AF%94%E8%87%AA%E5%B7%B1%E9%9D%A0%E5%89%8D%E7%9A%84%E8%8A%82%E7%82%B9Lock2%E6%B3%A8%E5%86%8CWatcher%EF%BC%8C%E6%8A%A2%E9%94%81%E5%A4%B1%E8%B4%A5%EF%BC%8C%E8%BF%9B%E5%85%A5%E7%AD%89%E5%BE%85%E7%8A%B6%E6%80%81.jpeg" alt></p>
-</li>
-<li><p>这样就形成了，Client1获取了锁，Client2监听了Lock1，Client3监听额Lock2。从而形成了一个等待队列，很像Java中ReentrantLock所依赖的。</p>
-</li>
-</ul>
-<ul>
-<li><p>释放锁</p>
-<ul>
-<li><p>1、任务完成，客户端显示释放</p>
-<p>当任务完成后，Client1会显示调用删除节点Lock1的指令。</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client1%E4%BB%BB%E5%8A%A1%E5%AE%8C%E6%88%90%EF%BC%8C%E4%BC%9A%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9Lock1.jpeg" alt></p>
-</li>
-<li><p>2、任务执行过程中，客户端崩溃</p>
-<p>得到锁的Client1在执行任务过程中，突然挂了，则会断开与Zk服务端的连接，根据临时节点的特性，它自己创建的节点也会被自动删除。</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client1%E8%BF%90%E8%A1%8C%E4%B8%AD%E7%AA%81%E7%84%B6%E6%8C%82%E4%BA%86%EF%BC%8C%E5%88%99zk%E4%BC%9A%E8%87%AA%E5%8A%A8%E5%88%A0%E9%99%A4%E5%AE%83%E7%9A%84%E8%8A%82%E7%82%B9.jpeg" alt></p>
-<p>由于Client2一直监听者Lock1的存在状态，当Lock1节点被删除后，Client2会立刻得到通知，这时候Client2会再次查ParentLock下面的所有节点，确认自己创建的节点Lock22是不是目前最小的节点，如果是最小，则Client2就成功获取了锁。</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/Client2%E7%9B%91%E5%90%ACLock1%E7%9A%84%E8%8A%82%E7%82%B9%E5%AD%98%E5%9C%A8%E7%8A%B6%E6%80%81%EF%BC%8CLock1%E8%8A%82%E7%82%B9%E8%A2%AB%E5%88%A0%E9%99%A4%EF%BC%8CClient2%E4%BC%9A%E7%AB%8B%E5%88%BB%E5%BE%97%E5%88%B0%E9%80%9A%E7%9F%A5%EF%BC%8C%E7%84%B6%E5%90%8Eclient2%E5%9C%A8%E6%9F%A5%E8%AF%A2ParentLock%E4%B8%8B%E9%9D%A2%E6%89%80%E6%9C%89%E8%8A%82%E7%82%B9%E5%B9%B6%E6%8E%92%E5%BA%8F%EF%BC%8C%E7%A1%AE%E4%BF%9D%E8%87%AA%E5%B7%B1%E5%88%9B%E5%BB%BA%E7%9A%84%E8%8A%82%E7%82%B9%E6%98%AF%E7%AC%AC%E4%B8%80%E4%B8%AA.jpeg" alt></p>
-<p>同理，如果Client2也因为任务完成或者节点崩溃而删除了Lock2，那么Client3会收到通知。</p>
-<p><img src="/2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/%E5%90%8C%E7%90%86Client3.jpeg" alt></p>
-<p>最终，Client3成功获取锁。</p>
-</li>
-</ul>
-</li>
-</ul>
-<h5 id="3-2、实现方法"><a href="#3-2、实现方法" class="headerlink" title="3.2、实现方法"></a>3.2、实现方法</h5><p>可以直接使用zk第三方库Curator客户端，这个客户端封装了一个可重入的锁服务。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * InterProcessMutex是分布式锁的实现，acquire方法用户获取锁，release释放锁</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> InterProcessMutex interProcessMutex;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(<span class="keyword">long</span> timeout,TimeUnit unit)</span></span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            interProcessMutex.acquire(timeout,unit);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ExecutorCompletionService executorService;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">unLock</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            interProcessMutex.release();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">//executorService.schedule(new Cleaner(client,path),delayTimeForClean,TimeUnit.MILLISECONDS);</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>缺点：</p>
-<p>​    性能上，并没有缓存那么高，因为每次在创建锁和释放锁的过程中，都需要动态创建按，销毁临时顺序节点来实现锁功能。zk中创建和删除节点只能通过leader服务器来执行，然后将数据同步到所有的follwer服务器上。</p>
-<p>​    使用zk也有可能带来并发问题，只是并不常见。由于网络抖动，客户端与zk集群的session连接断了，那么zk以为客户端挂了，就会删除临时节点，这时候其他客户端就可以获取到分布式锁了。也有可能产生并发问题，并不常见，因为zk有重试机制，一旦zk集群检测不到客户端的心跳，你就会重试，Curator客户端（操作zk的客户端）支持多种重试策略    ，多次重试之后还是不行的话，就会删除临时节点。因此，选择一个合适的重试策略也很重要，要在锁的粒度和并发之前找一个平衡。</p>
-</li>
-</ul>
-<h3 id="5、总结"><a href="#5、总结" class="headerlink" title="5、总结"></a>5、总结</h3><table>
-<thead>
-<tr>
-<th align="center">分布式锁</th>
-<th align="center">优点</th>
-<th align="center">缺点</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">Zk</td>
-<td align="center">1、有封装好的框架，容易实现。2、有等待锁的队列，大大提升抢锁效率。</td>
-<td align="center">添加和删除节点性能比较低</td>
-</tr>
-<tr>
-<td align="center">Redis</td>
-<td align="center">Set和Del执行的性能比较高</td>
-<td align="center">1、实现复杂，需要考虑超时，原子性，误删的情况。2、没有等待锁的队列，只能在客户端自旋来等待，效率比较低。</td>
-</tr>
-</tbody></table>
-<h3 id="6、3种方案比较使用"><a href="#6、3种方案比较使用" class="headerlink" title="6、3种方案比较使用"></a>6、3种方案比较使用</h3><p>3种方法，就如同CAP一样，在复杂性，可靠性，性能等方面无法同事满足。应该根据不同应用场景，选择最合适的分布式锁。</p>
-<h4 id="6-1、从理解的难易程度上，从低到高"><a href="#6-1、从理解的难易程度上，从低到高" class="headerlink" title="6.1、从理解的难易程度上，从低到高"></a>6.1、从理解的难易程度上，从低到高</h4><p>数据库——-&gt;Redis——-&gt;Zk</p>
-<h4 id="6-2、从实现的复杂程度上，从低到高"><a href="#6-2、从实现的复杂程度上，从低到高" class="headerlink" title="6.2、从实现的复杂程度上，从低到高"></a>6.2、从实现的复杂程度上，从低到高</h4><p>zk————-&gt;Redis——-&gt;数据库</p>
-<h4 id="6-3、从性能角度，从低到高"><a href="#6-3、从性能角度，从低到高" class="headerlink" title="6.3、从性能角度，从低到高"></a>6.3、从性能角度，从低到高</h4><p>数据库————–&gt;zk———&gt;Redis</p>
-<h4 id="6-4、从可靠性角度，从低到高"><a href="#6-4、从可靠性角度，从低到高" class="headerlink" title="6.4、从可靠性角度，从低到高"></a>6.4、从可靠性角度，从低到高</h4><p>zk—————&gt;Redis—————&gt;数据库</p>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2018/06/15/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%843%E7%A7%8D%E5%AE%9E%E7%8E%B0/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-一、分布式锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2018/06/15/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_blank">分布式锁</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2018/06/15/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="archive-article-date">
-        <time datetime="2018-06-15T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-15</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、分布式锁"><a href="#一、分布式锁" class="headerlink" title="一、分布式锁"></a>一、分布式锁</h1><p>在单机场景下，可以使用Java里的内置所来实现进行同步。但是在分布式场景下，需要同步的进程可能位于不同的节点上，那么就需要使用分布式锁。</p>
-<p>阻塞所通常使用互斥量来实现：</p>
-<ul>
-<li>互斥量mutex为0表示有其他进程在使用锁，此时处于锁定状态。</li>
-<li>互斥量mutex为1表示未锁定状态。</li>
-</ul>
-<p>1和0可以用一个整形值表示，也可以用某个数据是否存在表示。</p>
-<h2 id="1、数据库的唯一索引"><a href="#1、数据库的唯一索引" class="headerlink" title="1、数据库的唯一索引"></a>1、数据库的唯一索引</h2><p>获取锁时向表中插入一条记录，释放锁时删除这条记录。唯一索引可以保证该记录只被插入一次，那么就可以用这个记录是否存在来判断是否在锁定状态。</p>
-<p>存在以下几个问题：</p>
-<ul>
-<li>锁没有失效时间，解锁失败的话，其他进程无法再获得该锁。</li>
-<li>只能是非阻塞锁，插入失败直接就报错，无法重试。</li>
-<li>不可重入，已经获得锁的进程也必须重新获取锁。</li>
-</ul>
-<h2 id="2、Redis的SETNX指令"><a href="#2、Redis的SETNX指令" class="headerlink" title="2、Redis的SETNX指令"></a>2、Redis的SETNX指令</h2><p>使用SETNX（set if not exist）指令插入一个键值对，如果key已经存在，那么会返回false，否则插入成功并返回true。</p>
-<p>SETNX指令和数据库的唯一索引类似，保证了只存在一个key的键值对，那么可以用一个key的键值对是否存在来判断是否存于锁定状态。</p>
-<p>EXPIRE指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引方式中释放锁失败的问题。也就是数据库的唯一索引解决方案的升级而已，只是可以设置过期时间。</p>
-<h2 id="3、Redis的RedLock算法"><a href="#3、Redis的RedLock算法" class="headerlink" title="3、Redis的RedLock算法"></a>3、Redis的RedLock算法</h2><p>使用了多个Redis实例来实现分布式锁，这是为了保证在发生单点故障时仍然可用。多个Redis实例实现，也就是即使一台Redis挂了，还可以有其他的服务可用。</p>
-<ul>
-<li>尝试从N个互相独立的Redis实例中获取锁。</li>
-<li>计算获取锁消耗的时间，只有当这个时间小于锁的过期时间，并且从大多数(N/2+1)，半数以上的实例上获取锁，那么就认为获取锁成功了。</li>
-<li>如果锁获取失败，就到每个实例上释放锁。</li>
-</ul>
-<h2 id="4、Zookeeper的有序节点"><a href="#4、Zookeeper的有序节点" class="headerlink" title="4、Zookeeper的有序节点"></a>4、Zookeeper的有序节点</h2><h3 id="1、Zookeeper抽象模型"><a href="#1、Zookeeper抽象模型" class="headerlink" title="1、Zookeeper抽象模型"></a>1、Zookeeper抽象模型</h3><p>Zookeeper提供了一种树型结构的命名空间，/app1/p_1节点的父节点为app1。有点类似linux系统文件系统，文件目录树</p>
-<h3 id="2、节点类型"><a href="#2、节点类型" class="headerlink" title="2、节点类型"></a>2、节点类型</h3><ul>
-<li>永久节点：不会因为会话结束或者超时而消失。</li>
-<li>临时节点：如果会话结束或者超时就会消失。</li>
-<li>有序节点：会在节点名的后面加上一个数字后缀，并且是有序的。例如生成的有序节点为/lock/node-0000000000，它的下一个有序节点就是/lock/node-0000000001，以此类推。</li>
-</ul>
-<h3 id="3、监听器"><a href="#3、监听器" class="headerlink" title="3、监听器"></a>3、监听器</h3><p>为一个节点注册监听器，在节点状态发生改变的时候，会给客户端发送消息 。</p>
-<h3 id="4、分布式锁实现"><a href="#4、分布式锁实现" class="headerlink" title="4、分布式锁实现"></a>4、分布式锁实现</h3><ul>
-<li>创建一个目录/lock。</li>
-<li>当一个客户端需要获取锁时，在/lock下创建临时的且有序的子节点。</li>
-<li>客户端获取/lock下的子节点列表，判断自己创建的子节点是否为当前子节点列表中序号最小的子节点，如果是则认为获得锁。否则监听自己的前一个子节点，获得子节点的变更通知后重复此步骤直到获取锁为止。</li>
-<li>执行业务代码，完成后，删除对应的子节点。</li>
-</ul>
-<h3 id="5、会话超时"><a href="#5、会话超时" class="headerlink" title="5、会话超时"></a>5、会话超时</h3><p>如果一个已经获的锁的会话超时了，因为创建的是临时节点，所以该会话对应的临时节点会被删除，其他会话就可以获取锁。可以看到zookeeper分布式锁不会出现数据库的唯一索引的分布式锁释放锁失败的问题。</p>
-<h3 id="6、羊群效应"><a href="#6、羊群效应" class="headerlink" title="6、羊群效应"></a>6、羊群效应</h3><p>一个节点未获得锁，只需要监听自己前一个子节点，这是因为如果监听所有的子节点，那么任意一个子节点状态改变，其他所有子节点都会收到通知(羊群效应)，而我们秩序网它的后一个子节点收到通知。</p>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2018/06/15/%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-分布式理论" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" target="_blank">分布式常识总结</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" class="archive-article-date">
-        <time datetime="2018-06-14T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-14</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、基础知识"><a href="#一、基础知识" class="headerlink" title="一、基础知识"></a>一、基础知识</h1><h2 id="1、分布式基础理论"><a href="#1、分布式基础理论" class="headerlink" title="1、分布式基础理论"></a>1、分布式基础理论</h2><h3 id="1、什么是分布式系统？"><a href="#1、什么是分布式系统？" class="headerlink" title="1、什么是分布式系统？"></a>1、什么是分布式系统？</h3><p>《分布式系统原理与范型》定义：</p>
-<p>分布式系统是若干独立计算机的<strong>集合</strong>，这些计算机对于用户来说就像<strong>单个相关系统</strong>。</p>
-<p>分布式系统(distributed system)是建立在<strong>网络</strong>之上的软件系统</p>
-<p>eg：比如我们在使用京东商城进行购物的时候，我们登陆京东商城完成整个购物。对于我们的用户使用来说，我们体会到的是一个完整的京东商城系统。实际上京东商城后面有成千上万台独立的计算机为我们提供服务。这些所有计算机合起来它构成了一个完整的京东商城系统。京东商城它是一个分布式系统。</p>
-<h3 id="2、为什么要有分布式系统？"><a href="#2、为什么要有分布式系统？" class="headerlink" title="2、为什么要有分布式系统？"></a>2、为什么要有分布式系统？</h3><p>随着互联网的发展，网站应用的规模不断扩大，常规的垂直应用架构已经无法应对，分布式服务架构以及流动计算架构势在必行，亟需<strong>一个治理系统</strong>确保架构有条不紊的演进。</p>
-<p>eg：比如我们的应用是淘宝级别的，可能没有任何一台服务器能抵挡得住像双11那么大的用户量，每秒要处理几十万的数据。有几个亿的实时数据处理。面对这种情况怎么办呢？我们既然有一个超大型系统，把这个大型系统划分成一个个的小功能模块，把这些功能模块分布在各个计算机上，那这么多的计算机就合起来组成一个完整的系统为我们提供服务。这就是我们分布式的架构思想。毕竟三个臭皮匠，顶个诸葛亮，这么多的计算机合起来就能抵御住非常大的流量。在这种情况下，我们把大型系统，分成一个个小模块(小服务)。而这些小模块(小服务)之间也有着千丝万缕的关系。比如A可能要用到B。而B呢可能要用到C，C可能要用到D，D回过头又得用到B等等。这么复杂的关系我们亟需要一个治理系统来维护我们这个复杂的关系，保证我们系统有条不紊的进行。而我们的Dubbo就能维护和治理这些复杂的关系。那么有了dubbo，我们就能轻而易举的使用分布式的思想来架构我们一个应用。</p>
-<h3 id="3、应用架构的发展演变"><a href="#3、应用架构的发展演变" class="headerlink" title="3、应用架构的发展演变"></a>3、应用架构的发展演变</h3><p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/%E5%8F%91%E5%B1%95%E6%BC%94%E5%8F%98.png" alt></p>
-<ul>
-<li><p><strong>单一应用架构</strong></p>
-<p>当网站流量很小时，只需要一个应用，将所有功能都部署在一起，以减少部署节点和成本。此时，用于简化增删改查工作量的数据访问框架(ORM)是关键。</p>
-<p>比如：超市的收银系统，公司的一些管理系统，一些小型的网站应用等等。比如我们有一个小型的购物网站，它只能少量的人来提供服务，流量很小。比如网站里面有非常多的功能：用户，商品，订单。由于我们网站访问量还是很小的，我们没必要把它做成一个大型的分布式应用。所以说，我们可以将所有的功能都放在一个应用里面。然后将整个应用打包部署放在服务器里。开发简单，部署也简单。某一天网站的访问量大，服务器受不了了。我们可以再来一个服务器，同样都来跑这个应用。两个服务器一起来分担流量压力。</p>
-<p>但是单一应用会带来一些缺点：1、扩展不容易，比如某个功能模块修改了，我们要把整个应用重新打包部署到服务器上。服务器如果有多台，我们就扩展不容易。2、我们协同开发也不容易，大家都去改这一个应用，可能都会改乱，不利于我们应用的维护。</p>
-</li>
-<li><p>垂直应用架构</p>
-<p>当我们的应用规模不断扩大。比如我们以前的应用只要10Mb</p>
-<p>我们应用不断扩大到了500Mb，还是单体应用放在一个服务器里面。单台服务器跑这么大的应用，压力也是很大，光靠增加每一个服务器，已经不能带来性能上的极大提升了。那么接下来就要重新考虑一下我们应用的架构方式。我们就来到第二阶段，叫垂直的应用架构(Vertical Application)。</p>
-<p>我们可以将那么大的单体应用，垂直拆分成几个互不相干的小应用。这些小应用独立部署在每一个服务器上。哪一个小应用的功能增加了，我们只改这些小应用，包括这些小应用流量很大了，我们把它多放在几台服务器上。垂直拆分的好处：</p>
-<p>1、我们分工合作很容易，每一个人负责开发和维护不同的应用。这样就互不干扰。</p>
-<p>2、性能扩展也是很容易的，比如我们的用户应用访问量增大了。我们就把它多复制上几份放到几台服务器上。我们三五台服务器上一起来跑。我们扩展是很容易的。不像是之前的单体应用，一扩展就带上整个应用。我们只是扩展小应用，想要扩展哪一部分就扩展这一个应用就行了，其他的应用先不用动。但是呢？即使是这样的架构也是有一些缺点的：因为每一个小的应用都是完整的，包含界面，业务逻辑，数据库等等。但是呢？我们市场上对界面的要求会经常发生变化，美工天天会改这个页面，一个页面一改，我们整个应用都要重新部署，现在没法做到：1、界面和业务逻辑的实现分离。2、我们应用后来也会增多。垂直应用从用户模块，商品模块，订单模块，增多到支付模块，物流模块等等，这种情况下，我们不能理想情况下，让应用跟应用直接会互相独立。我们的订单可能会用到用户，因为我们创建订单的时候，可能会访问到用户，包括订单还要用到商品的信息。而物流，支付可能会用到订单的一些内容。我们会发现，应用与应用之间可能会进行交互。</p>
-<p>3、应用不可能完全的独立。大量的应用之间需要交互。</p>
-<p>接下来我们怎么办呢？可以采取分布式的应用架构(Distributed Service)，当我们的垂直应用越来越多，应用之间还会进行交互，我们可以把它们的核心业务单独的抽取出来。</p>
-</li>
-<li><p>分布式服务架构(Distributed Service)</p>
-<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84.jpg" alt></p>
-<p>用户的应用抽取出用户的界面web和用户的业务逻辑。订单的界面web和订单的业务逻辑等等。这样做的好处是业务逻辑不变的情况下，我们只想改界面，那界面的服务器重新启动一下，我们的核心的业务逻辑还在其他服务器上。比如我们的用户界面，它要展示我们的用户信息，还要展示商品信息。只需要调对应的服务业务就行了。包括业务之间也可能需要互调。但是现在还要一个最大的问题：我们的用户的Web可能在A服务器上，用户的业务可能放在B服务器上，订单放在C服务器上等。如果我们的A服务器要去调B服务器的功能，我们以前写在一个应用里面，A调B，那直接A调B的方法就行了，我们叫进程内通讯，因为他们都在一个服务器上，都是同一个tomcat,同一个进程内通讯。但是现在我们发现A跟B已经分割两地了，它在两处了，这两处我们代码之间如何互调呢?我们把这个调用称为RPC(远程过程调用)。也就是说分布式应用架构下，最核心的难点是RPC远程过程调用，以及如何拆分业务，提升业务的复用程度，那么此时一个好的<strong>分布式服务框架(RPC)</strong>，帮我们来解决远程过程调用的这个框架，就能极大的简化我们的开发。那么这样的架构就会高枕无忧了吗？随着我们的业务不断增加，我们分拆的服务也越来越多，有成千上万的服务器，再来跑各种不同的服务，而出现的一些资源浪费情况，就尤为严重，比如我们的用户业务，这块的访问量比较小，有100台服务器在跑，而我们的商品业务，它的访问量比较大却只有10台服务器在跑，那我们呢就应该有一个能基于我们访问压力的调度中心，能帮我们实时的来监控这些数据，来动态的调度，提高我们这个系统的资源利用率，你跑的服务器有点多了，我们来减上几台，让更多的服务器取来跑业务量更大的这些业务，这个时候呢，就可以采用流动计算架构(Elastic Computing)。</p>
-</li>
-<li><p>流动计算架构(Elastic Computing)</p>
-<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/%E8%B0%83%E5%BA%A6%E4%B8%AD%E5%BF%83.jpg" alt>    服务调度中心，负责维护服务之间的复杂关系以及实时管理我们整个服务集群。比如说A服务器访问量大了，我给A冬天的多来几台服务器。第一台有100个请求，第二台2个请求，第三台有10000个请求，那么下次进来的时候，就找比较闲的服务器来处理请求，比如第二台，提高我们整个服务集群的利用率。</p>
-</li>
-</ul>
-<h3 id="4、RPC"><a href="#4、RPC" class="headerlink" title="4、RPC"></a>4、RPC</h3><ul>
-<li><p><strong>什么叫RPC</strong></p>
-<p>RPC(Remote Procedure Call)：是指远程过程调用，是一种进程间通信方式，它是一种技术思想，而不是规范。它允许程序调用另一个地址空间(通常是共享网络的另一台机器)的过程或者函数。而不是程序员显式的编码这个远程调用的细节。即程序员无论是调用本地的还是远程的函数，本质上编写的调用代码基本相同。</p>
-</li>
-<li><p><strong>RPC基本原理</strong></p>
-<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/RPC%E5%8E%9F%E7%90%86.jpg" alt></p>
-<p>过程：A想要调用B服务器的应用，A先跟B服务器在网络建立一个Socket连接，然后将我们要调用B的一些信息，B的哪个方法，包括方法名，用的参数是什么，把这些信息传递给B服务器，然后B服务器上Server stub这个小助手收到这些信息，一看A想要调用我里面的信息，它就将这个方法一调用，包括调这个方法用到的参数，也通过网络传递了过来，那我们调方法的时候也将参数传过去，我们B服务器里面的Server stub将方法调用完，调用完以后，方法会有一个返回值，然后这个返回值也通过网络传输给A，A收到返回值以后，A的client stub小助手把这个返回值给我们Client functions。</p>
-<p>整个RPC的核心：A，B两个服务器之间建立网络之间，它们之间进行通信，这样的话A想要用B里面的服务，就像A给B发送一个请求一样，B的方法将响应的结果，交给A。</p>
-</li>
-</ul>
-<h3 id="5、dubbo"><a href="#5、dubbo" class="headerlink" title="5、dubbo"></a>5、dubbo</h3><p>​    dubbo是一款高性能、轻量级的开源Java RPC框架，提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，以及服务自动注册和发现。</p>
-<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/dubbo%E7%9A%84%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
-<p>​    register：服务注册中心。</p>
-<p>​    provider：服务提供者</p>
-<p>​    consumer：服务消费者，消费我们提供的服务。</p>
-<p>​    container：指的是dubbo框架容器。</p>
-<p>​    monitor：是监控中心，服务提供者provider，服务消费者的一些监控信息都会发到监控中心。</p>
-<h3 id="6、zookeeper注册中心"><a href="#6、zookeeper注册中心" class="headerlink" title="6、zookeeper注册中心"></a>6、zookeeper注册中心</h3><h3 id="7、dubbo的Monitor监控中心"><a href="#7、dubbo的Monitor监控中心" class="headerlink" title="7、dubbo的Monitor监控中心"></a>7、dubbo的Monitor监控中心</h3><p><a href="https://github.com/apache/incubator-dubbo-admin">GitHub地址</a></p>
-<p>然后用mvn clean package打成一个jar包，然后在控制台用java -jar的命令启动就行。</p>
-<p>注意：启动监控中心，之前必须启动zookeeper，否则，导致监控中心失败。</p>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
     <article id="post-JVM相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -1297,158 +779,6 @@
 
 
   
-    <article id="post-消息队列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" target="_blank">消息队列</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" class="archive-article-date">
-        <time datetime="2018-05-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-01</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h2 id="大数据技术之Kafka"><a href="#大数据技术之Kafka" class="headerlink" title="大数据技术之Kafka"></a>大数据技术之Kafka</h2><h3 id="1、Kafka概述"><a href="#1、Kafka概述" class="headerlink" title="1、Kafka概述"></a>1、Kafka概述</h3><h4 id="1-1、消息队列"><a href="#1-1、消息队列" class="headerlink" title="1.1、消息队列"></a>1.1、消息队列</h4><p><img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.png" alt></p>
-<h4 id="1-2、为什么要用消息队列？"><a href="#1-2、为什么要用消息队列？" class="headerlink" title="1.2、为什么要用消息队列？"></a>1.2、为什么要用消息队列？</h4><ul>
-<li><strong>解耦</strong>：也即是客户端A跟B不用直连，通过中间件。达到解耦</li>
-<li><strong>冗余</strong>：消息队列可以进行数据备份，它本身可以缓冲数据</li>
-<li><strong>扩展性</strong>：消息队列可以进行集群</li>
-<li><strong>灵活性&amp;峰值处理能力</strong>：机器扩展多了，峰值处理能力自然提高</li>
-<li><strong>可恢复性</strong>：因为你数据可备份的，消息丢了一个，可以恢复的</li>
-<li><strong>顺序保证</strong>：队列先进先出，它有顺序。</li>
-<li><strong>缓冲</strong>：均衡两边的速度，这边数据冗余了。可以进行备份缓冲。</li>
-<li><strong>异步通信</strong>：比如你A挂了，并不会影响B</li>
-</ul>
-<h4 id="1-3三种消息队列对比："><a href="#1-3三种消息队列对比：" class="headerlink" title="1.3三种消息队列对比："></a>1.3三种消息队列对比：</h4><h5 id="1-3-1、ActiveMQ，RabbitMQ，Kafka"><a href="#1-3-1、ActiveMQ，RabbitMQ，Kafka" class="headerlink" title="1.3.1、ActiveMQ，RabbitMQ，Kafka"></a>1.3.1、ActiveMQ，RabbitMQ，Kafka</h5><ul>
-<li><p><strong>ActiveMQ中，消费者消费完消息后，队列Queue中，这条消息立即被删除</strong>。</p>
-<p>而ActiveMQ，它的队列是存在内存中。普通的消息队列是存在队列Queue中，然后存在内存中。Kafka是持久化到磁盘中，Kafka是以partition为单位进行消费的，而普通消息队列是一条一条进行消费的。</p>
-</li>
-</ul>
-<p><img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/ActiveMQ.jpg" alt></p>
-<ul>
-<li><p>RabbitMQ多了一段Exchange，路由交换机。有4中工作机制。**</p>
-<p><img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/RabbitMQ.jpg" alt></p>
-<p>​    当producer生产了3条消息，每个队列中不会都拿到这3条消息的，它是根据路由机制进行匹配的，有4中路由机制，fanout，direct，topic，headers。4种路由机制。</p>
-</li>
-</ul>
-<p>​    topic是以点为分隔符进行通配，*是匹配一个单词，#是匹配多个单词。</p>
-<ul>
-<li><p><strong>Kafka，当消费者消费完消息后，不会被立即删除，它有避免重复消费，和避免内存溢出</strong>，Kafka是以文件的方式进行存储的，存储在磁盘中，所以永远不会内存溢出。可能会存在磁盘满了，磁盘满了，可以加集群，然后进行备份，就是partition可以备份到另一台机器中。在kafka中是以zookeeper来管理集群的。</p>
-<p><strong>kafka消费是以partition为单位进行消费的。</strong>所以所，kafka适合数据量更大的时候的处理。</p>
-<p>而RabbitMQ它的消息存在内存中，如果消息超过长度，就会内存溢出。而kafka不会，消息存在磁盘中。</p>
-</li>
-</ul>
-<h5 id="1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景"><a href="#1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景" class="headerlink" title="1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景"></a>1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景</h5><p>​    <img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.jpg" alt></p>
-<p>或者你这个库存当时没有了，可以调用别的地方的库存，然后重新分配库存。但是kafka就没有这样的好处。</p>
-<p>订单太多，可能会导致内存溢出，RabbitMQ中有一个partition是网络分区，用来做网络集群的，与kafka的partition不同，因此可以做集群部署。</p>
-<h4 id="1-4、什么是Kafka"><a href="#1-4、什么是Kafka" class="headerlink" title="1.4、什么是Kafka"></a>1.4、什么是Kafka</h4><p>流式计算中，Kafka用来缓存数据，Storm通过消费Kafka的数据进行计算。</p>
-<ul>
-<li><p>Apache Kafka是一个开源消息系统，由<strong>Scala</strong>写成</p>
-</li>
-<li><p>Kafka是由LinkedIn公司开发</p>
-</li>
-<li><p>Kafka是一个<strong>分布式消息队列</strong>，kafka对消息保存时根据<strong>Topic</strong>进行归类，发送消息者叫<strong>Producer</strong></p>
-<p>消息接收者叫<strong>Consumer</strong>。此外Kafka集群有多个Kafka实例组成，每个实例(server)叫<strong>broker</strong>。</p>
-</li>
-<li><p>不管是kafka集群，还是consumer都依赖与<strong>zookeeper</strong>集群保存一些meta信息，保证系统可用性。</p>
-</li>
-</ul>
-<h4 id="1-5、Kafka架构"><a href="#1-5、Kafka架构" class="headerlink" title="1.5、Kafka架构"></a>1.5、Kafka架构</h4><p><img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
-<p><img src="/2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E6%9E%B6%E6%9E%84.png" alt></p>
-<p>partition分区：作负载均衡用。</p>
-<p>replication：备份。</p>
-<p>一个消费者可以消费多个topic，<strong>同一个组里面的消费者，不能消费同一个partition分区的数据</strong>。但是你不同的组里面，还是可以消费同一个partition分区的数据。</p>
-<p>Consumer A与Consumer B属于通过一个消费者组，Partition0被Consumer A消费，就不能被Consumer B消费。</p>
-<p>zookeeper：Consumer的集群依赖的，kafka集群的构建依赖于zookeeper，消费者也需要，上次消费到哪了，也要给zookeeper存一份。</p>
-<h4 id="1-6、kafka的专业术语"><a href="#1-6、kafka的专业术语" class="headerlink" title="1.6、kafka的专业术语"></a>1.6、kafka的专业术语</h4><ul>
-<li><strong>massage</strong>： kafka中最基本的传递对象，有固定格式。</li>
-<li><strong>topic</strong>： 一类消息，如page view，click行为等。</li>
-<li><strong>producer</strong>： 产生信息的主体，可以是服务器日志信息等。</li>
-<li><strong>consumer</strong>： 消费producer产生话题消息的主体。</li>
-<li><strong>broker</strong>： 消息处理结点，多个broker组成kafka集群。</li>
-<li><strong>partition</strong>： topic的物理分组，每个partition都是一个有序队列。</li>
-<li><strong>segment</strong>： 多个大小相等的段组成了一个partition。</li>
-<li><strong>offset</strong>： 一个连续的用于定位被追加到分区的每一个消息的序列号，最大值为64位的long大小，19位数字字符长度</li>
-</ul>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2018/05/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
     <article id="post-一、UDF的使用手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -1700,6 +1030,272 @@
 
 
   
+    <article id="post-Hive" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2018/01/01/Hive/" target="_blank">Hive的使用</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2018/01/01/Hive/" class="archive-article-date">
+        <time datetime="2018-01-01T05:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="Hive"><a href="#Hive" class="headerlink" title="Hive"></a>Hive</h2><ul>
+<li>Hive由Facebook实现并开源</li>
+<li>是基于Hadoop的一个数据仓库工具</li>
+<li>可以将结构化的数据映射为一张数据库表</li>
+<li>提供HQL(Hive SQL)查询功能</li>
+<li>底层数据是存在HDFS上</li>
+<li>Hive的本质是将SQL语句转换为MapReduct任务进行</li>
+<li>使得不熟悉MapReduce的用户很方便的利用HQL的处理和计算HDFS上的结构化的数据，适用于离线的批量数据计算。</li>
+</ul>
+<h4 id="数据仓库（Data-Warehouse）"><a href="#数据仓库（Data-Warehouse）" class="headerlink" title="数据仓库（Data Warehouse）"></a>数据仓库（Data Warehouse）</h4><p>是一个面向主题的，集成的Intergrated，相对稳定的Non-Volatile，反映历史变化的Time Variant的数据集合。</p>
+<p>Hive依赖于HDFS存储数据，Hive将HQL转换成MapReduce执行，所以说Hive是基于Hadoop的一个数据仓库工具，实质上就是一个基于HDFS的MapReduce计算框架，对存储在HDFS中的数据进行分析和管理 。</p>
+<h4 id="使用Hive"><a href="#使用Hive" class="headerlink" title="使用Hive"></a>使用Hive</h4><ul>
+<li><p>直接使用MapReduce的问题：</p>
+<ul>
+<li>人员学习成本太高</li>
+<li>项目周期要求太短</li>
+<li>MapReduce实现复杂查询逻辑的开发难度太大</li>
+</ul>
+</li>
+<li><p>使用Hive</p>
+<ul>
+<li>更友好的接口：操作借口采用类SQL的语法，快速开发能力</li>
+<li>学习成本低：避免了写MapReduce，减少开发学习成本</li>
+<li>更好的扩展性：可自由扩展集群规模而不需要重启服务，用于还可以自定义函数</li>
+</ul>
+</li>
+<li><p>Hive使用场景</p>
+<ul>
+<li>Hive与传统的关系型SQL不同，支持绝大多数的语句DDL，DML以及聚集函数，连接查询，条件查询。</li>
+<li>Hive不适合联机事务处理，不提供实时查询功能，适用于基于大量不可变的批处理作业。</li>
+</ul>
+</li>
+<li><p>Hive的使用</p>
+<ul>
+<li><p>不支持Insert into，Update，Delete操作</p>
+</li>
+<li><p>不支持等值连接</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> a,<span class="keyword">table</span> b <span class="keyword">where</span> a.id=b.id;</span><br><span class="line"><span class="comment">/*Hive中*/</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> a <span class="keyword">join</span> <span class="keyword">table</span> b <span class="keyword">on</span> a.id=b.id;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2018/01/01/Hive/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-Hive1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2018/01/01/Hive1/" target="_blank">Hive基本概念</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2018/01/01/Hive1/" class="archive-article-date">
+        <time datetime="2018-01-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="Hive基本概念"><a href="#Hive基本概念" class="headerlink" title="Hive基本概念"></a>Hive基本概念</h1><h3 id="1-1、什么是Hive"><a href="#1-1、什么是Hive" class="headerlink" title="1.1、什么是Hive"></a>1.1、什么是Hive</h3><p>Hive：由Facebook开源用于海量结构化日志的数据统计（Hive是分析框架，它不能存储数据的）</p>
+<p>Hive是基于Hadoop的一个<strong>数据仓库工具</strong>，可以将<strong>结构化的数据文件映射为一张表</strong>，并提供<strong>类SQL</strong>查询功能。</p>
+<p><strong>本质：将HQL转化成MapReduce程序</strong></p>
+<ul>
+<li>数据仓库通过SQL进行统计分析</li>
+<li>将SQL语言中常用的操作（select,where,group等）用MapReduce写成很多模板</li>
+<li>所有的MapReduce模板封装在Hive中</li>
+<li>client客户端，用户根据业务需求编写相应的SQL语句</li>
+<li>然后会去Hive中找对应的MapReduce模板</li>
+<li>通过Hive框架匹配出相应的MapReduce模板</li>
+<li>运行MapReduce程序，生成相应的分析结果</li>
+</ul>
+<p>Hive可以看做是Hadoop的客户端，装一个就够了啊，Hive它有不存储数据，不做计算，它就将HQL转化为MapReduce</p>
+<p>Hive处理的数据存储在HDFS</p>
+<p>Hive分析数据底层的实现是MapReduce</p>
+<p>执行程序运行在Yarn上</p>
+<h3 id="1-2、Hive的优缺点"><a href="#1-2、Hive的优缺点" class="headerlink" title="1.2、Hive的优缺点"></a>1.2、Hive的优缺点</h3><h4 id="1-2-1、优点"><a href="#1-2-1、优点" class="headerlink" title="1.2.1、优点"></a>1.2.1、优点</h4><ul>
+<li><p>操作接口采用类SQL语法，提供快速开发的能力（简单，容易上手）</p>
+</li>
+<li><p>避免了去写MapReduce，减少开发人员得 学习成本</p>
+</li>
+<li><p>HIve的执行延迟比较高，因此HIve常用数据分析，对实时性要求不高的场合</p>
+<p>比如你凌晨一两点，启动一个定时脚本，跑一下数据，实时性不高，不是那种你来一条数据，就立马处理的那种，就是说它可以处理，但是给反馈，交互出结果比较慢，因为它跑MR，而MR整个启动，提交啊，切片啊非常的慢，所以它应用的场景一般是离线</p>
+</li>
+<li><p>Hive优势在于处理大数据，对于处理小数据没有优势，因为Hive的执行延迟比较高，启动太慢</p>
+</li>
+<li><p>Hive支持用户自定义函数，用户可以根据自己的需求来实现自己的函数</p>
+</li>
+</ul>
+<h4 id="1-2-2、缺点"><a href="#1-2-2、缺点" class="headerlink" title="1.2.2、缺点"></a>1.2.2、缺点</h4><h5 id="1、Hive的HQL表达能力有限"><a href="#1、Hive的HQL表达能力有限" class="headerlink" title="1、Hive的HQL表达能力有限"></a>1、Hive的HQL表达能力有限</h5><ul>
+<li>迭代式算法无法表达</li>
+<li>数据挖掘方面不擅长</li>
+</ul>
+<h5 id="2、Hive的效率比较低"><a href="#2、Hive的效率比较低" class="headerlink" title="2、Hive的效率比较低"></a>2、Hive的效率比较低</h5><ul>
+<li>Hive自动生成的MapReduce作业，通常情况下不够智能化</li>
+<li>Hive调优比较困难，粒度比较粗</li>
+</ul>
+<h3 id="1-3、Hive架构原理"><a href="#1-3、Hive架构原理" class="headerlink" title="1.3、Hive架构原理"></a>1.3、Hive架构原理</h3><p><img src="/2018/01/01/Hive1/Hive.png" alt></p>
+<p>CLI：命令行接口，以命令行的形式输入SQL语句进行数据操作，有点类似shell</p>
+<p>Meta store：元数据存储，就是存的是表跟数据之间的位置对应关系，有点类似索引，Hive不会存储Meta store，会存在mysql或者Derby中</p>
+<p>Meta store作用：客户端连接Meta store服务，Meta store再去连接Mysql数据库来存取元数据，有了Meta store服务，就可以有多个客户端可以同时连接，而切这些客户端不需要知道MySQL的数据库用户名和密码，只需要连接Meta store服务就行。</p>
+<p>因为Meta store的元数据不断的修改，更新，所以Hive元数据不适合存在HDFS中，一般存在RDBMS中</p>
+<p>HIve没有专门的数据存储格式，也没有为数据建立索引，Hive中所有数据都存储在HDFS中</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2018/01/01/Hive1/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-git开发规范" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -1802,6 +1398,214 @@
 
 
   
+    <article id="post-docker使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2017/11/01/docker%E4%BD%BF%E7%94%A8/" target="_blank">Docker的使用</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2017/11/01/docker%E4%BD%BF%E7%94%A8/" class="archive-article-date">
+        <time datetime="2017-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、docker的使用"><a href="#一、docker的使用" class="headerlink" title="一、docker的使用"></a>一、docker的使用</h1><h4 id="1、docker添加镜像加速文件"><a href="#1、docker添加镜像加速文件" class="headerlink" title="1、docker添加镜像加速文件"></a>1、docker添加镜像加速文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/docker</span><br><span class="line"><span class="meta">#</span><span class="bash">如果没有daemon.json文件，需要新建一个</span></span><br><span class="line">sudo touch daemon.json</span><br><span class="line">sudo vim daemon.json</span><br><span class="line"><span class="meta">#</span><span class="bash">daemon.json添加以下配置，然后保存</span></span><br><span class="line">&#123;"registry-mirrors":["https://registry.docker-cn.com"]&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash">重启服务</span></span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、查看docker的版本"><a href="#2、查看docker的版本" class="headerlink" title="2、查看docker的版本"></a>2、查看docker的版本</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker查找镜像</span></span><br><span class="line">sudo docker search mysql</span><br><span class="line"><span class="meta">#</span><span class="bash">查看本地下载的镜像</span></span><br><span class="line">sudo docker images</span><br><span class="line"><span class="meta">#</span><span class="bash">查看本地正在运行的镜像</span></span><br><span class="line">sudo docker ps -a</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、使用docker拉取镜像"><a href="#3、使用docker拉取镜像" class="headerlink" title="3、使用docker拉取镜像"></a>3、使用docker拉取镜像</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo docker pull redis:5.0.6</span><br><span class="line">sudo docker pull nginx</span><br><span class="line">sudo docker pull mysql:8.0.18</span><br><span class="line"><span class="meta">#</span><span class="bash">删除拉取的镜像</span></span><br><span class="line">sudo docker image rm mysql:8.0.18</span><br></pre></td></tr></table></figure>
+
+<h4 id="4、使用docker安装并运行nginx"><a href="#4、使用docker安装并运行nginx" class="headerlink" title="4、使用docker安装并运行nginx"></a>4、使用docker安装并运行nginx</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sudo docker search nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">pull的时候，后面不追加冒号和版本号，默认是最新的latest版本</span></span><br><span class="line">sudo docker pull nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">运行nginx</span></span><br><span class="line">sudo docker run --name victor-nginx-test -p 8081:80 -d nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">victor-nginx-test是容器名称</span></span><br><span class="line">-d，设置容器在后台一直运行</span><br><span class="line">-p，端口进行映射，将本地的8081端口映射到容器内部的80端口</span><br><span class="line"><span class="meta">#</span><span class="bash">执行玩上面那条命令后，会生成一串字符串45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89，这个表示容器的id，一般作为日志的文件名来查看启动信息等</span></span><br><span class="line">sudo docker logs 45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89</span><br><span class="line"><span class="meta">#</span><span class="bash">停止nginx</span></span><br><span class="line">sudo docker ps</span><br><span class="line"><span class="meta">#</span><span class="bash">复制对应容器的id,然后停止镜像</span></span><br><span class="line">sudo docker stop 45faac1c8dca</span><br><span class="line"><span class="meta">#</span><span class="bash">删除镜像</span></span><br><span class="line">sudo docker rm 45faac1c8dca</span><br></pre></td></tr></table></figure>
+
+<h4 id="5、使用docker部署项目"><a href="#5、使用docker部署项目" class="headerlink" title="5、使用docker部署项目"></a>5、使用docker部署项目</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">首先创建一个文件夹，里面包含3个子文件夹</span></span><br><span class="line">sudo mkdir -p ~/桌面/nginx/www ~/桌面/nginx/logs ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">首先你要直到容器的id，</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">复制docker容器里的nginx默认配置文件信息，到你的本地刚创建的conf文件夹目录下</span></span><br><span class="line">sudo docker cp76d9d74d071e:/etc/nginx/nginx.conf ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">部署项目，到docker里的nginx</span></span><br><span class="line">sudo docker run -p 8082:80 --name victor-nginx-web -v ~/桌面/nginx/www:/usr/share/nginx/html -v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v ~/桌面/nginx/logs:/var/log/nginx -d nginx</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">命令说明</span></span><br><span class="line">-p 8082:80  是把你容器里的nginx的80端口映射到你本地主机的8082端口</span><br><span class="line">--name victor-nginx-web  是把容器重命名我们自己喜欢的名字</span><br><span class="line">-v ~/桌面/nginx/www:/usr/share/nginx/html   是把我们本地创建的项目 的www目录挂在到容器的/usr/share/nginx/html</span><br><span class="line">-v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf 是吧我们创建的nginx.conf挂在到容器的/etc/nginx/nginx.conf</span><br><span class="line">-v ~/桌面/nginx/logs:/var/log/nginx 是把我们自己创建的logs挂在到容器的/var/log/nginx</span><br><span class="line">-d nginx :是设置容器一直后台运行</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">执行完命令后，会生成一串字符串，用这个字符串表示日志id，可以使用</span></span><br><span class="line">sudo docker logs 76d9d74d071e8b2d8499a56691587eef3e2f19d4fddeb5a3e26e5d9338856e10</span><br></pre></td></tr></table></figure>
+
+<h4 id="6、使用docker安装mysql并运行"><a href="#6、使用docker安装mysql并运行" class="headerlink" title="6、使用docker安装mysql并运行"></a>6、使用docker安装mysql并运行</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉去mysql的镜像</span></span><br><span class="line">sudo docker pull mysql:5.7</span><br><span class="line"><span class="meta">#</span><span class="bash">本地创建一个文件夹，用来映射容器的mysql</span></span><br><span class="line">sudo mkdir -p ~/桌面/mydata/mysql/log ~/桌面/mydata/mysql/conf ~/桌面/mydata/mysql/data</span><br><span class="line"><span class="meta">#</span><span class="bash">给创建好的文件夹开权限</span></span><br><span class="line">sudo chmod 777 -R ~/桌面/mydata/</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动mysql</span></span><br><span class="line">sudo docker run -p 3305:3306 --name mysql -v ~/桌面/mydata/mysql/log:/var/log/mysql -v ~/桌面/mydata/mysql/data:/var/lib/mysql -v ~/桌面/mydata/mysql/conf:/etc/mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7</span><br><span class="line"><span class="meta">#</span><span class="bash">查看镜像，如果存在，或者端口被占用，则换为3305映射容器的端口</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">先删除被占用名字的容器镜像id，然后重新执行启动命令</span></span><br><span class="line">sudo docker rm3bf96e1f8a95</span><br><span class="line"><span class="meta">#</span><span class="bash">进入运行mysql的docker容器</span></span><br><span class="line">sudo docker exec -it mysql /bin/bash</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#######以下是mysql的命令操作</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">使用mysql 命令打开客户端</span></span><br><span class="line">mysql -uroot -proot --default-character-set=utf8</span><br><span class="line"><span class="meta">#</span><span class="bash">查看数据库</span></span><br><span class="line">show databases;</span><br><span class="line">create database test character set utf8;</span><br><span class="line">use test;</span><br><span class="line">create table ();</span><br><span class="line"><span class="meta">#</span><span class="bash">退出mysql命令操作</span></span><br><span class="line">\q</span><br><span class="line"><span class="meta">#</span><span class="bash">退出mysql运行的docker容器</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<h4 id="7、使用docker安装并运行redis"><a href="#7、使用docker安装并运行redis" class="headerlink" title="7、使用docker安装并运行redis"></a>7、使用docker安装并运行redis</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">docker拉取redis</span></span><br><span class="line">sudo docker pull redis:3.2</span><br><span class="line"><span class="meta">#</span><span class="bash">本地创建一个redis文件夹存放数据</span></span><br><span class="line">sudo mkdir -p ~/桌面/mydata/redis/data</span><br><span class="line"><span class="meta">#</span><span class="bash">更改文件件执行权限</span></span><br><span class="line">sudo chmod 777 -R ~/桌面/mydata/redis</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动redis</span></span><br><span class="line">sudo docker run -p 6379:6379 --name redis -v ~/桌面/mydata/redis/data:/data -d redis:3.2 redis-server --appendonly yes</span><br><span class="line"><span class="meta">#</span><span class="bash">进入redis容器使用redis-cli命令进行连接</span></span><br><span class="line">sudo docker exec -it redis redis-cli</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">####以下为redis的命令</span></span></span><br><span class="line">ping</span><br><span class="line">set a 100</span><br><span class="line">get a</span><br><span class="line"><span class="meta">#</span><span class="bash">退出redis</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<h4 id="8、使用docker安装并运行rabbitmq"><a href="#8、使用docker安装并运行rabbitmq" class="headerlink" title="8、使用docker安装并运行rabbitmq"></a>8、使用docker安装并运行rabbitmq</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉取docker镜像</span></span><br><span class="line">sudo docker pull rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动rabbitmq</span></span><br><span class="line">sudo docker run --name rabbitmq --publish 5671:5671 --publish 5672:5672 --publish 4369:4369 --publish 25672:25672 --publish 15672:15672 --publish 15671:15671 -d rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">Ubuntu的防火墙暴露端口15672</span></span><br><span class="line">sudo ufw allow 15672</span><br><span class="line"><span class="meta">#</span><span class="bash">开启防火墙</span></span><br><span class="line">sudo ufw enable</span><br><span class="line"><span class="meta">#</span><span class="bash">重新加载</span></span><br><span class="line">sudo ufw reload</span><br><span class="line"><span class="meta">#</span><span class="bash">查看防火墙状态</span></span><br><span class="line">sudo ufw status</span><br><span class="line"><span class="meta">#</span><span class="bash">进入到rabbitmq的连接</span></span><br><span class="line">sudo docker exec -it rabbitmq /bin/bash</span><br><span class="line"><span class="meta">#</span><span class="bash">然后输入如下命令，开启rabbitmq的管理后台</span></span><br><span class="line">rabbitmq-plugins enable rabbitmq_management</span><br><span class="line"><span class="meta">#</span><span class="bash">浏览器输入rabbitmq的管理后台页面</span></span><br><span class="line">http://localhost:15672</span><br><span class="line">用户名密码：guest guest</span><br><span class="line"><span class="meta">#</span><span class="bash">退出</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+
+
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Docker</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2017/11/01/docker%E4%BD%BF%E7%94%A8/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-HBase总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2017/10/04/HBase%E6%80%BB%E7%BB%93/" target="_blank">HBase</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2017/10/04/HBase%E6%80%BB%E7%BB%93/" class="archive-article-date">
+        <time datetime="2017-10-04T03:24:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-04</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="一、分布式结构化存储系统"><a href="#一、分布式结构化存储系统" class="headerlink" title="一、分布式结构化存储系统"></a>一、分布式结构化存储系统</h2><p>​        大数据中，除了直接以文件形式保存的数据外(HDFS)，还有大量结构化和半结构化的数据，这种数据一般需要支持更新操作，随机插入，删除。使得HDFS无法满足要求。为了方便用户存取海量结构化和半结构化数据，HBase诞生了。是一个分布式列存储系统，有很好的扩展性、容错性、易用的API。HBase是构建在HDFS之上的，支持随机插入和删除的列簇式存储系统，可以理解成一个具有持久化能力的分布式有序映射表。</p>
+<p>​        虽然HBase随机读写性能比较高，但是数据scan扫描速度较慢，难以适用于OLAP场景。后来Cloudera设计出了Kudu，很好的兼顾吞吐率和延迟。</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2017/10/04/HBase%E6%80%BB%E7%BB%93/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="../../">&amp;laquo; Prev</a><a class="page-number" href="../../">1</a><span class="page-number current">2</span><a class="page-number" href="../3/">3</a><a class="page-number" href="../4/">4</a><a class="extend next" rel="next" href="../3/">Next &amp;raquo;</a>
@@ -1816,7 +1620,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017-2019 Victor Dan
+    		&copy; 2017-2020 Victor Dan
     	</div>
       	<div class="footer-right">
 			
@@ -1964,11 +1768,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
             
             <div class="clearfix"></div>

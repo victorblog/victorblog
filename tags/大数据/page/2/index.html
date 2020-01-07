@@ -6,19 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://victorblog.github.io">
-  <title>HBase | VictorDan</title>
+  <title>Tag: 大数据 | VictorDan</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="一、背景​        由于关系型数据库用来解决数据存储和维护有关的问题。大数据出现后，大多公司实现处理大数据，并开始选择Hadoop的解决方案。Hadoop使用分布式文件系统HDFS，用来存储大数据，使用MapReduce来处理数据。 ​        Hadoop只能执行批量处理，而且是按顺序访问数据。也就是表明必须搜索整个数据集。如果想要处理结果在另一个庞大的数据，也是按照顺序处理一个巨大">
-<meta name="keywords" content="大数据">
-<meta property="og:type" content="article">
-<meta property="og:title" content="HBase">
-<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;10&#x2F;03&#x2F;HBase&#x2F;index.html">
+  <meta name="description" content="Java技术分享">
+<meta name="keywords" content="个人博客">
+<meta property="og:type" content="website">
+<meta property="og:title" content="VictorDan">
+<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;tags&#x2F;%E5%A4%A7%E6%95%B0%E6%8D%AE&#x2F;page&#x2F;2&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
-<meta property="og:description" content="一、背景​        由于关系型数据库用来解决数据存储和维护有关的问题。大数据出现后，大多公司实现处理大数据，并开始选择Hadoop的解决方案。Hadoop使用分布式文件系统HDFS，用来存储大数据，使用MapReduce来处理数据。 ​        Hadoop只能执行批量处理，而且是按顺序访问数据。也就是表明必须搜索整个数据集。如果想要处理结果在另一个庞大的数据，也是按照顺序处理一个巨大">
+<meta property="og:description" content="Java技术分享">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-25T06:01:11.101Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
@@ -198,223 +197,41 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-HBase" class="article article-type-post " itemscope itemprop="blogPost">
-	<div class="article-inner">
+            
+  
+  
     
-      <header class="article-header">
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="../../../../archives/2017" class="archive-year">2017</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	
+<a href="../../../../2017/03/04/Kafka%E6%80%BB%E7%BB%93/" class="archive-article-date">
+        <time datetime="2017-03-04T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-04</time>
+</a>
+
+        </div>
+    	 
   
+    <h1 itemprop="name">
+	
+	  <a class="archive-article-title" href="../../../../2017/03/04/Kafka%E6%80%BB%E7%BB%93/" target="_blank">Kafka的总结</a>
   
-    <h1 class="article-title" itemprop="name">
-      HBase
     </h1>
   
 
 
-  
-  
-        
-        <span id="busuanzi_container_page_pv" style='display:none' class="archive-article-date">
-              <i class="icon-smile icon"></i> 阅读数：<span id="busuanzi_value_page_pv"></span>次
-        </span>
-
-<a href="" class="archive-article-date">
-        <time datetime="2018-10-03T03:24:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-03</time>
-</a>
-
-  
-  
-    
-<div style="margin-top:10px;">
-  <span class="post-time">
-    <span class="post-meta-item-icon">
-      <!-- fonts.scss -->
-      <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
-      <i class="icon-statistics"></i>
-      <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">1.4k字</span>
-    </span>
-  </span>
-
-  <span class="post-time">
-    &nbsp; | &nbsp;
-    <span class="post-meta-item-icon">
-      <i class="icon-book icon"></i>
-      <span class="post-meta-item-text"> 阅读时长≈</span>
-      <span class="post-count">5分</span>
-    </span>
-  </span>
-</div>
-
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h1><p>​        由于关系型数据库用来解决数据存储和维护有关的问题。大数据出现后，大多公司实现处理大数据，并开始选择Hadoop的解决方案。Hadoop使用分布式文件系统HDFS，用来存储大数据，使用MapReduce来处理数据。</p>
-<p>​        Hadoop只能执行批量处理，而且是按顺序访问数据。也就是表明必须搜索整个数据集。如果想要处理结果在另一个庞大的数据，也是按照顺序处理一个巨大的数据集。为此，需要访问数据中的任何点的单元，也就是随机访问，出现新的解决方案。</p>
-<p>​        Hadoop随机存取数据库的应用，HBase，Cassandra，CouchDB，Dynamo，MongoDB都是一些存储大量数据和随机访问访问的非关系型数据库。</p>
-<ul>
-<li>海量数据存储成为瓶颈，单机无法负载大量数据</li>
-<li>单机IO读写请求成为海量数据存储，高并发，大规模的瓶颈</li>
-<li>随着数据规模越来越大，大量业务场景开始考虑数据存储横向水平扩展，让存储服务可以增加/删除 ，而大部分关系型数据库更专注在一台机器。</li>
-</ul>
-<h1 id="二、HBase简介"><a href="#二、HBase简介" class="headerlink" title="二、HBase简介"></a>二、HBase简介</h1><p>​        HBase是BigTable的开源版本，使用Java编写的。是Apache Hadoop的数据库，建立在HDFS上，用来提供，高可靠，高性能，列存储，可伸缩，多版本的NoSQL的分布式数据库。可以实现对大型数据的实时、随机的读写访问。</p>
-<ul>
-<li>HBase依赖HDFS做底层的数据存储，BigTable依赖Google GFS做数据存储</li>
-<li>HBase依赖MapReduce进行数据计算，BigTable依赖Google MapReduce做数据计算</li>
-<li>HBase依赖Zookeeper做服务协调，BigTable依赖Google Chubby做服务协调</li>
-</ul>
-<h3 id="1、非关系型和关系型数据库"><a href="#1、非关系型和关系型数据库" class="headerlink" title="1、非关系型和关系型数据库"></a>1、非关系型和关系型数据库</h3><ul>
-<li>NoSQL：HBase，Redis，MongoDB</li>
-<li>RDBMS：MySQL，Oracle，SQL Server</li>
-</ul>
-<h3 id="2、HBase重点"><a href="#2、HBase重点" class="headerlink" title="2、HBase重点"></a>2、HBase重点</h3><ul>
-<li>HBase介于NoSQL和RDBMS之间，只能通过主键rowkey和主键的range来检索数据</li>
-<li>HBase查询数据功能很简单，不支持join等关键查询复杂操作，可以通过Hive支持来实现多表join</li>
-<li>HBase不支持复杂的事务，只支持行级事务</li>
-<li>HBase中纯支持的数据类型，byte[]，底层所有数据的存储都是字节数组</li>
-<li>HBase主要来存储结构化和半结构化的松散数据<ul>
-<li>结构化数据：数据结构字段清晰，比如数据库的表结构</li>
-<li>半结构化：具有一定结构，语义不太确定，比如html网页的数据。</li>
-</ul>
-</li>
-</ul>
-<h3 id="3、HBase的表"><a href="#3、HBase的表" class="headerlink" title="3、HBase的表"></a>3、HBase的表</h3><ul>
-<li>数据量大：一张表可以有上十亿行，上百万列的数据</li>
-<li>面向列：列（族）的存储和权限控制，列簇独立检索</li>
-<li>稀疏数据：对于null的空列，并不会占用存储空间，在设计表的时候可以非常稀疏</li>
-<li>无模式：每行都有一个可以排序的主键rowkey和任意多的列，列可以根据需要动态的增加，同一张表中不同的行可以有截然不同的列</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th align="center">Rowkey</th>
-<th align="right">ColumnFamily</th>
-<th align="left">:CF1</th>
-<th align="right">ColumnFamily</th>
-<th align="left">:CF2</th>
-<th align="center">TimeStamp</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center"></td>
-<td align="right">Column:Name</td>
-<td align="left">Column:Alias</td>
-<td align="right">Column:Age</td>
-<td align="left">Column:Sex</td>
-<td align="center"></td>
-</tr>
-<tr>
-<td align="center">rk001</td>
-<td align="right">zhangsan</td>
-<td align="left">shanghai</td>
-<td align="right">22</td>
-<td align="left">M</td>
-<td align="center">T1</td>
-</tr>
-<tr>
-<td align="center">rk002</td>
-<td align="right">lisi</td>
-<td align="left">beijing</td>
-<td align="right">25</td>
-<td align="left">F</td>
-<td align="center">T2</td>
-</tr>
-</tbody></table>
-<h4 id="3-1、RowKey的含义"><a href="#3-1、RowKey的含义" class="headerlink" title="3.1、RowKey的含义"></a>3.1、RowKey的含义</h4><h5 id="3-1-1、rowkey"><a href="#3-1-1、rowkey" class="headerlink" title="3.1.1、rowkey"></a>3.1.1、rowkey</h5><p>​        HBase中的rowkey和MySQL中的主键是完全一样的，来唯一的区分某一行的数据。</p>
-<h5 id="3-1-2、HBase支持3种查询方式："><a href="#3-1-2、HBase支持3种查询方式：" class="headerlink" title="3.1.2、HBase支持3种查询方式："></a>3.1.2、HBase支持3种查询方式：</h5><ul>
-<li>基于Rowkey单行查询</li>
-<li>基于Rowkey的范围扫描</li>
-<li>全表扫描</li>
-</ul>
-<h5 id="3-1-3、rowkey分析"><a href="#3-1-3、rowkey分析" class="headerlink" title="3.1.3、rowkey分析"></a>3.1.3、rowkey分析</h5><ul>
-<li><p>rowkey对HBase的性能影响很大，rowkey的设计也很重要，设计的时候需要考虑基于rowkey单行查询，还要考虑rowkey的范围查询。</p>
-</li>
-<li><p>rowkey行主键，可以是任意字符串，最大长度为64kb，实际中一般是10~100b，最好是16。HBase内部，rowkey保存为字节数组。HBase会对表中的数据按照rowkey进行字典序排序</p>
-</li>
-</ul>
-<h4 id="3-2、Column的含义"><a href="#3-2、Column的含义" class="headerlink" title="3.2、Column的含义"></a>3.2、Column的含义</h4><ul>
-<li>列，可以理解为MySQL的列</li>
-</ul>
-<h4 id="3-3、ColumnFamily的含义"><a href="#3-3、ColumnFamily的含义" class="headerlink" title="3.3、ColumnFamily的含义"></a>3.3、ColumnFamily的含义</h4><ul>
-<li>列族，HBase引入的定义</li>
-<li>HBase通过列族划分数据的存储，列族下面可以包含若干个列，实现灵活的数据存取。就如同一个家族一样，列族是由一个个列组成。</li>
-<li>HBase的表在创建的时候必须指定列族，就像你在MySQL创建表的时候必须指定具体的列一样。</li>
-<li>HBase的列族并不是越多越好，一般列族最好是小于等于3个，一般常用1个列族</li>
-</ul>
-<h4 id="3-4、TimeStamp的含义"><a href="#3-4、TimeStamp的含义" class="headerlink" title="3.4、TimeStamp的含义"></a>3.4、TimeStamp的含义</h4><ul>
-<li>TimeStamp是实现HBase多版本的关键。HBase中使用不同的TimeStamp来标识相同rowkey行对应的不同版本的数据。类似Hive表中的时间分区字段。</li>
-<li>HBase中通过rowkey和column确定一个存储单元为cell，每个cell保存同一份数据的多个版本。版本通过时间戳来索引。时间戳可以在HBase写入数据的时候自动赋值。为了避免数据版本冲突，必须自己生成具有唯一性的时间戳。一般每个cell中，不同版本的数据按照时间倒序，最新的数据在最前面。</li>
-<li>为了避免数据存太多版本造成存储和索引的负担，HBase还提供了2种版本回收方式<ul>
-<li>保存数据的最后n个版本</li>
-<li>保存最近一段时间内的版本(可以设置数据的生命周期TTL)</li>
-</ul>
-</li>
-</ul>
-<h4 id="3-5、单元格Cell"><a href="#3-5、单元格Cell" class="headerlink" title="3.5、单元格Cell"></a>3.5、单元格Cell</h4><ul>
-<li>由rowkey，column，version唯一确定的单元。Cell中的数据是没有类型的，全部是字节码byte[]形式存储。</li>
-</ul>
-
-    
-
-    
-    <div class="page-reward">
-      <a href="javascript:void(0);" class="page-reward-btn tooltip-top" target="_self">
-        <div class="tooltip tooltip-east">
-          <span class="tooltip-item">
-            赏
-          </span>
-          <span class="tooltip-content">
-            <span class="tooltip-text">
-              <span class="tooltip-inner">
-                <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i
-                    class="icon icon-quo-right"></i></p>
-                <div class="reward-box">
-                  
-                  <div class="reward-box-item">
-                    <img class="reward-img" src="../../../../img/alipay.JPG">
-                    <span class="reward-type">支付宝</span>
-                  </div>
-                  
-                  
-                  <div class="reward-box-item">
-                    <img class="reward-img" src="../../../../img/weixin.JPG">
-                    <span class="reward-type">微信</span>
-                  </div>
-                  
-                </div>
-              </span>
-            </span>
-          </span>
-        </div>
-      </a>
-    </div>
-    
-
-    
-    <div class="declare"> 
-      <ul class="post-copyright">
-        <li>
-          <strong>本文作者：</strong>
-          Victor Dan
-        </li>
-        <li>
-          <strong>本文链接：</strong>
-          <a href="https://victorblog.github.io/2018/10/03/HBase/" title="HBase" target="_blank">https://victorblog.github.io/2018/10/03/HBase/</a>
-        </li>
-        <li>
-          <strong>版权声明： </strong>
-          本博客所有文章除特别声明外，均采用 <a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="external nofollow" target="_blank">Apache License 2.0</a> 许可协议。转载请注明出处！
-        </li>
-      </ul>
-    </div>
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -426,184 +243,66 @@
 		</ul>
 	</div>
 
-    
+          
 
-    
-
-    
-    
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <!-- <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a> -->
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://victorblog.github.io/2018/10/03/HBase/" alt="微信分享二维码"> -->
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-
-    
-    <div class="clearfix"></div>
-  </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-
-<nav id="article-nav">
   
-    <a href="../../04/Spark%E7%9A%84%E4%BD%BF%E7%94%A8/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Spark的使用
-        
-      </div>
-    </a>
-  
-  
-    <a href="../Kafka%E7%9A%84%E5%BA%94%E7%94%A8/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Kafka的应用</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	
+<a href="../../../../2017/03/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" class="archive-article-date">
+        <time datetime="2017-03-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-01</time>
+</a>
 
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
         </div>
-        
-        
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、背景"><span class="toc-number">1.</span> <span class="toc-text">一、背景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、HBase简介"><span class="toc-number">2.</span> <span class="toc-text">二、HBase简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、非关系型和关系型数据库"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、非关系型和关系型数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、HBase重点"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、HBase重点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、HBase的表"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、HBase的表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1、RowKey的含义"><span class="toc-number">2.0.3.1.</span> <span class="toc-text">3.1、RowKey的含义</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-1、rowkey"><span class="toc-number">2.0.3.1.1.</span> <span class="toc-text">3.1.1、rowkey</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-2、HBase支持3种查询方式："><span class="toc-number">2.0.3.1.2.</span> <span class="toc-text">3.1.2、HBase支持3种查询方式：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-3、rowkey分析"><span class="toc-number">2.0.3.1.3.</span> <span class="toc-text">3.1.3、rowkey分析</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、Column的含义"><span class="toc-number">2.0.3.2.</span> <span class="toc-text">3.2、Column的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3、ColumnFamily的含义"><span class="toc-number">2.0.3.3.</span> <span class="toc-text">3.3、ColumnFamily的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4、TimeStamp的含义"><span class="toc-number">2.0.3.4.</span> <span class="toc-text">3.4、TimeStamp的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5、单元格Cell"><span class="toc-number">2.0.3.5.</span> <span class="toc-text">3.5、单元格Cell</span></a></li></ol></li></ol></li></ol></li></ol>
-                    </div>
-                </span>
-            </div>
+    	 
+  
+    <h1 itemprop="name">
+	
+	  <a class="archive-article-title" href="../../../../2017/03/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" target="_blank">消息队列</a>
+  
+    </h1>
+  
+
+
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+
         </div>
-        
-    </div>
-</aside>
-
-
-
-
-
-
-
-
-
-
-  <div id="giteement-ctn"></div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
   
-    <!-- <link rel="stylesheet" href="https://giteement.oss-cn-beijing.aliyuncs.com/wd-discuss.css"> -->
-    <!-- <script src="https://giteement.oss-cn-beijing.aliyuncs.com/discuss_hexo.js"></script> -->
-    <link rel="stylesheet" href="https://giteement.oss-cn-beijing.aliyuncs.com/default.css">
-    <script src="https://giteement.oss-cn-beijing.aliyuncs.com/giteement.browser.js"></script>
   
-  <script>
-  <!-- id: "HBase" -->
-  var giteement = new Giteement({
-    id: '20181003112439',
-    owner: 'victorblog',
-    repo: 'victorblog',
-    backcall_uri: 'https://victorblog.github.io/',
-    oauth_uri: 'https://cors-anywhere.herokuapp.com/https://gitee.com/oauth/token',
-    oauth: {
-      client_id: 'e2d6da671450e4ff6cc059016d4d75f2b680b0c1fe1b24e71b1bd74344f8e657',
-      client_secret: 'a7e5b035c17a4b30e6b3f00db2fff2df5a5c209c3db66b6846c6fb19b521c8f0'
-    },
-  })
-  giteement.render('giteement-ctn')
-  </script>
+    </div></section>
+  
 
-
-
-
-
-
-
-
-	  <!-- 目录内容 -->
-        
-            <p class="show-toc-btn" id="show-toc-btn" onclick="showToc();" style="display:none">
-            <span class="btn-bg"></span>
-            <span class="btn-text">文章导航</span>
-            </p>
-            <div id="toc-article" class="toc-article">
-                <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
-                <strong class="toc-title">文章目录</strong>
-                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、背景"><span class="toc-number">1.</span> <span class="toc-text">一、背景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、HBase简介"><span class="toc-number">2.</span> <span class="toc-text">二、HBase简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、非关系型和关系型数据库"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、非关系型和关系型数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、HBase重点"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、HBase重点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、HBase的表"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、HBase的表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1、RowKey的含义"><span class="toc-number">2.0.3.1.</span> <span class="toc-text">3.1、RowKey的含义</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-1、rowkey"><span class="toc-number">2.0.3.1.1.</span> <span class="toc-text">3.1.1、rowkey</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-2、HBase支持3种查询方式："><span class="toc-number">2.0.3.1.2.</span> <span class="toc-text">3.1.2、HBase支持3种查询方式：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-3、rowkey分析"><span class="toc-number">2.0.3.1.3.</span> <span class="toc-text">3.1.3、rowkey分析</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、Column的含义"><span class="toc-number">2.0.3.2.</span> <span class="toc-text">3.2、Column的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3、ColumnFamily的含义"><span class="toc-number">2.0.3.3.</span> <span class="toc-text">3.3、ColumnFamily的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4、TimeStamp的含义"><span class="toc-number">2.0.3.4.</span> <span class="toc-text">3.4、TimeStamp的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5、单元格Cell"><span class="toc-number">2.0.3.5.</span> <span class="toc-text">3.5、单元格Cell</span></a></li></ol></li></ol></li></ol></li></ol>
-           </div>
-           <script type="text/javascript">
-            function showToc(){
-                var toc_article = document.getElementById("toc-article");
-                var show_toc_btn = document.getElementById("show-toc-btn");
-                toc_article.setAttribute("style","display:block");
-                show_toc_btn.setAttribute("style","display:none");
-                };
-            function showBtn(){
-                var toc_article = document.getElementById("toc-article");
-                var show_toc_btn = document.getElementById("show-toc-btn");
-                toc_article.setAttribute("style","display:none");
-                show_toc_btn.setAttribute("style","display:block");
-                };
-           </script>
-             
-        <!-- 目录内容结束 -->
+    
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="../../">&amp;laquo; Prev</a><a class="page-number" href="../../">1</a><span class="page-number current">2</span>
+    </nav>
+  
 
 
           </div>
@@ -613,7 +312,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017-2019 Victor Dan
+    		&copy; 2017-2020 Victor Dan
     	</div>
       	<div class="footer-right">
 			
@@ -644,9 +343,9 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
@@ -761,11 +460,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
             
             <div class="clearfix"></div>
