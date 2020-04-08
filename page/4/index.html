@@ -210,6 +210,1877 @@
 
 
   
+    <article id="post-Java版数据结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2017/07/02/Java%E7%89%88%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" target="_blank">Java数据结构</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2017/07/02/Java%E7%89%88%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="archive-article-date">
+        <time datetime="2017-07-02T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-02</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="1、数据结构的特性"><a href="#1、数据结构的特性" class="headerlink" title="1、数据结构的特性"></a>1、数据结构的特性</h1><table>
+<thead>
+<tr>
+<th>数据结构</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数组</td>
+<td>插入快，如果知道下标，可以非常快速的存取</td>
+<td>删除慢，大小固定</td>
+</tr>
+<tr>
+<td>有序数组</td>
+<td>比无序的数组查找快</td>
+<td>删除和插入慢，大小固定</td>
+</tr>
+<tr>
+<td>栈</td>
+<td>先进后出的存取方式</td>
+<td>存取其他项很慢</td>
+</tr>
+<tr>
+<td>队列</td>
+<td>先进先出的存取方式</td>
+<td>存取其他项很慢</td>
+</tr>
+<tr>
+<td>二叉树</td>
+<td>查找、插入、删除都快（如果树保持平衡）</td>
+<td>删除算法复杂</td>
+</tr>
+<tr>
+<td>红-黑树</td>
+<td>查找、插入、删除都快。树总是平衡的</td>
+<td>算法复杂</td>
+</tr>
+<tr>
+<td>2-3-4树</td>
+<td>查找、插入、删除都快、树总是平衡的。类似的树对磁盘存储有用</td>
+<td>算法复杂</td>
+</tr>
+<tr>
+<td>哈希表</td>
+<td>如果关键字已知，则存储极快，插入快</td>
+<td>删除满，如果不知道关键字则存储很慢，对存储空间使用不充分</td>
+</tr>
+<tr>
+<td>堆</td>
+<td>插入、删除快。对大数据项的存取很快</td>
+<td>对其他数据项存取慢</td>
+</tr>
+<tr>
+<td>图</td>
+<td>对现实世界建模</td>
+<td>有些算法慢且复杂</td>
+</tr>
+</tbody></table>
+<h2 id="1-1、数组"><a href="#1-1、数组" class="headerlink" title="1.1、数组"></a>1.1、数组</h2><ul>
+<li><p>创建数组</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Java中数组作为对象处理。创建数组使用new关键字</span></span><br><span class="line"><span class="comment">一旦创建数组，数组大小便不可改变</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">int</span>[] arr=<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>访问数组数据项</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*数组数据项通过方括号的下标来访问*/</span></span><br><span class="line">arr[<span class="number">0</span>]=<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数组初始化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] arr=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="1-2、有序数组"><a href="#1-2、有序数组" class="headerlink" title="1.2、有序数组"></a>1.2、有序数组</h2><ul>
+<li><p>有序数组特点</p>
+<p>有序数组按照数组元素一定的顺序排列，方便使用二分查找来查找数组中特定的元素。有序数组提高了查询效率，并没有提高删除和插入元素的效率。</p>
+</li>
+</ul>
+<h2 id="1-3、查找算法"><a href="#1-3、查找算法" class="headerlink" title="1.3、查找算法"></a>1.3、查找算法</h2><ul>
+<li><p>线性查找</p>
+<p>查找的时候，将要查找的数一个个的与数组中的元素比较，直到找到要找的数。</p>
+</li>
+<li><p>二分查找（折半查找）</p>
+<p>不断的将有序数组进行对半分割，每次拿中间位置的数和要查找的数进行比较：</p>
+<ul>
+<li>target&lt;middle,target在数组的前半段。</li>
+<li>target&gt;middle,target在数组的后半段</li>
+<li>target==middle,target就是中间数</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">二分查找索引（前提：有序）</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">long</span> value)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> middle=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> left=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> right=size-<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">        middle=(left+right)/<span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(arr[middle]==value)&#123;</span><br><span class="line">            <span class="keyword">return</span> middle;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(left&gt;right)&#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;<span class="comment">//不存在</span></span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(arr[middle]&gt;value)&#123;</span><br><span class="line">                right=middle-<span class="number">1</span>;<span class="comment">//在左半部分</span></span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                left=middle+<span class="number">1</span>;<span class="comment">//在右半部分</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="1-4、栈和队列"><a href="#1-4、栈和队列" class="headerlink" title="1.4、栈和队列"></a>1.4、栈和队列</h2><p>​    栈和队列都是抽象数据类型（Abstract Data Type，ADT），既可以用数组实现，又可以用链表实现。</p>
+<h3 id="1-4-1、栈"><a href="#1-4-1、栈" class="headerlink" title="1.4.1、栈"></a>1.4.1、栈</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStack</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span>[] arr;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> top;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestStack</span><span class="params">()</span></span>&#123;</span><br><span class="line">        arr=<span class="keyword">new</span> <span class="keyword">long</span>[<span class="number">100</span>];</span><br><span class="line">        top=-<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestStack</span><span class="params">(<span class="keyword">int</span> maxSize)</span></span>&#123;</span><br><span class="line">        arr=<span class="keyword">new</span> <span class="keyword">long</span>[maxSize];</span><br><span class="line">        top=-<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">long</span> value)</span></span>&#123;</span><br><span class="line">        arr[++top]=value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">pop</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> arr[top--];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">peek</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> arr[top];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (top==-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (top==arr.length-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-4-2、链表"><a href="#1-4-2、链表" class="headerlink" title="1.4.2、链表"></a>1.4.2、链表</h3><ul>
+<li><p>链结点：一个链结点（Link，结点）是某个类的对象，该对象中包含对下一个链结点引用的字段（next）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*结点定义*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Link</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">long</span> data;<span class="comment">//data域</span></span><br><span class="line">    <span class="keyword">public</span> Link next;<span class="comment">//next Link in list</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Link</span><span class="params">(<span class="keyword">long</span> data)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.data=data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayLink</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(data+<span class="string">"---&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>单链表（LinkList）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkList</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Link first;<span class="comment">//定义头结点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LinkList</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.first=<span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertFirst</span><span class="params">(<span class="keyword">long</span> value)</span></span>&#123;</span><br><span class="line">        Link newLink=<span class="keyword">new</span> Link(value);</span><br><span class="line">        newLink.next=first;</span><br><span class="line">        first=newLink;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Link <span class="title">deleteFirst</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(first==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Link temp=first;</span><br><span class="line">        first=first.next;</span><br><span class="line">        <span class="keyword">return</span> temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayList</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Link current=first;</span><br><span class="line">        <span class="keyword">while</span>(current!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            current.displayLink();</span><br><span class="line">            current=current.next</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2017/07/02/Java%E7%89%88%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-算法与数据结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2017/07/01/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" target="_blank">算法与数据结构</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2017/07/01/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="archive-article-date">
+        <time datetime="2017-07-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、线性表"><a href="#一、线性表" class="headerlink" title="一、线性表"></a>一、线性表</h1><h3 id="1、线性表的顺序存储"><a href="#1、线性表的顺序存储" class="headerlink" title="1、线性表的顺序存储"></a>1、线性表的顺序存储</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> LIST_INIT_SIZE=<span class="number">100</span>;<span class="comment">//表初始分配空间</span></span><br><span class="line"><span class="keyword">const</span> LISTINCREMENT=<span class="number">10</span>;<span class="comment">//空间分配增量</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    ElemType *elem;<span class="comment">//存储空间</span></span><br><span class="line">    <span class="keyword">int</span> length;<span class="comment">//当前长度</span></span><br><span class="line">    <span class="keyword">int</span> listsize;<span class="comment">//当前存储容量</span></span><br><span class="line">    <span class="keyword">int</span> LISTINCREMENT;<span class="comment">//可增加存储空间（可能初始分配存储空间会用完，可以增加一个10，从100变为110）</span></span><br><span class="line">&#125;SqList;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1、线性表的初始化（创建一个空的线性表）"><a href="#1、线性表的初始化（创建一个空的线性表）" class="headerlink" title="1、线性表的初始化（创建一个空的线性表）"></a>1、线性表的初始化（创建一个空的线性表）</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">InitList_Sq</span><span class="params">(SqList &amp;L)</span></span>&#123;</span><br><span class="line">    <span class="comment">//构造空表L，1、首先是要申请存储空间</span></span><br><span class="line">    L.elem=(ElemType *)<span class="built_in">malloc</span>(LIST_INIT_SIZE*<span class="keyword">sizeof</span>(ElemType));</span><br><span class="line">    <span class="comment">//因为申请存储空间需要系统分配，内存够用的时候才能申请到相应的存储空间</span></span><br><span class="line">    <span class="keyword">if</span>(!L.elem)&#123;</span><br><span class="line">        <span class="built_in">exit</span>(OVERFLOW);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//2、然后把表长度置为0</span></span><br><span class="line">    L.length=<span class="number">0</span>;</span><br><span class="line">    <span class="comment">//3、然后把初始的存储空间赋给它</span></span><br><span class="line">    L.listsize=LIST_INIT_SIZE;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;<span class="comment">//InitList_Sq</span></span><br></pre></td></tr></table></figure>
+
+<p>注意：ElemType为数据类型，比如可以为int类型。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L.elem=(<span class="keyword">int</span> *)<span class="built_in">malloc</span>(LIST_INIT_SIZE*<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br></pre></td></tr></table></figure>
+
+<p>线性表有两种结构：</p>
+<ul>
+<li>物理结构：也就是存储结构</li>
+<li>逻辑结构：也就是你定义的结构，可以为顺序结构，线性结构。</li>
+</ul>
+<p>顺序存储结构：它的逻辑结构与物理结构是相同的，也就是用连续的存储单元。只需要定义一组连续的存储单元就行，然后把这个连续的存储单元的基地址，用某个变量来标注它。就比如：ElemType *elem，然后每个元素的地址系统都可以自己计算出来的。顺序存储结构，基地址知道了，就可以随机的存取。你取任何一个元素访问的时间是相同的。</p>
+<p>在顺序存储结构中，定义的方式不仅仅是一个数组。此处定义采用的是指针的方法。因为基地址可以用一个指针来记住它。</p>
+<h4 id="2、删除线性表中的第i个元素"><a href="#2、删除线性表中的第i个元素" class="headerlink" title="2、删除线性表中的第i个元素"></a>2、删除线性表中的第i个元素</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">ListDelete_Sq</span><span class="params">(SqList &amp;L,<span class="keyword">int</span> i,ElemType &amp;e)</span></span>&#123;</span><br><span class="line">    <span class="comment">//删除L中第i个元素，后面的元素前移</span></span><br><span class="line">    <span class="keyword">if</span>((i&lt;<span class="number">1</span>)||(i&gt;L.length))&#123;</span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    &#125;</span><br><span class="line">    p=&amp;L.Elem[i<span class="number">-1</span>];<span class="comment">//p是当前这个元素的地址。</span></span><br><span class="line">    e=*p;<span class="comment">//*p是，p指向当前这个单元的内容，也就是i-1元素的内容放在e这个变量里</span></span><br><span class="line">    q=L.Elem+L.length<span class="number">-1</span>;<span class="comment">//L.Elem是L的基地址,在加上L.length-1就是最后一个元素的地址，所以q其实是指向最后一个元素。</span></span><br><span class="line">    <span class="comment">//（q=L.Elem+L.length-1这里只是计算地址的一个过程）,p指针是指向第i-1个元素，q指针指向最后一个元素</span></span><br><span class="line">    <span class="comment">//从第i个元素开始到最后一个元素都往前移</span></span><br><span class="line">    <span class="keyword">for</span>(++p;p&lt;=q;++p)*(p<span class="number">-1</span>)=*p;<span class="comment">//p&lt;=q，也即是p指针在q之前。第一个++p的指针加加是，在做for语句的时候，一旦做循环p指针先加1，也就是移动到了第i个位置。在进行for的时候，仅仅执行一次。第2个++p，是每次for循环执行完之后都要再+1。</span></span><br><span class="line">    <span class="comment">//*(p-1)=*p;，意思是把p指针所指向的内容往前移，移到p-1。也就是元素往前移，都是用星号，目的是取元素里的内容</span></span><br><span class="line">    --L.length;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;<span class="comment">//ListDelete_Sq</span></span><br></pre></td></tr></table></figure>
+
+<p>注：第i个元素的下标是i-1，因为数组是从0开始的。</p>
+<h4 id="3、顺序表的应用"><a href="#3、顺序表的应用" class="headerlink" title="3、顺序表的应用"></a>3、顺序表的应用</h4><p>例1、设A=(a1,a2,a3,…am),B=(b1,b2,b3,…bn)为两个线性表，试写出比较A,B大小的算法。</p>
+<ul>
+<li><p>比较原则：首先去掉A,B两个集合的最大前缀子集之后，如果A,B为空，则A=B；如果A空B不空，A&lt;B；如果B空A不空，则A&gt;B;如果A和B均不空，则首元素大者为大。</p>
+</li>
+<li><p>分析：A,B看成是顺序表，从前往后一次比较他们两个相同下标的元素。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">compare</span><span class="params">(SqList A,SqList B)</span></span>&#123;</span><br><span class="line">    <span class="comment">//若A&lt;B，返回-1，A=B返回0，A&gt;B返回1</span></span><br><span class="line">    <span class="keyword">int</span> j=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(i&lt;A.length&amp;&amp;j&lt;B.length)&#123;</span><br><span class="line">        <span class="keyword">if</span>(A.elem[j]&lt;B.elem[j])<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(A.elem[j]&gt;B.elem[j])<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> j++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(A.length==B.length)reutrn <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(A.length&lt;B.length)<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>例2、设计一个算法，用尽可能少的辅助空间将顺序表中前m个元素和后n个元素进行整体互换。即将线性表,也就是O(m+n)空间复杂度</p>
+<p>(a1,a2,…am,b1,b2,…,bn)—–&gt;(b1,b2,….,bn,a1,a2,…,am)</p>
+<p>如果两两交换的话，要考虑m，n的大小。</p>
+<ul>
+<li><p>参考算法1：取一个临时空间，将b1放入临时空间，</p>
+<p>把a1到am看成一个整体搬迁后移一个位置，如此b2,b3,直到bn。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exchange</span><span class="params">(SqList &amp;L,<span class="keyword">int</span> m,<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">    <span class="comment">//线性表分成两个部分后，两部分倒置</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;<span class="comment">//第一个for把b1到bn一个个放到临时存储空间w</span></span><br><span class="line">        <span class="keyword">int</span> w=L.Elem[i+m];<span class="comment">//i+m=0+m也即是b1的下标</span></span><br><span class="line">        <span class="keyword">for</span>(j=m;j&gt;=<span class="number">1</span>;j--)</span><br><span class="line">            L.Elem[i+j]=L.Elem[i+j<span class="number">-1</span>];<span class="comment">//然后把a1到am元素整体往后移动一个位置。</span></span><br><span class="line">        L.Elem[i]=w;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">算法特点：牺牲时间节省空间，时间复杂度O(m*n)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>参考算法2：如果另外申请空间m+n个存储单元，将b，a分别写入，时间复杂度将为m+n,也就是：牺牲空间节省时间。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exchange</span><span class="params">(SqList &amp;L,<span class="keyword">int</span> m,<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">   SqList List;<span class="comment">//为m+n长度</span></span><br><span class="line">    <span class="comment">//存放b1,b2,...bn</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">        List.Elem[i]=L.Elem[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//存放a1,a2,am</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=m;i&lt;=L.length<span class="number">-1</span>;i++)&#123;</span><br><span class="line">        List.Elem[i]=L.Elem[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="2、线性链表的表示、实现、操作"><a href="#2、线性链表的表示、实现、操作" class="headerlink" title="2、线性链表的表示、实现、操作"></a>2、线性链表的表示、实现、操作</h3><ul>
+<li><p>顺序表的局限：插入、删除时要移动大量的元素，耗费大量时间。</p>
+</li>
+<li><p>链式表示：用一组<strong>任意</strong>的存储单元存储线性表</p>
+<ul>
+<li>存储单元不要求连续：物理结构不反应逻辑结构</li>
+<li>不可以随机存取，但插入和删除方便</li>
+<li>需要两个域：一个表示数据本身；一个表示数据元素间的先后关联。合起来是一个<strong>结点</strong>。</li>
+<li>S结点中表示关联的部分为<strong>指针域</strong>，内部存放指针或者链。结点链接成一个<strong>链表</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2、线性链表的表示、实现、操作-1"><a href="#2、线性链表的表示、实现、操作-1" class="headerlink" title="2、线性链表的表示、实现、操作"></a>2、线性链表的表示、实现、操作</h3><h3 id="3、循环链表的定义"><a href="#3、循环链表的定义" class="headerlink" title="3、循环链表的定义"></a>3、循环链表的定义</h3><h4 id="1、线性链表（单链表）的定义："><a href="#1、线性链表（单链表）的定义：" class="headerlink" title="1、线性链表（单链表）的定义："></a>1、线性链表（单链表）的定义：</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">LNode</span>&#123;</span></span><br><span class="line">    ElemType data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">LNode</span> *<span class="title">next</span>;</span><span class="comment">//指针域指向的是下一个结点，它指向的自然也就是结点类型。</span></span><br><span class="line">&#125;LNode,*LinkList<span class="comment">//这个LinkList是一个指针</span></span><br></pre></td></tr></table></figure>
+
+<p>带头结点的单链表：头结点：data里没有数据。比如把表里元素都删除。总不能只剩下一个L吧。头结点的增加仅仅是为了运算的方便。做题的时候，要看清楚是不是带头结点的链表，默认都是带头结点的链表。</p>
+<h4 id="2、线性表的基本操作："><a href="#2、线性表的基本操作：" class="headerlink" title="2、线性表的基本操作："></a>2、线性表的基本操作：</h4><h5 id="1、初始化线性链表"><a href="#1、初始化线性链表" class="headerlink" title="1、初始化线性链表"></a>1、初始化线性链表</h5><p>也就是创建一个仅仅有头结点的空表。</p>
+<p><img src="/2017/07/01/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%BB%BA%E7%AB%8B%E9%93%BE%E8%A1%A8.jpg" alt="建立链表"></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">InitList_L</span><span class="params">(LinkList &amp;L)</span></span>&#123;<span class="comment">//LinkList，就是刚刚在struct结构体定义的*LinkList</span></span><br><span class="line">    <span class="comment">//建立头结点，其next为空</span></span><br><span class="line">    L=(LinkList)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(LNode));</span><br><span class="line">    L-&gt;next=<span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2、GetElem在单链表中的实现GetElem-L-L-i-amp-e"><a href="#2、GetElem在单链表中的实现GetElem-L-L-i-amp-e" class="headerlink" title="2、GetElem在单链表中的实现GetElem_L(L,i,&amp;e)"></a>2、GetElem在单链表中的实现GetElem_L(L,i,&amp;e)</h5><p>也就是把第i个元素取出来，赋给变量e。</p>
+<p>思想：可以使用一个指针p指向第一个元素，然后再用一个计数器flag=1。</p>
+<p>或者让指针p指向头结点，可以把计数器flag=0；然后指针不断的往后，计数器flag要不断的+1。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">GetElem_L</span><span class="params">(LinkList L,<span class="keyword">int</span> i,ElemType &amp;e)</span></span>&#123;<span class="comment">//使用&amp;e，是因为e的值会发生变化。因为把获取到的值，赋给了e。</span></span><br><span class="line">    <span class="comment">//L为带头结点的单链表的头指针</span></span><br><span class="line">    <span class="comment">//当第i个元素存在时，将值返回给e，OK,否则ERROR</span></span><br><span class="line">    LNode *p=L-&gt;next;<span class="comment">//L-&gt;next指向第一个元素，相当于是p指向第一个元素</span></span><br><span class="line">    <span class="keyword">int</span> flag=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(p&amp;&amp;flag&lt;i)&#123;<span class="comment">//while条件中的p，p是不为空的意思。因为p是一个指针，while(p)表示，p指针存在，也就是p指向的元素是存在的，并且flag是小于i的</span></span><br><span class="line">        p=p-&gt;next;<span class="comment">//那么我就把p-&gt;next赋给p，也就是p指针后移</span></span><br><span class="line">        ++flag;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(!p||flag&gt;i)<span class="keyword">return</span> ERROR;<span class="comment">//比如可能有这种情况，链表只有5个元素，但是i给你的是6，这时候也就是p不存在了，自然就是error了</span></span><br><span class="line">    e=p-&gt;data;</span><br><span class="line">    <span class="keyword">return</span> OK;      </span><br><span class="line">&#125;<span class="comment">//GetElem_L</span></span><br></pre></td></tr></table></figure>
+
+<p>注：顺序表与单链表在取第i个元素的操作上有什么不同？</p>
+<p>顺序表：随机存取</p>
+<h5 id="3、插入操作：在第i个结点之前插入一个元素e"><a href="#3、插入操作：在第i个结点之前插入一个元素e" class="headerlink" title="3、插入操作：在第i个结点之前插入一个元素e"></a>3、插入操作：在第i个结点之前插入一个元素e</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">ListInsert_L</span><span class="params">(LinkList &amp;L,<span class="keyword">int</span> i,ElemType e)</span></span>&#123;</span><br><span class="line">    <span class="comment">//在线性表的第i个元素之前插入一个元素e</span></span><br><span class="line">    p=(LinkList)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(LNode));</span><br><span class="line">    <span class="keyword">if</span>(!p)<span class="built_in">exit</span>(OVERFLOW);</span><br><span class="line">    p-&gt;data=e;</span><br><span class="line">    q=L;</span><br><span class="line">    flag=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(q&amp;&amp;flag&lt;i<span class="number">-1</span>)&#123;</span><br><span class="line">        q=q-&gt;next;</span><br><span class="line">        ++flag;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(!q||flag&gt;i<span class="number">-1</span>)<span class="keyword">return</span> ERROR;</span><br><span class="line">    P-&gt;next=q-&gt;next;</span><br><span class="line">    q-&gt;next=p;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;<span class="comment">//ListInsert_L</span></span><br><span class="line">时间复杂度分析：O(n)</span><br></pre></td></tr></table></figure>
+
+<p>总结：只要是把值赋给e的操作，都是要用Elem &amp;e，如果只是单纯把e赋给别的，就用Elem e好了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">LNode* <span class="title">LocateElem_L</span><span class="params">(LinkList L,ElemType e)</span></span>&#123;</span><br><span class="line">    <span class="comment">//在L中找到第一个值和e相同的结点，返回其地址，若不存在，返回空值</span></span><br><span class="line">    <span class="keyword">if</span>(!L)<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    p=L;</span><br><span class="line">    <span class="keyword">while</span>(p&amp;&amp;p-&gt;data!=e)p=p-&gt;next;<span class="comment">//只有当!p也就是p不存在，或者是p-&gt;data=e才循环结束。也就是返回p。</span></span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line">时间复杂度为O(n)</span><br></pre></td></tr></table></figure>
+
+<p>例题1：将两个有序链表归并为一个新的有序链表。</p>
+<p>分析：将Lb中的元素插入到La，使其有序。</p>
+<p>pa-&gt;data &gt;pb-&gt;data:将pb插入到pa的前面。插入过程中，注意临时指针的使用。</p>
+<p>声明两个指针，pa指向La的第一个元素，pb指向Lb的第一个元素。</p>
+<p>还要额外增加两个辅助变量来记录。比如用p来记录pa前面那个元素。</p>
+<p>然后用q来记录pb前面的那个元素。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mergeList</span><span class="params">(LinkList &amp;La,LinkList &amp;Lb)</span></span>&#123;</span><br><span class="line">    <span class="comment">//归并两个非递减单链表La，Lb，形成新的La</span></span><br><span class="line">    pa=La-&gt;next;</span><br><span class="line">    pb=Lb-&gt;next;</span><br><span class="line">    p=La;<span class="comment">//p其实就是pb的前面那个元素,是一个存储单元</span></span><br><span class="line">    <span class="keyword">while</span>(pa&amp;&amp;pb)&#123;<span class="comment">//当pa存在，并且pb存在</span></span><br><span class="line">        <span class="keyword">if</span>(pa-&gt;data&lt;=pb-&gt;data)&#123;<span class="comment">//如果pa的data域小于pb的data域，让p和pa存在先后关系。就是说把pa赋给p，pa赋给pa的下一个。</span></span><br><span class="line">            p=pa;</span><br><span class="line">            pa=pa-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;<span class="comment">//否则就要插入了。</span></span><br><span class="line">            t=pb;<span class="comment">//让t来存pb的前面那个元素</span></span><br><span class="line">            pb=pb-&gt;next;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">            以下三句是做插入操作。因为pb的data比pa大，所以前插入，因为此				时的pa已经是next了所以先连后面的，用t-&gt;next连到pa，然后p是pa前			一个元素，则p的next指针域连到t。然后再把p移动到t的位置，因为此时			t的位置是新插入的元素，你原来的元素已经不是p的位置了，此时新插入			 的元素在pa之前。总之，始终要保证p在pa的前一个元素。</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">            t-&gt;next=pa;</span><br><span class="line">            p-&gt;next=t;</span><br><span class="line">            p=t;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(pb)</span><br><span class="line">           <span class="comment">//如果此时pa=La-&gt;next已经为NULL不存在了那就直接把pb插到pa的后面</span></span><br><span class="line">           p-&gt;next=pb;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">时间复杂度为O(n)</span><br></pre></td></tr></table></figure>
+
+<h3 id="4、双向循环链表的定义、操作"><a href="#4、双向循环链表的定义、操作" class="headerlink" title="4、双向循环链表的定义、操作"></a>4、双向循环链表的定义、操作</h3><h3 id="5、线性表的典型应用"><a href="#5、线性表的典型应用" class="headerlink" title="5、线性表的典型应用"></a>5、线性表的典型应用</h3><h1 id="二、栈和队列"><a href="#二、栈和队列" class="headerlink" title="二、栈和队列"></a>二、栈和队列</h1><h3 id="1、栈的抽象数据类型"><a href="#1、栈的抽象数据类型" class="headerlink" title="1、栈的抽象数据类型"></a>1、栈的抽象数据类型</h3><ul>
+<li><p>栈：一个只能在栈顶进行插入和删除的线性表，其特征为FIFO。</p>
+</li>
+<li><p>栈的表示：</p>
+<ul>
+<li><p>顺序栈：栈的顺序存储</p>
+<ul>
+<li>优点：处理方便</li>
+<li>缺点：数组大小固定，容易造成内存资源的浪费。</li>
+</ul>
+</li>
+<li><p>链栈：栈的动态存储</p>
+<ul>
+<li>优点：能动态改变链表的长度，有效利用内存资源</li>
+<li>缺点：处理较为复杂</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="1-1、顺序栈的表示和实现"><a href="#1-1、顺序栈的表示和实现" class="headerlink" title="1.1、顺序栈的表示和实现"></a>1.1、顺序栈的表示和实现</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STACK_INIT_SIZE 100;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STACKINCREMENT 10;<span class="comment">//可增长的长度。当100个存储空间用完以后，可增加。</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    SElemType *base;<span class="comment">//base表示将要申请的这一组存储空间的基地址。</span></span><br><span class="line">    SElemType *top;</span><br><span class="line">    <span class="keyword">int</span> stacksize;</span><br><span class="line">&#125;SqStack;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">stacksize:表示栈当前可以使用的最大容量。</span></span><br><span class="line"><span class="comment">base:栈底</span></span><br><span class="line"><span class="comment">top：栈顶</span></span><br><span class="line"><span class="comment">栈顶指针指向栈顶元素的下一个位置。也就是下次压栈时元素所放的位置。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">top指向的是下一个元素将要存放的位置。</span><br><span class="line">top减一指向弹栈时下一个元素的取值位置。</span><br><span class="line">栈空的条件：top=base;</span><br><span class="line">栈满的条件：top-base&gt;=stacksize;</span><br><span class="line">因为每次top都是指向栈顶元素的下一个位置。那么出栈的时候，top先<span class="number">-1</span>，然后到了栈顶元素。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化栈</span></span><br><span class="line"><span class="function">Status <span class="title">InitStack</span><span class="params">(SqStack &amp;S)</span></span>&#123;<span class="comment">//这里使用&amp;S，是因为S发生变化，因为给S申请存储空间了。</span></span><br><span class="line">    <span class="comment">//构造一个空栈</span></span><br><span class="line">    <span class="comment">//1、首先申请一块连续的存储空间，base地址是你申请存储空间的时候，系统给的地址。</span></span><br><span class="line">    S.base=(SElemType *)<span class="built_in">malloc</span>(STACK_INIT_SIZE*<span class="keyword">sizeof</span>(SElemType));</span><br><span class="line">    <span class="keyword">if</span>(!S.base)<span class="built_in">exit</span>(OVERFLOW);</span><br><span class="line">    <span class="comment">//2、初始化的空栈的时候，top指针等于base指针。</span></span><br><span class="line">    S.top=S.base;</span><br><span class="line">    <span class="comment">//3、初始化栈的大小</span></span><br><span class="line">    S.stacksize=STACK_INIT_SIZE;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;<span class="comment">//InitStack</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//压栈</span></span><br><span class="line"><span class="function">Status <span class="title">Push</span><span class="params">(SqStack &amp;S,SElemType e)</span></span>&#123;<span class="comment">//这里使用&amp;S，因为要插入e到栈S里，S发生变化了，所以要用&amp;，e不用加&amp;是因为，e只是插入，并没有给e赋值，而让e发生变化</span></span><br><span class="line">    <span class="comment">//元素e插入到栈中S</span></span><br><span class="line">    <span class="keyword">if</span>(S.top-S.base&gt;=S.stacksize)<span class="comment">//栈满</span></span><br><span class="line">    &#123;</span><br><span class="line">        newbase=(SElemType *)<span class="built_in">realloc</span>(S.base,(S.stacksize+STACKINCREMENT)*<span class="keyword">sizeof</span>(SElemType));<span class="comment">//重新申请存储空间</span></span><br><span class="line">  		<span class="keyword">if</span>(!newbase)<span class="built_in">exit</span>(OVERFLOW);<span class="comment">//如果不能申请</span></span><br><span class="line">        <span class="keyword">else</span> S.base=newbase;<span class="comment">//可以申请则把新的基地址赋给原来的base</span></span><br><span class="line">        S.top=S.base+S.stacksize;</span><br><span class="line">        S.stacksize+=STACKINCREMENT;                             </span><br><span class="line">    &#125;<span class="comment">//if</span></span><br><span class="line">    *S.top++=e;<span class="comment">//因为top永远指向栈顶元素的下一个。这个等价于*S.top=e，然后S.top++;</span></span><br><span class="line">    <span class="keyword">return</span> OK;                                 </span><br><span class="line">&#125;<span class="comment">//Push</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//出栈</span></span><br><span class="line"><span class="function">Status <span class="title">Pop</span><span class="params">(SqStack &amp;S,SElemType &amp;e)</span></span>&#123;</span><br><span class="line">    <span class="comment">//因为出栈，然后再把元素赋值给e，e发生变化了，所以要用&amp;e</span></span><br><span class="line">    <span class="comment">//从栈顶读取数据放入e内，栈中下一元素所在位置成为新的栈顶</span></span><br><span class="line">    <span class="keyword">if</span>(S.top==S.base)<span class="keyword">return</span> ERROR;<span class="comment">//栈空</span></span><br><span class="line">    e=*--S.top;<span class="comment">//因为top栈顶指针永远指向栈顶元素的下一个位置，所以出栈的时候，你要先进行减1，到栈顶位置，然后再取栈顶元素的数据。然后赋值给e</span></span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：top的操作顺序和值的变化</p>
+<p>压栈：value-&gt;top;top++;//首先是把值赋给top后，然后top再++,指向当前压栈元素的下一个</p>
+<p>弹栈：top–;top-&gt;value;//首先是top先–，指向栈顶元素，然后再取值。</p>
+<h4 id="1-2、链栈的结构和表示"><a href="#1-2、链栈的结构和表示" class="headerlink" title="1.2、链栈的结构和表示"></a>1.2、链栈的结构和表示</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义栈结构</span></span><br><span class="line"><span class="keyword">typedef</span> struc stack_node&#123;</span><br><span class="line">    ElemType data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">stack_node</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125;LinkStack*;</span><br><span class="line">LinkStack stk;<span class="comment">//stk标识这个栈的栈顶元素，也就是头指针，标识栈顶的作用，所以并不需要定义一个top指针。</span></span><br><span class="line"><span class="comment">//栈底：最先入栈的</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//入栈push</span></span><br><span class="line"><span class="function">Status <span class="title">Push</span><span class="params">(LinkStack &amp;stk,ElemType x)</span></span>&#123;<span class="comment">//stk表示这个栈的栈顶元素也就是头指针。标识栈顶位置的作用。</span></span><br><span class="line">    LinkStack top;<span class="comment">//此处top无任何意义，只是一个标识，用p，q都可以，仅仅是一个即将要入栈的x的存储空间而已，是一个过渡的辅助变量而已。因为我们已经用stk表示这个栈了，也就是说stk标识这个栈的栈顶元素的位置了。起到了标识栈顶位置的作用。</span></span><br><span class="line">    <span class="comment">//我要插入x，肯定要给x申请存储空间，因为top是指向当前x元素的</span></span><br><span class="line">    top=<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(LinkStack));</span><br><span class="line">    top-&gt;data=x;</span><br><span class="line">    <span class="comment">//自然要把top-&gt;next连接到stk上，指向栈顶指针。</span></span><br><span class="line">    top-&gt;next=*stk;</span><br><span class="line">    <span class="comment">//然后此时栈顶元素的指针就不是stk了，而是刚刚入栈的元素了。也就是把top赋给stk成为新的栈顶指针。</span></span><br><span class="line">    *stk=top;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//出栈：相当于把单链表的表头元素给删除掉</span></span><br><span class="line"><span class="function">Status <span class="title">Pop</span><span class="params">(LinkStack &amp;stk,ElemType &amp;e)</span></span>&#123;<span class="comment">//因为pop之后，你栈顶元素出来之后，stk变化了，所以我们要在stk变量前面加上一个&amp;字符。因为pop出来这个元素后，赋值给e这个变量，e也发生变化了，所有也加上&amp;</span></span><br><span class="line">    LinkStack p=stk;<span class="comment">//用临时指针p先记住stk的位置</span></span><br><span class="line">    p=p-&gt;next;</span><br><span class="line">    <span class="built_in">free</span>(p);<span class="comment">//这些是不带头结点的操作。</span></span><br><span class="line">    <span class="comment">//如果是带头结点的话，stk指向的是表头一个空的，stk-&gt;next才是指向真正的栈顶元素。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、队列"><a href="#2、队列" class="headerlink" title="2、队列"></a>2、队列</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化空队列Q</span></span><br><span class="line">InitQueue(&amp;Q);</span><br><span class="line"><span class="comment">//Q为空则true</span></span><br><span class="line">QueueEmpty(Q);</span><br><span class="line"><span class="comment">//入队，x加入，成为Q的新队尾</span></span><br><span class="line">EnQueue(&amp;Q,x);</span><br><span class="line"><span class="comment">//出队，删除队头元素，然后把对头元素赋给x</span></span><br><span class="line">DeQueue(&amp;Q,&amp;x);</span><br><span class="line">GetHead(Q,&amp;x)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-1、顺序队列"><a href="#2-1、顺序队列" class="headerlink" title="2.1、顺序队列"></a>2.1、顺序队列</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MaxSize 50</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">    ElemType data[MaxSize];</span><br><span class="line">    <span class="keyword">int</span> front,rear;</span><br><span class="line">&#125;SqQueue;</span><br><span class="line"><span class="comment">//队空条件：</span></span><br><span class="line">Q.front==Q.rear==<span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2、循环队列"><a href="#2-2、循环队列" class="headerlink" title="2.2、循环队列"></a>2.2、循环队列</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">初始：Q.front=Q.rear=<span class="number">0</span>;</span><br><span class="line">队首指针进<span class="number">1</span>：Q.front=(Q.front+<span class="number">1</span>)%MaxSize;</span><br><span class="line">队尾指针进<span class="number">1</span>：Q.rear=(Q.rear+<span class="number">1</span>)%MaxSize;</span><br><span class="line">队列长度：(Q.rear+MaxSize-Q.front)%MaxSize;</span><br><span class="line">队满条件：(Q.rear+<span class="number">1</span>)%MaxSize==Q.front;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>队列初始化</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InitQueue</span><span class="params">(&amp;Q)</span></span>&#123;</span><br><span class="line">    Q.rear=Q.front=<span class="number">0</span>;<span class="comment">//初始化队首、队尾指针</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>判队空</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isEmpty</span><span class="params">(Q)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(Q.rear==Q.front)<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>入队</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">EnQueue</span><span class="params">(SqQueue &amp;Q,ElemType x)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>((Q.rear+<span class="number">1</span>)%MaxSize==Q.front)<span class="keyword">return</span> <span class="literal">false</span>;<span class="comment">//队满</span></span><br><span class="line">    Q.data[Q.rear]=x;</span><br><span class="line">    <span class="comment">//入队从队尾</span></span><br><span class="line">    Q.rear=(Q.rear+<span class="number">1</span>)%MaxSize;<span class="comment">//队尾指针加1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>出队</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">DeQueue</span><span class="params">(SqQueue &amp;Q,ElemType &amp;x)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(Q.rear==Q.front)<span class="keyword">return</span> <span class="literal">false</span>;<span class="comment">//出队之前，先判断队是否为空</span></span><br><span class="line">    x=Q.data[Q.front];</span><br><span class="line">    <span class="comment">//出队从队头开始</span></span><br><span class="line">    Q.front=(Q.front+<span class="number">1</span>)%MaxSize;<span class="comment">//队头指针加1取模</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="2-3、链式队列"><a href="#2-3、链式队列" class="headerlink" title="2.3、链式队列"></a>2.3、链式队列</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//结点定义</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">    ElemType data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">LinNode</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125;LinkNode;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Q</span>&#123;</span></span><br><span class="line">    LinkNode *front,*rear;</span><br><span class="line">&#125;LinkQueue;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>初始化</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InitQueue</span><span class="params">(LinkQueue &amp;Q)</span></span>&#123;</span><br><span class="line">    Q.front=Q.rear=(LinkNode*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(LinkNode));<span class="comment">//建立头结点</span></span><br><span class="line">    Q.front-&gt;next=<span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>判队空</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isEmpty</span><span class="params">(LinQueue Q)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(Q,front==Q.rear)<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>入队</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EnQueue</span><span class="params">(LinkQueue &amp;Q,ElemType x)</span></span>&#123;</span><br><span class="line">    s=(LinkNode *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(LinkNode));</span><br><span class="line">    s-&gt;data=x;</span><br><span class="line">    s-&gt;next=<span class="literal">NULL</span>;</span><br><span class="line">    Q.rear-&gt;next=s;<span class="comment">//将新节点插入到队尾</span></span><br><span class="line">    Q.rear=s;<span class="comment">//队尾指针移动到新的结点s</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>出队</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">DeQueue</span><span class="params">(LinkQueue &amp;Q,ElemType &amp;x)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(Q.front==Q.rear)<span class="keyword">return</span> <span class="literal">false</span>;<span class="comment">//空队</span></span><br><span class="line">    p=Q.front-&gt;next;<span class="comment">//因为有头结点，所以对头应该是next，然后给p临时变量</span></span><br><span class="line">    x=p-&gt;data;</span><br><span class="line">    Q.front-&gt;next=p-&gt;next;<span class="comment">//然后让头结点，指向头结点的下一个结点。</span></span><br><span class="line">    <span class="keyword">if</span>(Q.rear==p)Q.rear=Q.front;<span class="comment">//如果队列中只有一个结点，则队头等于队尾，为空了。</span></span><br><span class="line">    <span class="built_in">free</span>(p);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="三、二叉树"><a href="#三、二叉树" class="headerlink" title="三、二叉树"></a>三、二叉树</h1><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//二叉树的链式存储结构</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">BiTNode</span>&#123;</span></span><br><span class="line">    ElemType data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">BiTNode</span> *<span class="title">lchild</span>,*<span class="title">rchild</span>;</span></span><br><span class="line">&#125;BiTNode,*BiTree;</span><br><span class="line"><span class="comment">//先序遍历</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PreOrder</span><span class="params">(BiTree T)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(T!=<span class="literal">NULL</span>)&#123;</span><br><span class="line">        visit(T);</span><br><span class="line">        PreOrder(T-&gt;lchild);</span><br><span class="line">        PreOrder(T-&gt;rchild);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//中序遍历</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InOrder</span><span class="params">(BiTree T)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(T!=<span class="literal">NULL</span>)&#123;</span><br><span class="line">        InOrder(T-&gt;lchild);</span><br><span class="line">        visit(T);</span><br><span class="line">        InOrder(T-&gt;rchild);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//后续遍历</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PostOrder</span><span class="params">(BiTree T)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(T!=<span class="literal">NULL</span>)&#123;</span><br><span class="line">        PostOrder(T-&gt;lchild);</span><br><span class="line">        PostOrder(T-&gt;rchild);</span><br><span class="line">        visit(T);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//层次遍历</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LevelOrder</span><span class="params">(BiTree T)</span></span>&#123;</span><br><span class="line">    InitQueue(Q);</span><br><span class="line">    BiTree p;<span class="comment">//p是遍历指针</span></span><br><span class="line">    EnQueue(Q,T);<span class="comment">//将根结点入队</span></span><br><span class="line">    <span class="keyword">while</span>(!isEmpty(Q))&#123;<span class="comment">//队列不空</span></span><br><span class="line">        DeQueue(Q,p);<span class="comment">//队头元素出队</span></span><br><span class="line">        visit(p);<span class="comment">//访问当前p所指向的结点</span></span><br><span class="line">        <span class="keyword">if</span>(p-&gt;lchild!=<span class="literal">NULL</span>)</span><br><span class="line">            EnQueue(Q,p-&gt;lchild);</span><br><span class="line">        <span class="keyword">if</span>(p-&gt;rchild!=<span class="literal">NULL</span>)</span><br><span class="line">            EnQueue(Q,p-&gt;rchild);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="四、图"><a href="#四、图" class="headerlink" title="四、图"></a>四、图</h1><ul>
+<li><p>连通：在无向图中，从顶点v到顶点w有路径存在</p>
+</li>
+<li><p>连通图：图中任意两个顶点都是连通的。</p>
+</li>
+<li><p>连通分量：无向图中的极大连通子图，极大也就是要包含所有的边。</p>
+</li>
+<li><p>极小连通子图：既要保证图连通，也要保证边数最少。</p>
+</li>
+<li><p>强连通：有向图，顶点v到顶点w，与顶点w到顶点v之间都有路径。，为强连通的。</p>
+</li>
+<li><p>强连通图：邮箱途中，任意一对顶点都是连通的。</p>
+</li>
+<li><p>边权：图的每条边标上数值，数值为权值</p>
+</li>
+<li><p>网：带边权的图为网。</p>
+</li>
+</ul>
+<h3 id="1、图的存储"><a href="#1、图的存储" class="headerlink" title="1、图的存储"></a>1、图的存储</h3>
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2017/07/01/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-一、操作系统概述" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2017/06/21/%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/" target="_blank">操作系统</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2017/06/21/%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/" class="archive-article-date">
+        <time datetime="2017-06-21T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-21</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、操作系统概述"><a href="#一、操作系统概述" class="headerlink" title="一、操作系统概述"></a>一、操作系统概述</h1><h3 id="1、指令权限与工作模式"><a href="#1、指令权限与工作模式" class="headerlink" title="1、指令权限与工作模式"></a>1、指令权限与工作模式</h3><p>处理器能处理的指令分为：</p>
+<ul>
+<li>特权指令：需要特殊权限才可以使用的指令，通常涉及系统安全。</li>
+<li>非特权指令：任何情况下都可以使用的指令。</li>
+</ul>
+<p>处理器的控制寄存器中用专门的位标识当前的工作模式：</p>
+<ul>
+<li>核心态(管态)：已获得特殊权限的状态，能够执行所有指令。</li>
+<li>用户态(目态)：只能指令非特权指令。</li>
+</ul>
+<p>事实上，现代处理器通常具有更多层权限和工作模式。从高到低划分为特权级0(管态)，特权级1，特权级2，特权级3(目态)。</p>
+<h3 id="2、内存空间与操作系统的内核"><a href="#2、内存空间与操作系统的内核" class="headerlink" title="2、内存空间与操作系统的内核"></a>2、内存空间与操作系统的内核</h3><p>处理器处于<strong>核心态</strong>时可以将内存的不同区段分别设置为两种类型：</p>
+<ul>
+<li>内核(系统)空间：其中存储的程序将运行在核心态上，从而可以使用所有指令，且可以访问所有内存空间数据。</li>
+<li>用户空间：其中存储的程序将运行在用户态上，于是只能使用非特权指令，且只能访问用户空间数据。</li>
+</ul>
+<p>操作系统通常在启动时指定内核空间，并将其核心程序放置在内核空间内。操作系统的这一部分叫内核，操作系统的其他部分叫核外部分。</p>
+<h3 id="3、操作系统的内核"><a href="#3、操作系统的内核" class="headerlink" title="3、操作系统的内核"></a>3、操作系统的内核</h3><p>操作系统的内核通常包含以下程序和数据：</p>
+<ul>
+<li>与硬件密切相关的操作</li>
+<li>关键数据结构</li>
+<li>基本中断处理程序</li>
+<li>使用频繁的功能模块</li>
+</ul>
+<p>操作系统的内核具有两个基本特点：</p>
+<ul>
+<li>常驻内存</li>
+<li>运行在核心态</li>
+</ul>
+<h3 id="4、固件"><a href="#4、固件" class="headerlink" title="4、固件"></a>4、固件</h3><p>操作系统的启动依赖于一组称作固件（Firmware）的特殊软件。</p>
+<p>固件存储在只读存储器ROM中，也可以将部分程序或者数据存储在硬盘中。</p>
+<p>与PC启动相关的固件有BIOS和UEFI，他们在计算机启动时首先被运行，并运行基本硬件的检查，装入操作系统引导程序，提供基本硬件驱动程序和中断处理程序等。</p>
+<h3 id="5、基本输入输出系统-BIOS"><a href="#5、基本输入输出系统-BIOS" class="headerlink" title="5、基本输入输出系统(BIOS)"></a>5、基本输入输出系统(BIOS)</h3><p>BIOS包含3个部分：</p>
+<ul>
+<li>POST自检程序：计算机启动后识别硬件配置、自检、初始化。</li>
+<li>基本启动程序：在存储介质中查找有效的主引导程序，如果找到，将它读入内存[0000:7C00]处并开始执行，从而引导操作系统启动。</li>
+<li>基本硬件驱动程序以及中断处理程序：用来在未加载操作系统时识别和控制基本IO设置(键盘、鼠标、显卡、硬盘等)</li>
+</ul>
+<p>硬盘的主引导记录MBR</p>
+<h4 id="5-1、基于BIOS的操作系统启动过程"><a href="#5-1、基于BIOS的操作系统启动过程" class="headerlink" title="5.1、基于BIOS的操作系统启动过程"></a>5.1、基于BIOS的操作系统启动过程</h4><ul>
+<li>硬件自检</li>
+<li>加载驱动</li>
+<li>基本启动程序</li>
+<li>主引导程序(440字节)</li>
+<li>引导程序(512字节)</li>
+<li>操作系统装载程序</li>
+<li>操作系统</li>
+</ul>
+<p>操作系统装载程序Loader的作用：</p>
+<ul>
+<li>进一步检查和配置系统硬件。</li>
+<li>建立内核空间，装入操作系统内核，并初始化数据。</li>
+<li>加载用户登录程序和人机交互环境。</li>
+</ul>
+<h3 id="6、统一的可扩展固件接口UEFI"><a href="#6、统一的可扩展固件接口UEFI" class="headerlink" title="6、统一的可扩展固件接口UEFI"></a>6、统一的可扩展固件接口UEFI</h3><p>Intel公司在1997年新推出的高性能处理器，计划设计一种可扩展的、标准化的固件接口规划EFI(Extensible Firmware Interface)，用来计算机系统的启动以及提供与操作系统的接口。在2006年EFI发展成UEFI(Unified EFI)。</p>
+<p>UEFI的特点：</p>
+<ul>
+<li>驱动程序环境DXE</li>
+<li>磁盘管理采用GUID分区方法</li>
+<li>UEFI应用程序</li>
+</ul>
+<h4 id="6-1、基于UEFI的操作系统启动过程"><a href="#6-1、基于UEFI的操作系统启动过程" class="headerlink" title="6.1、基于UEFI的操作系统启动过程"></a>6.1、基于UEFI的操作系统启动过程</h4><p>UEFI体系包含2部分内容：</p>
+<ul>
+<li>平台初始化框架：包含了支持系统启动的底层程序，包含：安全检查、硬件自检和初始化、DXE、启动管理器。</li>
+<li>UEFI映像(UEFI Image):一组在框架的支持下可执行的程序，包括启动管理器、操作系统装载程序、临时操作系统装载程序、EFI应用程序、设备驱动程序。</li>
+</ul>
+<p>UEFI固件的启动过程：</p>
+<ul>
+<li>安全检查</li>
+<li>Pre-EFI</li>
+<li>加载DXE</li>
+<li>启动管理器</li>
+<li>临时操作系统装载程序</li>
+<li>EFI应用程序</li>
+<li>操作系统装载程序</li>
+<li>操作系统</li>
+</ul>
+<h3 id="7、GUID硬盘分区方式"><a href="#7、GUID硬盘分区方式" class="headerlink" title="7、GUID硬盘分区方式"></a>7、GUID硬盘分区方式</h3><p>UEFI采用GUID硬盘分区方式，优点是：</p>
+<ul>
+<li>扇区块号为64位，消除2TB限制。</li>
+<li>磁盘分区数不受4个限制，最多划分128个分区</li>
+<li>分区扇区数为64位，消除2TB限制</li>
+<li>自带备份，增加可靠性</li>
+<li>采用CRC32校验，增加完整性</li>
+<li>每个分区都有唯一标识GUID</li>
+</ul>
+<h3 id="8、操作系统的用户接口–命令接口"><a href="#8、操作系统的用户接口–命令接口" class="headerlink" title="8、操作系统的用户接口–命令接口"></a>8、操作系统的用户接口–命令接口</h3><p>命令接口是人机交互的主要途径</p>
+<h4 id="8-1、按命令接口在操作系统内的实现方式，分为"><a href="#8-1、按命令接口在操作系统内的实现方式，分为" class="headerlink" title="8.1、按命令接口在操作系统内的实现方式，分为"></a>8.1、按命令接口在操作系统内的实现方式，分为</h4><ul>
+<li>内部命令：内核完成的命令</li>
+<li>外部命令：由其他应用程序完成的命令</li>
+</ul>
+<h4 id="8-2、按命令接口的使用方式，分为："><a href="#8-2、按命令接口的使用方式，分为：" class="headerlink" title="8.2、按命令接口的使用方式，分为："></a>8.2、按命令接口的使用方式，分为：</h4><ul>
+<li><p>脱机命令：预先编写好，送交执行后无法立即反馈的命令接口形式。</p>
+<p>比如批处理系统中的JCL</p>
+</li>
+<li><p>联机命令：交互式执行，能够立即得到反馈的命令接口形式。</p>
+<p>比如分时操作系统的交互式命令接口。又可细分为字符命令、菜单命令和图标命令。</p>
+</li>
+</ul>
+<h3 id="9、操作系统的用户接口–程序接口-系统调用"><a href="#9、操作系统的用户接口–程序接口-系统调用" class="headerlink" title="9、操作系统的用户接口–程序接口(系统调用)"></a>9、操作系统的用户接口–程序接口(系统调用)</h3><h4 id="9-1、系统调用的简介"><a href="#9-1、系统调用的简介" class="headerlink" title="9.1、系统调用的简介"></a>9.1、系统调用的简介</h4><p>程序接口是程序员在编写应用程序时使用操作系统功能的接口。目前，程序接口通常通过系统调用System Call方式实现。</p>
+<p>系统调用在不同的上下文中，可能表示2种含义：</p>
+<ul>
+<li>一组由操作系统设计者编写的内核中的子程序，用来封装程序员可能使用到的操作系统功能。</li>
+<li>程序员在编程中对这些子程序进行调用的行为</li>
+</ul>
+<p>系统调用所涉及的子程序属于操作系统内核的一部分，保存在内存空间中，应用程序不能直接访问，于是需要通过特殊方式才能实现系统调用。</p>
+<h4 id="9-2、系统调用的实现："><a href="#9-2、系统调用的实现：" class="headerlink" title="9.2、系统调用的实现："></a>9.2、系统调用的实现：</h4><ul>
+<li><p>放置调用号标识</p>
+</li>
+<li><p>访管指令：发出表示系统调用请求的中断或者陷阱</p>
+</li>
+<li><p>处理器保护程序现场，转向中断处理（内核态）</p>
+</li>
+<li><p>中断处理程序识别中断为系统调用请求，于是转向内核的访管指令处理程序</p>
+</li>
+<li><p>访管指令处理程序在地址入口表中查找所请求的调用号对应的内核子程序的入口地址。</p>
+</li>
+<li><p>从查找到的地址开始执行内核子程序(系统调用)并得到结果。</p>
+</li>
+<li><p>恢复应用程序现场，返回用户态。</p>
+</li>
+</ul>
+<h4 id="9-3、系统调用与用户子程序对比"><a href="#9-3、系统调用与用户子程序对比" class="headerlink" title="9.3、系统调用与用户子程序对比"></a>9.3、系统调用与用户子程序对比</h4><table>
+<thead>
+<tr>
+<th align="center">对比项目</th>
+<th align="center">系统调用</th>
+<th align="center">用户子程序</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">运行环境</td>
+<td align="center">内核态（管态）</td>
+<td align="center">用户态(目态)</td>
+</tr>
+<tr>
+<td align="center">访问方式</td>
+<td align="center">访管指令（中断或者陷阱）</td>
+<td align="center">直接跳转、返回</td>
+</tr>
+<tr>
+<td align="center">与主程序关系</td>
+<td align="center">与主程序分开、独立</td>
+<td align="center">同一进程地址空间</td>
+</tr>
+<tr>
+<td align="center">共享性</td>
+<td align="center">可以在多个进程间共享</td>
+<td align="center">同一进程内部调用</td>
+</tr>
+</tbody></table>
+<h1 id="二、进程管理"><a href="#二、进程管理" class="headerlink" title="二、进程管理"></a>二、进程管理</h1><h3 id="1、程序与系统的工作流程"><a href="#1、程序与系统的工作流程" class="headerlink" title="1、程序与系统的工作流程"></a>1、程序与系统的工作流程</h3><p>程序应具体2个基本特点：</p>
+<ul>
+<li>顺序性</li>
+<li>可再现性</li>
+</ul>
+<p>系统的工作流程分为顺序执行和并发执行</p>
+<ul>
+<li><p>顺序执行的工作方式具有2个特点：</p>
+<ul>
+<li>封闭性：独占全部资源，不受其他程序影响</li>
+<li>可再现性：重复运行的结果相同</li>
+</ul>
+</li>
+<li><p>并发执行的工作方式中，多道程序</p>
+<ul>
+<li>微观上看，轮流执行</li>
+<li>宏观上看，同时执行</li>
+</ul>
+</li>
+<li><p>并发执行的工作方式有3个特点：</p>
+<ul>
+<li>随机性：运行时情景随机</li>
+<li>不可再现性：重复运行结果可能不同</li>
+<li>相互制约：资源争夺和协作关系</li>
+</ul>
+</li>
+</ul>
+<h3 id="2、进程"><a href="#2、进程" class="headerlink" title="2、进程"></a>2、进程</h3><p>Dijkstra：一道程序在一个数据集上的一次执行过程，叫一个进程Process</p>
+<p>IBM：程序的运行过程成为任务Task</p>
+<p>进程和任务都是运行着程序的描述，二者可以互换使用，不加区别。</p>
+<p>进程的主要特征：</p>
+<ul>
+<li>动态性：具有生命周期，状态不断变化</li>
+<li>并发性：可以并发执行</li>
+<li>独立性：互相独立，只能访问自身的内存空间</li>
+<li>结构性：不同的进程可抽象出相同的属性，从而抽象结构相同</li>
+<li>异步性：运行时情况不可预知</li>
+</ul>
+<h3 id="3、进程的动态性"><a href="#3、进程的动态性" class="headerlink" title="3、进程的动态性"></a>3、进程的动态性</h3><p>进程的3种状态</p>
+<ul>
+<li>就绪：能够运行但却未在被处理器处理的状态</li>
+<li>运行：正在被处理器处理的状态</li>
+<li>阻塞：由于各种原因(IO操作、资源缺乏等)暂时无法运行的状态。</li>
+</ul>
+<h3 id="4、进程信息的描述–PCB"><a href="#4、进程信息的描述–PCB" class="headerlink" title="4、进程信息的描述–PCB"></a>4、进程信息的描述–PCB</h3><p>进程控制块PCB：是操作系统用来描述进程信息的数据结构，由3部分组成：</p>
+<ul>
+<li><p>基本信息部分：</p>
+<ul>
+<li>进程名：通常是程序名</li>
+<li>进程标识符PID：操作系统用来识别进程的唯一标识</li>
+<li>用户标识：创建进程的用户标识</li>
+<li>进程状态：运行、就绪或者阻塞</li>
+</ul>
+</li>
+<li><p>管理信息部分：</p>
+<ul>
+<li>程序和数据地址：程序和数据在内存中的位置信息</li>
+<li>IO操作相关参数：进程进行IO操作时的参数</li>
+<li>进程通信信息：用来进程间通信的消息队列指针等。</li>
+</ul>
+</li>
+<li><p>控制信息部分：</p>
+<ul>
+<li>现场信息：进程离开运行状态时，保存进程现场以备恢复。</li>
+<li>调度参数：与进程调度相关的参考信息，如优先级、运行时间等</li>
+<li>同步、互斥信号量：用来保证进程间同步、互斥关系的信息。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5、PCB队列和进程管理"><a href="#5、PCB队列和进程管理" class="headerlink" title="5、PCB队列和进程管理"></a>5、PCB队列和进程管理</h3><p>操作系统用PCB来描述进程信息，并利用2种PCB队列来组织这些PCB:</p>
+<ul>
+<li>就绪队列：就绪进程的PCB组成的队列，按照进程性质或者优先级，系统中可以有多个就绪队列，用来提高进程调度算法选择进程的效率。在多处理器系统中，就绪队列也叫请求队列，每个处理器都有独立的请求队列。</li>
+<li>等待队列：阻塞进程的PCB组成队列，按照阻塞原因，系统中可以有多个等待对了。方便在阻塞原因解除的时候统一调整进程状态。</li>
+</ul>
+<h3 id="6、原语"><a href="#6、原语" class="headerlink" title="6、原语"></a>6、原语</h3><p>改变进程状态操作不应该被打断，也就是具有原子性。</p>
+<p>原语是特殊的程序段，这样的程序段中的所有指令要么全部执行要么一个都不执行。原语就是具有原子性的程序段。</p>
+<ul>
+<li>原语可以被看做广义的指令，指令都具有原子性</li>
+<li>原语中的指令若执行不成功，系统需要回退到原语执行前的状态。</li>
+<li>定义原语是为了保证系统运行的一致性。</li>
+</ul>
+<h3 id="7、进程控制–创建"><a href="#7、进程控制–创建" class="headerlink" title="7、进程控制–创建"></a>7、进程控制–创建</h3><p>进程控制通过一组原语来实现，包括进程的创建、撤销、阻塞、唤醒和切换。</p>
+<h4 id="1、进程的创建原语Create用来创建一个进程"><a href="#1、进程的创建原语Create用来创建一个进程" class="headerlink" title="1、进程的创建原语Create用来创建一个进程"></a>1、进程的创建原语Create用来创建一个进程</h4><p>Create可能在以下情况下被使用：</p>
+<ul>
+<li>按照作业调度程序的作业步规定</li>
+<li>按照用户提交的命令</li>
+<li>用户程序使用了创建进程的系统调用比如Unix的fork</li>
+</ul>
+<p>Create被使用时完成以下操作：</p>
+<ul>
+<li>建立PCB</li>
+<li>生成进程标识符PID</li>
+<li>初始化进程和PCB</li>
+<li>将PCB加入适当的就绪队列</li>
+</ul>
+<h3 id="8、进程控制–撤销"><a href="#8、进程控制–撤销" class="headerlink" title="8、进程控制–撤销"></a>8、进程控制–撤销</h3><h4 id="1、进程的撤销原语Destroy用来结束一个进程"><a href="#1、进程的撤销原语Destroy用来结束一个进程" class="headerlink" title="1、进程的撤销原语Destroy用来结束一个进程"></a>1、进程的撤销原语Destroy用来结束一个进程</h4><p>Destroy可能在以下情况下被使用：</p>
+<ul>
+<li>进程执行完毕</li>
+<li>进程出错而结束</li>
+<li>父进程结束</li>
+<li>人为终止</li>
+</ul>
+<p>Destroy被使用时完成以下操作：</p>
+<ul>
+<li>进程资源回收</li>
+<li>删除进程PCB</li>
+</ul>
+<h3 id="9、进程控制–阻塞"><a href="#9、进程控制–阻塞" class="headerlink" title="9、进程控制–阻塞"></a>9、进程控制–阻塞</h3><h4 id="1、进程的阻塞原语Block用来让一个进程进入阻塞状态"><a href="#1、进程的阻塞原语Block用来让一个进程进入阻塞状态" class="headerlink" title="1、进程的阻塞原语Block用来让一个进程进入阻塞状态"></a>1、进程的阻塞原语Block用来让一个进程进入阻塞状态</h4><p>Block在阻塞原因发生时被使用。</p>
+<p>Block被使用时完成以下操作：</p>
+<ul>
+<li>修改进程状态为阻塞状态</li>
+<li>将进程的现场保存，以备恢复</li>
+<li>将进程PCB加入合适的等待队列</li>
+</ul>
+<h3 id="10、进程控制–唤醒"><a href="#10、进程控制–唤醒" class="headerlink" title="10、进程控制–唤醒"></a>10、进程控制–唤醒</h3><h4 id="1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态"><a href="#1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态" class="headerlink" title="1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态"></a>1、进程的唤醒原语Wakeup用来让一个进程从阻塞状态进入就绪状态</h4><p>Wakeup在阻塞原因解除时被使用。</p>
+<p>Wakeup被使用时完成以下操作：</p>
+<ul>
+<li>将进程PCB从等待队列中移除</li>
+<li>修改进程状态为就绪状态</li>
+<li>将进程PCB加入合适的就绪队列</li>
+</ul>
+<p>阻塞原因解除后，进程未必可以直接运行，因此合理的唤醒原语并不会将阻塞状态直接修改为运行状态。</p>
+<h3 id="11、进程控制–切换"><a href="#11、进程控制–切换" class="headerlink" title="11、进程控制–切换"></a>11、进程控制–切换</h3><p>进程切换使处理器的控制权在进程之间专员，无法通过操作系统内核独立完成，必须借助硬件来实现。</p>
+<p>进程：系统调用（系统调用中断），外部因素（IO中断，异常），调度维护（计时器中断），然后进程进入中断、异常处理机制。然后在通过内核功能，控制原语，进程调度等。</p>
+<h3 id="12、相关进程间的制约关系–间接制约"><a href="#12、相关进程间的制约关系–间接制约" class="headerlink" title="12、相关进程间的制约关系–间接制约"></a>12、相关进程间的制约关系–间接制约</h3><p>间接制约关系：仅由于使用相同的资源而造成的制约。</p>
+<p>比如：2个进程p1和p2分别使用同一台打印机，逐行打印各自文本。</p>
+<h4 id="1、间接制约与临界资源"><a href="#1、间接制约与临界资源" class="headerlink" title="1、间接制约与临界资源"></a>1、间接制约与临界资源</h4><ul>
+<li><p>在操作系统的控制下，进程对系统资源的访问逻辑上需要经历3个步骤：申请、使用、归还。</p>
+</li>
+<li><p>某些系统资源，在进程从申请到归还的周期中只能允许此进程独占，否则将造成运行错误。则称这样的资源为临界资源。</p>
+<p>常见的临界资源有：打印机，存储单元，文件等。</p>
+</li>
+<li><p>间接制约实质上是一组并发进程共享某种临界资源的制约关系。</p>
+</li>
+</ul>
+<h4 id="2、间接制约与护持关系"><a href="#2、间接制约与护持关系" class="headerlink" title="2、间接制约与护持关系"></a>2、间接制约与护持关系</h4><ul>
+<li><p>临界区Critical Section/Critical Region：是指进程对应的程序中访问临界资源的一段程序代码，即进程从申请资源开始到归还资源为止的一段程序代码。</p>
+</li>
+<li><p>对于一组(在某资源上)存在间接制约关系的并发进程，可以通过建立一种机制来避免制约关系导致的运行错误：当一个进程在这种临界资源对应的临界区内执行时，其他要求进入相关临界区的进程必须等待。</p>
+</li>
+<li><p>上面的机制得以建立，则称这些并发进程为互斥进程，它们之间建立了护持关系。</p>
+</li>
+</ul>
+<h4 id="3、临界区管理"><a href="#3、临界区管理" class="headerlink" title="3、临界区管理"></a>3、临界区管理</h4><p>实现互斥关系的关键是对临界区的执行进行有效控制。</p>
+<p>临界区管理的准则有：</p>
+<ul>
+<li>空闲让进：如果进程请求进入临界区，而没有其他进程在相关临界区内执行，则允许进入。</li>
+<li>忙则等待：如果有进程在临界区内执行，则其他要求进入相关临界区的进程都需要等待。</li>
+<li>有限等待：对于要求进入临界区的进程，等待的时间应该是有限的</li>
+<li>让权等待：当一个进程离开临界区时，应该让请求进入相关临界区的下一个进程进入临界区执行。</li>
+</ul>
+<h4 id="4、互斥关系的实现–加锁机制"><a href="#4、互斥关系的实现–加锁机制" class="headerlink" title="4、互斥关系的实现–加锁机制"></a>4、互斥关系的实现–加锁机制</h4><p>加锁机制由3个要素组成：锁变量key，加锁操作lock(key)和解锁操作unlock(key)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">lock(key)&#123;</span><br><span class="line">    <span class="keyword">while</span>(key==<span class="number">1</span>);</span><br><span class="line">    key=<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">unlock(key)&#123;</span><br><span class="line">    key=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>这个机制中，锁变量key=1时表示上锁状态，key=0为未上锁。</p>
+</li>
+<li><p>当进程申请资源时需要对资源加锁，若资源已经上锁，则上锁操作 将进行反复测试也就是反复等待，直到资源被解锁了；当进程归还资源的时候需要对资源解锁。</p>
+</li>
+<li><p>高级语言，软件实现的加锁机制并不能实现真正的加锁，因为加锁操作内部仍可能被打断。</p>
+</li>
+</ul>
+<p>加锁机制的缺陷：</p>
+<ul>
+<li>存在忙等待现象，浪费了处理器时间</li>
+<li>存在饥饿现象，进程等待时间可能无限长</li>
+<li>多个锁变量的加锁操作可能导致进程死锁</li>
+</ul>
+<h4 id="5、互斥关系的实现–信号量机制"><a href="#5、互斥关系的实现–信号量机制" class="headerlink" title="5、互斥关系的实现–信号量机制"></a>5、互斥关系的实现–信号量机制</h4><p>信号量机制由3个要素组成：信号量s，原语p和原语v</p>
+<p>也就是所谓的pv操作</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">semaphore</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> value;<span class="comment">//信号量的值</span></span><br><span class="line">    PCB *bq;/由于该信号量而阻塞的进程队列PCB队列，(阻塞队列/等待队列)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">p(s)&#123;</span><br><span class="line">    s.value=s.value<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">if</span>(s.value&lt;<span class="number">0</span>)</span><br><span class="line">        blocked(s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">v(s)&#123;</span><br><span class="line">    s.value=s.value+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(s.value&lt;=<span class="number">0</span>)</span><br><span class="line">        wakeup(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>信号量机制中，s.value&gt;0表示资源就绪，否则就表示有其他进程在使用或者请求使用资源。</p>
+</li>
+<li><p>进程请求资源时需要使用原语p，如果资源不空闲，则进入由于s而导致的等待队列。直到正在使用资源的进程归还资源时，使用原语v将它唤醒。</p>
+</li>
+</ul>
+<p>信号量机制相比于加锁机制的优势：</p>
+<ul>
+<li>信号量机制把等待资源的进程设置为阻塞状态，而不是忙等待，提高了处理器的利用率。</li>
+<li>信号量机制中由操作系统原语wakeup唤醒进程，可以采取一定策略，比如短作业优先，而不是像加锁机制一样，抢先者得到处理器，这样可以避免饥饿现象的发生。</li>
+</ul>
+<h3 id="13、相关进程间的制约关系–直接制约"><a href="#13、相关进程间的制约关系–直接制约" class="headerlink" title="13、相关进程间的制约关系–直接制约"></a>13、相关进程间的制约关系–直接制约</h3><p>直接制约关系：由于进程协作关系造成的制约。</p>
+<p>某任务需要通过循环使用read、move、write，3个操作将源磁盘上的数据文件，复制到目标磁盘。一次操作处理一个文件。</p>
+<ul>
+<li>如果这3个操作在同一个进程中顺序执行，则当进行IO操作read,write的时候，进程就处在阻塞状态了。</li>
+<li>如果这3个操作，分别建立进程，并发执行，则会节约运行时间。</li>
+<li>然后，由于并发执行的时候这3个操作执行顺序的随机性，可能会造成重复拷贝文件或者遗漏文件的错误。</li>
+</ul>
+<h4 id="1、直接制约与同步关系"><a href="#1、直接制约与同步关系" class="headerlink" title="1、直接制约与同步关系"></a>1、直接制约与同步关系</h4><ul>
+<li><p>对于一组存在直接制约关系的并发进程，为了避免制约关系导致的运行错误，应该让各个进程中代码的运行顺序服从其内在要求，需要建立进程间单向或者相互的依赖关系。</p>
+</li>
+<li><p>如果一组进程中的每一个进程都要与其他至少一个进程建立了单向或者相互的依赖关系，则把这组进程叫同步进程，这组进程之间建立了同步关系。</p>
+</li>
+</ul>
+<h4 id="2、同步关系的实现–信号量机制"><a href="#2、同步关系的实现–信号量机制" class="headerlink" title="2、同步关系的实现–信号量机制"></a>2、同步关系的实现–信号量机制</h4><ul>
+<li><p>比如有代码段L1对L2有依赖，可以将L2的一次执行看做一种资源的归还，而L1的执行，需要申请使用这种资源。</p>
+</li>
+<li><p>于是，可以类似用信号量机制来实现同步关系：在L1执行之前先执行原语p，而在L2执行后执行原语v。</p>
+</li>
+<li><p>与互斥关系不同的是，L1使用资源后并不归还。</p>
+</li>
+</ul>
+<h4 id="3、文件拷贝问题–同步关系的实现"><a href="#3、文件拷贝问题–同步关系的实现" class="headerlink" title="3、文件拷贝问题–同步关系的实现"></a>3、文件拷贝问题–同步关系的实现</h4><ul>
+<li>read中的代码段L1</li>
+<li>L1将文件src的内容存到缓冲区buf1</li>
+<li>然后Move中的代码段L2</li>
+<li>L2读出buf1中的内容</li>
+<li>然后Move中的代码段L3，再把读出的内容写到buf2</li>
+<li>最后write中的代码段L4，再从buf2中读的内容写到别的文件</li>
+</ul>
+<p>初始化的时候：先S1=1,S2=0,S3=0,S4=0，P他们刚开始只能S1进行使用处理器资源，其他的都加入到阻塞队列了。</p>
+<p>首先Read进程是p(S1),因为S1初始化必须为1，P操作，先是做减1操作，然后再做判断S1是否小于0，如果小于0，先加入到阻塞队列。</p>
+<p>为了顺序执行，我们先把S1初始化为1，刚开始S1是1，减1操作后，S1变为0了。此时就是Read进程的L1代码段在使用处理器资源。</p>
+<p>当L1的代码段执行完后，需要进行Move了，此时也就是L1已经让出处理器资源，则需要先把S2给唤醒，需要V以下S2。唤醒S2之后S2做加1操作，然后再P(S2)就得到了处理器资源，然后等到P(S2)减1操作，执行完后，等同理。</p>
+<h3 id="14、进程同步总结"><a href="#14、进程同步总结" class="headerlink" title="14、进程同步总结"></a>14、进程同步总结</h3><ul>
+<li>控制并发进程的互斥，同步关系，保证他们能够正确执行，称作进程同步，实现集成同步的方法叫做进程同步机制。</li>
+<li>操作系统需要为程序提供进程同步机制，而当需要处理互斥/同步关系时才决定如何使用这些机制。</li>
+<li>用于实现互斥关系，针对间接制约的进程同步关系：加锁机制、信号量机制</li>
+<li>用于实现同步关系，针对直接制约的进程同步关系：信号量机制。</li>
+<li>除了加锁机制、信号量机制之外，常用的进程同步机制还有：标志位机制，管程机制等。</li>
+</ul>
+<h3 id="15、生产者、消费者问题"><a href="#15、生产者、消费者问题" class="headerlink" title="15、生产者、消费者问题"></a>15、生产者、消费者问题</h3><p>用两个进程Pro和Con分别表示生产者和消费者，用数组B[]表示最大库存为k的仓库，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">slot=k;<span class="comment">//正信号量表示还有多少个空位</span></span><br><span class="line">item=<span class="number">0</span>;<span class="comment">//需要消费的</span></span><br><span class="line">Pro()&#123;</span><br><span class="line">    生产货物;</span><br><span class="line">    p(slot);</span><br><span class="line">    查找B中任意空位in;</span><br><span class="line">    将货物放入B[in];</span><br><span class="line">    v(item);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Con()&#123;</span><br><span class="line">    p(item);</span><br><span class="line">    查找B中任意存有货物的位置out;</span><br><span class="line">    取出获取B[out];</span><br><span class="line">    v(slot);</span><br><span class="line">    消费货物；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="16、从信号量到进程通信"><a href="#16、从信号量到进程通信" class="headerlink" title="16、从信号量到进程通信"></a>16、从信号量到进程通信</h3><ul>
+<li>进程的独立性：不同进程无法互相访问代码和数据。</li>
+<li>进程需要相互写作必须能够通信（也就是共享受）。</li>
+<li>信号量就是一种常见的共享受–低级通信</li>
+<li>信号量数据结构的存放位置并不是yoghurt进程的私有空间，而是内核空间，信号量使用前需要向内核申请，用来获得信号量标识。</li>
+</ul>
+<h4 id="1、共享存储区通信"><a href="#1、共享存储区通信" class="headerlink" title="1、共享存储区通信"></a>1、共享存储区通信</h4><ul>
+<li><p>共享存储区通信：进程根据需要向内核申请<strong>位于内核空间的共享存储区，并将此区域映射到发送进程与接收进程的地址空间</strong>，使得发送，接收进程可以通过共享存储区进行通信。</p>
+</li>
+<li><p>共享存储区中的数据存取没有固定模式，需要注意根据实际情况处理同步/互斥关系。</p>
+</li>
+</ul>
+<h4 id="2、信箱通信"><a href="#2、信箱通信" class="headerlink" title="2、信箱通信"></a>2、信箱通信</h4><ul>
+<li><p>信箱通信：在内核空间中建立专门区域作为信箱，信箱划分有限个信格，每个信格可存放一条信息（信件）。每个信箱可由多个发送进程与接收进程共享 ，发送进程用send操作将信息放入信格中，接收进程用receive操作从信格中取出信息。</p>
+</li>
+<li><p>与共享存储区通信相比，信箱通信的数据存取模式固定，其实现是一个多生产者消费者的PC问题。</p>
+</li>
+</ul>
+<h4 id="3、消息缓冲通信"><a href="#3、消息缓冲通信" class="headerlink" title="3、消息缓冲通信"></a>3、消息缓冲通信</h4><ul>
+<li><p>消息缓冲通信：内核空间中为每个进程配备一个消息队列MQ，并记录在进程的PCB中。发送进程通过send操作将信息封到一个消息缓冲区中，并追加到接收进程的消息队列中。接收进程通过receive操作收取自身消息队中的信息。</p>
+</li>
+<li><p>消息缓冲区包含：</p>
+<ul>
+<li>发送进程的标识pid</li>
+<li>正文大小size</li>
+<li>正文data</li>
+<li>向下指针next</li>
+</ul>
+</li>
+<li><p>与信箱通信比较，消息缓冲通信中的消息队列属于进程。消息缓冲通信是一种直接通信，当接收进程没有开启的时候，通信不成功。</p>
+</li>
+</ul>
+<h4 id="4、管道通信"><a href="#4、管道通信" class="headerlink" title="4、管道通信"></a>4、管道通信</h4><ul>
+<li>管道通信：通信双方共享一个文件，发送进程向文件中写入数据，接收进程从中读出数据，从而实现通信。共享的文件叫做管道。</li>
+<li>管道通信中的共享数据并不是存放在内核空间中，而是存放在管道(文件)中，需要注意维护数据的安全问题。</li>
+<li>管道通信中的管道文件，和共享存储区类似，并没有固定数据存取模式，所以需要注意根据实际情况处理互斥同步关系。</li>
+<li>管道通信可以使用远程文件作为管道，所以，这样通信方式不局限于单机系统。</li>
+</ul>
+<h3 id="17、线程"><a href="#17、线程" class="headerlink" title="17、线程"></a>17、线程</h3><p>把进程细化成若干个可以独立运行的实体，每一个实体叫做一个线程Thread。</p>
+<p>线程和进程的比较</p>
+<table>
+<thead>
+<tr>
+<th align="center">对比项目</th>
+<th align="center">进程</th>
+<th align="center">线程</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">独立拥有的资源</td>
+<td align="center">处理器控制权和其他资源</td>
+<td align="center">处理器控制权</td>
+</tr>
+<tr>
+<td align="center">内存访问</td>
+<td align="center">不同享</td>
+<td align="center">同进程内共享</td>
+</tr>
+<tr>
+<td align="center">切换时的开销</td>
+<td align="center">大</td>
+<td align="center">小</td>
+</tr>
+<tr>
+<td align="center">动态性，并发性，处理同步/互斥</td>
+<td align="center">二者相同</td>
+<td align="center">二者相同</td>
+</tr>
+</tbody></table>
+<p>引入线程减小了系统的基本工作单位粒度，目的是：</p>
+<ul>
+<li>实现进程内部的并发执行，提供并行程度</li>
+<li>减少处理器切换带来的开销</li>
+<li>简化进程通信方式</li>
+</ul>
+<h4 id="1、线程的控制与类型"><a href="#1、线程的控制与类型" class="headerlink" title="1、线程的控制与类型"></a>1、线程的控制与类型</h4><p>对线程实施管理，控制的模块称作线程包</p>
+<p>根据线程包的实现方式，将线程划分为：</p>
+<ul>
+<li><p>用户级线程：由用户态的线程包来管控，而内核中不识别这种线程</p>
+<ul>
+<li>优点：切换时不需要进入到内核</li>
+<li>缺点：某一个线程在内核上阻塞的时候，会导致全部进程阻塞。</li>
+</ul>
+</li>
+<li><p>系统级线程：使用内核提供的线程包来管控</p>
+<ul>
+<li>优点：某线程在内核上阻塞时，同进程的其他线程仍然可以运行。</li>
+<li>缺点：切换时不需要进入内核。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2、进程的常用细化方法"><a href="#2、进程的常用细化方法" class="headerlink" title="2、进程的常用细化方法"></a>2、进程的常用细化方法</h4><p>将进程细化为线程需要根据实际应用的需要，主要的细化方法有：</p>
+<ul>
+<li><p>分派/处理模型（Dispatcher/Worker Model）</p>
+<p>由一个分派线程Dispatcher负责接收工作需求，然后将工作任务分派给工作线程Worker来完成动作。</p>
+</li>
+<li><p>队列模型Team Model</p>
+<p>将进程细化为具有独立关系的线程，各自完成独立的任务</p>
+</li>
+<li><p>管道模型Pipeline Model</p>
+<p>将完整进程中有序的各执行步骤作为线程，依次顺序运行（流水线）</p>
+</li>
+</ul>
+<h1 id="三、调度"><a href="#三、调度" class="headerlink" title="三、调度"></a>三、调度</h1><p>调度Scheduling是管理的一种方法，一种决策。目的是通过一种合理的，有效的安排方式，提供资源(比如工作，人力 ，车辆等)的利用率。</p>
+<p>操作系统中关注的调度问题有4种：</p>
+<ul>
+<li>作业调度(宏观)：考虑何时执行哪些作业(比如Hive的数据抽取脚本)</li>
+<li>进程调度(微观)：考虑将哪个就绪进程转换为运行状态</li>
+<li>交换调度(中级)：考虑将进程如何在内/外存储器之间交换</li>
+<li>设备调度：考虑让哪个进程唤醒使用设备。</li>
+</ul>
+<h3 id="1、调度的性能指标"><a href="#1、调度的性能指标" class="headerlink" title="1、调度的性能指标"></a>1、调度的性能指标</h3><p>评价调度的效果，常使用一组性能指标：</p>
+<h4 id="1、周转时间和平均周转时间"><a href="#1、周转时间和平均周转时间" class="headerlink" title="1、周转时间和平均周转时间"></a>1、周转时间和平均周转时间</h4><p>从处理过程的完成时间来进行评价(批处理系统)，处理过程Ji的周转时间；Ti=Ji的完成时刻-Ji的提交时刻</p>
+<p>一批(n个)处理过程的平均周转时间：T=∑Ti/n</p>
+<h4 id="2、带权周转时间"><a href="#2、带权周转时间" class="headerlink" title="2、带权周转时间"></a>2、带权周转时间</h4><p>周转时间并不直接体现某处理过程耗时的合理性。</p>
+<p>处理过程Ji的带权周转时间：Twi=Ti/Tri</p>
+<p>一批(n个)处理过程的平均带权周转时间：Tw=∑Twi/n</p>
+<h4 id="3、响应时间"><a href="#3、响应时间" class="headerlink" title="3、响应时间"></a>3、响应时间</h4><p>从处理过程的响应速度来进行评价，常用在分时系统，实时系统</p>
+<p>处理过程Ji的响应时间：</p>
+<p>Ri=Ji第一次对用户做出响应的时刻-Ji的提交时刻</p>
+<h4 id="4、其他性能指标"><a href="#4、其他性能指标" class="headerlink" title="4、其他性能指标"></a>4、其他性能指标</h4><ul>
+<li>公平合理：安排公平，用户满意</li>
+<li>资源利用率(并行度)：资源闲置的情况</li>
+<li>吞吐量：单位时间完成处理过程的数量</li>
+</ul>
+<h3 id="2、作业调度算法"><a href="#2、作业调度算法" class="headerlink" title="2、作业调度算法"></a>2、作业调度算法</h3><h4 id="1、先到先服务FCFS-First-Come-First-Served"><a href="#1、先到先服务FCFS-First-Come-First-Served" class="headerlink" title="1、先到先服务FCFS(First Come First Served)"></a>1、先到先服务FCFS(First Come First Served)</h4><p>思想：排队</p>
+<p>特点：</p>
+<ul>
+<li>公平合理</li>
+<li>算法简单，容易实现</li>
+<li>服务质量欠佳(不利于短作业)</li>
+</ul>
+<h4 id="2、短作业优先SJF-Shortest-Job-First"><a href="#2、短作业优先SJF-Shortest-Job-First" class="headerlink" title="2、短作业优先SJF(Shortest Job First)"></a>2、短作业优先SJF(Shortest Job First)</h4><p>思想：减少共同等待时间</p>
+<p>特点：</p>
+<ul>
+<li>实现最小的平均周转时间</li>
+<li>吞吐量大</li>
+<li>存在饥饿现象</li>
+<li>算法简单，但实现困难</li>
+</ul>
+<h4 id="3、高响应比优先HRN-Highest-Response-ratio-Next"><a href="#3、高响应比优先HRN-Highest-Response-ratio-Next" class="headerlink" title="3、高响应比优先HRN(Highest Response-ratio Next)"></a>3、高响应比优先HRN(Highest Response-ratio Next)</h4><p>思想：通过考虑作业以等待的时间解决SJF的饥饿问题</p>
+<p>响应比R=作业等待时间/作业大小</p>
+<p>作业等待时间=系统当前时间-作业提交时刻</p>
+<h3 id="3、进程调度方式"><a href="#3、进程调度方式" class="headerlink" title="3、进程调度方式"></a>3、进程调度方式</h3><p>进程调度：在采用并发执行方式的系统中，决定正在运行的进程何时将处理器使用权交给就绪队列中的哪个进程。</p>
+<p>进程调度方式指操作系统何时实行调度，也就是处理器使用权何时可能切换，可分为：</p>
+<ul>
+<li>非抢占式：除非进程由于自身原因或者外部(非操作系统的)原因交出处理器使用权，否则一直运行直到结束，非剥夺的</li>
+<li>抢占式：操作系统定期检查系统状态(定期调度)，按照某种原则主动将进程暂停并将处理器使用权交给下个进程。剥夺式</li>
+</ul>
+<h3 id="4、进程调度算法"><a href="#4、进程调度算法" class="headerlink" title="4、进程调度算法"></a>4、进程调度算法</h3><p>进程调度算法考虑调度进行时的行为，也就是如何判断是否真正发生处理器使用权切换，以及切换时选择哪个进程。</p>
+<h4 id="1、先来先服务FCFS"><a href="#1、先来先服务FCFS" class="headerlink" title="1、先来先服务FCFS"></a>1、先来先服务FCFS</h4><ul>
+<li>调度时不修改就绪队列，并且总是选择队首。</li>
+<li>FCFS基于非抢占调度方式<ul>
+<li>FCFS进程调度的优缺点类似FCFS的作业调度。（公平，容易实现，服务质量欠佳）</li>
+</ul>
+</li>
+</ul>
+<h4 id="2、时间片轮转RR（Round-Robin）"><a href="#2、时间片轮转RR（Round-Robin）" class="headerlink" title="2、时间片轮转RR（Round-Robin）"></a>2、时间片轮转RR（Round-Robin）</h4><ul>
+<li><p>RR基于抢占调度方式，它的实现依赖与计时器中断。</p>
+</li>
+<li><p>进程每次被选中时分配一个时间片，调度时判断其时间片是否用尽，如果用尽，则将其移到就绪队列末尾，否则不修改就绪队列。并且总是选择队首。</p>
+</li>
+<li><p>时间片长度为T，如果就绪队列中已经存在了n个进程，则提交新进程的最长响应时间：R=Txn</p>
+</li>
+<li><p>应用RR算法的关键是根据实际需要确定T的值：</p>
+<ul>
+<li>T太长则响应时间太长</li>
+<li>T太短则进程切换太频繁，系统开销加大。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3、优先级算法Priority"><a href="#3、优先级算法Priority" class="headerlink" title="3、优先级算法Priority"></a>3、优先级算法Priority</h4><ul>
+<li><p>为每个进程赋予一个优先数，调度时总是选择优先数最高的进程。</p>
+</li>
+<li><p>可基于抢占式调度，也可以基于非抢占式调度：</p>
+<ul>
+<li>抢占式调度：可以保证总是执行高优先级进程</li>
+<li>非抢占式调度：仅能保证当前一个进程阻塞或者结束时总能选择优先级最高的进程。</li>
+</ul>
+</li>
+<li><p>优先级调度的关键是进程优先数的配置。按照优先数配置的特点，优先级算法分为：</p>
+<ul>
+<li>静态优先级算法：进程优先数在进程创建时确定，并不可改变。</li>
+<li>动态优先级算法：进程优先数在创建进程时被赋初始值，运行中可以根据系统状态改变。</li>
+</ul>
+</li>
+<li><p>通过不同的优先数配置策略，优先级算法可以灵活的体现各种算法思想FCFS，SJF</p>
+</li>
+<li><p>经验：IO繁忙型的进程应该被赋予高优先级用来提供系统的并行度。</p>
+</li>
+</ul>
+<h4 id="5、实时系统的进程调度"><a href="#5、实时系统的进程调度" class="headerlink" title="5、实时系统的进程调度"></a>5、实时系统的进程调度</h4><p>实时系统需要对周期性或者非周期性发生的时间作出处理，其对处理正确性和时效性要求十分苛刻。</p>
+<p>不同类型的时间对于时效性的要求各异，可表达为以下时间参数：</p>
+<ul>
+<li>就绪时限：事件发生时到相应处理进程被创建的时间长度要求。</li>
+<li>开始时限：事件发生时到相应处理进程第一次运行的时间长度要求</li>
+<li>完成时限：事件发生时到相应处理进程完成的时间长度要求。</li>
+<li>处理时间：某些特殊事件要求定期触发处理过程。</li>
+</ul>
+<h3 id="5、可调度以及条件"><a href="#5、可调度以及条件" class="headerlink" title="5、可调度以及条件"></a>5、可调度以及条件</h3><ul>
+<li><p>对于一组事件，如果存在某种处理方式，让其中每个事件的时限要求都可以得到满足，就说明这组事件是可调度的Schedulable。否则，如果无论用何种方式，都至少有一个事件无法满足时限要求，则说明这组事件是不可调度的。</p>
+</li>
+<li><p>可调度的一个必要条件：u&gt;r，u表示系统单位时间内可以处理的事件数（处理能力），r表示单位事件内到达的事件数。</p>
+</li>
+</ul>
+<h1 id="四、死锁"><a href="#四、死锁" class="headerlink" title="四、死锁"></a>四、死锁</h1><p>一组进程都处于阻塞状态，其中的任一进程阻塞状态的解除都依赖与另一进程的后续操作 。这种系统状态叫做死锁DeadLock。</p>
+<h3 id="1、死锁的分类："><a href="#1、死锁的分类：" class="headerlink" title="1、死锁的分类："></a>1、死锁的分类：</h3><ul>
+<li>资源死锁：由于相互等待临界资源而导致的死锁</li>
+<li>通信死锁：由于相互等待通信导致的死锁</li>
+<li>控制死锁：由于系统或者用户的特殊控制导致的死锁</li>
+</ul>
+<h3 id="2、死锁的特点"><a href="#2、死锁的特点" class="headerlink" title="2、死锁的特点"></a>2、死锁的特点</h3><ul>
+<li>偶发性：由于特殊的并发执行顺序导致，是小概率事件</li>
+<li>非消耗：死锁的相关进程处于阻塞状态，不占用处理器</li>
+<li>程序无关：并非个别程序设计的错误，而是系统运行的错误。</li>
+</ul>
+<h3 id="3、死锁的原因"><a href="#3、死锁的原因" class="headerlink" title="3、死锁的原因"></a>3、死锁的原因</h3><p>资源死锁的根本原因是可用资源的数量小于所需资源的数量。</p>
+<p>但不可能靠无限制的增加资源数量来根本性的解决死锁问题。</p>
+<p>死锁的发生的必要条件：</p>
+<ul>
+<li>互斥条件：死锁的相关进程都是互斥的</li>
+<li>不剥夺条件：当进程申请资源时不能剥夺其他进程正在使用的资源</li>
+<li>请求与保持(部分分配)条件：进程在申请资源不成功的时候仍然保持已经申请的资源。</li>
+<li>环路等待条件：进程相互等待关系形成环路。</li>
+</ul>
+<h3 id="4、死锁的预防"><a href="#4、死锁的预防" class="headerlink" title="4、死锁的预防"></a>4、死锁的预防</h3><p>通过在资源分配的时候采取一系列的限制措施，来破坏4个必要条件之一，就可以避免死锁的发生。</p>
+<ul>
+<li><p>互斥条件的破坏</p>
+<ul>
+<li>方法：不允许申请临界资源</li>
+<li>缺点：临界资源需要转化为非临界资源才能被申请和使用，大部分情况下无法实现。</li>
+</ul>
+</li>
+<li><p>不剥夺条件的破坏</p>
+<ul>
+<li>方法：允许进程申请资源时剥夺其他进程正在使用的资源</li>
+<li>缺点：被剥夺资源的进程不可预期的打断，系统需要处理回退。缺乏公平性，反复剥夺与被剥夺</li>
+</ul>
+</li>
+<li><p>请求与保持条件的破坏</p>
+<ul>
+<li><p>方法1：资源暂时归还</p>
+<ul>
+<li><p>进程申请资源不成功时，暂时归还已经分配的资源。</p>
+</li>
+<li><p>缺点：系统需要处理回退，反复申请与归还。</p>
+</li>
+</ul>
+</li>
+<li><p>方法2：静态分配</p>
+<ul>
+<li>进程需要一次性申请完所有可能使用的资源</li>
+<li>缺点：难以预知需要使用的资源，降低资源利用率。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>环路等待条件的破坏</p>
+<ul>
+<li><p>方法1：单请求方式</p>
+<ul>
+<li>资源申请不允许嵌套，但可以一次申请多个，归还旧的资源后方可以申请新资源。</li>
+<li>缺点：同时需要多个资源时只能实行小范围内的静态分配。</li>
+</ul>
+</li>
+<li><p>方法2：按序分配</p>
+<ul>
+<li>对资源编号，进程只允许申请比当前已拥有资源编号更大的资源。</li>
+<li>缺点：如果使用大编号资源的段内需要使用小编号资源，则只能实行小范围内的静态分配。而且，编号管理也困难。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="5、死锁的经典问题"><a href="#5、死锁的经典问题" class="headerlink" title="5、死锁的经典问题"></a>5、死锁的经典问题</h3><p>哲学家用餐问题</p>
+<h3 id="6、死锁的避免"><a href="#6、死锁的避免" class="headerlink" title="6、死锁的避免"></a>6、死锁的避免</h3><p>进程可以自由的动态的，申请资源，但是分配资源的时候对可能发生的死锁，进行预测，来决定是否立即分配。</p>
+<p>死锁的避免具有以下特点：</p>
+<ul>
+<li>原理上是通过预测潜在的死锁</li>
+<li>不影响程序设计</li>
+<li>临界资源分配并非空闲让进</li>
+</ul>
+<h3 id="7、银行家算法"><a href="#7、银行家算法" class="headerlink" title="7、银行家算法"></a>7、银行家算法</h3><ul>
+<li><p>初始化，计算资源可用量Avaiable和当前需求矩阵Need，</p>
+<ul>
+<li>Available=Total-∑Used</li>
+<li>Need=Max-Used</li>
+</ul>
+</li>
+<li><p>合法检查，检查资源申请与需求矩阵的相容性，未通过则报错，Request&lt;=Need</p>
+</li>
+<li><p>资源检查，检查请求的资源是否可用，未通过则阻塞进程P。Request&lt;=Avaiable</p>
+</li>
+<li><p>预分配，嘉定Request得到满足</p>
+<ul>
+<li>Available=Available-Request</li>
+<li>Used=Used+Request</li>
+<li>Need=Need-Request</li>
+</ul>
+</li>
+<li><p>安全状态检查，检查预分配后的状态是否为安全状态。</p>
+</li>
+</ul>
+<p>某系统有<font color="red">4类资源</font>A,B,C,D，数量分别是8,10,9,12。当前有<font color="red">5个进程</font>P1，P2，P3，P4，P5。<font color="red">最大需求矩阵Max</font>和<font color="red">当前分配矩阵Used</font>如下：<br>$$<br>Max = \left[ \matrix{  4 &amp; 6 &amp; 3 &amp; 8\  3 &amp; 3 &amp; 5 &amp; 2\  6 &amp; 6 &amp; 0 &amp; 9\ 3 &amp; 4 &amp; 8 &amp; 5\ 4 &amp; 3 &amp; 2 &amp; 2  } \right]<br>$$</p>
+<p>$$<br>Used = \left[ \matrix{  1 &amp; 1 &amp; 0 &amp; 2\  2 &amp; 2 &amp; 4 &amp; 0\  0 &amp; 5 &amp; 0 &amp; 1\ 1 &amp; 1 &amp; 1 &amp; 5\ 2 &amp; 0 &amp; 2 &amp; 2  } \right]<br>$$</p>
+<ul>
+<li><p>在当前状态下，如果进程P1申请request=(1,0,1,0)，系统能否分配？</p>
+<ul>
+<li><p>资源总量(8,10,9,12)</p>
+<table>
+<thead>
+<tr>
+<th>进程</th>
+<th></th>
+<th></th>
+<th>Max</th>
+<th></th>
+<th></th>
+<th>Used</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th>Need</th>
+<th></th>
+<th></th>
+<th>Avaiable</th>
+<th></th>
+<th></th>
+<th>Finished</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td>A</td>
+<td>B</td>
+<td>C</td>
+<td>D</td>
+<td>A</td>
+<td>B</td>
+<td>C</td>
+<td>D</td>
+<td>A</td>
+<td>B</td>
+<td>C</td>
+<td>D</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td></td>
+</tr>
+<tr>
+<td>p1</td>
+<td>4</td>
+<td>6</td>
+<td>3</td>
+<td>8</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>p2</td>
+<td>3</td>
+<td>3</td>
+<td>5</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>4</td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>p3</td>
+<td>6</td>
+<td>6</td>
+<td>0</td>
+<td>9</td>
+<td>0</td>
+<td>5</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>p4</td>
+<td>3</td>
+<td>4</td>
+<td>8</td>
+<td>5</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>5</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>p5</td>
+<td>4</td>
+<td>3</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>在当前状态下，如果进程P3申请request=(1,0,0,1),系统能否分配？</li>
+</ul>
+<h1 id="五、存储管理"><a href="#五、存储管理" class="headerlink" title="五、存储管理"></a>五、存储管理</h1><h3 id="1、存储器的类型"><a href="#1、存储器的类型" class="headerlink" title="1、存储器的类型"></a>1、存储器的类型</h3><ul>
+<li>外存储器、磁带，离线存储，容量大，速度慢</li>
+<li>外存储器，磁盘，光盘等，主板外</li>
+<li>cache主存储器，主板类（存储器管理）</li>
+<li>寄存器cache，cpu内，速度块，容量小</li>
+</ul>
+<h3 id="2、程序的编码与装入"><a href="#2、程序的编码与装入" class="headerlink" title="2、程序的编码与装入"></a>2、程序的编码与装入</h3><ul>
+<li><p>程序（高级语言）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a=<span class="number">10</span>;</span><br><span class="line">main()&#123;</span><br><span class="line">    <span class="keyword">int</span> b=a;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;b&lt;&lt;a;</span><br><span class="line">    <span class="built_in">cout</span>&lt;<span class="string">"hello"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编译链接</p>
+</li>
+<li><p>程序（机器码）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0~1			10</span><br><span class="line">2~8			hello.</span><br><span class="line">9				????	(将[0~1]压栈)</span><br><span class="line">10~13		????	(cout&lt;&lt;[esp]&lt;&lt;[0~1];)</span><br><span class="line">14~17		???? 装入(count&lt;&lt;[2~8];)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行时内存</p>
+<ul>
+<li>数据段：全局变量和敞亮</li>
+<li>代码段：指令存放处</li>
+<li>堆栈：局部变量存放处（由指令动态操作）</li>
+</ul>
+</li>
+</ul>
+<h3 id="3、逻辑地址与物理地址"><a href="#3、逻辑地址与物理地址" class="headerlink" title="3、逻辑地址与物理地址"></a>3、逻辑地址与物理地址</h3><p>​        程序在运行的时候被装入到内存中，其中的<font color="red">指令与数据</font>的<font color="red">位置</font>用地址值表示，<font color="red">地址值</font>的变现形式可分为：</p>
+<ul>
+<li><font color="red">逻辑（虚拟）地址</font>：指令或者数据在<font color="red">程序中的编号（位置）</font></li>
+<li><font color="red">物理地址</font>：指令或者数据<font color="red">内存中的位置</font></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">物理地址</th>
+<th align="center">逻辑地址</th>
+<th align="center">程序（机器码）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">10000~10001</td>
+<td align="center">0~1</td>
+<td align="center">10</td>
+</tr>
+<tr>
+<td align="center">10002~10008</td>
+<td align="center">2~8</td>
+<td align="center">hello</td>
+</tr>
+<tr>
+<td align="center">10009</td>
+<td align="center">9</td>
+<td align="center">(将[0~1]压栈；)</td>
+</tr>
+<tr>
+<td align="center">10010~10013</td>
+<td align="center">10~13</td>
+<td align="center">（cout&lt;&lt;[esp]&lt;&lt;[0~1];）</td>
+</tr>
+<tr>
+<td align="center">10014~10017</td>
+<td align="center">14~17</td>
+<td align="center">(cout&lt;&lt;[2~8];)</td>
+</tr>
+</tbody></table>
+<h3 id="4、重定位（地址转换）"><a href="#4、重定位（地址转换）" class="headerlink" title="4、重定位（地址转换）"></a>4、重定位（地址转换）</h3><p>​        若程序中的变量与指令用逻辑地址加以引用，则为了在运行的时候正确访问这些变量或者指令，需要进行重定位（或者叫地址转换），来确定实际的物理地址。</p>
+<p>​        根据地址转换操作的时机，重定位分为：</p>
+<ul>
+<li><p><font color="red">静态重定位</font>：操作系统在<font color="red">装入程序时候</font>修改其中所引用的逻辑地址值为物理地址值–由<font color="red">操作系统</font>实现。</p>
+</li>
+<li><p><font color="red">动态重定位</font>：在运行过程中需要做访问操作的时候才进行地址转换–由cpu的<font color="red">存储管理单元MMU</font>自动实现，操作系统只登记MMU进行重定位时需要的相关信息。</p>
+</li>
+</ul>
+<p>个人理解，Java的反射机制，可以在运行的时候，获取Class信息，想必底层实现原理就是利用的动态重定位吧。</p>
+<h3 id="5、静态重定位与动态重定位的特点对比："><a href="#5、静态重定位与动态重定位的特点对比：" class="headerlink" title="5、静态重定位与动态重定位的特点对比："></a>5、静态重定位与动态重定位的特点对比：</h3><table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">静态重定位</th>
+<th align="center">动态重定位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">硬件支持</td>
+<td align="center">不需要</td>
+<td align="center">需要</td>
+</tr>
+<tr>
+<td align="center">操作系统的工作</td>
+<td align="center">装入时修改程序</td>
+<td align="center">登记MMU所需要信息</td>
+</tr>
+<tr>
+<td align="center">程序装入</td>
+<td align="center">被修改</td>
+<td align="center">直接装入</td>
+</tr>
+<tr>
+<td align="center">程序运行时移动</td>
+<td align="center">困难</td>
+<td align="center">容易</td>
+</tr>
+<tr>
+<td align="center">程序的不连续装入</td>
+<td align="center">困难</td>
+<td align="center">容易</td>
+</tr>
+<tr>
+<td align="center">其他技术支持（动态链接、虚拟存储等）</td>
+<td align="center">难以实现</td>
+<td align="center">容易实现</td>
+</tr>
+</tbody></table>
+<h3 id="6、存储器管理的关键问题"><a href="#6、存储器管理的关键问题" class="headerlink" title="6、存储器管理的关键问题"></a>6、存储器管理的关键问题</h3><p>​        <font color="red">存储器管理</font>主要是对用户空间进行管理，目的是为了提供主存储器的利用率，方便用户对主存储器的使用。</p>
+<p>​        存储器管理的关键问题：</p>
+<h5 id="1、存储空间的分配与回收"><a href="#1、存储空间的分配与回收" class="headerlink" title="1、存储空间的分配与回收"></a>1、存储空间的分配与回收</h5><ul>
+<li>设计合理的数据结构以记录存储空间的分配情况</li>
+<li>设计合理的算法来提高存储器的利用率（装入尽可能多的程序）</li>
+</ul>
+<h5 id="2、重定位方式的确定"><a href="#2、重定位方式的确定" class="headerlink" title="2、重定位方式的确定"></a>2、重定位方式的确定</h5><ul>
+<li>决定采用静态重定位或者动态重定位，并进行相应的工作</li>
+</ul>
+<h5 id="3、实现保护与共享"><a href="#3、实现保护与共享" class="headerlink" title="3、实现保护与共享"></a>3、实现保护与共享</h5><ul>
+<li><p>存储空间保护使得各进程不能访问彼此的存储空间，主要方法有：</p>
+<ul>
+<li><p>利用出其里的特权级，防止跨级访问</p>
+</li>
+<li><p>利用MMU的界限寄存器规则，防止同级访问</p>
+</li>
+<li><p>操作系统设置和检查存储区域的保护键与当前进程的键以及操作是否匹配</p>
+</li>
+</ul>
+</li>
+<li><p>存储空间共享：</p>
+<ul>
+<li>提供进程间共享数据的途径</li>
+</ul>
+</li>
+</ul>
+<h5 id="4、实现虚拟存储技术"><a href="#4、实现虚拟存储技术" class="headerlink" title="4、实现虚拟存储技术"></a>4、实现虚拟存储技术</h5><h3 id="7、存储器管理的方法"><a href="#7、存储器管理的方法" class="headerlink" title="7、存储器管理的方法"></a>7、存储器管理的方法</h3><h4 id="1、从程序的角度分为："><a href="#1、从程序的角度分为：" class="headerlink" title="1、从程序的角度分为："></a>1、从程序的角度分为：</h4><ul>
+<li>非分段管理：将进程的数据、代码、堆栈作为一个完整的逻辑空间</li>
+<li>分段管理：将进程的数据、代码、堆栈、各自作为独立的逻辑空间</li>
+</ul>
+<h4 id="2、从内存分配的角度分为："><a href="#2、从内存分配的角度分为：" class="headerlink" title="2、从内存分配的角度分为："></a>2、从内存分配的角度分为：</h4><ul>
+<li>分区管理：一个逻辑空间对应物理空间中一个分区，连续分配</li>
+<li>分页管理：一个逻辑空间对应物理空间中多个分页，可不连续分配。</li>
+<li>段页式管理：比较先进复杂的综合方法。</li>
+</ul>
+<h3 id="8、单一连续区存储管理"><a href="#8、单一连续区存储管理" class="headerlink" title="8、单一连续区存储管理"></a>8、单一连续区存储管理</h3><p>​        操作系统占用内核空间之外，将整个用户空间看做一个内存区域，一次只能装入一道用户程序，只有用户区中的程序运行完毕方可以装入下一道程序。</p>
+<p>也就是说，一个内存，有系统区，还有用户区。系统区，存储一个操作系统信息。</p>
+<ul>
+<li><p>常用静态重定位</p>
+</li>
+<li><p>管理简单</p>
+</li>
+<li><p>不需要复杂硬件支持</p>
+</li>
+<li><p>只允许单任务</p>
+<p>为了实现单一连续区存储管理，或者其他任何存储管理的方法，<font color="red">操作系统采用的请求表来记录请求装入内存的程序信息</font>。</p>
+<table>
+<thead>
+<tr>
+<th align="center">程序标识</th>
+<th align="center">需要的空间长度（虚拟地址空间大小）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">A</td>
+<td align="center">50K</td>
+</tr>
+<tr>
+<td align="center">B</td>
+<td align="center">90K</td>
+</tr>
+<tr>
+<td align="center">C</td>
+<td align="center">130K</td>
+</tr>
+<tr>
+<td align="center">D</td>
+<td align="center">10K</td>
+</tr>
+<tr>
+<td align="center">E</td>
+<td align="center">165K</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h3 id="9、固定分区存储管理"><a href="#9、固定分区存储管理" class="headerlink" title="9、固定分区存储管理"></a>9、固定分区存储管理</h3><p>​        操作系统占用内核空间之外，<font color="red">将整个用户空间划分为若干个固定大小的区域（大小可不相等）</font>。多道程序分别装入不同的分区内，一道程序只能装入一个分区，而一个分区也只能分配给一道程序。</p>
+<p>​        为了实现固定分区存储管理，操作系统必须记录各分区的位置和使用情况，采用关键数据结构–分区说明表（DPT）</p>
+<table>
+<thead>
+<tr>
+<th align="center">区号</th>
+<th align="center">长度</th>
+<th align="center">起始地址</th>
+<th align="center">状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">75K</td>
+<td align="center">32K</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">30K</td>
+<td align="center">107K</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">140K</td>
+<td align="center">137K</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">11K</td>
+<td align="center">277K</td>
+<td align="center">0</td>
+</tr>
+</tbody></table>
+<p>​        固定分区存储管理一般采用静态重定位，配合界限寄存器法防止各进程彼此访问存储区域（存储保护）。</p>
+<p>​        利用MMU的界限寄存器规则，防止同级间房屋内，操作系统设置和检查存储区域的保护建与当前进程的键是否匹配。</p>
+<p>​        固定分区存储管理的特点：</p>
+<ul>
+<li>支持多道程序设计</li>
+<li>并发执行进程数受到分区数限制</li>
+<li>程序可用空间受分区大小限制</li>
+<li>存储区存在“碎片”</li>
+<li>长作业优先、输入队列法</li>
+</ul>
+<h3 id="10、可变分区存储管理"><a href="#10、可变分区存储管理" class="headerlink" title="10、可变分区存储管理"></a>10、可变分区存储管理</h3><p>​        在程序装入时选择一个空闲区域并在其中动态创建一个分区来装入程序。</p>
+<p>​        为了实现可变分区存储管理，操作系统需要记录空闲内存区域的位置，可采用以下两种数据结构：</p>
+<h5 id="1、可用表"><a href="#1、可用表" class="headerlink" title="1、可用表"></a>1、可用表</h5><p>类似分区说明表DPT，但是其中的记录是变化的，并且状态1表示空闲，而状态0表示记录无效（预留着存储位置）</p>
+<table>
+<thead>
+<tr>
+<th align="center">起始地址</th>
+<th align="center">长度</th>
+<th align="center">状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">152K</td>
+<td align="center">10K</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">172K</td>
+<td align="center">116K</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">0</td>
+</tr>
+</tbody></table>
+<ul>
+<li>缺点：可用表的长度受到了限制，从而导致表示的空闲区个数受到限制，影响并发的进程个数</li>
+</ul>
+<h5 id="2、空闲区链表"><a href="#2、空闲区链表" class="headerlink" title="2、空闲区链表"></a>2、空闲区链表</h5><p>用链表的形式来记录空闲区</p>
+<p>ps：怪不得面试的时候，让手写LRU算法，而LRU算法也是用链表实现的。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FreeNode</span>&#123;</span></span><br><span class="line">    <span class="keyword">long</span> start;<span class="comment">//分区的起始地址</span></span><br><span class="line">    <span class="keyword">long</span> length;<span class="comment">//分区的长度</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">FreeNode</span> *<span class="title">next</span>;</span><span class="comment">//向下指针</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3、可变分区存储管理空间分配算法"><a href="#3、可变分区存储管理空间分配算法" class="headerlink" title="3、可变分区存储管理空间分配算法"></a>3、可变分区存储管理空间分配算法</h5><p>当程序请求装入的时候，进行空间分配的算法：</p>
+<ul>
+<li>最先适应法FF：依次查找空闲区，选择收个足够大的空闲区装入程序。</li>
+<li>最佳适应法BF：在所有足够装入程序的空闲区中选择最小者</li>
+<li>最坏适应法WF就：在所有足够装入程序的空闲区中选择最大者</li>
+</ul>
+<h5 id="4、空间分配算法优缺点："><a href="#4、空间分配算法优缺点：" class="headerlink" title="4、空间分配算法优缺点："></a>4、空间分配算法优缺点：</h5><p>三种算法的优势和缺点：</p>
+<ul>
+<li>最先适应法FF：分配速度最快，但是堆内存使用没有规划。</li>
+<li>最佳适应法BF：找到的空闲区与请求最匹配，对大程序的装入有充分的准备，但是容易产生外碎片。</li>
+<li>最坏适应法WF：不容易产生外碎片，但是容易造成大程序装入的失败。</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2017/06/21/%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-计算机网络" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2017/06/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" target="_blank">计算机网络</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2017/06/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="archive-article-date">
+        <time datetime="2017-06-11T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-11</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="一、计算机网络"><a href="#一、计算机网络" class="headerlink" title="一、计算机网络"></a>一、计算机网络</h2><h4 id="1、计算机网络的常识"><a href="#1、计算机网络的常识" class="headerlink" title="1、计算机网络的常识"></a>1、计算机网络的常识</h4><ul>
+<li><p>分布式处理：计算机网络中的某个计算机系统负荷过重，可以将它处理的某个复杂任务分配给网络中的其他计算机系统，来利用空闲计算机资源来提高整个系统的利用率。</p>
+</li>
+<li><p>负载均衡：将工作任务均衡的分配给计算机网络中的各台计算机</p>
+</li>
+<li><p>广域网（WAN）：长距离通信，是因特网的核心，连接广域网的各个结点的交换机的链路。</p>
+</li>
+<li><p>局域网（LAN）：局域网使用<strong>广播技术</strong>，广域网使用<strong>交换技术</strong>。</p>
+</li>
+<li><p>广播式网络：所有联网的计算机共享一个公共通信信道。当有一台计算利用共享信道发送报文分组，所有其他的计算都会接收到这个分组。</p>
+</li>
+<li><p>点对点网络：每条物理线路连接一对计算机。乳沟两台通信计算机直接没哟直连线路，它们之间的报文分组通信就需要中间结点的接收，存储和转发。</p>
+<p>使用采用分组存储转发与路由选择机制是点对点与广播式网路的重要区别。</p>
+<p><strong>广域网基本都是点对点网络。</strong>，广域网中的无线、卫星通信网络采用的是广播的通信方式。</p>
+</li>
+</ul>
+<h4 id="2、计算机网络性能指标"><a href="#2、计算机网络性能指标" class="headerlink" title="2、计算机网络性能指标"></a>2、计算机网络性能指标</h4><ul>
+<li><p>带宽（BandWidth）：表示网络的通信线路传送数据能力，单位b/s，比特每秒</p>
+</li>
+<li><p>时延（Delay）：表示数据（一个报文、分组）从网络的一端传到另一端所需要的总时间。</p>
+<ul>
+<li>发送时延=分组长度/信道宽度</li>
+<li>传播时延=信道长度/传播速度</li>
+<li>处理时延</li>
+<li>排队时延</li>
+</ul>
+<p>注：一般做题，排队时延/处理时延可忽略。提高数据的发送速度只是为了减少数据的发送时延</p>
+</li>
+<li><p>往返时延（RTT）：从发送端发送数据开始，到发送端收到来自接收端确认总共的时延。</p>
+</li>
+<li><p>吞吐量（ThroughPut）：单位时间里通过网络（信道，接口）的数据量。受到网络的带宽和额定速率限制。</p>
+</li>
+<li><p>速率：连接在计算机网络上的主机在数字信道上传送数据的速率，也叫比特率b/s,bit/s,bps，Kb/s,Mb/s,Gb/s（G=10^9），一般我们把速率叫带宽。</p>
+</li>
+</ul>
+<h4 id="3、网络资源"><a href="#3、网络资源" class="headerlink" title="3、网络资源"></a>3、网络资源</h4><p>网络资源包括：硬件资源、软件资源、数据资源</p>
+<h4 id="4、通信子网和资源子网"><a href="#4、通信子网和资源子网" class="headerlink" title="4、通信子网和资源子网"></a>4、通信子网和资源子网</h4><ul>
+<li><p>资源子网：负责全网的数据处理业务，负责向网络用户提供各种网络资源和网络服务</p>
+<ul>
+<li>计算机系统</li>
+<li>终端</li>
+<li>联网外部设备</li>
+<li>软件资源和信息资源</li>
+</ul>
+</li>
+<li><p>通信子网：完成网络数据传输，转发的通信处理任务</p>
+<ul>
+<li>通信控制处理机</li>
+<li>通信线路</li>
+<li>通信设备：网桥、交换机、路由器</li>
+</ul>
+<p>注：通信子网对应OSI的下3层：物理层、数据链路层、网络层</p>
+</li>
+</ul>
+<h4 id="5、分组交换"><a href="#5、分组交换" class="headerlink" title="5、分组交换"></a>5、分组交换</h4><p>分组交换：把数据分成大小相当的小数据片，每个片都要加上控制信息（比如目的地址），因此传送数据的总开销比较大。分组交换信道利用率高</p>
+<p>传播时延=信道距离/传播速度</p>
+<h4 id="6、计算机网络与分布式计算机系统区别"><a href="#6、计算机网络与分布式计算机系统区别" class="headerlink" title="6、计算机网络与分布式计算机系统区别"></a>6、计算机网络与分布式计算机系统区别</h4><ul>
+<li>分布式系统：整个系统中的各个计算机对用户都是透明的。用户通过输入命令就可以运行程序，但是用户并不知道哪一台计算机在为他运行程序。是操作系统为用户选择一台最合适的计算机来运行其程序，并将运行的结果传送到合适的地方。</li>
+<li>计算机网络：用户必须在要运行程序的计算机上先登录，然后按照计算机的地址，将程序通过计算机网络传送到计算机上运行。最后，根据用户的命令将结果传送到指定的计算机。</li>
+</ul>
+<h2 id="二、物理层"><a href="#二、物理层" class="headerlink" title="二、物理层"></a>二、物理层</h2><h4 id="1、通信双方的交互方式"><a href="#1、通信双方的交互方式" class="headerlink" title="1、通信双方的交互方式"></a>1、通信双方的交互方式</h4><ul>
+<li>单工通信：只有一个方向的通信而没有反方向的交互，只需要一条信道。例：无线电广播、电视广播</li>
+<li>半双工通信：通信的双方都可以发送或接收信息，但是任何一方都不能同时发送和接收。需要两条信道。</li>
+<li>全双工通信：通信双方可以同时发送和接收信息，也需要两条信道。</li>
+</ul>
+<h4 id="2、电路交换、报文交换、分组交换"><a href="#2、电路交换、报文交换、分组交换" class="headerlink" title="2、电路交换、报文交换、分组交换"></a>2、电路交换、报文交换、分组交换</h4><ul>
+<li><p>电路交换：在进行数据传输前，两个节点之间必须建立一条专用的物理通信路径，建立连接，数据传输，释放连接。</p>
+<p>在数据传输过程中，用户始终占用端到端的固定传输带宽。</p>
+</li>
+<li><p>报文交换：数据交换的单位是报文，报文携带目标地址、源地址等信息。报文交换采用是存储转发的传输方式。</p>
+<p>报文交换主要用在早期电报通信网，现在很少使用。</p>
+</li>
+<li><p>分组交换：和报文交换一样，页才用了存储转发方式。解决了报文交换中大报文的传输问题。分组交换限制了每次传输的数据块大小上限，把大的数据块划分成了合理的小数据块，再加上源地址，目标地址，编号信息等。构成分组Packet。</p>
+</li>
+</ul>
+<h4 id="3、物理层设备"><a href="#3、物理层设备" class="headerlink" title="3、物理层设备"></a>3、物理层设备</h4><ul>
+<li><p>中继器</p>
+<p>也叫转发器，将信号整形并放大再转发出去，来消除信号由于经过一长段电缆，因为噪声或者其他因素导致信号失真和衰减。</p>
+<p>注：放大器和中继器的区别</p>
+<p>放大器放大的是模拟信号，是将衰减信号放大。</p>
+<p>中继器放大的是数字信号，是将衰减的信号整形再生。</p>
+<p>中继器没有存储和转发的功能，所以是不能连接两个速度不同的网段，中继器两端的网段一定是同一个协议。</p>
+</li>
+<li><p>集线器Hub</p>
+<p>是一个多端口的中继器，工作物理层。Hub工作时，当一个端口接收到数字信号后，由于信号从端口到Hub的传输过程中有了衰减，Hub是将信号进行整形放大。</p>
+<p>Hub在网络中只起到信号放大和转发作用，只是为了扩大网络的传输范围，不具备信号的定向传送能力。只是一个标准的共享式设备。</p>
+</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2017/06/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-Kafka的应用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -619,6 +2490,101 @@
 
 
   
+    <article id="post-Maven依赖的作用域scope" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2016/09/20/Maven%E4%BE%9D%E8%B5%96%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9Fscope/" target="_blank">Maven作用域scope分类</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2016/09/20/Maven%E4%BE%9D%E8%B5%96%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9Fscope/" class="archive-article-date">
+        <time datetime="2016-09-20T10:30:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-09-20</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h3 id="1、Maven中依赖的作用域scope的分类"><a href="#1、Maven中依赖的作用域scope的分类" class="headerlink" title="1、Maven中依赖的作用域scope的分类"></a>1、Maven中依赖的作用域scope的分类</h3><p>Maven默认的依赖配置项中，scope的默认值是compile</p>
+<h5 id="1-1、compile"><a href="#1-1、compile" class="headerlink" title="1.1、compile"></a>1.1、compile</h5><p><font color="red">默认是compile</font>，也就是什么都不配置，就意味着compile，表示被依赖的项目需要参与当前项目的编译，后续的测试，运行周期也会使用到。是一个比较强的依赖，打包的时候也需要含进去。</p>
+<h5 id="1-2、runtime"><a href="#1-2、runtime" class="headerlink" title="1.2、runtime"></a>1.2、runtime</h5><p>表示依赖项目无需参与项目的编译，不过后期的测试和运行周期需要参与。与compile相比，只是跳过编译而已。比较常见的是比较常见的如JSR-xxxx的实现，对应的API jar是compile的，具体实现是runtime的，compile只需要知道接口就足够了。oracle jdbc驱动架包就是一个很好的例子，一般scope为runntime。另外runntime的依赖通常和optional搭配使用，optional为true。我可以用A实现，也可以用B实现。</p>
+<h5 id="1-3、provided"><a href="#1-3、provided" class="headerlink" title="1.3、provided"></a>1.3、provided</h5><p>provided意味着打包的时候可以不用包进去，别的设施(Web Container)会提供。事实上该依赖理论上可以参与编译，测试，运行等周期。相当于compile，但是在打包阶段做了exclude的动作。</p>
+<h5 id="1-4、test"><a href="#1-4、test" class="headerlink" title="1.4、test"></a>1.4、test</h5><p>该依赖仅仅参与测试相关的内容，包括测试用例的编译和执行，比如定性的Junit。</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2016/09/20/Maven%E4%BE%9D%E8%B5%96%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9Fscope/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-Linux常用的操作命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -706,6 +2672,9 @@
 </li>
 <li><p>查看日志文件</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tail -f java.log</span><br><span class="line">cat .bashrc</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改hosts文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">为了线下稳定访问服务，配置hosts</span></span><br><span class="line">sudo gedit /etc/hosts</span><br><span class="line"><span class="meta">#</span><span class="bash">保存并重启网络</span></span><br><span class="line">sudo /etc/init.d/networking restart</span><br></pre></td></tr></table></figure>
 
 
 
@@ -738,6 +2707,120 @@
     
     <p class="article-more-link">
       <a class="article-more-a" href="../../2015/11/01/Linux%E5%B8%B8%E7%94%A8%E7%9A%84%E6%93%8D%E4%BD%9C%E5%91%BD%E4%BB%A4/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-病毒与细菌" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2015/06/11/%E7%97%85%E6%AF%92%E4%B8%8E%E7%BB%86%E8%8F%8C/" target="_blank">病毒与细菌</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2015/06/11/%E7%97%85%E6%AF%92%E4%B8%8E%E7%BB%86%E8%8F%8C/" class="archive-article-date">
+        <time datetime="2015-06-11T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-06-11</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h3 id="1、构造不同"><a href="#1、构造不同" class="headerlink" title="1、构造不同"></a>1、构造不同</h3><ul>
+<li>细菌：原核生物的一种，主要特点：没有核膜，遗传物质分散在细胞质内一个相对固定的区域内，叫做核区，拟核。细菌的外边包裹着一层细胞壁，成分为多糖聚合而成，也叫肽聚糖</li>
+<li>病毒：构造简单，外面是一层蛋白质，叫做病毒外壳，蛋白质外壳内部包裹着病毒的遗传物质，可以是DNA，RNA。病毒自己不能完成新陈代谢，也不能完成繁殖，需要寄生在其他细胞内完成。</li>
+</ul>
+<h3 id="2、繁殖方式不同"><a href="#2、繁殖方式不同" class="headerlink" title="2、繁殖方式不同"></a>2、繁殖方式不同</h3><h4 id="2-1、细菌"><a href="#2-1、细菌" class="headerlink" title="2.1、细菌"></a>2.1、细菌</h4><ul>
+<li>细菌以无性方式进行繁殖，最主要的方式是以二分裂的无性繁殖方式。一个细菌细胞细胞壁横向分裂，形成两个子代细胞，在分裂的时候可以产生遗传重组。</li>
+<li>单个细胞也会通过一下几种方式发生遗传变异：突变（细胞自身的遗传基因发生随机改变），转化（无修饰的DNA从一个细菌转移到溶液中另一个细菌中，并成功整合到该细菌DNA或者质粒上，让它具有新的特征），转染（病毒的或细菌的DNA，或者两者的DNA，通过噬菌体这种载体转移到另一个细菌中），细菌接合（一个细菌的DNA通过两细菌间形成的特殊的蛋白质结构，接合菌毛，转移到另一个细菌）</li>
+<li>细菌可以通过这些方式获得基因片段，通过分裂，将重组的基因组传给后代</li>
+</ul>
+<h4 id="2-2、病毒"><a href="#2-2、病毒" class="headerlink" title="2.2、病毒"></a>2.2、病毒</h4><ul>
+<li>由于病毒是非细胞的，无法通过细胞分裂的方式来完成数量增长，他们是利用宿主细胞内的代谢工具来合成自身的拷贝，并完成病毒组装。</li>
+<li>病毒并不是严格生物学意义上的繁殖，而且每次释放个体数量巨大，故而称为–繁殖。不同的病毒之间的生命周期的差异很大，但大致可以分成6个阶段：附着，入侵，脱壳，合成，组装，释放。</li>
+</ul>
+<h3 id="3、治疗手段不同"><a href="#3、治疗手段不同" class="headerlink" title="3、治疗手段不同"></a>3、治疗手段不同</h3><h4 id="3-1、细菌的治疗手段"><a href="#3-1、细菌的治疗手段" class="headerlink" title="3.1、细菌的治疗手段"></a>3.1、细菌的治疗手段</h4><ul>
+<li>很多致病细菌均可以通过抗生素治疗，现阶段人类经常用的有：青霉素，头孢类，万古霉素，红霉素，四环素都属于抗生素类，绝大多数病毒的感染我们束手无策。</li>
+</ul>
+<h4 id="3-2、病毒的治疗手段"><a href="#3-2、病毒的治疗手段" class="headerlink" title="3.2、病毒的治疗手段"></a>3.2、病毒的治疗手段</h4><ul>
+<li><p>盐酸吗啉胍（病毒灵）</p>
+<p>能抑制病毒的DNA和RNA聚合酶，从而抑制病毒繁殖，在人胚肾细胞上，1%浓度对DNA病毒（腺病毒，疱疹病毒）和RNA病毒（埃可病毒）都有明显抑制作用，对病毒繁殖周期各个阶段均有抑制作用，对游离病毒颗粒无直接作用。</p>
+</li>
+<li><p>利巴韦林</p>
+<p>利巴韦林是合成的核苷类抗病毒药，利巴韦林对呼吸道合胞病毒（RSV）具有选择性抑制作用。</p>
+</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">杂文</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2015/06/11/%E7%97%85%E6%AF%92%E4%B8%8E%E7%BB%86%E8%8F%8C/">展开全文 >></a>
     </p>
     
 
@@ -939,6 +3022,10 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
               </li>
             
             <div class="clearfix"></div>

@@ -18,7 +18,7 @@
 <meta property="og:site_name" content="VictorDan">
 <meta property="og:description" content="MySQL的使用">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-25T02:55:53.574Z">
+<meta property="og:updated_time" content="2020-04-08T11:20:01.128Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
@@ -231,7 +231,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">122字</span>
+      <span class="post-count">184字</span>
     </span>
   </span>
 
@@ -257,6 +257,8 @@
 <h4 id="2、Insert-ignore的使用"><a href="#2、Insert-ignore的使用" class="headerlink" title="2、Insert ignore的使用"></a>2、Insert ignore的使用</h4><p>表要求有：primary key，或者有unique索引</p>
 <p>Insert ignore会忽略已存在的数据</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert ignore into t_student(name,age,class) values(&quot;test&quot;,19,&quot;计算机&quot;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、MySQL的表数据的导入导出"><a href="#3、MySQL的表数据的导入导出" class="headerlink" title="3、MySQL的表数据的导入导出"></a>3、MySQL的表数据的导入导出</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#先把测试环境的数据导出到sql文件</span><br><span class="line">mysqldump -h192.168.1.1 -uadmin -padmin demo user_account &gt; /opt/demo/dmp/user_account.sql</span><br><span class="line">#然后导入到生产环境</span><br><span class="line">mysql -h192.161.1.215 -uadmin -padmin demo &lt; /opt/dmp/user_account.sql</span><br></pre></td></tr></table></figure>
 
 
     
@@ -432,7 +434,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL的问题"><span class="toc-number">1.</span> <span class="toc-text">MySQL的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、重置id问题"><span class="toc-number">1.1.</span> <span class="toc-text">1、重置id问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、Insert-ignore的使用"><span class="toc-number">1.2.</span> <span class="toc-text">2、Insert ignore的使用</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL的问题"><span class="toc-number">1.</span> <span class="toc-text">MySQL的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、重置id问题"><span class="toc-number">1.1.</span> <span class="toc-text">1、重置id问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、Insert-ignore的使用"><span class="toc-number">1.2.</span> <span class="toc-text">2、Insert ignore的使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、MySQL的表数据的导入导出"><span class="toc-number">1.3.</span> <span class="toc-text">3、MySQL的表数据的导入导出</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -489,7 +491,7 @@
             <div id="toc-article" class="toc-article">
                 <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
                 <strong class="toc-title">文章目录</strong>
-                <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL的问题"><span class="toc-number">1.</span> <span class="toc-text">MySQL的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、重置id问题"><span class="toc-number">1.1.</span> <span class="toc-text">1、重置id问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、Insert-ignore的使用"><span class="toc-number">1.2.</span> <span class="toc-text">2、Insert ignore的使用</span></a></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL的问题"><span class="toc-number">1.</span> <span class="toc-text">MySQL的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、重置id问题"><span class="toc-number">1.1.</span> <span class="toc-text">1、重置id问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、Insert-ignore的使用"><span class="toc-number">1.2.</span> <span class="toc-text">2、Insert ignore的使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、MySQL的表数据的导入导出"><span class="toc-number">1.3.</span> <span class="toc-text">3、MySQL的表数据的导入导出</span></a></li></ol></li></ol>
            </div>
            <script type="text/javascript">
             function showToc(){
@@ -669,6 +671,10 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
               </li>
             
             <div class="clearfix"></div>

@@ -439,6 +439,259 @@
 
 
   
+    <article id="post-Spark-Streaming" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="2020/01/17/Spark-Streaming/" target="_blank">Spark Streaming</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="2020/01/17/Spark-Streaming/" class="archive-article-date">
+        <time datetime="2020-01-17T05:46:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-17</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="一、Spark-Streaming"><a href="#一、Spark-Streaming" class="headerlink" title="一、Spark Streaming"></a>一、Spark Streaming</h2><h3 id="1、使用背景"><a href="#1、使用背景" class="headerlink" title="1、使用背景"></a>1、使用背景</h3><p>​        有时候需要实时处理收到的数据，比如实时追踪页面访问统计的应用，训练机器学习模型，自动检测异常等。Spark Streaming是Spark为这些应用而设计的模型。让用户使用一套和批处理非常接近的API来编写流式计算应用，可以大量重用批处理应用的技术和代码。</p>
+<p>​        和Spark基于RDD的类似，Spark Streaming使用离散化流作为抽象表示，叫做DStream。而DStream是随时间推移而收到的数据的序列。DStream内部每个时间区间收到的数据都作为RDD的存在，DStream是由这些RDD所组成的序列，因此是离散化。DStream可以从各种输入源创建，常见的是Flume，Kafka，HDFS。创建出来的DStream支持2种操作，一种是转化操作Transformation，会生成新的DStream。一种是输出操作Action。可以把数据写入外部系统中。DStream提供了许多与RDD所支持的操作，同时还增加了与时间相关的新操作，滑动窗口。</p>
+<p>​        与批处理Job不同的是，Spark Streaming应用需要进行额外配置来保证24小时不间断工作。比如checkpoint机制，也就是把数据存储到可靠文件系统HDFS上的机制，这也是Spark Streaming用来实现不间断工作的主要方式。</p>
+<h3 id="2、实例"><a href="#2、实例" class="headerlink" title="2、实例"></a>2、实例</h3><p>​        Spark Streaming程序最好是使用Maven 或者Sbt编译的独立应用形式运行。Spark Streaming虽然是Spark的一部分。</p>
+<ul>
+<li><p>pom.xml依赖文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.spark<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spark-streaming_2.10/artifactId&gt;</span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Java流计算import</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"> </span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="2020/01/17/Spark-Streaming/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-开发总结与问题复盘" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="2019/12/11/%E5%BC%80%E5%8F%91%E6%80%BB%E7%BB%93%E4%B8%8E%E9%97%AE%E9%A2%98%E5%A4%8D%E7%9B%98/" target="_blank">分布式常识总结</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="2019/12/11/%E5%BC%80%E5%8F%91%E6%80%BB%E7%BB%93%E4%B8%8E%E9%97%AE%E9%A2%98%E5%A4%8D%E7%9B%98/" class="archive-article-date">
+        <time datetime="2019-12-11T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-11</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h3 id="一、今日头条广告预警、暂停以及加量"><a href="#一、今日头条广告预警、暂停以及加量" class="headerlink" title="一、今日头条广告预警、暂停以及加量"></a>一、今日头条广告预警、暂停以及加量</h3><ul>
+<li>开始时间：11-22</li>
+<li>预计完成时间： 12-21</li>
+</ul>
+<h3 id="二、中间遇到的问题"><a href="#二、中间遇到的问题" class="headerlink" title="二、中间遇到的问题"></a>二、中间遇到的问题</h3><h4 id="1、业务需求方面"><a href="#1、业务需求方面" class="headerlink" title="1、业务需求方面"></a>1、业务需求方面</h4><ul>
+<li>由于广告预警，加量，每小时监控，需要的是每小时跑一次数据，而由于之前的load_toutiao_data的job的接口拉取的还是每天汇总计算好的数据，没能对头条开发者技术文档仔细研读，导致业务理解出现偏差，后来与市场部进行多次沟通交流，最终确定新的prd需求。需要每天的每个小时的明细数据，改动接口传参，重新dump头条的广告明细数据。</li>
+<li>由于之前只是对头条广告明细数据，和广告数据进行了每小时拉取，没有对广告组数据每小时处理，数据产生偏差比较大。</li>
+<li>广告暂停是每天跑一次，自然而然用到的是每天的数据，之前没能有深刻理解，使用的每小时的明细数据进行计算聚合，导致数据计算少，发现后及时修改逻辑。</li>
+<li>当初自己理解为广告暂停是每天跑一次，用的是昨天的一整天的历史数据。后来又和市场再三确认，更改为计算的每个小时的明细数据然后进行累计计算。<br>因为计算到当前时间的48小时内的累计消耗，后又进行重构更改job。耗费了大量的时间</li>
+</ul>
+<h4 id="2、SQL方面"><a href="#2、SQL方面" class="headerlink" title="2、SQL方面"></a>2、SQL方面</h4><ul>
+<li><p>首先是自己没能深刻认识Group By和Distinct的应用，把维度和指标的字段都进行group by分组，导致二次犯错。后经老师傅指导批评，重新学习SQL语法，sql方面问题GROUP BY和DISTINCT的使用错误，需要深刻反思。</p>
+<p>dm_toutiao_adstat_hourly是存放的广告计划明细小时数据，需要按照广告计划ad_id和stat_datetime小时标签来进行分组后，然后计算相关指标。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--插入数据</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span>  hdp_drq_dw_db.da_toutiao_adstat_hourly <span class="keyword">drop</span> <span class="keyword">PARTITION</span>(cal_dt =$&#123;today&#125;,<span class="keyword">hour</span>=<span class="string">'$bash&#123;date +%H -d '</span>$&#123;todayDateTime&#125;<span class="string">'&#125;'</span>) ;</span><br><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span>  hdp_drq_dw_db.da_toutiao_adstat_hourly <span class="keyword">partition</span> (cal_dt =$&#123;today&#125;,<span class="keyword">hour</span>=<span class="string">'$bash&#123;date +%H -d '</span>$&#123;todayDateTime&#125;<span class="string">'&#125;'</span>)</span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">ad_id</span><br><span class="line">,stat_datetime</span><br><span class="line">,<span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">as</span> <span class="keyword">cost</span></span><br><span class="line">,<span class="keyword">sum</span>(<span class="keyword">convert</span>) <span class="keyword">as</span> <span class="keyword">convert</span></span><br><span class="line">,<span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span> <span class="keyword">convert</span>&lt;=<span class="number">0.0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="keyword">cost</span> <span class="keyword">end</span>)/<span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span> <span class="keyword">convert</span>&lt;=<span class="number">0.0</span> <span class="keyword">then</span> <span class="number">1</span> <span class="keyword">else</span> <span class="keyword">convert</span> <span class="keyword">end</span>) <span class="keyword">as</span> convert_cost</span><br><span class="line">,<span class="keyword">max</span>(advertiser_id) <span class="keyword">as</span> advertiser_id</span><br><span class="line">,<span class="keyword">max</span>(campaign_id) <span class="keyword">as</span> campaign_id</span><br><span class="line"><span class="keyword">from</span> hdp_drq_dw_db.dm_toutiao_adstat_hourly</span><br><span class="line"><span class="keyword">where</span> cal_dt = $&#123;today&#125; <span class="keyword">and</span> <span class="keyword">hour</span>=<span class="string">'$bash&#123;date +%H -d '</span>$&#123;todayDateTime&#125;<span class="string">'&#125;'</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span></span><br><span class="line">ad_id</span><br><span class="line">,stat_datetime</span><br><span class="line">;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>头条公司账户，广告计划成本，广告计划状态明细汇总中间表，进行关联的时候出现错误，导致数据发散。</p>
+<p>反思是业务逻辑理解出现问题，需要的是ad_id,advertiser_id,campaign_id三者的关系理解。首先是账户advertiser_id对应多个campagin_id，然后campaign_id对应多个广告ad_id。再者，之前是用广告组每天的数据表进行关联，由于广告的开启，暂停等状态受广告组限制，所以广告组也需要使用每小时的明细数据来进行业务逻辑处理，筛选出广告组状态为开启状态<font color="red">status=’CAMPAIGN_STATUS_ENABLE’</font></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--插入数据</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> hdp_drq_dw_db.dm_toutiao_company_ad_adstat_hourly <span class="keyword">drop</span> <span class="keyword">PARTITION</span>(cal_dt = <span class="string">'$bash&#123;date +%Y-%m-%d -d '</span>$&#123;todayDateTime&#125; <span class="number">1</span> <span class="keyword">hour</span> ago<span class="string">'&#125;'</span>,<span class="keyword">hour</span>=<span class="string">'$bash&#123;date +%H -d '</span>$&#123;todayDateTime&#125; <span class="number">1</span> <span class="keyword">hour</span> ago<span class="string">'&#125;'</span>) ;</span><br><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> hdp_drq_dw_db.dm_toutiao_company_ad_adstat_hourly <span class="keyword">PARTITION</span>(cal_dt = <span class="string">'$bash&#123;date +%Y-%m-%d -d '</span>$&#123;todayDateTime&#125; <span class="number">1</span> <span class="keyword">hour</span> ago<span class="string">'&#125;'</span>,<span class="keyword">hour</span>=<span class="string">'$bash&#123;date +%H -d '</span>$&#123;todayDateTime&#125; <span class="number">1</span> <span class="keyword">hour</span> ago<span class="string">'&#125;'</span>)</span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">c.company</span><br><span class="line">,c.name <span class="keyword">as</span> company_name</span><br><span class="line">,a.ad_id</span><br><span class="line">,b.os</span><br><span class="line">,a.advertiser_id</span><br><span class="line">,b.status</span><br><span class="line">,b.opt_status</span><br><span class="line">,b.start_time</span><br><span class="line">,b.name</span><br><span class="line">,a.cost</span><br><span class="line">,a.convert_cost</span><br><span class="line">,b.budget</span><br><span class="line">,b.budget_mode</span><br><span class="line">,a.convert</span><br><span class="line">,c.operate_flag</span><br><span class="line">,c.monitor_flag</span><br><span class="line">,a.stat_datetime</span><br><span class="line"><span class="keyword">from</span> hdp_drq_dw_db.da_toutiao_adstat_hourly a</span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span>  hdp_drq_dw_db.dm_toutiao_ad_hourly b <span class="keyword">on</span> a.ad_id=b.ad_id <span class="keyword">and</span> b.cal_dt = <span class="string">'$bash&#123;date +%Y-%m-%d -d '</span>$&#123;todayDateTime&#125;<span class="string">'&#125;'</span> <span class="keyword">and</span> b.hour=<span class="string">'$bash&#123;date +%H -d '</span>$&#123;todayDateTime&#125;<span class="string">'&#125;'</span></span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> hdp_drq_dw_db.dw_toutiao_account c <span class="keyword">on</span> a.advertiser_id=c.advertiser_id <span class="keyword">and</span> c.cal_dt=$&#123;dealDate&#125;</span><br><span class="line"><span class="comment">/*此处关联后发现数据量明显变少，具体问题待排查，可能是load_toutiao_data_hourly拉取的广告组数据不完整。</span></span><br><span class="line"><span class="comment">正常逻辑是需要用广告组id是关联的，然后只有在广告组开启的状态下，才能有广告计划的开启关闭意义。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">--left outer join hdp_drq_dw_db.dm_toutiao_campaign_hourly d on a.campaign_id=d.campaign_id and d.cal_dt = '$bash&#123;date +%Y-%m-%d -d '$&#123;todayDateTime&#125;'&#125;' and d.hour='$bash&#123;date +%H -d '$&#123;todayDateTime&#125;'&#125;'</span></span><br><span class="line"><span class="keyword">where</span> a.cal_dt = <span class="string">'$bash&#123;date +%Y-%m-%d -d '</span>$&#123;todayDateTime&#125; <span class="number">1</span> <span class="keyword">hour</span> ago<span class="string">'&#125;'</span> <span class="keyword">and</span> a.hour=<span class="string">'$bash&#123;date +%H -d '</span>$&#123;todayDateTime&#125; <span class="number">1</span> <span class="keyword">hour</span> ago<span class="string">'&#125;'</span></span><br><span class="line"><span class="keyword">and</span></span><br><span class="line">a.stat_datetime&lt;=<span class="string">'$bash&#123;date -d"$&#123;todayDateTime&#125; 1 hour ago" +"%F %H:%M:%S"&#125;'</span></span><br><span class="line"><span class="comment">--and d.status='CAMPAIGN_STATUS_ENABLE'</span></span><br><span class="line">;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>去重汇总广告计划的da层表da_toutiao_adstat_hourly</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--插入数据</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span>  hdp_drq_dw_db.da_toutiao_adstat_hourly <span class="keyword">drop</span> <span class="keyword">PARTITION</span>(cal_dt = <span class="string">'$bash&#123;date +%Y-%m-%d -d '</span>$&#123;todayDateTime&#125; <span class="number">1</span> <span class="keyword">hour</span> ago<span class="string">'&#125;'</span>,<span class="keyword">hour</span>=<span class="string">'$bash&#123;date +%H -d '</span>$&#123;todayDateTime&#125; <span class="number">1</span> <span class="keyword">hour</span> ago<span class="string">'&#125;'</span>) ;</span><br><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span>  hdp_drq_dw_db.da_toutiao_adstat_hourly <span class="keyword">partition</span> (cal_dt = <span class="string">'$bash&#123;date +%Y-%m-%d -d '</span>$&#123;todayDateTime&#125; <span class="number">1</span> <span class="keyword">hour</span> ago<span class="string">'&#125;'</span>,<span class="keyword">hour</span>=<span class="string">'$bash&#123;date +%H -d '</span>$&#123;todayDateTime&#125; <span class="number">1</span> <span class="keyword">hour</span> ago<span class="string">'&#125;'</span>)</span><br><span class="line"><span class="keyword">select</span> </span><br><span class="line">a.ad_id</span><br><span class="line">,a.stat_datetime</span><br><span class="line">,<span class="keyword">sum</span>(a.cost) <span class="keyword">as</span> <span class="keyword">cost</span></span><br><span class="line">,<span class="keyword">sum</span>(a.convert) <span class="keyword">as</span> <span class="keyword">convert</span></span><br><span class="line">,<span class="keyword">case</span> <span class="keyword">when</span> <span class="keyword">sum</span>(a.convert)=<span class="number">0</span> <span class="keyword">then</span> <span class="number">0</span> <span class="keyword">else</span> <span class="keyword">sum</span>(a.cost)/<span class="keyword">sum</span>(a.convert) <span class="keyword">end</span> <span class="keyword">as</span> convert_cost</span><br><span class="line">,<span class="keyword">max</span>(a.advertiser_id) <span class="keyword">as</span> advertiser_id</span><br><span class="line">,<span class="keyword">max</span>(a.campaign_id) <span class="keyword">as</span> campaign_id</span><br><span class="line"><span class="keyword">from</span> (</span><br><span class="line">			<span class="comment">--由于存在数据重复，所以需要用ad_id,stat_datetime,inventory字段进行group by去重</span></span><br><span class="line">			<span class="keyword">select</span> </span><br><span class="line">			ad_id</span><br><span class="line">			,stat_datetime</span><br><span class="line">			,inventory</span><br><span class="line">			,<span class="keyword">max</span>(<span class="keyword">cost</span>) <span class="keyword">as</span> <span class="keyword">cost</span></span><br><span class="line">			,<span class="keyword">max</span>(<span class="keyword">convert</span>) <span class="keyword">as</span> <span class="keyword">convert</span></span><br><span class="line">			,<span class="keyword">max</span>(advertiser_id) <span class="keyword">as</span> advertiser_id</span><br><span class="line">			,<span class="keyword">max</span>(campaign_id) <span class="keyword">as</span> campaign_id</span><br><span class="line">			<span class="keyword">from</span> hdp_drq_dw_db.dm_toutiao_adstat_hourly</span><br><span class="line">    		<span class="comment">--dm_toutiao_adstat_hourly表当前时间的数据前一个小时的数据肯定是完整的。</span></span><br><span class="line">			<span class="keyword">where</span> cal_dt = $&#123;today&#125; <span class="keyword">and</span> <span class="keyword">hour</span>=<span class="string">'$bash&#123;date +%H -d '</span>$&#123;todayDateTime&#125;<span class="string">'&#125;'</span></span><br><span class="line">    		<span class="comment">--此处逻辑至关重要，直接过滤1 hour ago的数据存到前一个小时分区。</span></span><br><span class="line">			<span class="keyword">and</span> stat_datetime&lt;=<span class="string">'$bash&#123;date -d"$&#123;todayDateTime&#125; 1 hour ago" +"%F %H:%M:%S"&#125;'</span></span><br><span class="line">			<span class="keyword">group</span> <span class="keyword">by</span></span><br><span class="line">			ad_id</span><br><span class="line">			,stat_datetime</span><br><span class="line">			,inventory ) a</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span></span><br><span class="line">a.ad_id</span><br><span class="line">,a.stat_datetime</span><br><span class="line">;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>每小时监控的MiniReport的某些数据指标需要为整数，或者为百分数保留两位小数</p>
+<p>拉取头条返回的数据里的convert_cost是不能使用的，需要我们自己去计算</p>
+<p>使用<font color="red">convert_cost=sum(cost)/sum(convert)</font></p>
+<p>由于convert可能会有0的情况，所以需要处理convert_cost为0</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">,case when sum(COALESCE(`convert`,0))=0 then 0.0 else cast((sum(COALESCE(cost,0))/sum(COALESCE(`convert`,0))) as decimal(10,2)) <span class="keyword">end</span> <span class="keyword">as</span> convert_cost</span><br></pre></td></tr></table></figure>
+
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">select</span></span><br><span class="line"> <span class="comment">--广告计划的convert转化数必须为整数，所以要转为为int</span></span><br><span class="line"> ,<span class="keyword">cast</span>(<span class="keyword">round</span>(a.convert,<span class="number">0</span>) <span class="keyword">as</span> <span class="built_in">int</span>) <span class="keyword">as</span> <span class="keyword">convert</span></span><br><span class="line"><span class="comment">--其他的数据指标保留2位小数</span></span><br><span class="line"> ,<span class="keyword">round</span>(a.convert_cost,<span class="number">2</span>) <span class="keyword">as</span> convert_cost</span><br><span class="line"> <span class="comment">--当日-昨日差值</span></span><br><span class="line"> ,<span class="keyword">round</span>(a.cost-b.cost,<span class="number">2</span>) <span class="keyword">as</span> sub_cost</span><br><span class="line"> ,<span class="keyword">cast</span>(<span class="keyword">round</span>(a.convert,<span class="number">0</span>) <span class="keyword">as</span> <span class="built_in">int</span>)-<span class="keyword">cast</span>(<span class="keyword">round</span>(b.convert,<span class="number">0</span>) <span class="keyword">as</span> <span class="built_in">int</span>) <span class="keyword">as</span> sub_convert</span><br><span class="line"> ,<span class="keyword">round</span>(a.convert_cost-b.convert_cost,<span class="number">2</span>) <span class="keyword">as</span> sub_convert_cost</span><br><span class="line"> <span class="comment">--转化日环比</span></span><br><span class="line"> <span class="comment">--环比计算公式=（当前的数量/昨天的数量-1）×100%</span></span><br><span class="line"> <span class="comment">--日环比为百分数，需要处理</span></span><br><span class="line"> ,<span class="keyword">case</span> <span class="keyword">when</span> b.convert=<span class="number">0</span> <span class="keyword">then</span> <span class="string">'0.0%'</span> <span class="keyword">else</span>   <span class="keyword">concat</span>(<span class="keyword">cast</span> (<span class="keyword">cast</span>((a.convert/b.convert<span class="number">-1</span>)*<span class="number">100</span> <span class="keyword">as</span> <span class="built_in">decimal</span>(<span class="number">18</span>,<span class="number">2</span>)) <span class="keyword">as</span> <span class="keyword">string</span>),<span class="string">'%'</span>)  <span class="keyword">end</span> <span class="keyword">as</span> convert_rhb</span><br><span class="line"> <span class="comment">--转化成本日环比</span></span><br><span class="line"> ,<span class="keyword">case</span> <span class="keyword">when</span> b.convert_cost=<span class="number">0</span> <span class="keyword">then</span> <span class="string">'0.0%'</span> <span class="keyword">else</span>  <span class="keyword">concat</span>(<span class="keyword">cast</span>(<span class="keyword">cast</span>((a.convert_cost/b.convert_cost<span class="number">-1</span>)*<span class="number">100</span> <span class="keyword">as</span> <span class="built_in">decimal</span>(<span class="number">18</span>,<span class="number">2</span>)) <span class="keyword">as</span> <span class="keyword">string</span>),<span class="string">'%'</span>) <span class="keyword">end</span> <span class="keyword">as</span> convert_cost_rhb</span><br><span class="line"> <span class="keyword">from</span> xxx_table      </span><br><span class="line"> ;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>补跑历史的数据问题</p>
+<p>load_toutiao_data_hourly只需要跑一次就能把历史的全量数据给拉取下来</p>
+<p>dump的时候也是只需要dump一次，然后再dm层表，把所有的数据都insert进行就可以。这样就是24个小时分区都是有历史24小时的消耗明细数据。然后da层表利用stat_datetime进行过滤到小时分区的数据就可以。</p>
+<p>dump的job，从192.168.1.1:1700服务器上拉取txt数据文件，是每一个txt文件都会去建立连接，然后MR当初底层设置默认是200多个连接。直接dump的job设置为并行跑，一次性选择跑多个历史会refused connection，原因是192.168.1.1:1700服务器限制连接数不够了。</p>
+</li>
+</ul>
+<h4 id="3、接口方面"><a href="#3、接口方面" class="headerlink" title="3、接口方面"></a>3、接口方面</h4><ul>
+<li><p>首先是ToutiaoAPI.getAdReport接口的更改</p>
+<p>需要改group by传参，按照时间，id，广告位分组，获取每个小时的明细数据。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="string">"hourly"</span>.equals(flag)) &#123;</span><br><span class="line">            request.put(<span class="string">"group_by"</span>, <span class="string">"[\"STAT_GROUP_BY_FIELD_ID\",\"STAT_GROUP_BY_FIELD_STAT_TIME\",\"STAT_GROUP_BY_INVENTORY\"]"</span>);</span><br><span class="line">            request.put(<span class="string">"time_granularity"</span>, <span class="string">"STAT_TIME_GRANULARITY_HOURLY"</span>);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拉取数据的接口更改</p>
+<p>由于每小时跑的接口，需要大量调用toutiaoAPI，串行运行会导致job拉取时间过长，一个小时跑出结果可能不行，影响后续逻辑计算的job，后改为多线程并行调度，初步使用newFixedThreadPool(30)，30个core线程数来调用，进行代码优化。但是跑的时候，后来查看log日志，出现调用头条API接口too frequently太频繁。提工单和头条技术人员请教后，每秒并发最大量为20个。后调整线程池核心线程为10个，防止再次出现错误。</p>
+</li>
+<li><p>并发拉取的时候，发现数据出现重复问题，以及数据没能保证所有线程池所有线程分配的任务都进行完毕再退出，直接调用executor.shutdown()，后来进行重新研究并本地测试线程池使用，在业务逻辑中加入。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">saveAdStats</span><span class="params">(String date, String flag)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (ToutiaoAccount toutiaoAccount : accounts) &#123;</span><br><span class="line">       ...</span><br><span class="line">        executor.submit(() -&gt; &#123;</span><br><span class="line">           <span class="comment">//业务逻辑</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    executor.shutdown();</span><br><span class="line">    <span class="comment">//如果没有终止，让线程等待100ms</span></span><br><span class="line">    <span class="keyword">while</span>(!executor.isTerminated()) &#123;</span><br><span class="line">        Thread.sleep(<span class="number">100</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为了保证数据准确无误，则da层表存的数据是’$bash{date +%Y-%m-%d -d ‘${todayDateTime} 1 hour ago’}’的数据。需要单独处理23的数据，来作为第二天00点来单独进行拉取。也就是job当前的运行时间1 hour ago，实际存的00点到当前时间1 hour ago的数据集。接口需要处理这种特殊情况</p>
+<ul>
+<li>首先是load_toutiao_data_hourly的job的入口传参时间</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$bash&#123;date +%Y-%m-%d-%H -d <span class="string">'$&#123;todayDateTime&#125;'</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>需要单独处理的saveAdStat2File接口的业务逻辑代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">         * getAdReport接口只支持日期为yyyy-MM-dd格式，需要处理</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">"hourly"</span>.equals(flag)) &#123;</span><br><span class="line">            String hour = date.substring(<span class="number">11</span>, <span class="number">13</span>);</span><br><span class="line">            date = date.substring(<span class="number">0</span>, <span class="number">10</span>);</span><br><span class="line">            <span class="comment">//时间为00点的时候，去拉前一天的数据作为23点的数据</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="string">"00"</span>.equals(hour)) &#123;</span><br><span class="line">                <span class="comment">//传入job参数的日期，防止补历史出错</span></span><br><span class="line">                date = Util.dateReduce(date,-<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>saveAdState2File接口的bug修改</p>
+<p>拉取头条广告的时候，只拉取的第一页的900条数据，可能会出现潜在性的bug，后改掉拉取totalPage的所有广告计划</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (List&lt;Long&gt; arrayList : lists) &#123;</span><br><span class="line">    			<span class="comment">//首先获取第一页的数据，来获取接口返回的totalpage。来把所有的广告计划数据都进行拉取下来</span></span><br><span class="line">            JSONObject report = touTiaoAPI.getAdReport(advertiserId, date, date, <span class="number">1</span>, pageSize, arrayList, <span class="keyword">true</span>, flag);</span><br><span class="line">            JSONArray jsonArray = <span class="keyword">new</span> JSONArray();</span><br><span class="line">            <span class="keyword">if</span> (report == <span class="keyword">null</span> || report.isEmpty()) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">int</span> code = Integer.parseInt(Optional.ofNullable(report.getString(<span class="string">"code"</span>)).orElse(<span class="string">"40001"</span>));</span><br><span class="line">    		<span class="comment">//根据头条接口返回的状态码进行判断，如果大于0的都为异常情况</span></span><br><span class="line">            <span class="keyword">if</span> (code &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                log.error(<span class="string">"拉取头条广告计划明细数据异常：&#123;&#125;"</span>, report);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//把拉取的第一页广告计划处理，然后存到array里</span></span><br><span class="line">                JSONArray objects = Optional.ofNullable(report.getJSONObject(<span class="string">"data"</span>).getJSONArray(<span class="string">"list"</span>)).orElse(<span class="keyword">new</span> JSONArray());</span><br><span class="line">                jsonArray.addAll(objects);</span><br><span class="line">                <span class="comment">//获取广告计划总页码</span></span><br><span class="line">                Integer totalPage = Optional.of(report.getJSONObject(<span class="string">"data"</span>).getJSONObject(<span class="string">"page_info"</span>).getIntValue(<span class="string">"total_page"</span>)).orElse(<span class="number">1</span>);				<span class="comment">//如果有大于1页的数据，则需要拉取所有的</span></span><br><span class="line">                <span class="keyword">if</span> (totalPage &gt; <span class="number">1</span>) &#123;</span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= totalPage; i++) &#123;</span><br><span class="line">                        report = touTiaoAPI.getAdReport(advertiserId, date, date, i, pageSize, arrayList, <span class="keyword">true</span>, flag);</span><br><span class="line">                        JSONArray data = Optional.ofNullable(report.getJSONObject(<span class="string">"data"</span>).getJSONArray(<span class="string">"list"</span>)).orElse(<span class="keyword">new</span> JSONArray());</span><br><span class="line">                        jsonArray.addAll(data);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>广告计划加量的接口逻辑</p>
+<p>自己理解和导师给的suggestion出现了偏差，在代码里计算判断加量的逻辑，犯了形而上学的错误，后更改为在Hive里新增一个newBudget，判断逻辑进行汇总计算。然后dump到MySQL数据库，进行查询后比较来进行是否加量。</p>
+</li>
+</ul>
+<h4 id="4、页面方面"><a href="#4、页面方面" class="headerlink" title="4、页面方面"></a>4、页面方面</h4><p>重新学习Thymeleaf，以及分页相关问题。</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="2019/12/11/%E5%BC%80%E5%8F%91%E6%80%BB%E7%BB%93%E4%B8%8E%E9%97%AE%E9%A2%98%E5%A4%8D%E7%9B%98/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-一、大数据离线部分总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -696,6 +949,8 @@
 <h4 id="2、Insert-ignore的使用"><a href="#2、Insert-ignore的使用" class="headerlink" title="2、Insert ignore的使用"></a>2、Insert ignore的使用</h4><p>表要求有：primary key，或者有unique索引</p>
 <p>Insert ignore会忽略已存在的数据</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert ignore into t_student(name,age,class) values(&quot;test&quot;,19,&quot;计算机&quot;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、MySQL的表数据的导入导出"><a href="#3、MySQL的表数据的导入导出" class="headerlink" title="3、MySQL的表数据的导入导出"></a>3、MySQL的表数据的导入导出</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#先把测试环境的数据导出到sql文件</span><br><span class="line">mysqldump -h192.168.1.1 -uadmin -padmin demo user_account &gt; /opt/demo/dmp/user_account.sql</span><br><span class="line">#然后导入到生产环境</span><br><span class="line">mysql -h192.161.1.215 -uadmin -padmin demo &lt; /opt/dmp/user_account.sql</span><br></pre></td></tr></table></figure>
 
 
     
@@ -1533,259 +1788,6 @@
 
 
   
-    <article id="post-分布式理论" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" target="_blank">分布式常识总结</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" class="archive-article-date">
-        <time datetime="2018-06-14T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-14</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、基础知识"><a href="#一、基础知识" class="headerlink" title="一、基础知识"></a>一、基础知识</h1><h2 id="1、分布式基础理论"><a href="#1、分布式基础理论" class="headerlink" title="1、分布式基础理论"></a>1、分布式基础理论</h2><h3 id="1、什么是分布式系统？"><a href="#1、什么是分布式系统？" class="headerlink" title="1、什么是分布式系统？"></a>1、什么是分布式系统？</h3><p>《分布式系统原理与范型》定义：</p>
-<p>分布式系统是若干独立计算机的<strong>集合</strong>，这些计算机对于用户来说就像<strong>单个相关系统</strong>。</p>
-<p>分布式系统(distributed system)是建立在<strong>网络</strong>之上的软件系统</p>
-<p>eg：比如我们在使用京东商城进行购物的时候，我们登陆京东商城完成整个购物。对于我们的用户使用来说，我们体会到的是一个完整的京东商城系统。实际上京东商城后面有成千上万台独立的计算机为我们提供服务。这些所有计算机合起来它构成了一个完整的京东商城系统。京东商城它是一个分布式系统。</p>
-<h3 id="2、为什么要有分布式系统？"><a href="#2、为什么要有分布式系统？" class="headerlink" title="2、为什么要有分布式系统？"></a>2、为什么要有分布式系统？</h3><p>随着互联网的发展，网站应用的规模不断扩大，常规的垂直应用架构已经无法应对，分布式服务架构以及流动计算架构势在必行，亟需<strong>一个治理系统</strong>确保架构有条不紊的演进。</p>
-<p>eg：比如我们的应用是淘宝级别的，可能没有任何一台服务器能抵挡得住像双11那么大的用户量，每秒要处理几十万的数据。有几个亿的实时数据处理。面对这种情况怎么办呢？我们既然有一个超大型系统，把这个大型系统划分成一个个的小功能模块，把这些功能模块分布在各个计算机上，那这么多的计算机就合起来组成一个完整的系统为我们提供服务。这就是我们分布式的架构思想。毕竟三个臭皮匠，顶个诸葛亮，这么多的计算机合起来就能抵御住非常大的流量。在这种情况下，我们把大型系统，分成一个个小模块(小服务)。而这些小模块(小服务)之间也有着千丝万缕的关系。比如A可能要用到B。而B呢可能要用到C，C可能要用到D，D回过头又得用到B等等。这么复杂的关系我们亟需要一个治理系统来维护我们这个复杂的关系，保证我们系统有条不紊的进行。而我们的Dubbo就能维护和治理这些复杂的关系。那么有了dubbo，我们就能轻而易举的使用分布式的思想来架构我们一个应用。</p>
-<h3 id="3、应用架构的发展演变"><a href="#3、应用架构的发展演变" class="headerlink" title="3、应用架构的发展演变"></a>3、应用架构的发展演变</h3><p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/%E5%8F%91%E5%B1%95%E6%BC%94%E5%8F%98.png" alt></p>
-<ul>
-<li><p><strong>单一应用架构</strong></p>
-<p>当网站流量很小时，只需要一个应用，将所有功能都部署在一起，以减少部署节点和成本。此时，用于简化增删改查工作量的数据访问框架(ORM)是关键。</p>
-<p>比如：超市的收银系统，公司的一些管理系统，一些小型的网站应用等等。比如我们有一个小型的购物网站，它只能少量的人来提供服务，流量很小。比如网站里面有非常多的功能：用户，商品，订单。由于我们网站访问量还是很小的，我们没必要把它做成一个大型的分布式应用。所以说，我们可以将所有的功能都放在一个应用里面。然后将整个应用打包部署放在服务器里。开发简单，部署也简单。某一天网站的访问量大，服务器受不了了。我们可以再来一个服务器，同样都来跑这个应用。两个服务器一起来分担流量压力。</p>
-<p>但是单一应用会带来一些缺点：1、扩展不容易，比如某个功能模块修改了，我们要把整个应用重新打包部署到服务器上。服务器如果有多台，我们就扩展不容易。2、我们协同开发也不容易，大家都去改这一个应用，可能都会改乱，不利于我们应用的维护。</p>
-</li>
-<li><p>垂直应用架构</p>
-<p>当我们的应用规模不断扩大。比如我们以前的应用只要10Mb</p>
-<p>我们应用不断扩大到了500Mb，还是单体应用放在一个服务器里面。单台服务器跑这么大的应用，压力也是很大，光靠增加每一个服务器，已经不能带来性能上的极大提升了。那么接下来就要重新考虑一下我们应用的架构方式。我们就来到第二阶段，叫垂直的应用架构(Vertical Application)。</p>
-<p>我们可以将那么大的单体应用，垂直拆分成几个互不相干的小应用。这些小应用独立部署在每一个服务器上。哪一个小应用的功能增加了，我们只改这些小应用，包括这些小应用流量很大了，我们把它多放在几台服务器上。垂直拆分的好处：</p>
-<p>1、我们分工合作很容易，每一个人负责开发和维护不同的应用。这样就互不干扰。</p>
-<p>2、性能扩展也是很容易的，比如我们的用户应用访问量增大了。我们就把它多复制上几份放到几台服务器上。我们三五台服务器上一起来跑。我们扩展是很容易的。不像是之前的单体应用，一扩展就带上整个应用。我们只是扩展小应用，想要扩展哪一部分就扩展这一个应用就行了，其他的应用先不用动。但是呢？即使是这样的架构也是有一些缺点的：因为每一个小的应用都是完整的，包含界面，业务逻辑，数据库等等。但是呢？我们市场上对界面的要求会经常发生变化，美工天天会改这个页面，一个页面一改，我们整个应用都要重新部署，现在没法做到：1、界面和业务逻辑的实现分离。2、我们应用后来也会增多。垂直应用从用户模块，商品模块，订单模块，增多到支付模块，物流模块等等，这种情况下，我们不能理想情况下，让应用跟应用直接会互相独立。我们的订单可能会用到用户，因为我们创建订单的时候，可能会访问到用户，包括订单还要用到商品的信息。而物流，支付可能会用到订单的一些内容。我们会发现，应用与应用之间可能会进行交互。</p>
-<p>3、应用不可能完全的独立。大量的应用之间需要交互。</p>
-<p>接下来我们怎么办呢？可以采取分布式的应用架构(Distributed Service)，当我们的垂直应用越来越多，应用之间还会进行交互，我们可以把它们的核心业务单独的抽取出来。</p>
-</li>
-<li><p>分布式服务架构(Distributed Service)</p>
-<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84.jpg" alt></p>
-<p>用户的应用抽取出用户的界面web和用户的业务逻辑。订单的界面web和订单的业务逻辑等等。这样做的好处是业务逻辑不变的情况下，我们只想改界面，那界面的服务器重新启动一下，我们的核心的业务逻辑还在其他服务器上。比如我们的用户界面，它要展示我们的用户信息，还要展示商品信息。只需要调对应的服务业务就行了。包括业务之间也可能需要互调。但是现在还要一个最大的问题：我们的用户的Web可能在A服务器上，用户的业务可能放在B服务器上，订单放在C服务器上等。如果我们的A服务器要去调B服务器的功能，我们以前写在一个应用里面，A调B，那直接A调B的方法就行了，我们叫进程内通讯，因为他们都在一个服务器上，都是同一个tomcat,同一个进程内通讯。但是现在我们发现A跟B已经分割两地了，它在两处了，这两处我们代码之间如何互调呢?我们把这个调用称为RPC(远程过程调用)。也就是说分布式应用架构下，最核心的难点是RPC远程过程调用，以及如何拆分业务，提升业务的复用程度，那么此时一个好的<strong>分布式服务框架(RPC)</strong>，帮我们来解决远程过程调用的这个框架，就能极大的简化我们的开发。那么这样的架构就会高枕无忧了吗？随着我们的业务不断增加，我们分拆的服务也越来越多，有成千上万的服务器，再来跑各种不同的服务，而出现的一些资源浪费情况，就尤为严重，比如我们的用户业务，这块的访问量比较小，有100台服务器在跑，而我们的商品业务，它的访问量比较大却只有10台服务器在跑，那我们呢就应该有一个能基于我们访问压力的调度中心，能帮我们实时的来监控这些数据，来动态的调度，提高我们这个系统的资源利用率，你跑的服务器有点多了，我们来减上几台，让更多的服务器取来跑业务量更大的这些业务，这个时候呢，就可以采用流动计算架构(Elastic Computing)。</p>
-</li>
-<li><p>流动计算架构(Elastic Computing)</p>
-<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/%E8%B0%83%E5%BA%A6%E4%B8%AD%E5%BF%83.jpg" alt>    服务调度中心，负责维护服务之间的复杂关系以及实时管理我们整个服务集群。比如说A服务器访问量大了，我给A冬天的多来几台服务器。第一台有100个请求，第二台2个请求，第三台有10000个请求，那么下次进来的时候，就找比较闲的服务器来处理请求，比如第二台，提高我们整个服务集群的利用率。</p>
-</li>
-</ul>
-<h3 id="4、RPC"><a href="#4、RPC" class="headerlink" title="4、RPC"></a>4、RPC</h3><ul>
-<li><p><strong>什么叫RPC</strong></p>
-<p>RPC(Remote Procedure Call)：是指远程过程调用，是一种进程间通信方式，它是一种技术思想，而不是规范。它允许程序调用另一个地址空间(通常是共享网络的另一台机器)的过程或者函数。而不是程序员显式的编码这个远程调用的细节。即程序员无论是调用本地的还是远程的函数，本质上编写的调用代码基本相同。</p>
-</li>
-<li><p><strong>RPC基本原理</strong></p>
-<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/RPC%E5%8E%9F%E7%90%86.jpg" alt></p>
-<p>过程：A想要调用B服务器的应用，A先跟B服务器在网络建立一个Socket连接，然后将我们要调用B的一些信息，B的哪个方法，包括方法名，用的参数是什么，把这些信息传递给B服务器，然后B服务器上Server stub这个小助手收到这些信息，一看A想要调用我里面的信息，它就将这个方法一调用，包括调这个方法用到的参数，也通过网络传递了过来，那我们调方法的时候也将参数传过去，我们B服务器里面的Server stub将方法调用完，调用完以后，方法会有一个返回值，然后这个返回值也通过网络传输给A，A收到返回值以后，A的client stub小助手把这个返回值给我们Client functions。</p>
-<p>整个RPC的核心：A，B两个服务器之间建立网络之间，它们之间进行通信，这样的话A想要用B里面的服务，就像A给B发送一个请求一样，B的方法将响应的结果，交给A。</p>
-</li>
-</ul>
-<h3 id="5、dubbo"><a href="#5、dubbo" class="headerlink" title="5、dubbo"></a>5、dubbo</h3><p>​    dubbo是一款高性能、轻量级的开源Java RPC框架，提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，以及服务自动注册和发现。</p>
-<p><img src="/2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/dubbo%E7%9A%84%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
-<p>​    register：服务注册中心。</p>
-<p>​    provider：服务提供者</p>
-<p>​    consumer：服务消费者，消费我们提供的服务。</p>
-<p>​    container：指的是dubbo框架容器。</p>
-<p>​    monitor：是监控中心，服务提供者provider，服务消费者的一些监控信息都会发到监控中心。</p>
-<h3 id="6、zookeeper注册中心"><a href="#6、zookeeper注册中心" class="headerlink" title="6、zookeeper注册中心"></a>6、zookeeper注册中心</h3><h3 id="7、dubbo的Monitor监控中心"><a href="#7、dubbo的Monitor监控中心" class="headerlink" title="7、dubbo的Monitor监控中心"></a>7、dubbo的Monitor监控中心</h3><p><a href="https://github.com/apache/incubator-dubbo-admin">GitHub地址</a></p>
-<p>然后用mvn clean package打成一个jar包，然后在控制台用java -jar的命令启动就行。</p>
-<p>注意：启动监控中心，之前必须启动zookeeper，否则，导致监控中心失败。</p>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="2018/06/14/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-JVM相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="2018/06/13/JVM%E7%9B%B8%E5%85%B3/" target="_blank">JVM相关</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="2018/06/13/JVM%E7%9B%B8%E5%85%B3/" class="archive-article-date">
-        <time datetime="2018-06-13T02:46:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-13</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h2 id="一、JVM相关的笔记"><a href="#一、JVM相关的笔记" class="headerlink" title="一、JVM相关的笔记"></a>一、JVM相关的笔记</h2><p>简历上可以写，熟悉JVM架构与GC垃圾回收机制，以及相应的参数调优，有过在Linux上进行系统优化的经验。</p>
-<p>面试官让你谈谈jvm优化，我是根据淘宝周志明那哥们写的那本深入理解java虚拟机书，99*%的优化的是堆Heap，1%的优化的是方法区Method Area，虚拟机栈Stack是私有的，不可能优化，最多是栈溢出StackOverFlow，调整一下栈的大小<font color="red">-xss参数</font><br><font color="red">静态变量+常量+类信息+运行时常量池</font>存在方法区。方法区一般放的是<font color="red">类的构造函数和接口的代码。所有定义的方法的信息都保存在方法区。</font><br>引用存在虚拟机栈里。实例变量存在堆里面。</p>
-<h3 id="1、栈"><a href="#1、栈" class="headerlink" title="1、栈"></a>1、栈</h3><p>​    栈，也叫栈内存，主管java程序的运行，是在线程创建是创建，它的生命周期跟随线程的生命周期，线程结束栈内存也就释放，对于栈来说，不存在垃圾回收，生命周期和线程一致，是线程私有的。<br>   基本类型变量和对象的引用变量，都是在函数的栈内存里分配。</p>
-<h4 id="1-1、栈存储的是什么？"><a href="#1-1、栈存储的是什么？" class="headerlink" title="1.1、栈存储的是什么？"></a>1.1、栈存储的是什么？</h4><p>   栈是先进后出，比如你main方法调用test1，test1调用test2，等等，所以main在最底下，可以看作一个栈帧对应一个方法。<br>    栈帧里面存3种类型变量：</p>
-<ul>
-<li>本地变量（local variables），输入参数和输出参数，以及方法内的变量。</li>
-<li>栈操作（ operand stack）出栈和入栈的操作</li>
-<li>栈帧数据（Frame data）：包括类文件，方法等，言下之意，每一个方法就是一个栈帧。</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span></span>&#123;</span><br><span class="line">    <span class="comment">//test的栈帧在上面，直接如此调用，把栈给撑爆了，所以栈溢出</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">          test();</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="comment">//main方法的栈帧在最底部</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] Args)</span></span>&#123;</span><br><span class="line">         test();</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line"> <span class="comment">//死循环，或者循环递归调用,出现的异常java.lang.StackOverflowError</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2、堆Heap"><a href="#2、堆Heap" class="headerlink" title="2、堆Heap"></a>2、堆Heap</h3><p>​    一个JVM实例只存在一个堆内存，堆内存大小是可以调节的。类加载器读取了类文件后，需要把类、方法、成员变量存在堆内存中，保存所有引用类型的真实信息，以方便执行器执行，堆内存分为三个部分：</p>
-<h4 id="2-1、Young-generation-space-新生代-young"><a href="#2-1、Young-generation-space-新生代-young" class="headerlink" title="2.1、Young generation space 新生代 young"></a>2.1、Young generation space 新生代 young</h4><p>新生代分为3个区：</p>
-<ul>
-<li>Eden space伊甸区</li>
-<li>Survivor 0 space 幸存0区</li>
-<li>Survivor 1 space 幸存1区</li>
-</ul>
-<h4 id="2-2、Tenure-generation-space-养老区-Old"><a href="#2-2、Tenure-generation-space-养老区-Old" class="headerlink" title="2.2、Tenure generation space 养老区 Old"></a>2.2、Tenure generation space 养老区 Old</h4><h4 id="2-3、Permanent-space-永久区-Perm"><a href="#2-3、Permanent-space-永久区-Perm" class="headerlink" title="2.3、Permanent space 永久区 Perm"></a>2.3、Permanent space 永久区 Perm</h4><h2 id="二、3种JVM"><a href="#二、3种JVM" class="headerlink" title="二、3种JVM"></a>二、3种JVM</h2><ul>
-<li>SUN公司的HotSpot虚拟机</li>
-<li>BEA公司的JRockit虚拟机</li>
-<li>IBM公司的J9VM虚拟机</li>
-</ul>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="2018/06/13/JVM%E7%9B%B8%E5%85%B3/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="page/2/">2</a><a class="page-number" href="page/3/">3</a><a class="page-number" href="page/4/">4</a><a class="extend next" rel="next" href="page/2/">Next &amp;raquo;</a>
@@ -1953,6 +1955,10 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
               </li>
             
             <div class="clearfix"></div>
