@@ -10,15 +10,15 @@
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="一、背景​        由于关系型数据库用来解决数据存储和维护有关的问题。大数据出现后，大多公司实现处理大数据，并开始选择Hadoop的解决方案。Hadoop使用分布式文件系统HDFS，用来存储大数据，使用MapReduce来处理数据。 ​        Hadoop只能执行批量处理，而且是按顺序访问数据。也就是表明必须搜索整个数据集。如果想要处理结果在另一个庞大的数据，也是按照顺序处理一个巨大">
+  <meta name="description" content="一、引言1、分布式结构化存储系统​        大数据中，除了直接以文件形式保存的数据外(HDFS)，还有大量结构化和半结构化的数据，这种数据一般需要支持更新操作，随机插入，删除。使得HDFS无法满足要求。为了方便用户存取海量结构化和半结构化数据，HBase诞生了。是一个分布式列存储系统，有很好的扩展性、容错性、易用的API。HBase是构建在HDFS之上的，支持随机插入和删除的列簇式存储系统，">
 <meta name="keywords" content="大数据">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HBase">
 <meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2017&#x2F;10&#x2F;03&#x2F;HBase&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
-<meta property="og:description" content="一、背景​        由于关系型数据库用来解决数据存储和维护有关的问题。大数据出现后，大多公司实现处理大数据，并开始选择Hadoop的解决方案。Hadoop使用分布式文件系统HDFS，用来存储大数据，使用MapReduce来处理数据。 ​        Hadoop只能执行批量处理，而且是按顺序访问数据。也就是表明必须搜索整个数据集。如果想要处理结果在另一个庞大的数据，也是按照顺序处理一个巨大">
+<meta property="og:description" content="一、引言1、分布式结构化存储系统​        大数据中，除了直接以文件形式保存的数据外(HDFS)，还有大量结构化和半结构化的数据，这种数据一般需要支持更新操作，随机插入，删除。使得HDFS无法满足要求。为了方便用户存取海量结构化和半结构化数据，HBase诞生了。是一个分布式列存储系统，有很好的扩展性、容错性、易用的API。HBase是构建在HDFS之上的，支持随机插入和删除的列簇式存储系统，">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-07T10:30:54.944Z">
+<meta property="og:updated_time" content="2020-04-09T10:44:56.881Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
@@ -84,6 +84,8 @@
 				<li><a href="../../../../tags/Linux" target="_blank">Linux</a></li>
 	        
 				<li><a href="../../../../tags/Java" target="_blank">Java</a></li>
+	        
+				<li><a href="../../../../tags/%E6%9D%82%E6%96%87" target="_blank">杂文</a></li>
 	        
 				<li><a href="https://anonymousdq.github.io/categories/TensorFlow/" target="_blank">TensorFlow</a></li>
 	        
@@ -156,6 +158,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -172,17 +176,19 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 16.666666666666668%"><a href="../../../../index.html">主页</a></li>
+					<li style="width: 14.285714285714286%"><a href="../../../../index.html">主页</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="https://www.cnblogs.com/drq1/">技术笔记</a></li>
+					<li style="width: 14.285714285714286%"><a href="https://www.cnblogs.com/drq1/">技术笔记</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="../../../../tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li>
+					<li style="width: 14.285714285714286%"><a href="../../../../tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="../../../../tags/Linux">Linux</a></li>
+					<li style="width: 14.285714285714286%"><a href="../../../../tags/Linux">Linux</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="../../../../tags/Java">Java</a></li>
+					<li style="width: 14.285714285714286%"><a href="../../../../tags/Java">Java</a></li>
 		        
-					<li style="width: 16.666666666666668%"><a href="https://anonymousdq.github.io/categories/TensorFlow/">TensorFlow</a></li>
+					<li style="width: 14.285714285714286%"><a href="../../../../tags/%E6%9D%82%E6%96%87">杂文</a></li>
+		        
+					<li style="width: 14.285714285714286%"><a href="https://anonymousdq.github.io/categories/TensorFlow/">TensorFlow</a></li>
 		        
 				</ul>
 			</nav>
@@ -231,7 +237,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">1.4k字</span>
+      <span class="post-count">1.6k字</span>
     </span>
   </span>
 
@@ -251,7 +257,9 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h1><p>​        由于关系型数据库用来解决数据存储和维护有关的问题。大数据出现后，大多公司实现处理大数据，并开始选择Hadoop的解决方案。Hadoop使用分布式文件系统HDFS，用来存储大数据，使用MapReduce来处理数据。</p>
+    <h1 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h1><h4 id="1、分布式结构化存储系统"><a href="#1、分布式结构化存储系统" class="headerlink" title="1、分布式结构化存储系统"></a>1、分布式结构化存储系统</h4><p>​        大数据中，除了直接以文件形式保存的数据外(HDFS)，还有大量结构化和半结构化的数据，这种数据一般需要支持更新操作，随机插入，删除。使得HDFS无法满足要求。为了方便用户存取海量结构化和半结构化数据，HBase诞生了。是一个分布式列存储系统，有很好的扩展性、容错性、易用的API。HBase是构建在HDFS之上的，支持随机插入和删除的列簇式存储系统，可以理解成一个具有持久化能力的分布式有序映射表。</p>
+<p>​        虽然HBase随机读写性能比较高，但是数据scan扫描速度较慢，难以适用于OLAP场景。后来Cloudera设计出了Kudu，很好的兼顾吞吐率和延迟。</p>
+<h1 id="二、背景"><a href="#二、背景" class="headerlink" title="二、背景"></a>二、背景</h1><p>​        由于关系型数据库用来解决数据存储和维护有关的问题。大数据出现后，大多公司实现处理大数据，并开始选择Hadoop的解决方案。Hadoop使用分布式文件系统HDFS，用来存储大数据，使用MapReduce来处理数据。</p>
 <p>​        Hadoop只能执行批量处理，而且是按顺序访问数据。也就是表明必须搜索整个数据集。如果想要处理结果在另一个庞大的数据，也是按照顺序处理一个巨大的数据集。为此，需要访问数据中的任何点的单元，也就是随机访问，出现新的解决方案。</p>
 <p>​        Hadoop随机存取数据库的应用，HBase，Cassandra，CouchDB，Dynamo，MongoDB都是一些存储大量数据和随机访问访问的非关系型数据库。</p>
 <ul>
@@ -259,7 +267,7 @@
 <li>单机IO读写请求成为海量数据存储，高并发，大规模的瓶颈</li>
 <li>随着数据规模越来越大，大量业务场景开始考虑数据存储横向水平扩展，让存储服务可以增加/删除 ，而大部分关系型数据库更专注在一台机器。</li>
 </ul>
-<h1 id="二、HBase简介"><a href="#二、HBase简介" class="headerlink" title="二、HBase简介"></a>二、HBase简介</h1><p>​        HBase是BigTable的开源版本，使用Java编写的。是Apache Hadoop的数据库，建立在HDFS上，用来提供，高可靠，高性能，列存储，可伸缩，多版本的NoSQL的分布式数据库。可以实现对大型数据的实时、随机的读写访问。</p>
+<h1 id="三、HBase简介"><a href="#三、HBase简介" class="headerlink" title="三、HBase简介"></a>三、HBase简介</h1><p>​        HBase是BigTable的开源版本，使用Java编写的。是Apache Hadoop的数据库，建立在HDFS上，用来提供，高可靠，高性能，列存储，可伸缩，多版本的NoSQL的分布式数据库。可以实现对大型数据的实时、随机的读写访问。</p>
 <ul>
 <li>HBase依赖HDFS做底层的数据存储，BigTable依赖Google GFS做数据存储</li>
 <li>HBase依赖MapReduce进行数据计算，BigTable依赖Google MapReduce做数据计算</li>
@@ -491,11 +499,11 @@
 
 <nav id="article-nav">
   
-    <a href="../../04/HBase%E6%80%BB%E7%BB%93/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="../../../11/01/docker%E4%BD%BF%E7%94%A8/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          HBase
+          Docker的使用
         
       </div>
     </a>
@@ -529,7 +537,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、背景"><span class="toc-number">1.</span> <span class="toc-text">一、背景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、HBase简介"><span class="toc-number">2.</span> <span class="toc-text">二、HBase简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、非关系型和关系型数据库"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、非关系型和关系型数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、HBase重点"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、HBase重点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、HBase的表"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、HBase的表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1、RowKey的含义"><span class="toc-number">2.0.3.1.</span> <span class="toc-text">3.1、RowKey的含义</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-1、rowkey"><span class="toc-number">2.0.3.1.1.</span> <span class="toc-text">3.1.1、rowkey</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-2、HBase支持3种查询方式："><span class="toc-number">2.0.3.1.2.</span> <span class="toc-text">3.1.2、HBase支持3种查询方式：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-3、rowkey分析"><span class="toc-number">2.0.3.1.3.</span> <span class="toc-text">3.1.3、rowkey分析</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、Column的含义"><span class="toc-number">2.0.3.2.</span> <span class="toc-text">3.2、Column的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3、ColumnFamily的含义"><span class="toc-number">2.0.3.3.</span> <span class="toc-text">3.3、ColumnFamily的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4、TimeStamp的含义"><span class="toc-number">2.0.3.4.</span> <span class="toc-text">3.4、TimeStamp的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5、单元格Cell"><span class="toc-number">2.0.3.5.</span> <span class="toc-text">3.5、单元格Cell</span></a></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、引言"><span class="toc-number">1.</span> <span class="toc-text">一、引言</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、分布式结构化存储系统"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">1、分布式结构化存储系统</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、背景"><span class="toc-number">2.</span> <span class="toc-text">二、背景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、HBase简介"><span class="toc-number">3.</span> <span class="toc-text">三、HBase简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、非关系型和关系型数据库"><span class="toc-number">3.0.1.</span> <span class="toc-text">1、非关系型和关系型数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、HBase重点"><span class="toc-number">3.0.2.</span> <span class="toc-text">2、HBase重点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、HBase的表"><span class="toc-number">3.0.3.</span> <span class="toc-text">3、HBase的表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1、RowKey的含义"><span class="toc-number">3.0.3.1.</span> <span class="toc-text">3.1、RowKey的含义</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-1、rowkey"><span class="toc-number">3.0.3.1.1.</span> <span class="toc-text">3.1.1、rowkey</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-2、HBase支持3种查询方式："><span class="toc-number">3.0.3.1.2.</span> <span class="toc-text">3.1.2、HBase支持3种查询方式：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-3、rowkey分析"><span class="toc-number">3.0.3.1.3.</span> <span class="toc-text">3.1.3、rowkey分析</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、Column的含义"><span class="toc-number">3.0.3.2.</span> <span class="toc-text">3.2、Column的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3、ColumnFamily的含义"><span class="toc-number">3.0.3.3.</span> <span class="toc-text">3.3、ColumnFamily的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4、TimeStamp的含义"><span class="toc-number">3.0.3.4.</span> <span class="toc-text">3.4、TimeStamp的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5、单元格Cell"><span class="toc-number">3.0.3.5.</span> <span class="toc-text">3.5、单元格Cell</span></a></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -559,12 +567,12 @@
   var giteement = new Giteement({
     id: '20171003112439',
     owner: 'victorblog',
-    repo: 'victorblog',
+    repo: 'victorblog.comment',
     backcall_uri: 'https://victorblog.github.io/',
     oauth_uri: 'https://cors-anywhere.herokuapp.com/https://gitee.com/oauth/token',
     oauth: {
-      client_id: 'e2d6da671450e4ff6cc059016d4d75f2b680b0c1fe1b24e71b1bd74344f8e657',
-      client_secret: 'a7e5b035c17a4b30e6b3f00db2fff2df5a5c209c3db66b6846c6fb19b521c8f0'
+      client_id: '5f82ec3ce4c4d4c4e6d2dcc14836d82dbd285a8b29d00b46e5fdda00be8bca93',
+      client_secret: '4d2dfe2b3cbc4227ba7a369606a33c96f31ae5f36822ee8782baa725dde1bb41'
     },
   })
   giteement.render('giteement-ctn')
@@ -586,7 +594,7 @@
             <div id="toc-article" class="toc-article">
                 <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
                 <strong class="toc-title">文章目录</strong>
-                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、背景"><span class="toc-number">1.</span> <span class="toc-text">一、背景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、HBase简介"><span class="toc-number">2.</span> <span class="toc-text">二、HBase简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、非关系型和关系型数据库"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、非关系型和关系型数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、HBase重点"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、HBase重点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、HBase的表"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、HBase的表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1、RowKey的含义"><span class="toc-number">2.0.3.1.</span> <span class="toc-text">3.1、RowKey的含义</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-1、rowkey"><span class="toc-number">2.0.3.1.1.</span> <span class="toc-text">3.1.1、rowkey</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-2、HBase支持3种查询方式："><span class="toc-number">2.0.3.1.2.</span> <span class="toc-text">3.1.2、HBase支持3种查询方式：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-3、rowkey分析"><span class="toc-number">2.0.3.1.3.</span> <span class="toc-text">3.1.3、rowkey分析</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、Column的含义"><span class="toc-number">2.0.3.2.</span> <span class="toc-text">3.2、Column的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3、ColumnFamily的含义"><span class="toc-number">2.0.3.3.</span> <span class="toc-text">3.3、ColumnFamily的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4、TimeStamp的含义"><span class="toc-number">2.0.3.4.</span> <span class="toc-text">3.4、TimeStamp的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5、单元格Cell"><span class="toc-number">2.0.3.5.</span> <span class="toc-text">3.5、单元格Cell</span></a></li></ol></li></ol></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、引言"><span class="toc-number">1.</span> <span class="toc-text">一、引言</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、分布式结构化存储系统"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">1、分布式结构化存储系统</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、背景"><span class="toc-number">2.</span> <span class="toc-text">二、背景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、HBase简介"><span class="toc-number">3.</span> <span class="toc-text">三、HBase简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、非关系型和关系型数据库"><span class="toc-number">3.0.1.</span> <span class="toc-text">1、非关系型和关系型数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、HBase重点"><span class="toc-number">3.0.2.</span> <span class="toc-text">2、HBase重点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、HBase的表"><span class="toc-number">3.0.3.</span> <span class="toc-text">3、HBase的表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1、RowKey的含义"><span class="toc-number">3.0.3.1.</span> <span class="toc-text">3.1、RowKey的含义</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-1、rowkey"><span class="toc-number">3.0.3.1.1.</span> <span class="toc-text">3.1.1、rowkey</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-2、HBase支持3种查询方式："><span class="toc-number">3.0.3.1.2.</span> <span class="toc-text">3.1.2、HBase支持3种查询方式：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-3、rowkey分析"><span class="toc-number">3.0.3.1.3.</span> <span class="toc-text">3.1.3、rowkey分析</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2、Column的含义"><span class="toc-number">3.0.3.2.</span> <span class="toc-text">3.2、Column的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3、ColumnFamily的含义"><span class="toc-number">3.0.3.3.</span> <span class="toc-text">3.3、ColumnFamily的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4、TimeStamp的含义"><span class="toc-number">3.0.3.4.</span> <span class="toc-text">3.4、TimeStamp的含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5、单元格Cell"><span class="toc-number">3.0.3.5.</span> <span class="toc-text">3.5、单元格Cell</span></a></li></ol></li></ol></li></ol></li></ol>
            </div>
            <script type="text/javascript">
             function showToc(){
@@ -753,11 +761,11 @@
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">大数据</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color4">大数据</a>
               </li>
              
               <li class="article-tag-list-item">
