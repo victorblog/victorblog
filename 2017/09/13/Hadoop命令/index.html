@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://victorblog.github.io">
-  <title>Java编码规范 | VictorDan</title>
+  <title>Hadoop命令 | VictorDan</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="Java编码规范">
-<meta name="keywords" content="Java">
+  <meta name="description" content="Hadoop命令">
+<meta name="keywords" content="大数据">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java编码规范">
-<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2017&#x2F;08&#x2F;04&#x2F;%E4%B8%80%E3%80%81Java%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83&#x2F;index.html">
+<meta property="og:title" content="Hadoop命令">
+<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2017&#x2F;09&#x2F;13&#x2F;Hadoop%E5%91%BD%E4%BB%A4&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
-<meta property="og:description" content="Java编码规范">
+<meta property="og:description" content="Hadoop命令">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-25T02:58:11.644Z">
+<meta property="og:updated_time" content="2020-04-10T05:38:03.341Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
@@ -222,14 +222,14 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-一、Java编码规范" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Hadoop命令" class="article article-type-post " itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
   
   
     <h1 class="article-title" itemprop="name">
-      Java编码规范
+      Hadoop命令
     </h1>
   
 
@@ -242,7 +242,7 @@
         </span>
 
 <a href="" class="archive-article-date">
-        <time datetime="2017-08-04T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-04</time>
+        <time datetime="2017-09-13T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-13</time>
 </a>
 
   
@@ -255,7 +255,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">766字</span>
+      <span class="post-count">320字</span>
     </span>
   </span>
 
@@ -264,7 +264,7 @@
     <span class="post-meta-item-icon">
       <i class="icon-book icon"></i>
       <span class="post-meta-item-text"> 阅读时长≈</span>
-      <span class="post-count">2分</span>
+      <span class="post-count">1分</span>
     </span>
   </span>
 </div>
@@ -275,74 +275,14 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h2 id="一、Java编码规范"><a href="#一、Java编码规范" class="headerlink" title="一、Java编码规范"></a>一、Java编码规范</h2><h3 id="1、命名风格"><a href="#1、命名风格" class="headerlink" title="1、命名风格"></a>1、命名风格</h3><ol>
-<li><p>代码中的命名不能以_，$开始和结束</p>
-</li>
-<li><p>代码中的命名严禁使用拼音与英文混合，不允许使用中文的方式</p>
-</li>
-<li><p>常量命名全部大写，单词之间下划线隔开。</p>
-</li>
-<li><p>POJO类中布尔类型，都不要加is，否则框架解析出现序列化错误。</p>
-</li>
-<li><p>对于Service和DAO类，基于SOA理念，暴露出服务一定是接口。</p>
-<p>内部的实现类用Impl。比如CacheServiceImpl是CacheService接口。</p>
-</li>
-<li><p>枚举类名要加上Enum后缀，枚举成员名称要全部大写，单词之间有下划线隔开。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> DealStatusEnum&#123;</span><br><span class="line">    SUCCESS,UNKOWN_REASON</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>如果用到了设计模式，建议在类名中体现出具体设计模式</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginProxy</span></span></span><br></pre></td></tr></table></figure>
+    <h3 id="1、文件操作"><a href="#1、文件操作" class="headerlink" title="1、文件操作"></a>1、文件操作</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">在HDFS上创建目录</span></span><br><span class="line">hadoop fs -mkdir &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">查看文件</span></span><br><span class="line">hadoop fs -ls &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">显示文件的大小</span></span><br><span class="line">hadoop fs -du &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">只删除文件或者空目录</span></span><br><span class="line">hadoop fs -rm &lt;hdsf_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">递归删除目录，命令rm的递归版本，会递归删除目录下的各级目录以及文件</span></span><br><span class="line">hadoop fs -rmr &lt;hdfs_path&gt;</span><br></pre></td></tr></table></figure>
 
+<h3 id="2、查看文件内容"><a href="#2、查看文件内容" class="headerlink" title="2、查看文件内容"></a>2、查看文件内容</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">显示文件内容</span></span><br><span class="line">hadoop fs -cat &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">将文件尾部1KB字节的内容输出到stdout</span></span><br><span class="line">hadoop fs -tail [-f] URI</span><br></pre></td></tr></table></figure>
 
-</li>
-</ol>
-<h3 id="2、代码风格"><a href="#2、代码风格" class="headerlink" title="2、代码风格"></a>2、代码风格</h3><ol>
-<li><p>左右小括号和字符之间不能有空格</p>
-</li>
-<li><p>单行字符数限制不超过120个，超出需要换行。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sb.append(<span class="string">"zi"</span>).append(<span class="string">"xin"</span>)</span><br><span class="line">    .append(<span class="string">"victor"</span>)</span><br><span class="line">    .append(<span class="string">"victor"</span>)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>方法体内的执行语句组、变量的定义语句组、不同的业务逻辑之前或者不同的语义之间插入一个空行。</p>
-<p>相同的业务逻辑和语义之间不需要插入一个空行</p>
-</li>
-<li><p>if/for/while/switch/do等括号之间必须加空格</p>
-</li>
-<li><p>方法参数在定义和传入时，多个参数逗号后边必须加空格</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">method(<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="3、文件复制"><a href="#3、文件复制" class="headerlink" title="3、文件复制"></a>3、文件复制</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">将文件源路径移动到目标路径</span></span><br><span class="line">hadoop fs -mv &lt;src1&gt; &lt;src2&gt; &lt;dest&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">将文件从源路径复制到目标路径</span></span><br><span class="line">hadoop fs -cp &lt;src1&gt; &lt;src2&gt; &lt;dest&gt;       </span><br><span class="line"><span class="meta">#</span><span class="bash">将本地文件放置在HDFS上</span></span><br><span class="line">hadoop fs -copyFromLocal &lt;local_path&gt; &lt;remote_path&gt;     </span><br><span class="line"><span class="meta">#</span><span class="bash">将HDFS上的文件复制到本地文件系统中</span></span><br><span class="line">hadoop fs -copyToLocal &lt;remote_path&gt; &lt;local_path&gt;       </span><br><span class="line"><span class="meta">#</span><span class="bash">复制文件到本地文件系统</span></span><br><span class="line">hadoop fs -get &lt;src&gt; &lt;localdst&gt;    </span><br><span class="line"><span class="meta">#</span><span class="bash">从本地文件系统中复制单个或多个源路径到目标文件系统中</span></span><br><span class="line">hadoop fs -put &lt;localsrc&gt;... &lt;dst&gt;</span><br></pre></td></tr></table></figure>
 
-</li>
-</ol>
-<h3 id="3、OOP规范"><a href="#3、OOP规范" class="headerlink" title="3、OOP规范"></a>3、OOP规范</h3><ol>
-<li><p>所有的重写方法，必须加上@Override注解；注：是为了让编译器帮你发现错误</p>
-</li>
-<li><p>相同参数类型，相同业务含义，才可以使用java的可变参数，避免使用Object可变参数。</p>
-</li>
-<li><p>Object的equals方法容易抛出空指针异常，应使用常量或者确定有值得对象来调用equals</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"test"</span>.equals(object);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>所有的POJO类属性必须使用包装数据类型；RPC方法的返回值和参数必须使用包装数据类型</p>
-<p>注意：为了避免在POJO转换过程中失败。</p>
-</li>
-<li><p>定义DO/DTO/VO等POJO类时，不要设定任何属性默认值。</p>
-<p>注意：因为POJO原则转换过程中避免失败。</p>
-</li>
-<li><p>类内方法定义顺序依次是：public方法/protected方法&gt;&gt;private方法&gt;&gt;getter/setter方法</p>
-<p>注意：把最关注的方法放在前面</p>
-</li>
-<li><p>getter/setter方法中，不要增加业务逻辑，增加排查问题的难度</p>
-</li>
-<li><p>慎用Object的clone方法来拷贝对象，深度复制需要自己实现。</p>
-</li>
-<li><p>循环体内，字符串的连接方式，使用StringBuilder的append方法进行扩展</p>
-</li>
-<li><p>拒绝巨型方法，把方法拆解到尽可能符合单一责任原则的粒度，方便维护及复用。</p>
-</li>
-</ol>
-<h3 id="4、集合处理"><a href="#4、集合处理" class="headerlink" title="4、集合处理"></a>4、集合处理</h3><ol>
-<li>只要重写equals，就必须重写hashCode()，Set，Map对象作为键的情况小重写hashCode,equals</li>
-<li>ArrayList的subList结果不可强转成ArrayList，否则会抛出ClassCastException强制类型转换异常。</li>
-<li>使用工具类Arrays.asList()把数组转换为集合时，不能使用其修改集合相关的方法，它的add/remove/clear方法会抛出UnsupportedOperationException异常。</li>
-</ol>
+<h3 id="4、高权限"><a href="#4、高权限" class="headerlink" title="4、高权限"></a>4、高权限</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scp victor@192.168.10.1:/home/victor/py/test.py /usr/opt/script/</span><br><span class="line"><span class="meta">#</span><span class="bash">去前1000行记录到新文件</span></span><br><span class="line">head -1000 basic.dat &gt; test1.dat</span><br></pre></td></tr></table></figure>
+
 
     
 
@@ -389,7 +329,7 @@
         </li>
         <li>
           <strong>本文链接：</strong>
-          <a href="https://victorblog.github.io/2017/08/04/一、Java编码规范/" title="Java编码规范" target="_blank">https://victorblog.github.io/2017/08/04/一、Java编码规范/</a>
+          <a href="https://victorblog.github.io/2017/09/13/Hadoop命令/" title="Hadoop命令" target="_blank">https://victorblog.github.io/2017/09/13/Hadoop命令/</a>
         </li>
         <li>
           <strong>版权声明： </strong>
@@ -408,7 +348,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
         		</li>
       		
 		</ul>
@@ -464,7 +404,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://victorblog.github.io/2017/08/04/%E4%B8%80%E3%80%81Java%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/" alt="微信分享二维码"> -->
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://victorblog.github.io/2017/09/13/Hadoop%E5%91%BD%E4%BB%A4/" alt="微信分享二维码"> -->
     </div>
 </div>
 
@@ -479,18 +419,18 @@
 
 <nav id="article-nav">
   
-    <a href="../../21/%E4%B8%80%E3%80%81Redis%E7%AE%80%E4%BB%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="../../../10/03/HBase/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Redis的使用
+          HBase
         
       </div>
     </a>
   
   
-    <a href="../../../07/25/Spring-Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Spring Bean生命周期</div>
+    <a href="../%E4%B8%80%E3%80%81Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Java并发编程</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -517,7 +457,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、Java编码规范"><span class="toc-number">1.</span> <span class="toc-text">一、Java编码规范</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、命名风格"><span class="toc-number">1.1.</span> <span class="toc-text">1、命名风格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、代码风格"><span class="toc-number">1.2.</span> <span class="toc-text">2、代码风格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、OOP规范"><span class="toc-number">1.3.</span> <span class="toc-text">3、OOP规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、集合处理"><span class="toc-number">1.4.</span> <span class="toc-text">4、集合处理</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、文件操作"><span class="toc-number">1.</span> <span class="toc-text">1、文件操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、查看文件内容"><span class="toc-number">2.</span> <span class="toc-text">2、查看文件内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、文件复制"><span class="toc-number">3.</span> <span class="toc-text">3、文件复制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、高权限"><span class="toc-number">4.</span> <span class="toc-text">4、高权限</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -543,9 +483,9 @@
     <script src="https://giteement.oss-cn-beijing.aliyuncs.com/giteement.browser.js"></script>
   
   <script>
-  <!-- id: "Java编码规范" -->
+  <!-- id: "Hadoop命令" -->
   var giteement = new Giteement({
-    id: '20170804100600',
+    id: '20170913100600',
     owner: 'victorblog',
     repo: 'victorblog.comment',
     backcall_uri: 'https://victorblog.github.io/',
@@ -574,7 +514,7 @@
             <div id="toc-article" class="toc-article">
                 <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
                 <strong class="toc-title">文章目录</strong>
-                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、Java编码规范"><span class="toc-number">1.</span> <span class="toc-text">一、Java编码规范</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、命名风格"><span class="toc-number">1.1.</span> <span class="toc-text">1、命名风格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、代码风格"><span class="toc-number">1.2.</span> <span class="toc-text">2、代码风格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、OOP规范"><span class="toc-number">1.3.</span> <span class="toc-text">3、OOP规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、集合处理"><span class="toc-number">1.4.</span> <span class="toc-text">4、集合处理</span></a></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、文件操作"><span class="toc-number">1.</span> <span class="toc-text">1、文件操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、查看文件内容"><span class="toc-number">2.</span> <span class="toc-text">2、查看文件内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、文件复制"><span class="toc-number">3.</span> <span class="toc-text">3、文件复制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、高权限"><span class="toc-number">4.</span> <span class="toc-text">4、高权限</span></a></li></ol>
            </div>
            <script type="text/javascript">
             function showToc(){
