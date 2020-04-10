@@ -6,20 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://victorblog.github.io">
-  <title>Hive的使用 | VictorDan</title>
+  <title>Hive | VictorDan</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="Hive的使用">
+  <meta name="description" content="Hive">
 <meta name="keywords" content="大数据">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hive的使用">
+<meta property="og:title" content="Hive">
 <meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;01&#x2F;01&#x2F;Hive&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
-<meta property="og:description" content="Hive的使用">
+<meta property="og:description" content="Hive">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-07T10:32:22.440Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;01&#x2F;01&#x2F;Hive&#x2F;Hive.png">
+<meta property="og:updated_time" content="2020-04-10T06:30:14.658Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;01&#x2F;01&#x2F;Hive&#x2F;Hive.png">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
   
@@ -229,7 +231,7 @@
   
   
     <h1 class="article-title" itemprop="name">
-      Hive的使用
+      Hive
     </h1>
   
 
@@ -242,7 +244,7 @@
         </span>
 
 <a href="" class="archive-article-date">
-        <time datetime="2018-01-01T05:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-01</time>
+        <time datetime="2018-01-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-01</time>
 </a>
 
   
@@ -255,7 +257,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">454字</span>
+      <span class="post-count">1k字</span>
     </span>
   </span>
 
@@ -264,7 +266,7 @@
     <span class="post-meta-item-icon">
       <i class="icon-book icon"></i>
       <span class="post-meta-item-text"> 阅读时长≈</span>
-      <span class="post-count">1分</span>
+      <span class="post-count">3分</span>
     </span>
   </span>
 </div>
@@ -275,18 +277,50 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h2 id="Hive"><a href="#Hive" class="headerlink" title="Hive"></a>Hive</h2><ul>
-<li>Hive由Facebook实现并开源</li>
-<li>是基于Hadoop的一个数据仓库工具</li>
-<li>可以将结构化的数据映射为一张数据库表</li>
-<li>提供HQL(Hive SQL)查询功能</li>
-<li>底层数据是存在HDFS上</li>
-<li>Hive的本质是将SQL语句转换为MapReduct任务进行</li>
-<li>使得不熟悉MapReduce的用户很方便的利用HQL的处理和计算HDFS上的结构化的数据，适用于离线的批量数据计算。</li>
+    <h1 id="一、Hive基本概念"><a href="#一、Hive基本概念" class="headerlink" title="一、Hive基本概念"></a>一、Hive基本概念</h1><h3 id="1-1、什么是Hive"><a href="#1-1、什么是Hive" class="headerlink" title="1.1、什么是Hive"></a>1.1、什么是Hive</h3><p>Hive：由Facebook开源用于海量结构化日志的数据统计（Hive是分析框架，它不能存储数据的）</p>
+<p>Hive是基于Hadoop的一个<strong>数据仓库工具</strong>，可以将<strong>结构化的数据文件映射为一张表</strong>，并提供<strong>类SQL</strong>查询功能。</p>
+<p><strong>本质：将HQL转化成MapReduce程序</strong></p>
+<ul>
+<li>数据仓库通过SQL进行统计分析</li>
+<li>将SQL语言中常用的操作（select,where,group等）用MapReduce写成很多模板</li>
+<li>所有的MapReduce模板封装在Hive中</li>
+<li>client客户端，用户根据业务需求编写相应的SQL语句</li>
+<li>然后会去Hive中找对应的MapReduce模板</li>
+<li>通过Hive框架匹配出相应的MapReduce模板</li>
+<li>运行MapReduce程序，生成相应的分析结果</li>
 </ul>
-<h4 id="数据仓库（Data-Warehouse）"><a href="#数据仓库（Data-Warehouse）" class="headerlink" title="数据仓库（Data Warehouse）"></a>数据仓库（Data Warehouse）</h4><p>是一个面向主题的，集成的Intergrated，相对稳定的Non-Volatile，反映历史变化的Time Variant的数据集合。</p>
-<p>Hive依赖于HDFS存储数据，Hive将HQL转换成MapReduce执行，所以说Hive是基于Hadoop的一个数据仓库工具，实质上就是一个基于HDFS的MapReduce计算框架，对存储在HDFS中的数据进行分析和管理 。</p>
-<h4 id="使用Hive"><a href="#使用Hive" class="headerlink" title="使用Hive"></a>使用Hive</h4><ul>
+<p>Hive可以看做是Hadoop的客户端，装一个就够了啊，Hive它有不存储数据，不做计算，它就将HQL转化为MapReduce</p>
+<p>Hive处理的数据存储在HDFS</p>
+<p>Hive分析数据底层的实现是MapReduce</p>
+<p>执行程序运行在Yarn上</p>
+<h3 id="1-2、Hive的优缺点"><a href="#1-2、Hive的优缺点" class="headerlink" title="1.2、Hive的优缺点"></a>1.2、Hive的优缺点</h3><h4 id="1-2-1、优点"><a href="#1-2-1、优点" class="headerlink" title="1.2.1、优点"></a>1.2.1、优点</h4><ul>
+<li><p>操作接口采用类SQL语法，提供快速开发的能力（简单，容易上手）</p>
+</li>
+<li><p>避免了去写MapReduce，减少开发人员得 学习成本</p>
+</li>
+<li><p>HIve的执行延迟比较高，因此HIve常用数据分析，对实时性要求不高的场合</p>
+<p>比如你凌晨一两点，启动一个定时脚本，跑一下数据，实时性不高，不是那种你来一条数据，就立马处理的那种，就是说它可以处理，但是给反馈，交互出结果比较慢，因为它跑MR，而MR整个启动，提交啊，切片啊非常的慢，所以它应用的场景一般是离线</p>
+</li>
+<li><p>Hive优势在于处理大数据，对于处理小数据没有优势，因为Hive的执行延迟比较高，启动太慢</p>
+</li>
+<li><p>Hive支持用户自定义函数，用户可以根据自己的需求来实现自己的函数</p>
+</li>
+</ul>
+<h4 id="1-2-2、缺点"><a href="#1-2-2、缺点" class="headerlink" title="1.2.2、缺点"></a>1.2.2、缺点</h4><h5 id="1、Hive的HQL表达能力有限"><a href="#1、Hive的HQL表达能力有限" class="headerlink" title="1、Hive的HQL表达能力有限"></a>1、Hive的HQL表达能力有限</h5><ul>
+<li>迭代式算法无法表达</li>
+<li>数据挖掘方面不擅长</li>
+</ul>
+<h5 id="2、Hive的效率比较低"><a href="#2、Hive的效率比较低" class="headerlink" title="2、Hive的效率比较低"></a>2、Hive的效率比较低</h5><ul>
+<li>Hive自动生成的MapReduce作业，通常情况下不够智能化</li>
+<li>Hive调优比较困难，粒度比较粗</li>
+</ul>
+<h3 id="1-3、Hive架构原理"><a href="#1-3、Hive架构原理" class="headerlink" title="1.3、Hive架构原理"></a>1.3、Hive架构原理</h3><p><img src="/2018/01/01/Hive/Hive.png" alt></p>
+<p>CLI：命令行接口，以命令行的形式输入SQL语句进行数据操作，有点类似shell</p>
+<p>Meta store：元数据存储，就是存的是表跟数据之间的位置对应关系，有点类似索引，Hive不会存储Meta store，会存在mysql或者Derby中</p>
+<p>Meta store作用：客户端连接Meta store服务，Meta store再去连接Mysql数据库来存取元数据，有了Meta store服务，就可以有多个客户端可以同时连接，而切这些客户端不需要知道MySQL的数据库用户名和密码，只需要连接Meta store服务就行。</p>
+<p>因为Meta store的元数据不断的修改，更新，所以Hive元数据不适合存在HDFS中，一般存在RDBMS中</p>
+<p>HIve没有专门的数据存储格式，也没有为数据建立索引，Hive中所有数据都存储在HDFS中</p>
+<h3 id="1-4、使用Hive"><a href="#1-4、使用Hive" class="headerlink" title="1.4、使用Hive"></a>1.4、使用Hive</h3><ul>
 <li><p>直接使用MapReduce的问题：</p>
 <ul>
 <li>人员学习成本太高</li>
@@ -364,7 +398,7 @@
         </li>
         <li>
           <strong>本文链接：</strong>
-          <a href="https://victorblog.github.io/2018/01/01/Hive/" title="Hive的使用" target="_blank">https://victorblog.github.io/2018/01/01/Hive/</a>
+          <a href="https://victorblog.github.io/2018/01/01/Hive/" title="Hive" target="_blank">https://victorblog.github.io/2018/01/01/Hive/</a>
         </li>
         <li>
           <strong>版权声明： </strong>
@@ -464,8 +498,8 @@
     </a>
   
   
-    <a href="../Hive1/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Hive基本概念</div>
+    <a href="../../../../2017/11/03/git%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">git开发规范</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -492,7 +526,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive"><span class="toc-number">1.</span> <span class="toc-text">Hive</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#数据仓库（Data-Warehouse）"><span class="toc-number">1.0.1.</span> <span class="toc-text">数据仓库（Data Warehouse）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用Hive"><span class="toc-number">1.0.2.</span> <span class="toc-text">使用Hive</span></a></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、Hive基本概念"><span class="toc-number">1.</span> <span class="toc-text">一、Hive基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1、什么是Hive"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.1、什么是Hive</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2、Hive的优缺点"><span class="toc-number">1.0.2.</span> <span class="toc-text">1.2、Hive的优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1、优点"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">1.2.1、优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2、缺点"><span class="toc-number">1.0.2.2.</span> <span class="toc-text">1.2.2、缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、Hive的HQL表达能力有限"><span class="toc-number">1.0.2.2.1.</span> <span class="toc-text">1、Hive的HQL表达能力有限</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、Hive的效率比较低"><span class="toc-number">1.0.2.2.2.</span> <span class="toc-text">2、Hive的效率比较低</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3、Hive架构原理"><span class="toc-number">1.0.3.</span> <span class="toc-text">1.3、Hive架构原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4、使用Hive"><span class="toc-number">1.0.4.</span> <span class="toc-text">1.4、使用Hive</span></a></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -518,9 +552,9 @@
     <script src="https://giteement.oss-cn-beijing.aliyuncs.com/giteement.browser.js"></script>
   
   <script>
-  <!-- id: "Hive的使用" -->
+  <!-- id: "Hive" -->
   var giteement = new Giteement({
-    id: '20180101130600',
+    id: '20180101100600',
     owner: 'victorblog',
     repo: 'victorblog.comment',
     backcall_uri: 'https://victorblog.github.io/',
@@ -549,7 +583,7 @@
             <div id="toc-article" class="toc-article">
                 <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
                 <strong class="toc-title">文章目录</strong>
-                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive"><span class="toc-number">1.</span> <span class="toc-text">Hive</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#数据仓库（Data-Warehouse）"><span class="toc-number">1.0.1.</span> <span class="toc-text">数据仓库（Data Warehouse）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用Hive"><span class="toc-number">1.0.2.</span> <span class="toc-text">使用Hive</span></a></li></ol></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、Hive基本概念"><span class="toc-number">1.</span> <span class="toc-text">一、Hive基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1、什么是Hive"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.1、什么是Hive</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2、Hive的优缺点"><span class="toc-number">1.0.2.</span> <span class="toc-text">1.2、Hive的优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1、优点"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">1.2.1、优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2、缺点"><span class="toc-number">1.0.2.2.</span> <span class="toc-text">1.2.2、缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、Hive的HQL表达能力有限"><span class="toc-number">1.0.2.2.1.</span> <span class="toc-text">1、Hive的HQL表达能力有限</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、Hive的效率比较低"><span class="toc-number">1.0.2.2.2.</span> <span class="toc-text">2、Hive的效率比较低</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3、Hive架构原理"><span class="toc-number">1.0.3.</span> <span class="toc-text">1.3、Hive架构原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4、使用Hive"><span class="toc-number">1.0.4.</span> <span class="toc-text">1.4、使用Hive</span></a></li></ol></li></ol></li></ol>
            </div>
            <script type="text/javascript">
             function showToc(){
