@@ -463,98 +463,6 @@
 
 
   
-    <article id="post-Spark-Streaming" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="2020/01/17/Spark-Streaming/" target="_blank">Spark Streaming</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="2020/01/17/Spark-Streaming/" class="archive-article-date">
-        <time datetime="2020-01-17T05:46:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-17</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h2 id="一、Spark-Streaming"><a href="#一、Spark-Streaming" class="headerlink" title="一、Spark Streaming"></a>一、Spark Streaming</h2><h3 id="1、使用背景"><a href="#1、使用背景" class="headerlink" title="1、使用背景"></a>1、使用背景</h3><p>​        有时候需要实时处理收到的数据，比如实时追踪页面访问统计的应用，训练机器学习模型，自动检测异常等。Spark Streaming是Spark为这些应用而设计的模型。让用户使用一套和批处理非常接近的API来编写流式计算应用，可以大量重用批处理应用的技术和代码。</p>
-<p>​        和Spark基于RDD的类似，Spark Streaming使用离散化流作为抽象表示，叫做DStream。而DStream是随时间推移而收到的数据的序列。DStream内部每个时间区间收到的数据都作为RDD的存在，DStream是由这些RDD所组成的序列，因此是离散化。DStream可以从各种输入源创建，常见的是Flume，Kafka，HDFS。创建出来的DStream支持2种操作，一种是转化操作Transformation，会生成新的DStream。一种是输出操作Action。可以把数据写入外部系统中。DStream提供了许多与RDD所支持的操作，同时还增加了与时间相关的新操作，滑动窗口。</p>
-<p>​        与批处理Job不同的是，Spark Streaming应用需要进行额外配置来保证24小时不间断工作。比如checkpoint机制，也就是把数据存储到可靠文件系统HDFS上的机制，这也是Spark Streaming用来实现不间断工作的主要方式。</p>
-<h3 id="2、实例"><a href="#2、实例" class="headerlink" title="2、实例"></a>2、实例</h3><p>​        Spark Streaming程序最好是使用Maven 或者Sbt编译的独立应用形式运行。Spark Streaming虽然是Spark的一部分。</p>
-<ul>
-<li><p>pom.xml依赖文件</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.spark<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spark-streaming_2.10/artifactId&gt;</span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Java流计算import</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"> </span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="2020/01/17/Spark-Streaming/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
     <article id="post-Ubuntu安装VmWare遇到问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -778,6 +686,109 @@
     
     <p class="article-more-link">
       <a class="article-more-a" href="2019/12/11/%E5%BC%80%E5%8F%91%E6%80%BB%E7%BB%93%E4%B8%8E%E9%97%AE%E9%A2%98%E5%A4%8D%E7%9B%98/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-Spark-Streaming" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="2018/10/05/Spark-Streaming/" target="_blank">Spark Streaming的使用</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="2018/10/05/Spark-Streaming/" class="archive-article-date">
+        <time datetime="2018-10-05T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-05</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="一、Spark-Streaming"><a href="#一、Spark-Streaming" class="headerlink" title="一、Spark Streaming"></a>一、Spark Streaming</h2><h3 id="1、使用背景"><a href="#1、使用背景" class="headerlink" title="1、使用背景"></a>1、使用背景</h3><p>​        有时候需要实时处理收到的数据，比如实时追踪页面访问统计的应用，训练机器学习模型，自动检测异常等。Spark Streaming是Spark为这些应用而设计的模型。让用户使用一套和批处理非常接近的API来编写流式计算应用，可以大量重用批处理应用的技术和代码。</p>
+<p>​        和Spark基于RDD的类似，Spark Streaming使用离散化流作为抽象表示，叫做DStream。而DStream是随时间推移而收到的数据的序列。DStream内部每个时间区间收到的数据都作为RDD的存在，DStream是由这些RDD所组成的序列，因此是离散化。DStream可以从各种输入源创建，常见的是Flume，Kafka，HDFS。创建出来的DStream支持2种操作，一种是转化操作Transformation，会生成新的DStream。一种是输出操作Action。可以把数据写入外部系统中。DStream提供了许多与RDD所支持的操作，同时还增加了与时间相关的新操作，滑动窗口。</p>
+<p>​        与批处理Job不同的是，Spark Streaming应用需要进行额外配置来保证24小时不间断工作。比如checkpoint机制，也就是把数据存储到可靠文件系统HDFS上的机制，这也是Spark Streaming用来实现不间断工作的主要方式。</p>
+<h3 id="2、实例"><a href="#2、实例" class="headerlink" title="2、实例"></a>2、实例</h3><p>​        Spark Streaming程序最好是使用Maven 或者Sbt编译的独立应用形式运行。Spark Streaming虽然是Spark的一部分。</p>
+<ul>
+<li><p>pom.xml依赖文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.spark<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spark-streaming_2.10/artifactId&gt;</span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Java流计算import</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"> </span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="2018/10/05/Spark-Streaming/">展开全文 >></a>
     </p>
     
 
@@ -1271,7 +1282,7 @@
 <h1 id="二十一、Ubuntu-安装redis"><a href="#二十一、Ubuntu-安装redis" class="headerlink" title="二十一、Ubuntu 安装redis"></a>二十一、Ubuntu 安装redis</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">更新系统</span></span><br><span class="line">sudo apt update</span><br><span class="line"><span class="meta">#</span><span class="bash">更新软件列表</span></span><br><span class="line">sudo apt upgrade</span><br><span class="line"><span class="meta">#</span><span class="bash">安装redis</span></span><br><span class="line">sudo apt install redis-server</span><br><span class="line"><span class="meta">#</span><span class="bash">打印redis版本</span></span><br><span class="line">redi-server -v</span><br><span class="line"><span class="meta">#</span><span class="bash">启动redis服务</span></span><br><span class="line">redis-server</span><br><span class="line"><span class="meta">#</span><span class="bash">启动客户端</span></span><br><span class="line">redis-cli</span><br><span class="line"><span class="meta">#</span><span class="bash">然后输入ping，出现PONG说明安装成功</span></span><br></pre></td></tr></table></figure>
 
 <p><img src="/2018/09/03/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/redis%E5%AE%89%E8%A3%85.png" alt></p>
-<h1 id="二十二、环境变量的配置"><a href="#二十二、环境变量的配置" class="headerlink" title="二十二、环境变量的配置"></a>二十二、环境变量的配置</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">修改环境变量</span></span><br><span class="line">vim ~/.bashrc</span><br><span class="line"><span class="meta">#</span><span class="bash">Java</span></span><br><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_201</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib</span><br><span class="line">export PATH=.:$&#123;JAVA_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">Maven</span></span><br><span class="line">export M2_HOME=/usr/maven/apache-maven-3.3.3</span><br><span class="line">export PATH=$&#123;M2_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">tomcat</span></span><br><span class="line">export TOMCAT_HOME=/usr/tomcat/apache-tomcat-8.5.42</span><br><span class="line"><span class="meta">#</span><span class="bash">终端颜色配置</span></span><br><span class="line">PS1='$&#123;debian_chroot:+($debian_chroot)&#125;\[\033[01;35;01m\]\u\[\033[00;00;01m\]@\[\033[01;35;01m\]\h\[\033[00;31;01m\]:\[\033[00;00;01m\]\w \[\033[01;32;01m\]\$ \[\033[01;01;01m\]'</span><br><span class="line"><span class="meta">#</span><span class="bash">Scala</span></span><br><span class="line">export SCALA_HOME=/usr/scala/scala-2.13.1</span><br><span class="line">export PATH=$&#123;SCALA_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">Spark</span></span><br><span class="line">export SPARK_HOME=/usr/spark/spark-2.4.4-bin-hadoop2.7</span><br><span class="line">export PATH=$&#123;SPARK_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">保存.bashrc</span></span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+<h1 id="二十二、环境变量的配置"><a href="#二十二、环境变量的配置" class="headerlink" title="二十二、环境变量的配置"></a>二十二、环境变量的配置</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">修改环境变量</span></span><br><span class="line">vim ~/.bashrc</span><br><span class="line"><span class="meta">#</span><span class="bash">Java</span></span><br><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_201</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib</span><br><span class="line">export PATH=.:$&#123;JAVA_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">Maven</span></span><br><span class="line">export M2_HOME=/usr/maven/apache-maven-3.3.3</span><br><span class="line">export PATH=$&#123;M2_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">tomcat</span></span><br><span class="line">export TOMCAT_HOME=/usr/tomcat/apache-tomcat-8.5.42</span><br><span class="line"><span class="meta">#</span><span class="bash">终端颜色配置</span></span><br><span class="line">PS1='$&#123;debian_chroot:+($debian_chroot)&#125;\[\033[01;35;01m\]\u\[\033[00;00;01m\]@\[\033[01;35;01m\]\h\[\033[00;31;01m\]:\[\033[00;00;01m\]\w \[\033[01;32;01m\]\$ \[\033[01;01;01m\]'</span><br><span class="line"><span class="meta">#</span><span class="bash">Scala</span></span><br><span class="line">export SCALA_HOME=/usr/scala/scala-2.13.1</span><br><span class="line">export PATH=$&#123;SCALA_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">Spark</span></span><br><span class="line">export SPARK_HOME=/usr/spark/spark-2.4.4-bin-hadoop2.7</span><br><span class="line">export PATH=$&#123;SPARK_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">启动spark(首先确保配置好jdk，scala，以及spark才能使用spark-shell命令启动)</span></span><br><span class="line">spark-shell</span><br><span class="line"><span class="meta">#</span><span class="bash">保存.bashrc</span></span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
 
 
     
@@ -2004,11 +2015,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">计算机基础</a>
+                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
+                <a href="javascript:void(0)" class="js-tag color1">计算机基础</a>
               </li>
             
             <div class="clearfix"></div>
