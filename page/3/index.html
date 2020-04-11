@@ -234,6 +234,278 @@
 
 
   
+    <article id="post-Netty" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2018/02/15/Netty/" target="_blank">Netty</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2018/02/15/Netty/" class="archive-article-date">
+        <time datetime="2018-02-15T02:10:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-15</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、Netty"><a href="#一、Netty" class="headerlink" title="一、Netty"></a>一、Netty</h1><h3 id="1、Netty原理"><a href="#1、Netty原理" class="headerlink" title="1、Netty原理"></a>1、Netty原理</h3><p>​        Netty是一个高性能、异步事件驱动的NIO框架，基于Java NIO提供的API实现。它提供了TCP、UDP和文件传输的支持，作为一个异步NIO框架，Netty的所有IO操作都是异步非阻塞的，通过Future-Listener机制，用户可以方便的主动获取或者通过通知机制获得IO操作结果。</p>
+<h3 id="2、Netty高性能"><a href="#2、Netty高性能" class="headerlink" title="2、Netty高性能"></a>2、Netty高性能</h3><p>​        在IO编程中，当需要同时处理多个客户端接入请求时，可以用多线程或者IO多路服用技术进行处理。IO多路服用技术通过把多个IO的阻塞复用到同一个select的阻塞上，从而使得系统在单线程的情况下可以同时处理多个客户端请求。与传统的多线程、多进程模型相比，IO多路复用的最大优势是系统开销小，系统不需要创建新的额外进程或者线程，也不需要维护这些进程和线程的运行，降低了系统的维护工作量，节省了系统资源。</p>
+<p>​        与Socket类和ServerSocket类相对应，NIO也提供了SocketChannel和ServerSocketChannel两种不同的套接字通道实现。</p>
+<h4 id="2-1、多路复用通讯方式"><a href="#2-1、多路复用通讯方式" class="headerlink" title="2.1、多路复用通讯方式"></a>2.1、多路复用通讯方式</h4><p>​        Netty架构按照Reactor模式设计和实现。</p>
+<h5 id="1、服务端通信"><a href="#1、服务端通信" class="headerlink" title="1、服务端通信"></a>1、服务端通信</h5><ul>
+<li>NIO Server打开ServerSocketChannel</li>
+<li>绑定监听地址InetSocketAddress</li>
+<li>Reactor Thread创建Selector，启动线程</li>
+<li>NIO Server将ServerSocketChannel注册到Selector，监听SelectionKey.OP_ACCEPT</li>
+<li>Selector轮询就绪的Key</li>
+<li>handleAccept()处理新的客户端介入</li>
+<li>IOHandler设置新建客户端连接的Socket</li>
+<li>向Selector注册监听读操作SelectionKey.OP_READ</li>
+<li>handleRead()异步读请求消息到ByteBuffer</li>
+<li>IOHandler开始decode请求</li>
+<li>然后异步写ByteBuffer到SocketChannel</li>
+</ul>
+<h5 id="2、客户端通信"><a href="#2、客户端通信" class="headerlink" title="2、客户端通信"></a>2、客户端通信</h5><ul>
+<li>NIO  Client打开SocketChannel</li>
+<li>设置SocketChannel为非阻塞模式，同时设置TCP参数</li>
+<li>异步连接服务端Server</li>
+<li>判断连接结果，如果连接成功，则向多路复用器注册读事件OP_READ，如果连接失败，则向Reactor线程的多路复用器注册OP_CONNECT事件</li>
+<li>然后Reactor Thread创建Selector，启动线程</li>
+<li>Selector轮询就绪的Key</li>
+<li>handlerConnect()连接IOHandler</li>
+<li>判断连接是否完成，如果完成则执行向多路复用器注册读事件OP_READ</li>
+<li>handlerRead()异步读请求消息到ByteBuffer</li>
+<li>然后在decode请求消息</li>
+<li>异步写ByteBuffer到SocketChannel</li>
+</ul>
+<p>Netty的IO线程NioEventLoop由于聚合了多路复用器Selector，可以同时并发处理成百上千个客户端Channel，由于读写操作都是非阻塞的，这就可以充分提升IO线程的运行效率。避免由于频繁IO阻塞导致的线程挂起。</p>
+<h4 id="2-2、异步通讯NIO"><a href="#2-2、异步通讯NIO" class="headerlink" title="2.2、异步通讯NIO"></a>2.2、异步通讯NIO</h4><p>​        由于Netty采用异步</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2018/02/15/Netty/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-一、大数据BigData学习路线" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2018/02/05/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" target="_blank">大数据</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2018/02/05/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" class="archive-article-date">
+        <time datetime="2018-02-05T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-05</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、大数据BigData"><a href="#一、大数据BigData" class="headerlink" title="一、大数据BigData"></a>一、大数据BigData</h1><h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><p>​    大数据本质也是数据，但是有了新的特征，包括数据来源广阔，数据格式多样化(结构化数据，非结构化数据，Excel文件，文本文件等)</p>
+<p>数据量大(最少也是TB级别的，甚至可能是PB级别)，数据增长速度快。</p>
+<h3 id="2、需要考虑的问题"><a href="#2、需要考虑的问题" class="headerlink" title="2、需要考虑的问题"></a>2、需要考虑的问题</h3><ul>
+<li><p>数据来源广，数据如何采集汇总？</p>
+<p>对应出现了Sqoop，Cammel，Datax等工具。</p>
+</li>
+<li><p>数据采集之后，如何存储？</p>
+<p>对应出现了GFS，HDFS，TFS等分布式文件存储系统</p>
+</li>
+<li><p>由于数据增长速度块，数据存储就必须水平扩展，于是出现集群</p>
+</li>
+<li><p>数据存储之后，该如何通过运算快速转化为统一的格式，该如何快速运算出自己想要的结果？</p>
+<ul>
+<li><p>对应的MapReduce，来解决这样的问题；但是写MapReduce需要写大量Java代码，所以出现了Hive，Pig等将SQL转化为MapReduce的解析引擎。</p>
+</li>
+<li><p>但是普通的MapReduce处理数据只能一批一批的执行处理Job跑脚本，时间延迟太长，是离线计算，跑的都是前一天的数据。为了实现实时处理，每输入一条数据就能得到结果，于是出现了Storm/JStorm这样的低延时的流式计算框架。</p>
+</li>
+<li><p>但是如果同时需要批处理和流处理，按照上面的，就需要搭建2个集群，一个Hadoop集群(包括HDFS+MapReduce+Yarn)和Storm集群。不便于管理，所以出现了Spark这样的一站式的计算框架，既可以进行批处理，也可以进行流处理(实质上是微批处理)。如今又进一步发展为Flink(快速流式处理计算框架)。</p>
+</li>
+</ul>
+</li>
+<li><p>业务处理的通用架构是什么样的？</p>
+<ul>
+<li>Lambda架构</li>
+<li>Kappa机构出现</li>
+</ul>
+</li>
+<li><p>为了提高工作效率，加快运行速度，又出现了一些辅助工具</p>
+<ul>
+<li>Ozzie，Azkaban：定时任务调度的工具</li>
+<li>Hue，Zepplin：图形化任务执行管理，结果查看工具。类似公司的云窗系统</li>
+<li>Scala语言：编写Spark程序的最佳语言，当然也可以使用Python或者Java</li>
+<li>Allluxio，Kylin：通过对存储的数据进行预处理，就快了运算速度的工具，能够快速的查询得到结果。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3、大数据的必备技能"><a href="#3、大数据的必备技能" class="headerlink" title="3、大数据的必备技能"></a>3、大数据的必备技能</h3><ul>
+<li>日志收集：Flume，Fluentd，ELK</li>
+<li>流式计算：Storm/JStorm，Spark Streaming，Flink Streaming</li>
+<li>编程语言：Java，Python，Scala</li>
+<li>机器学习库：Mahout，MLib</li>
+<li>消息队列：Kafka，RabbitMQ</li>
+<li>数据分析/数据仓库：Hive，SparkSQL，FlinkSQL，Pig，Kylin</li>
+<li>Hadoop家族：Zookeeper，HBase，Hue，Sqoop，Oozie</li>
+<li>资源调度：Yarn，Mesos。</li>
+<li>分布式数据存储：HDFS</li>
+<li>大数据通用处理平台：Hadoop，Spark，Flink</li>
+</ul>
+<h3 id="4、必须掌握的技能"><a href="#4、必须掌握的技能" class="headerlink" title="4、必须掌握的技能"></a>4、必须掌握的技能</h3><ul>
+<li>Java高级开发：JVM，并发</li>
+<li>Linux基本操作</li>
+<li>Hadoop（HDFS+MapReduce+Yarn）</li>
+<li>HBase(JavaAPI操作+Phoenix)</li>
+<li>Hive（Hql基本操作和原理理解）</li>
+<li>Kafka</li>
+<li>Storm</li>
+<li>Python</li>
+<li>Spark（Core+SparkSQL+Spark Streaming）</li>
+<li>辅助小工具(Sqoop/Flume/jOzzie/Hue等)</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2018/02/05/%E4%B8%80%E3%80%81%E5%A4%A7%E6%95%B0%E6%8D%AEBigData%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-Hive" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -1476,328 +1748,6 @@
 
 
   
-    <article id="post-一、Java编码规范" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2017/08/04/%E4%B8%80%E3%80%81Java%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/" target="_blank">Java编码规范</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2017/08/04/%E4%B8%80%E3%80%81Java%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/" class="archive-article-date">
-        <time datetime="2017-08-04T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-04</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h2 id="一、Java编码规范"><a href="#一、Java编码规范" class="headerlink" title="一、Java编码规范"></a>一、Java编码规范</h2><h3 id="1、命名风格"><a href="#1、命名风格" class="headerlink" title="1、命名风格"></a>1、命名风格</h3><ol>
-<li><p>代码中的命名不能以_，$开始和结束</p>
-</li>
-<li><p>代码中的命名严禁使用拼音与英文混合，不允许使用中文的方式</p>
-</li>
-<li><p>常量命名全部大写，单词之间下划线隔开。</p>
-</li>
-<li><p>POJO类中布尔类型，都不要加is，否则框架解析出现序列化错误。</p>
-</li>
-<li><p>对于Service和DAO类，基于SOA理念，暴露出服务一定是接口。</p>
-<p>内部的实现类用Impl。比如CacheServiceImpl是CacheService接口。</p>
-</li>
-<li><p>枚举类名要加上Enum后缀，枚举成员名称要全部大写，单词之间有下划线隔开。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> DealStatusEnum&#123;</span><br><span class="line">    SUCCESS,UNKOWN_REASON</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>如果用到了设计模式，建议在类名中体现出具体设计模式</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginProxy</span></span></span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ol>
-<h3 id="2、代码风格"><a href="#2、代码风格" class="headerlink" title="2、代码风格"></a>2、代码风格</h3><ol>
-<li><p>左右小括号和字符之间不能有空格</p>
-</li>
-<li><p>单行字符数限制不超过120个，超出需要换行。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sb.append(<span class="string">"zi"</span>).append(<span class="string">"xin"</span>)</span><br><span class="line">    .append(<span class="string">"victor"</span>)</span><br><span class="line">    .append(<span class="string">"victor"</span>)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>方法体内的执行语句组、变量的定义语句组、不同的业务逻辑之前或者不同的语义之间插入一个空行。</p>
-<p>相同的业务逻辑和语义之间不需要插入一个空行</p>
-</li>
-<li><p>if/for/while/switch/do等括号之间必须加空格</p>
-</li>
-<li><p>方法参数在定义和传入时，多个参数逗号后边必须加空格</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">method(<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>);</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<h3 id="3、OOP规范"><a href="#3、OOP规范" class="headerlink" title="3、OOP规范"></a>3、OOP规范</h3><ol>
-<li><p>所有的重写方法，必须加上@Override注解；注：是为了让编译器帮你发现错误</p>
-</li>
-<li><p>相同参数类型，相同业务含义，才可以使用java的可变参数，避免使用Object可变参数。</p>
-</li>
-<li><p>Object的equals方法容易抛出空指针异常，应使用常量或者确定有值得对象来调用equals</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"test"</span>.equals(object);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>所有的POJO类属性必须使用包装数据类型；RPC方法的返回值和参数必须使用包装数据类型</p>
-<p>注意：为了避免在POJO转换过程中失败。</p>
-</li>
-<li><p>定义DO/DTO/VO等POJO类时，不要设定任何属性默认值。</p>
-<p>注意：因为POJO原则转换过程中避免失败。</p>
-</li>
-<li><p>类内方法定义顺序依次是：public方法/protected方法&gt;&gt;private方法&gt;&gt;getter/setter方法</p>
-<p>注意：把最关注的方法放在前面</p>
-</li>
-<li><p>getter/setter方法中，不要增加业务逻辑，增加排查问题的难度</p>
-</li>
-<li><p>慎用Object的clone方法来拷贝对象，深度复制需要自己实现。</p>
-</li>
-<li><p>循环体内，字符串的连接方式，使用StringBuilder的append方法进行扩展</p>
-</li>
-<li><p>拒绝巨型方法，把方法拆解到尽可能符合单一责任原则的粒度，方便维护及复用。</p>
-</li>
-</ol>
-<h3 id="4、集合处理"><a href="#4、集合处理" class="headerlink" title="4、集合处理"></a>4、集合处理</h3><ol>
-<li>只要重写equals，就必须重写hashCode()，Set，Map对象作为键的情况小重写hashCode,equals</li>
-<li>ArrayList的subList结果不可强转成ArrayList，否则会抛出ClassCastException强制类型转换异常。</li>
-<li>使用工具类Arrays.asList()把数组转换为集合时，不能使用其修改集合相关的方法，它的add/remove/clear方法会抛出UnsupportedOperationException异常。</li>
-</ol>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2017/08/04/%E4%B8%80%E3%80%81Java%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-Spring-Bean生命周期" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2017/07/25/Spring-Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" target="_blank">Spring Bean生命周期</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2017/07/25/Spring-Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="archive-article-date">
-        <time datetime="2017-07-25T07:28:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-25</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、Spring-Bean生命周期"><a href="#一、Spring-Bean生命周期" class="headerlink" title="一、Spring Bean生命周期"></a>一、Spring Bean生命周期</h1><h3 id="1、实例化"><a href="#1、实例化" class="headerlink" title="1、实例化"></a>1、实例化</h3><ul>
-<li>实例化一个Bean，也就是我们常说的new</li>
-</ul>
-<h3 id="2、IOC依赖注入"><a href="#2、IOC依赖注入" class="headerlink" title="2、IOC依赖注入"></a>2、IOC依赖注入</h3><ul>
-<li>按照ApplicationContext上下文对实例化的Bean进行配置，也就是IOC注入</li>
-</ul>
-<h3 id="3、setBeanName实现"><a href="#3、setBeanName实现" class="headerlink" title="3、setBeanName实现"></a>3、setBeanName实现</h3><ul>
-<li>如果这个Bean已经实现了BeanNameAware接口，会调用它实现的setBeanName(String id)方法，传递的就是<font color="red">Spring配置文件中的Bean的id值</font></li>
-</ul>
-<h3 id="4、BeanFactoryAware实现"><a href="#4、BeanFactoryAware实现" class="headerlink" title="4、BeanFactoryAware实现"></a>4、BeanFactoryAware实现</h3><ul>
-<li>如果这个Bean已经实现了BeanFactoryAware接口，会调用它实现的setBeanFactory(BeanFactory)传递的是Spring工厂自身。可以用这个方式来获取其他Bean只需要在Spring配置文件中配置一个普通的Bean就可以。</li>
-</ul>
-<h3 id="5、ApplicationContextAware实现"><a href="#5、ApplicationContextAware实现" class="headerlink" title="5、ApplicationContextAware实现"></a>5、ApplicationContextAware实现</h3><ul>
-<li>如果这个Bean已经实现了ApplicationContextAware接口，会调用setApplicationContext(ApplicationContext)方法，传入Spring上下文。比步骤4更好点，因为ApplicationContext是BeanFactory的子接口，有更多的实现方法。</li>
-</ul>
-<h3 id="6、postProcessBeforeInitialization接口实现-初始化预处理"><a href="#6、postProcessBeforeInitialization接口实现-初始化预处理" class="headerlink" title="6、postProcessBeforeInitialization接口实现-初始化预处理"></a>6、postProcessBeforeInitialization接口实现-初始化预处理</h3><ul>
-<li>如果这个Bean关联了BeanPostProcessor接口，将会调用postProcessBeforeInitialization(Object obj,String s)方法，BeanPostProcessor经常被用来是Bean内容的更改，并且由于这个是在Bean初始化结束时调用的方法，可以被应用在内存或者缓存技术</li>
-</ul>
-<h3 id="7、init-method"><a href="#7、init-method" class="headerlink" title="7、init-method"></a>7、init-method</h3><ul>
-<li>如果Bean在Spring配置文件中配置了init-method属性会自动调用其配置的初始化方法。对应的<font color="red">注解是@PostConstruct</font></li>
-</ul>
-<h3 id="8、postProcessAfterInitialization"><a href="#8、postProcessAfterInitialization" class="headerlink" title="8、postProcessAfterInitialization"></a>8、postProcessAfterInitialization</h3><ul>
-<li>如果这个Bean关联了BeanPostProcessor接口，将会调用postProcessAfterInitialization(Object obj,String s)方法。以上工作完成以后，就可以应用这个Bean了，那这个Bean是一个Singleton单例的，所以一般情况下我们调用同一个id的Bean会是在内容地址相同的实例，当然可以在Spring配置文件中Bean的作用范围为ProtoType，GlobalSession等非Singleton。</li>
-</ul>
-<h3 id="9、Destroy过期自动清理阶段"><a href="#9、Destroy过期自动清理阶段" class="headerlink" title="9、Destroy过期自动清理阶段"></a>9、Destroy过期自动清理阶段</h3><ul>
-<li>当Bean不在需要的时候，会经过清理阶段，如果Bean实现了DisposableBean这个接口，会调用destroy()方法。</li>
-</ul>
-<h3 id="10、destroy-method自配置清理"><a href="#10、destroy-method自配置清理" class="headerlink" title="10、destroy-method自配置清理"></a>10、destroy-method自配置清理</h3><ul>
-<li>如果这个Bean的Spring配置中配置了destroy-method属性，会自动调用它配置的销毁方法。对应的<font color="red">注解是@PreDestroy</font></li>
-</ul>
-<h3 id="11、总结"><a href="#11、总结" class="headerlink" title="11、总结"></a>11、总结</h3><p><img src="/2017/07/25/Spring-Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/Spring-Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png" alt></p>
-<p>bean的配置文件中，bean标签有2个重要属性</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"person"</span> <span class="attr">class</span>=<span class="string">"com.bean.Person"</span> <span class="attr">init-method</span>=<span class="string">"init"</span> <span class="attr">destroy-method</span>=<span class="string">"destroy"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>init-method</p>
-<p>对应的注解为@PostConstruct</p>
-</li>
-<li><p>destroy-method</p>
-<p>对应的注解为@PreDestroy</p>
-</li>
-</ul>
-<h1 id="二、Spring依赖注入4种方式"><a href="#二、Spring依赖注入4种方式" class="headerlink" title="二、Spring依赖注入4种方式"></a>二、Spring依赖注入4种方式</h1><h3 id="1、构造方法注入"><a href="#1、构造方法注入" class="headerlink" title="1、构造方法注入"></a>1、构造方法注入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PersonServiceImpl</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name=name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"personServiceImpl"</span> <span class="attr">class</span>=<span class="string">"com.service.impl.PersonServiceImpl"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"name"</span>&gt;</span><span class="tag">&lt;/<span class="name">constructor-arg</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2、setter方法注入"><a href="#2、setter方法注入" class="headerlink" title="2、setter方法注入"></a>2、setter方法注入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"person"</span> <span class="attr">class</span>=<span class="string">"com.bean.Person"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"name"</span> <span class="attr">value</span>=<span class="string">"tom"</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3、静态工厂注入"><a href="#3、静态工厂注入" class="headerlink" title="3、静态工厂注入"></a>3、静态工厂注入</h3><p>静态工厂，就是通过静态工厂的方法来获取自己需要的对象，为了让Spring管理所有对象，我们不能直接通过”类.静态方法()”的方式来获取对象，仍然是通过Spring注入的形式获取</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//静态工厂</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceFactory</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> PersonService <span class="title">getStaticServieFactoryImpl</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> StaticFactoryServiceImpl();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonController</span></span>&#123;</span><br><span class="line">    <span class="comment">//注入的对象</span></span><br><span class="line">    <span class="keyword">private</span> PersonService staticFactory;</span><br><span class="line">    <span class="comment">//注入对象的set方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStaticFactoryService</span><span class="params">(ServiceFactory factory)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.staticFactory=factory;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"personController"</span> <span class="attr">class</span>=<span class="string">"com.controller.PersonController"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--使用静态工厂的方法注入对象，对应下面的配置文件--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"staticFactory"</span> <span class="attr">ref</span>=<span class="string">"factory"</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--用来获取对象的方式，从工厂类中获取静态方法,factory-method用来指定调用哪个工厂方法--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"factory"</span> <span class="attr">class</span>=<span class="string">"com.service.ServiceFactory"</span> <span class="attr">factory-method</span>=<span class="string">"getStaticServiceFactoryImpl"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="4、实例工厂"><a href="#4、实例工厂" class="headerlink" title="4、实例工厂"></a>4、实例工厂</h3><p>实例工厂就是获取对象的方法不是静态的，需要先new工厂类。再调用普通实例的方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FactoryService</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> FactoryDao <span class="title">getFactoryDaoImpl</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> FactoryDaoImpl();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonController</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> FactoryDao factoryDao;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFactoryDao</span><span class="params">(FactoryDao dao)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.factoryDao=dao;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">nam</span>=<span class="string">"personController"</span> <span class="attr">class</span>=<span class="string">"com.controller.PersonController"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--使用实例工厂的方法注入对象，对应配置如下--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"factoryDao"</span> <span class="attr">ref</span>=<span class="string">"factoryDao"</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--获取对象的方式从工厂类中获取实例方法--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"daoFactory"</span> <span class="attr">factory-bean</span>=<span class="string">"daoFactory"</span> <span class="attr">factory-method</span>=<span class="string">"getFactoryDaoImpl"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="三、-Order注解使用"><a href="#三、-Order注解使用" class="headerlink" title="三、@Order注解使用"></a>三、@Order注解使用</h1><ul>
-<li><p>使用@Order控制配置类的加载顺序</p>
-</li>
-<li><p>SpringBoot加载Bean的时候，有用到@Order注解</p>
-</li>
-<li><p>通过@Order指定执行顺序，值越小，越先执行。</p>
-</li>
-<li><p>@Order注解常用来定义的AOP先于事务执行。</p>
-</li>
-<li><p>如果@Order不标注数字，默认最低优先级，因为其默认值是int最大值。</p>
-</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Component</span>(<span class="string">"xxxConfig"</span>)</span><br><span class="line"><span class="meta">@Order</span>(Ordered.HIGHEST_PRECEDENCE)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">XXXConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;xxx.key.path&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String xxxKey;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;xxx.config.path&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String xxxConfig;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            File file = ResourceUtils.getFile(xxxKey);</span><br><span class="line">            xxxKey = file.getAbsolutePath();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        .............</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2017/07/25/Spring-Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="../2/">&amp;laquo; Prev</a><a class="page-number" href="../../">1</a><a class="page-number" href="../2/">2</a><span class="page-number current">3</span><a class="page-number" href="../4/">4</a><a class="page-number" href="../5/">5</a><a class="extend next" rel="next" href="../4/">Next &amp;raquo;</a>
@@ -1952,11 +1902,11 @@
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color4">大数据</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">大数据</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1972,11 +1922,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
+                <a href="javascript:void(0)" class="js-tag color1">计算机基础</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">计算机基础</a>
+                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
               </li>
             
             <div class="clearfix"></div>

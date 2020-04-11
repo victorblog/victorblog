@@ -234,7 +234,7 @@
 
 
   
-    <article id="post-AOP的使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-一、Java编码规范" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -242,7 +242,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="../../2017/07/03/AOP%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_blank">Java的常识总结</a>
+	  <a class="article-title" href="../../2017/08/04/%E4%B8%80%E3%80%81Java%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/" target="_blank">Java编码规范</a>
   
     </h1>
   
@@ -250,8 +250,8 @@
 
   
   
-<a href="../../2017/07/03/AOP%E7%9A%84%E4%BD%BF%E7%94%A8/" class="archive-article-date">
-        <time datetime="2017-07-03T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
+<a href="../../2017/08/04/%E4%B8%80%E3%80%81Java%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/" class="archive-article-date">
+        <time datetime="2017-08-04T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-04</time>
 </a>
 
   
@@ -263,16 +263,237 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h2 id="一、实际开发中AOP的使用"><a href="#一、实际开发中AOP的使用" class="headerlink" title="一、实际开发中AOP的使用"></a>一、实际开发中AOP的使用</h2><p>背景，为了打印controller的接口信息，以及传参等到log日志文件，方便后期查找问题。</p>
-<h3 id="1、首先定义一个注解类Log"><a href="#1、首先定义一个注解类Log" class="headerlink" title="1、首先定义一个注解类Log"></a>1、首先定义一个注解类Log</h3><p>首先在项目的结构下，创建一个package叫做annotation包</p>
-<p>然后新建一个注解类@interface,在IDEA中的new-&gt;class中选Annotation项目</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.METHOD)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Log &#123;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    <h2 id="一、Java编码规范"><a href="#一、Java编码规范" class="headerlink" title="一、Java编码规范"></a>一、Java编码规范</h2><h3 id="1、命名风格"><a href="#1、命名风格" class="headerlink" title="1、命名风格"></a>1、命名风格</h3><ol>
+<li><p>代码中的命名不能以_，$开始和结束</p>
+</li>
+<li><p>代码中的命名严禁使用拼音与英文混合，不允许使用中文的方式</p>
+</li>
+<li><p>常量命名全部大写，单词之间下划线隔开。</p>
+</li>
+<li><p>POJO类中布尔类型，都不要加is，否则框架解析出现序列化错误。</p>
+</li>
+<li><p>对于Service和DAO类，基于SOA理念，暴露出服务一定是接口。</p>
+<p>内部的实现类用Impl。比如CacheServiceImpl是CacheService接口。</p>
+</li>
+<li><p>枚举类名要加上Enum后缀，枚举成员名称要全部大写，单词之间有下划线隔开。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> DealStatusEnum&#123;</span><br><span class="line">    SUCCESS,UNKOWN_REASON</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果用到了设计模式，建议在类名中体现出具体设计模式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginProxy</span></span></span><br></pre></td></tr></table></figure>
 
-<h3 id="2、指定-Log注解使用的切面"><a href="#2、指定-Log注解使用的切面" class="headerlink" title="2、指定@Log注解使用的切面"></a>2、指定@Log注解使用的切面</h3><p>在项目的结构下，新建一个package叫做aop</p>
-<p>然后新建一个类LogAspect</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>:日志切面</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: VictorDan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 19-7-30 上午10:07</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span>: 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LogAspect</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> Logger logger = LoggerFactory.getLogger(LogAspect<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * controller层切点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"@annotation(com.anjuke.ai.annotation.Log)"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">controllerAspect</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 前置通知，用于拦截controller层记录用户的操作</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> joinPoint 切点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> ClassNotFoundException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"controllerAspect()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">(JoinPoint joinPoint)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();</span><br><span class="line">        logger.info(<span class="string">"请求IP：&#123;&#125;"</span>,request.getRemoteAddr());</span><br><span class="line">        logger.info(<span class="string">"请求路径：&#123;&#125;"</span>,request.getRequestURL());</span><br><span class="line">        logger.info(<span class="string">"请求方式：&#123;&#125;"</span>,request.getMethod());</span><br><span class="line">        logger.info(<span class="string">"方法描述：&#123;&#125;"</span>,getMethodDescription(joinPoint));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 环绕通知，用于方法执行结束，返回值的打印</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> joinPoint</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Throwable</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Around</span>(<span class="string">"controllerAspect()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">around</span><span class="params">(ProceedingJoinPoint joinPoint)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> startTime=System.currentTimeMillis();</span><br><span class="line">        Object[] args = joinPoint.getArgs();</span><br><span class="line">        Object proceed = joinPoint.proceed(args);</span><br><span class="line">        String result = <span class="string">"null"</span>;</span><br><span class="line">        <span class="keyword">if</span> (proceed != <span class="keyword">null</span>) &#123;</span><br><span class="line">            result = proceed.toString();</span><br><span class="line">            <span class="keyword">if</span> (result.length() &gt; <span class="number">90</span>) &#123;</span><br><span class="line">                result = result.substring(<span class="number">0</span>, <span class="number">90</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">long</span> endTime=System.currentTimeMillis();</span><br><span class="line">        logger.info(<span class="string">"执行时间：&#123;&#125;ms"</span>,endTime-startTime);</span><br><span class="line">        logger.info(<span class="string">"返回值：&#123;&#125;\n\t"</span>, result);</span><br><span class="line">        <span class="keyword">return</span> proceed;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 异常通知，用来拦截controller层的异常日志</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ex</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@AfterThrowing</span>(throwing = <span class="string">"ex"</span>,pointcut = <span class="string">"controllerAspect()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterThrowing</span><span class="params">(Throwable ex)</span></span>&#123;</span><br><span class="line">        logger.error(<span class="string">"发生异常：&#123;&#125;"</span>,ex.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取注解中对方法的描述信息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> point 切点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 方法描述</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> ClassNotFoundException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getMethodDescription</span><span class="params">(JoinPoint point)</span> <span class="keyword">throws</span> ClassNotFoundException </span>&#123;</span><br><span class="line">        String targetName = point.getTarget().getClass().getName();</span><br><span class="line">        String methodName = point.getSignature().getName();</span><br><span class="line">        Object[] args = point.getArgs();</span><br><span class="line">        Class&lt;?&gt; targetClass = Class.forName(targetName);</span><br><span class="line">        Method[] methods = targetClass.getMethods();</span><br><span class="line"></span><br><span class="line">        String description=<span class="string">""</span>;</span><br><span class="line">        <span class="keyword">for</span> (Method method:methods) &#123;</span><br><span class="line">            <span class="keyword">if</span>(method.getName().equals(methodName))&#123;</span><br><span class="line">                Class&lt;?&gt;[] clazz = method.getParameterTypes();</span><br><span class="line">                <span class="keyword">if</span>(clazz.length==args.length)&#123;</span><br><span class="line">                    description=method.getAnnotation(Log<span class="class">.<span class="keyword">class</span>).<span class="title">value</span>()</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> description;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@RequestBody</span>的数据，只能通过流来读取，而controller读取过request的数据，流就会关闭，所以log打印不出。</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> httpServletRequest</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getRequestData</span><span class="params">(HttpServletRequest httpServletRequest)</span></span>&#123;</span><br><span class="line">        HttpServletRequestWrapper httpServletRequestWrapper = <span class="keyword">new</span> HttpServletRequestWrapper(httpServletRequest);</span><br><span class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        BufferedReader reader = <span class="keyword">null</span>;</span><br><span class="line">        InputStreamReader inputStreamReader=<span class="keyword">null</span>;</span><br><span class="line">        ServletInputStream servletInputStream =<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            servletInputStream =  httpServletRequestWrapper.getInputStream();</span><br><span class="line">            inputStreamReader=<span class="keyword">new</span> InputStreamReader (servletInputStream, Charset.forName(<span class="string">"UTF-8"</span>));</span><br><span class="line">            reader = <span class="keyword">new</span> BufferedReader(inputStreamReader);</span><br><span class="line">            String line = <span class="string">""</span>;</span><br><span class="line">            <span class="keyword">while</span> ((line = reader.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                sb.append(line);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            logger.error(<span class="string">"IO异常：&#123;&#125;"</span>,e.getMessage());</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span>(servletInputStream!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    servletInputStream.close();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(inputStreamReader!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    inputStreamReader.close();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(reader!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    reader.close();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                logger.error(<span class="string">"IO异常：&#123;&#125;"</span>,e.getMessage());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sb.toString ();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="3、在Controller中方法的注解使用就行"><a href="#3、在Controller中方法的注解使用就行" class="headerlink" title="3、在Controller中方法的注解使用就行"></a>3、在Controller中方法的注解使用就行</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping</span>(<span class="string">"/key-data"</span>)</span><br><span class="line">    <span class="meta">@Log</span>(value = <span class="string">"关键数据"</span>)</span><br><span class="line">    <span class="keyword">public</span> ResponseEntity&lt;Map&lt;String, Object&gt;&gt; getKeyDataDaily(<span class="meta">@RequestBody</span> KeyDataDailyRequest request) &#123;</span><br><span class="line">        BrokerUserSession brokerUserSession = getBrokerUserSession();</span><br><span class="line">        Long brokerId = brokerUserSession.getUserId();</span><br><span class="line">        request.setBrokerId(brokerId);</span><br><span class="line">        Map&lt;String, Object&gt; data = service.getKeyDataDaily(request);</span><br><span class="line">        <span class="keyword">boolean</span> flag = service.isThirtyDailyPmPropZero(request);</span><br><span class="line">        data.put(<span class="string">"isZero"</span>,flag);</span><br><span class="line">        <span class="keyword">return</span> resultOK(data);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="2、代码风格"><a href="#2、代码风格" class="headerlink" title="2、代码风格"></a>2、代码风格</h3><ol>
+<li><p>左右小括号和字符之间不能有空格</p>
+</li>
+<li><p>单行字符数限制不超过120个，超出需要换行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sb.append(<span class="string">"zi"</span>).append(<span class="string">"xin"</span>)</span><br><span class="line">    .append(<span class="string">"victor"</span>)</span><br><span class="line">    .append(<span class="string">"victor"</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方法体内的执行语句组、变量的定义语句组、不同的业务逻辑之前或者不同的语义之间插入一个空行。</p>
+<p>相同的业务逻辑和语义之间不需要插入一个空行</p>
+</li>
+<li><p>if/for/while/switch/do等括号之间必须加空格</p>
+</li>
+<li><p>方法参数在定义和传入时，多个参数逗号后边必须加空格</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">method(<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="3、OOP规范"><a href="#3、OOP规范" class="headerlink" title="3、OOP规范"></a>3、OOP规范</h3><ol>
+<li><p>所有的重写方法，必须加上@Override注解；注：是为了让编译器帮你发现错误</p>
+</li>
+<li><p>相同参数类型，相同业务含义，才可以使用java的可变参数，避免使用Object可变参数。</p>
+</li>
+<li><p>Object的equals方法容易抛出空指针异常，应使用常量或者确定有值得对象来调用equals</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"test"</span>.equals(object);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>所有的POJO类属性必须使用包装数据类型；RPC方法的返回值和参数必须使用包装数据类型</p>
+<p>注意：为了避免在POJO转换过程中失败。</p>
+</li>
+<li><p>定义DO/DTO/VO等POJO类时，不要设定任何属性默认值。</p>
+<p>注意：因为POJO原则转换过程中避免失败。</p>
+</li>
+<li><p>类内方法定义顺序依次是：public方法/protected方法&gt;&gt;private方法&gt;&gt;getter/setter方法</p>
+<p>注意：把最关注的方法放在前面</p>
+</li>
+<li><p>getter/setter方法中，不要增加业务逻辑，增加排查问题的难度</p>
+</li>
+<li><p>慎用Object的clone方法来拷贝对象，深度复制需要自己实现。</p>
+</li>
+<li><p>循环体内，字符串的连接方式，使用StringBuilder的append方法进行扩展</p>
+</li>
+<li><p>拒绝巨型方法，把方法拆解到尽可能符合单一责任原则的粒度，方便维护及复用。</p>
+</li>
+</ol>
+<h3 id="4、集合处理"><a href="#4、集合处理" class="headerlink" title="4、集合处理"></a>4、集合处理</h3><ol>
+<li>只要重写equals，就必须重写hashCode()，Set，Map对象作为键的情况小重写hashCode,equals</li>
+<li>ArrayList的subList结果不可强转成ArrayList，否则会抛出ClassCastException强制类型转换异常。</li>
+<li>使用工具类Arrays.asList()把数组转换为集合时，不能使用其修改集合相关的方法，它的add/remove/clear方法会抛出UnsupportedOperationException异常。</li>
+</ol>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2017/08/04/%E4%B8%80%E3%80%81Java%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-Spring-Bean生命周期" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2017/07/25/Spring-Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" target="_blank">Spring Bean生命周期</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2017/07/25/Spring-Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="archive-article-date">
+        <time datetime="2017-07-25T07:28:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-25</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、Spring-Bean生命周期"><a href="#一、Spring-Bean生命周期" class="headerlink" title="一、Spring Bean生命周期"></a>一、Spring Bean生命周期</h1><h3 id="1、实例化"><a href="#1、实例化" class="headerlink" title="1、实例化"></a>1、实例化</h3><ul>
+<li>实例化一个Bean，也就是我们常说的new</li>
+</ul>
+<h3 id="2、IOC依赖注入"><a href="#2、IOC依赖注入" class="headerlink" title="2、IOC依赖注入"></a>2、IOC依赖注入</h3><ul>
+<li>按照ApplicationContext上下文对实例化的Bean进行配置，也就是IOC注入</li>
+</ul>
+<h3 id="3、setBeanName实现"><a href="#3、setBeanName实现" class="headerlink" title="3、setBeanName实现"></a>3、setBeanName实现</h3><ul>
+<li>如果这个Bean已经实现了BeanNameAware接口，会调用它实现的setBeanName(String id)方法，传递的就是<font color="red">Spring配置文件中的Bean的id值</font></li>
+</ul>
+<h3 id="4、BeanFactoryAware实现"><a href="#4、BeanFactoryAware实现" class="headerlink" title="4、BeanFactoryAware实现"></a>4、BeanFactoryAware实现</h3><ul>
+<li>如果这个Bean已经实现了BeanFactoryAware接口，会调用它实现的setBeanFactory(BeanFactory)传递的是Spring工厂自身。可以用这个方式来获取其他Bean只需要在Spring配置文件中配置一个普通的Bean就可以。</li>
+</ul>
+<h3 id="5、ApplicationContextAware实现"><a href="#5、ApplicationContextAware实现" class="headerlink" title="5、ApplicationContextAware实现"></a>5、ApplicationContextAware实现</h3><ul>
+<li>如果这个Bean已经实现了ApplicationContextAware接口，会调用setApplicationContext(ApplicationContext)方法，传入Spring上下文。比步骤4更好点，因为ApplicationContext是BeanFactory的子接口，有更多的实现方法。</li>
+</ul>
+<h3 id="6、postProcessBeforeInitialization接口实现-初始化预处理"><a href="#6、postProcessBeforeInitialization接口实现-初始化预处理" class="headerlink" title="6、postProcessBeforeInitialization接口实现-初始化预处理"></a>6、postProcessBeforeInitialization接口实现-初始化预处理</h3><ul>
+<li>如果这个Bean关联了BeanPostProcessor接口，将会调用postProcessBeforeInitialization(Object obj,String s)方法，BeanPostProcessor经常被用来是Bean内容的更改，并且由于这个是在Bean初始化结束时调用的方法，可以被应用在内存或者缓存技术</li>
+</ul>
+<h3 id="7、init-method"><a href="#7、init-method" class="headerlink" title="7、init-method"></a>7、init-method</h3><ul>
+<li>如果Bean在Spring配置文件中配置了init-method属性会自动调用其配置的初始化方法。对应的<font color="red">注解是@PostConstruct</font></li>
+</ul>
+<h3 id="8、postProcessAfterInitialization"><a href="#8、postProcessAfterInitialization" class="headerlink" title="8、postProcessAfterInitialization"></a>8、postProcessAfterInitialization</h3><ul>
+<li>如果这个Bean关联了BeanPostProcessor接口，将会调用postProcessAfterInitialization(Object obj,String s)方法。以上工作完成以后，就可以应用这个Bean了，那这个Bean是一个Singleton单例的，所以一般情况下我们调用同一个id的Bean会是在内容地址相同的实例，当然可以在Spring配置文件中Bean的作用范围为ProtoType，GlobalSession等非Singleton。</li>
+</ul>
+<h3 id="9、Destroy过期自动清理阶段"><a href="#9、Destroy过期自动清理阶段" class="headerlink" title="9、Destroy过期自动清理阶段"></a>9、Destroy过期自动清理阶段</h3><ul>
+<li>当Bean不在需要的时候，会经过清理阶段，如果Bean实现了DisposableBean这个接口，会调用destroy()方法。</li>
+</ul>
+<h3 id="10、destroy-method自配置清理"><a href="#10、destroy-method自配置清理" class="headerlink" title="10、destroy-method自配置清理"></a>10、destroy-method自配置清理</h3><ul>
+<li>如果这个Bean的Spring配置中配置了destroy-method属性，会自动调用它配置的销毁方法。对应的<font color="red">注解是@PreDestroy</font></li>
+</ul>
+<h3 id="11、总结"><a href="#11、总结" class="headerlink" title="11、总结"></a>11、总结</h3><p><img src="/2017/07/25/Spring-Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/Spring-Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png" alt></p>
+<p>bean的配置文件中，bean标签有2个重要属性</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"person"</span> <span class="attr">class</span>=<span class="string">"com.bean.Person"</span> <span class="attr">init-method</span>=<span class="string">"init"</span> <span class="attr">destroy-method</span>=<span class="string">"destroy"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>init-method</p>
+<p>对应的注解为@PostConstruct</p>
+</li>
+<li><p>destroy-method</p>
+<p>对应的注解为@PreDestroy</p>
+</li>
+</ul>
+<h1 id="二、Spring依赖注入4种方式"><a href="#二、Spring依赖注入4种方式" class="headerlink" title="二、Spring依赖注入4种方式"></a>二、Spring依赖注入4种方式</h1><h3 id="1、构造方法注入"><a href="#1、构造方法注入" class="headerlink" title="1、构造方法注入"></a>1、构造方法注入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PersonServiceImpl</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name=name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"personServiceImpl"</span> <span class="attr">class</span>=<span class="string">"com.service.impl.PersonServiceImpl"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"name"</span>&gt;</span><span class="tag">&lt;/<span class="name">constructor-arg</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2、setter方法注入"><a href="#2、setter方法注入" class="headerlink" title="2、setter方法注入"></a>2、setter方法注入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name=name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"person"</span> <span class="attr">class</span>=<span class="string">"com.bean.Person"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"name"</span> <span class="attr">value</span>=<span class="string">"tom"</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3、静态工厂注入"><a href="#3、静态工厂注入" class="headerlink" title="3、静态工厂注入"></a>3、静态工厂注入</h3><p>静态工厂，就是通过静态工厂的方法来获取自己需要的对象，为了让Spring管理所有对象，我们不能直接通过”类.静态方法()”的方式来获取对象，仍然是通过Spring注入的形式获取</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//静态工厂</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceFactory</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> PersonService <span class="title">getStaticServieFactoryImpl</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> StaticFactoryServiceImpl();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonController</span></span>&#123;</span><br><span class="line">    <span class="comment">//注入的对象</span></span><br><span class="line">    <span class="keyword">private</span> PersonService staticFactory;</span><br><span class="line">    <span class="comment">//注入对象的set方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStaticFactoryService</span><span class="params">(ServiceFactory factory)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.staticFactory=factory;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"personController"</span> <span class="attr">class</span>=<span class="string">"com.controller.PersonController"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--使用静态工厂的方法注入对象，对应下面的配置文件--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"staticFactory"</span> <span class="attr">ref</span>=<span class="string">"factory"</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--用来获取对象的方式，从工厂类中获取静态方法,factory-method用来指定调用哪个工厂方法--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"factory"</span> <span class="attr">class</span>=<span class="string">"com.service.ServiceFactory"</span> <span class="attr">factory-method</span>=<span class="string">"getStaticServiceFactoryImpl"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4、实例工厂"><a href="#4、实例工厂" class="headerlink" title="4、实例工厂"></a>4、实例工厂</h3><p>实例工厂就是获取对象的方法不是静态的，需要先new工厂类。再调用普通实例的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FactoryService</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> FactoryDao <span class="title">getFactoryDaoImpl</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> FactoryDaoImpl();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonController</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> FactoryDao factoryDao;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFactoryDao</span><span class="params">(FactoryDao dao)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.factoryDao=dao;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">nam</span>=<span class="string">"personController"</span> <span class="attr">class</span>=<span class="string">"com.controller.PersonController"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--使用实例工厂的方法注入对象，对应配置如下--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"factoryDao"</span> <span class="attr">ref</span>=<span class="string">"factoryDao"</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--获取对象的方式从工厂类中获取实例方法--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"daoFactory"</span> <span class="attr">factory-bean</span>=<span class="string">"daoFactory"</span> <span class="attr">factory-method</span>=<span class="string">"getFactoryDaoImpl"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="三、-Order注解使用"><a href="#三、-Order注解使用" class="headerlink" title="三、@Order注解使用"></a>三、@Order注解使用</h1><ul>
+<li><p>使用@Order控制配置类的加载顺序</p>
+</li>
+<li><p>SpringBoot加载Bean的时候，有用到@Order注解</p>
+</li>
+<li><p>通过@Order指定执行顺序，值越小，越先执行。</p>
+</li>
+<li><p>@Order注解常用来定义的AOP先于事务执行。</p>
+</li>
+<li><p>如果@Order不标注数字，默认最低优先级，因为其默认值是int最大值。</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Component</span>(<span class="string">"xxxConfig"</span>)</span><br><span class="line"><span class="meta">@Order</span>(Ordered.HIGHEST_PRECEDENCE)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">XXXConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;xxx.key.path&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String xxxKey;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;xxx.config.path&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String xxxConfig;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            File file = ResourceUtils.getFile(xxxKey);</span><br><span class="line">            xxxKey = file.getAbsolutePath();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        .............</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
     
@@ -300,7 +521,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="../../2017/07/03/AOP%E7%9A%84%E4%BD%BF%E7%94%A8/">展开全文 >></a>
+      <a class="article-more-a" href="../../2017/07/25/Spring-Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">展开全文 >></a>
     </p>
     
 
@@ -495,6 +716,107 @@
     
     <p class="article-more-link">
       <a class="article-more-a" href="../../2017/07/03/Java%E9%9D%A2%E8%AF%95/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-AOP的使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2017/07/03/AOP%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_blank">Java的常识总结</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2017/07/03/AOP%E7%9A%84%E4%BD%BF%E7%94%A8/" class="archive-article-date">
+        <time datetime="2017-07-03T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="一、实际开发中AOP的使用"><a href="#一、实际开发中AOP的使用" class="headerlink" title="一、实际开发中AOP的使用"></a>一、实际开发中AOP的使用</h2><p>背景，为了打印controller的接口信息，以及传参等到log日志文件，方便后期查找问题。</p>
+<h3 id="1、首先定义一个注解类Log"><a href="#1、首先定义一个注解类Log" class="headerlink" title="1、首先定义一个注解类Log"></a>1、首先定义一个注解类Log</h3><p>首先在项目的结构下，创建一个package叫做annotation包</p>
+<p>然后新建一个注解类@interface,在IDEA中的new-&gt;class中选Annotation项目</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.METHOD)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Log &#123;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、指定-Log注解使用的切面"><a href="#2、指定-Log注解使用的切面" class="headerlink" title="2、指定@Log注解使用的切面"></a>2、指定@Log注解使用的切面</h3><p>在项目的结构下，新建一个package叫做aop</p>
+<p>然后新建一个类LogAspect</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>:日志切面</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: VictorDan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 19-7-30 上午10:07</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span>: 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LogAspect</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> Logger logger = LoggerFactory.getLogger(LogAspect<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * controller层切点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"@annotation(com.anjuke.ai.annotation.Log)"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">controllerAspect</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 前置通知，用于拦截controller层记录用户的操作</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> joinPoint 切点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> ClassNotFoundException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"controllerAspect()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">(JoinPoint joinPoint)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();</span><br><span class="line">        logger.info(<span class="string">"请求IP：&#123;&#125;"</span>,request.getRemoteAddr());</span><br><span class="line">        logger.info(<span class="string">"请求路径：&#123;&#125;"</span>,request.getRequestURL());</span><br><span class="line">        logger.info(<span class="string">"请求方式：&#123;&#125;"</span>,request.getMethod());</span><br><span class="line">        logger.info(<span class="string">"方法描述：&#123;&#125;"</span>,getMethodDescription(joinPoint));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 环绕通知，用于方法执行结束，返回值的打印</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> joinPoint</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Throwable</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Around</span>(<span class="string">"controllerAspect()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">around</span><span class="params">(ProceedingJoinPoint joinPoint)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> startTime=System.currentTimeMillis();</span><br><span class="line">        Object[] args = joinPoint.getArgs();</span><br><span class="line">        Object proceed = joinPoint.proceed(args);</span><br><span class="line">        String result = <span class="string">"null"</span>;</span><br><span class="line">        <span class="keyword">if</span> (proceed != <span class="keyword">null</span>) &#123;</span><br><span class="line">            result = proceed.toString();</span><br><span class="line">            <span class="keyword">if</span> (result.length() &gt; <span class="number">90</span>) &#123;</span><br><span class="line">                result = result.substring(<span class="number">0</span>, <span class="number">90</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">long</span> endTime=System.currentTimeMillis();</span><br><span class="line">        logger.info(<span class="string">"执行时间：&#123;&#125;ms"</span>,endTime-startTime);</span><br><span class="line">        logger.info(<span class="string">"返回值：&#123;&#125;\n\t"</span>, result);</span><br><span class="line">        <span class="keyword">return</span> proceed;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 异常通知，用来拦截controller层的异常日志</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ex</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@AfterThrowing</span>(throwing = <span class="string">"ex"</span>,pointcut = <span class="string">"controllerAspect()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterThrowing</span><span class="params">(Throwable ex)</span></span>&#123;</span><br><span class="line">        logger.error(<span class="string">"发生异常：&#123;&#125;"</span>,ex.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取注解中对方法的描述信息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> point 切点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 方法描述</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> ClassNotFoundException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getMethodDescription</span><span class="params">(JoinPoint point)</span> <span class="keyword">throws</span> ClassNotFoundException </span>&#123;</span><br><span class="line">        String targetName = point.getTarget().getClass().getName();</span><br><span class="line">        String methodName = point.getSignature().getName();</span><br><span class="line">        Object[] args = point.getArgs();</span><br><span class="line">        Class&lt;?&gt; targetClass = Class.forName(targetName);</span><br><span class="line">        Method[] methods = targetClass.getMethods();</span><br><span class="line"></span><br><span class="line">        String description=<span class="string">""</span>;</span><br><span class="line">        <span class="keyword">for</span> (Method method:methods) &#123;</span><br><span class="line">            <span class="keyword">if</span>(method.getName().equals(methodName))&#123;</span><br><span class="line">                Class&lt;?&gt;[] clazz = method.getParameterTypes();</span><br><span class="line">                <span class="keyword">if</span>(clazz.length==args.length)&#123;</span><br><span class="line">                    description=method.getAnnotation(Log<span class="class">.<span class="keyword">class</span>).<span class="title">value</span>()</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> description;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@RequestBody</span>的数据，只能通过流来读取，而controller读取过request的数据，流就会关闭，所以log打印不出。</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> httpServletRequest</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getRequestData</span><span class="params">(HttpServletRequest httpServletRequest)</span></span>&#123;</span><br><span class="line">        HttpServletRequestWrapper httpServletRequestWrapper = <span class="keyword">new</span> HttpServletRequestWrapper(httpServletRequest);</span><br><span class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        BufferedReader reader = <span class="keyword">null</span>;</span><br><span class="line">        InputStreamReader inputStreamReader=<span class="keyword">null</span>;</span><br><span class="line">        ServletInputStream servletInputStream =<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            servletInputStream =  httpServletRequestWrapper.getInputStream();</span><br><span class="line">            inputStreamReader=<span class="keyword">new</span> InputStreamReader (servletInputStream, Charset.forName(<span class="string">"UTF-8"</span>));</span><br><span class="line">            reader = <span class="keyword">new</span> BufferedReader(inputStreamReader);</span><br><span class="line">            String line = <span class="string">""</span>;</span><br><span class="line">            <span class="keyword">while</span> ((line = reader.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                sb.append(line);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            logger.error(<span class="string">"IO异常：&#123;&#125;"</span>,e.getMessage());</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span>(servletInputStream!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    servletInputStream.close();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(inputStreamReader!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    inputStreamReader.close();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(reader!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    reader.close();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                logger.error(<span class="string">"IO异常：&#123;&#125;"</span>,e.getMessage());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sb.toString ();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、在Controller中方法的注解使用就行"><a href="#3、在Controller中方法的注解使用就行" class="headerlink" title="3、在Controller中方法的注解使用就行"></a>3、在Controller中方法的注解使用就行</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping</span>(<span class="string">"/key-data"</span>)</span><br><span class="line">    <span class="meta">@Log</span>(value = <span class="string">"关键数据"</span>)</span><br><span class="line">    <span class="keyword">public</span> ResponseEntity&lt;Map&lt;String, Object&gt;&gt; getKeyDataDaily(<span class="meta">@RequestBody</span> KeyDataDailyRequest request) &#123;</span><br><span class="line">        BrokerUserSession brokerUserSession = getBrokerUserSession();</span><br><span class="line">        Long brokerId = brokerUserSession.getUserId();</span><br><span class="line">        request.setBrokerId(brokerId);</span><br><span class="line">        Map&lt;String, Object&gt; data = service.getKeyDataDaily(request);</span><br><span class="line">        <span class="keyword">boolean</span> flag = service.isThirtyDailyPmPropZero(request);</span><br><span class="line">        data.put(<span class="string">"isZero"</span>,flag);</span><br><span class="line">        <span class="keyword">return</span> resultOK(data);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2017/07/03/AOP%E7%9A%84%E4%BD%BF%E7%94%A8/">展开全文 >></a>
     </p>
     
 
@@ -2665,384 +2987,6 @@
 
 
   
-    <article id="post-消息队列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2017/03/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" target="_blank">消息队列</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2017/03/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" class="archive-article-date">
-        <time datetime="2017-03-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-01</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h2 id="大数据技术之Kafka"><a href="#大数据技术之Kafka" class="headerlink" title="大数据技术之Kafka"></a>大数据技术之Kafka</h2><h3 id="1、Kafka概述"><a href="#1、Kafka概述" class="headerlink" title="1、Kafka概述"></a>1、Kafka概述</h3><h4 id="1-1、消息队列"><a href="#1-1、消息队列" class="headerlink" title="1.1、消息队列"></a>1.1、消息队列</h4><p><img src="/2017/03/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.png" alt></p>
-<h4 id="1-2、为什么要用消息队列？"><a href="#1-2、为什么要用消息队列？" class="headerlink" title="1.2、为什么要用消息队列？"></a>1.2、为什么要用消息队列？</h4><ul>
-<li><strong>解耦</strong>：也即是客户端A跟B不用直连，通过中间件。达到解耦</li>
-<li><strong>冗余</strong>：消息队列可以进行数据备份，它本身可以缓冲数据</li>
-<li><strong>扩展性</strong>：消息队列可以进行集群</li>
-<li><strong>灵活性&amp;峰值处理能力</strong>：机器扩展多了，峰值处理能力自然提高</li>
-<li><strong>可恢复性</strong>：因为你数据可备份的，消息丢了一个，可以恢复的</li>
-<li><strong>顺序保证</strong>：队列先进先出，它有顺序。</li>
-<li><strong>缓冲</strong>：均衡两边的速度，这边数据冗余了。可以进行备份缓冲。</li>
-<li><strong>异步通信</strong>：比如你A挂了，并不会影响B</li>
-</ul>
-<h4 id="1-3三种消息队列对比："><a href="#1-3三种消息队列对比：" class="headerlink" title="1.3三种消息队列对比："></a>1.3三种消息队列对比：</h4><h5 id="1-3-1、ActiveMQ，RabbitMQ，Kafka"><a href="#1-3-1、ActiveMQ，RabbitMQ，Kafka" class="headerlink" title="1.3.1、ActiveMQ，RabbitMQ，Kafka"></a>1.3.1、ActiveMQ，RabbitMQ，Kafka</h5><ul>
-<li><p><strong>ActiveMQ中，消费者消费完消息后，队列Queue中，这条消息立即被删除</strong>。</p>
-<p>而ActiveMQ，它的队列是存在内存中。普通的消息队列是存在队列Queue中，然后存在内存中。Kafka是持久化到磁盘中，Kafka是以partition为单位进行消费的，而普通消息队列是一条一条进行消费的。</p>
-</li>
-</ul>
-<p><img src="/2017/03/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/ActiveMQ.jpg" alt></p>
-<ul>
-<li><p>RabbitMQ多了一段Exchange，路由交换机。有4中工作机制。**</p>
-<p><img src="/2017/03/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/RabbitMQ.jpg" alt></p>
-<p>​    当producer生产了3条消息，每个队列中不会都拿到这3条消息的，它是根据路由机制进行匹配的，有4中路由机制，fanout，direct，topic，headers。4种路由机制。</p>
-</li>
-</ul>
-<p>​    topic是以点为分隔符进行通配，*是匹配一个单词，#是匹配多个单词。</p>
-<ul>
-<li><p><strong>Kafka，当消费者消费完消息后，不会被立即删除，它有避免重复消费，和避免内存溢出</strong>，Kafka是以文件的方式进行存储的，存储在磁盘中，所以永远不会内存溢出。可能会存在磁盘满了，磁盘满了，可以加集群，然后进行备份，就是partition可以备份到另一台机器中。在kafka中是以zookeeper来管理集群的。</p>
-<p><strong>kafka消费是以partition为单位进行消费的。</strong>所以所，kafka适合数据量更大的时候的处理。</p>
-<p>而RabbitMQ它的消息存在内存中，如果消息超过长度，就会内存溢出。而kafka不会，消息存在磁盘中。</p>
-</li>
-</ul>
-<h5 id="1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景"><a href="#1-3-2、ActiveMQ，RabbitMQ，Kafka应用场景" class="headerlink" title="1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景"></a>1.3.2、ActiveMQ，RabbitMQ，Kafka应用场景</h5><p>​    <img src="/2017/03/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.jpg" alt></p>
-<p>或者你这个库存当时没有了，可以调用别的地方的库存，然后重新分配库存。但是kafka就没有这样的好处。</p>
-<p>订单太多，可能会导致内存溢出，RabbitMQ中有一个partition是网络分区，用来做网络集群的，与kafka的partition不同，因此可以做集群部署。</p>
-<h4 id="1-4、什么是Kafka"><a href="#1-4、什么是Kafka" class="headerlink" title="1.4、什么是Kafka"></a>1.4、什么是Kafka</h4><p>流式计算中，Kafka用来缓存数据，Storm通过消费Kafka的数据进行计算。</p>
-<ul>
-<li><p>Apache Kafka是一个开源消息系统，由<strong>Scala</strong>写成</p>
-</li>
-<li><p>Kafka是由LinkedIn公司开发</p>
-</li>
-<li><p>Kafka是一个<strong>分布式消息队列</strong>，kafka对消息保存时根据<strong>Topic</strong>进行归类，发送消息者叫<strong>Producer</strong></p>
-<p>消息接收者叫<strong>Consumer</strong>。此外Kafka集群有多个Kafka实例组成，每个实例(server)叫<strong>broker</strong>。</p>
-</li>
-<li><p>不管是kafka集群，还是consumer都依赖与<strong>zookeeper</strong>集群保存一些meta信息，保证系统可用性。</p>
-</li>
-</ul>
-<h4 id="1-5、Kafka架构"><a href="#1-5、Kafka架构" class="headerlink" title="1.5、Kafka架构"></a>1.5、Kafka架构</h4><p><img src="/2017/03/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
-<p><img src="/2017/03/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/kafka%E6%9E%B6%E6%9E%84.png" alt></p>
-<p>partition分区：作负载均衡用。</p>
-<p>replication：备份。</p>
-<p>一个消费者可以消费多个topic，<strong>同一个组里面的消费者，不能消费同一个partition分区的数据</strong>。但是你不同的组里面，还是可以消费同一个partition分区的数据。</p>
-<p>Consumer A与Consumer B属于通过一个消费者组，Partition0被Consumer A消费，就不能被Consumer B消费。</p>
-<p>zookeeper：Consumer的集群依赖的，kafka集群的构建依赖于zookeeper，消费者也需要，上次消费到哪了，也要给zookeeper存一份。</p>
-<h4 id="1-6、kafka的专业术语"><a href="#1-6、kafka的专业术语" class="headerlink" title="1.6、kafka的专业术语"></a>1.6、kafka的专业术语</h4><ul>
-<li><strong>massage</strong>： kafka中最基本的传递对象，有固定格式。</li>
-<li><strong>topic</strong>： 一类消息，如page view，click行为等。</li>
-<li><strong>producer</strong>： 产生信息的主体，可以是服务器日志信息等。</li>
-<li><strong>consumer</strong>： 消费producer产生话题消息的主体。</li>
-<li><strong>broker</strong>： 消息处理结点，多个broker组成kafka集群。</li>
-<li><strong>partition</strong>： topic的物理分组，每个partition都是一个有序队列。</li>
-<li><strong>segment</strong>： 多个大小相等的段组成了一个partition。</li>
-<li><strong>offset</strong>： 一个连续的用于定位被追加到分区的每一个消息的序列号，最大值为64位的long大小，19位数字字符长度</li>
-</ul>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">分布式中间件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2017/03/01/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-什么是埋点？" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2017/02/04/%E4%BB%80%E4%B9%88%E6%98%AF%E5%9F%8B%E7%82%B9%EF%BC%9F/" target="_blank">什么是埋点？</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2017/02/04/%E4%BB%80%E4%B9%88%E6%98%AF%E5%9F%8B%E7%82%B9%EF%BC%9F/" class="archive-article-date">
-        <time datetime="2017-02-04T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-04</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h2 id="一、数据流程"><a href="#一、数据流程" class="headerlink" title="一、数据流程"></a>一、数据流程</h2><ul>
-<li><p>数据生产-数据采集-数据处理-数据分析和挖掘-数据驱动/用户反馈-产品优化/迭代。</p>
-</li>
-<li><p>数据采集，顾名思义采集相应的数据，是整个数据流的起点，采集的全不全、对不对，直接决定数据广度和质量，影响后续所有的环节。</p>
-</li>
-<li><p>在数据采集失效性、完整性不好的公司，经常会有业务方发现数据发生的大幅度变化，追其所以时发现是数据采集的问。而另一方面，采集什么数据才能有效的得到数据分析结论，才能有效的进行推荐，就需要提前规划埋点。</p>
-</li>
-<li><p>当前数据采集普遍遇到的几个问题：</p>
-<ul>
-<li><p>实时性，对于工具性产品在无网条件下的数据，无法实时上报；</p>
-</li>
-<li><p>完整性，由于用户隐私协议&amp;欧盟通用数据保护条例的，部分数据无法采集；</p>
-</li>
-<li><p>异常，android_id、idfa、idfv 随版本升级变化或无法获取。</p>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="二、数据埋点"><a href="#二、数据埋点" class="headerlink" title="二、数据埋点"></a>二、数据埋点</h2><p>接下来用5w2h的思路来看埋点。</p>
-<h3 id="1、埋点是什么？"><a href="#1、埋点是什么？" class="headerlink" title="1、埋点是什么？"></a>1、埋点是什么？</h3><ul>
-<li><p>所谓“埋点”，是数据采集领域（尤其是用户行为数据采集领域）的术语，指的是针对特定用户行为或事件进行捕获、处理和发送的相关技术及其实施过程。比如用户某个icon点击次数、观看某个视频的时长等等。</p>
-</li>
-<li><p>埋点的技术实质，是先监听软件应用运行过程中的事件，当需要关注的事件发生时进行判断和捕获。</p>
-</li>
-<li><p>特别注意需要明确事件发生时间点、判别条件，这里如果遇到不清楚的，需要和开发沟通清楚，避免采集数据与理想存在差异。例如：期望采集某个app的某个广告的有效曝光数，有效曝光的判别条件是停留时长超过1秒且有效加载出广告内容。</p>
-</li>
-</ul>
-<h3 id="2、埋点是谁的工作？"><a href="#2、埋点是谁的工作？" class="headerlink" title="2、埋点是谁的工作？"></a>2、埋点是谁的工作？</h3><ul>
-<li>现在公司通常都会有数据产品经理或业务线数据分析师，结合版本迭代过程进行埋点规划。如果是代码埋点，还需要开发完成相应的埋点代码。</li>
-</ul>
-<h3 id="3、-在什么时间点-amp-在哪里埋点呢？"><a href="#3、-在什么时间点-amp-在哪里埋点呢？" class="headerlink" title="3、 在什么时间点&amp;在哪里埋点呢？"></a>3、 在什么时间点&amp;在哪里埋点呢？</h3><ul>
-<li><p>埋点是目的导向。</p>
-</li>
-<li><p>在产品规划时就要思考数据埋点问题，如果在产品外发后再考虑怎么埋点，就会导致前期版本用户的数据无法收集，想要看某个数据时就会非常无奈，只有等到新版本完善来弥补。</p>
-</li>
-<li><p>思考要埋哪些点、埋点的形式，需要紧密结合产品迭代的方向、运营需求，并和数据开发等进行充分沟通以确认：</p>
-<ul>
-<li><p>埋点能够得到想要的数据解决/支持；</p>
-</li>
-<li><p>能够得到当前版本的复盘情况；</p>
-</li>
-<li><p>后续版本的数据支撑。</p>
-</li>
-</ul>
-</li>
-<li><p>通常的沟通过程以 埋点文档为载体；数据埋点评审为终结。</p>
-</li>
-<li><p>当前版本的复盘情况：</p>
-<ul>
-<li><p>新版本功能使用情况，是否符合预期；</p>
-</li>
-<li><p>新功能上线后对其他功能点的影响？是否为整体均有积极作用；</p>
-</li>
-<li><p>版本运营活动目标群体的特征获取;</p>
-</li>
-<li><p>新增商业化目标的监测……</p>
-</li>
-</ul>
-</li>
-<li><p>后续版本的数据支撑：</p>
-<ul>
-<li><p>规划方向的用户行为分析</p>
-</li>
-<li><p>画像特征分析</p>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="4、怎么埋点呢？"><a href="#4、怎么埋点呢？" class="headerlink" title="4、怎么埋点呢？"></a>4、怎么埋点呢？</h3><h4 id="4-1-、埋点技术：代码埋点、可视化埋点、无埋点"><a href="#4-1-、埋点技术：代码埋点、可视化埋点、无埋点" class="headerlink" title="4.1 、埋点技术：代码埋点、可视化埋点、无埋点"></a>4.1 、埋点技术：代码埋点、可视化埋点、无埋点</h4><p>接着第一节：埋点是什么？来看下埋点技术层面的区分：代码埋点、可视化埋点和无埋点。</p>
-<h4 id="（1）代码埋点"><a href="#（1）代码埋点" class="headerlink" title="（1）代码埋点"></a>（1）代码埋点</h4><p>​        以为需要监测网站上/app上用户的行为，是需要在网页/app中加上一些代码的，当用户触发相应行为时，进行数据上报，也就是代码埋点。这样的代码，在网站上叫监测代码，在app中叫SDK（Software Development Kit）。市场上的第三方数据采集均支持代码埋点，GA, GrowingIO，神策等。</p>
-<ul>
-<li>优点：可以详细的设置某一个事件自定义属性；</li>
-<li>缺点：时间、人力成本大，数据传输的时效性。</li>
-</ul>
-<h4 id="（2）可视化埋点"><a href="#（2）可视化埋点" class="headerlink" title="（2）可视化埋点"></a>（2）可视化埋点</h4><p>​        利用可视化交互手段，数据产品/数据分析师可以通过可视化界面（管理后台连接设备） 配置事件，如下是腾讯移动分析的可视化埋点界面。可视化埋点仍需要先配置相关事件，再采集。</p>
-<ul>
-<li><p>优点：埋点只需业务同学接入，无需开发支持；</p>
-</li>
-<li><p>缺点：仅支持客户端行为。</p>
-</li>
-</ul>
-<h4 id="（3）无埋点"><a href="#（3）无埋点" class="headerlink" title="（3）无埋点"></a>（3）无埋点</h4><ul>
-<li><p>无埋点是指开发人员集成采集 SDK 后，SDK 便直接开始捕捉和监测用户在应用里的所有行为，并全部上报，不需要开发人员添加额外代码。</p>
-</li>
-<li><p>数据分析师/数据产品 通过管理后台的圈选功能来选出自己关注的用户行为，并给出事件命名。之后就可以结合时间属性、用户属性、事件进行分析了。所以无埋点并不是真的不用埋点了。目前市场第三方工具GrowingIO支持无埋点全量行为数据抓取</p>
-</li>
-<li><p>优点：</p>
-<ul>
-<li><p>无需开发，业务人员埋点即可；</p>
-</li>
-<li><p>支持先上报数据，后进行埋点。</p>
-</li>
-</ul>
-</li>
-<li><p>无埋点和可视化埋点均不需要开发支持，仅数据业务同学进行设置即可。但两者数据上报-埋点设置存在加大的差异：无埋点支持在数据上报之后再进行埋点设置，因而数据采集/上报的量远大于可视化埋点。</p>
-</li>
-</ul>
-<h3 id="5、各种埋点场景-amp-埋点建议"><a href="#5、各种埋点场景-amp-埋点建议" class="headerlink" title="5、各种埋点场景&amp;埋点建议"></a>5、各种埋点场景&amp;埋点建议</h3><ul>
-<li><p>客户端数据：页面点击数据，比如：tab栏的点击，某个icon的点击（各入口点击对比使用情况，统计页面点击行为的转化漏斗）。</p>
-</li>
-<li><p>服务端数据：安装数据，下载后安装情况；内容数据，比如某个视频内容 曝光/展示/播放数据；搜索内容。</p>
-</li>
-</ul>
-<h4 id="5-1、以视频产品为例的一次埋点过程："><a href="#5-1、以视频产品为例的一次埋点过程：" class="headerlink" title="5.1、以视频产品为例的一次埋点过程："></a>5.1、以视频产品为例的一次埋点过程：</h4><ul>
-<li><p>明确产品动态，梳理数据需求；</p>
-</li>
-<li><p>当前为一个视频社区软件，增加了<strong>舞蹈跟拍</strong>功能，用户可以根据不用的舞蹈来进行拍摄（运营同学对舞蹈进行了分类，主打几个舞蹈），目的是为了给用户提供低成本创造视频内容的方式。</p>
-</li>
-<li><p>基于上述的产品目的，期望能了解：</p>
-<ul>
-<li><p>该功能的使用情况（uv，pv，使用过程漏斗）;</p>
-</li>
-<li><p>生产的视频情况（视频数,视频的互动情况），是否能实现促进内容生产带动社区氛围的目标。</p>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="5-2、数据需求转化为指标-amp-埋点，并与数据开发进行讨论；"><a href="#5-2、数据需求转化为指标-amp-埋点，并与数据开发进行讨论；" class="headerlink" title="5.2、数据需求转化为指标&amp;埋点，并与数据开发进行讨论；"></a>5.2、数据需求转化为指标&amp;埋点，并与数据开发进行讨论；</h4><ul>
-<li><p>功能使用uv、pv；</p>
-</li>
-<li><p>对其他拍摄功能的影响；</p>
-</li>
-<li><p>可以服务端打点，也可以客户端打点，但因为视频社区的基于内容的互动行为基本都在服务端，所以建议服务端打点。</p>
-</li>
-<li><p>拍摄流程的转化漏斗；拍摄流程主要是页面的点击过程，故使用客户端埋点，并记录uv，pv。</p>
-</li>
-<li><p>跟拍视频的播放、点赞、评论、分享、关注、二次被跟拍的情况；</p>
-</li>
-<li><p>跟拍舞蹈的类型，明确用户是否偏向于某个类型的舞蹈跟拍；</p>
-</li>
-<li><p>服务端，基于内容的互动行为基本都在服务端。</p>
-</li>
-</ul>
-<h4 id="5-3、版本上线；"><a href="#5-3、版本上线；" class="headerlink" title="5.3、版本上线；"></a>5.3、版本上线；</h4><ul>
-<li>按照预期进行数据分析，产品迭代复盘。数据分析过程，注意查看是否与预期相符，是否有优化点。</li>
-</ul>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">杂文</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2017/02/04/%E4%BB%80%E4%B9%88%E6%98%AF%E5%9F%8B%E7%82%B9%EF%BC%9F/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="../3/">&amp;laquo; Prev</a><a class="page-number" href="../../">1</a><a class="page-number" href="../2/">2</a><a class="page-number" href="../3/">3</a><span class="page-number current">4</span><a class="page-number" href="../5/">5</a><a class="extend next" rel="next" href="../5/">Next &amp;raquo;</a>
@@ -3197,11 +3141,11 @@
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color4">大数据</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">大数据</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -3217,11 +3161,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
+                <a href="javascript:void(0)" class="js-tag color1">计算机基础</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">计算机基础</a>
+                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
               </li>
             
             <div class="clearfix"></div>
