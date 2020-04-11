@@ -1080,104 +1080,6 @@
 
 
   
-    <article id="post-Hadoop命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2017/09/13/Hadoop%E5%91%BD%E4%BB%A4/" target="_blank">Hadoop命令</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2017/09/13/Hadoop%E5%91%BD%E4%BB%A4/" class="archive-article-date">
-        <time datetime="2017-09-13T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-13</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h3 id="1、文件操作"><a href="#1、文件操作" class="headerlink" title="1、文件操作"></a>1、文件操作</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">在HDFS上创建目录</span></span><br><span class="line">hadoop fs -mkdir &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">查看文件</span></span><br><span class="line">hadoop fs -ls &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">显示文件的大小</span></span><br><span class="line">hadoop fs -du &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">只删除文件或者空目录</span></span><br><span class="line">hadoop fs -rm &lt;hdsf_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">递归删除目录，命令rm的递归版本，会递归删除目录下的各级目录以及文件</span></span><br><span class="line">hadoop fs -rmr &lt;hdfs_path&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2、查看文件内容"><a href="#2、查看文件内容" class="headerlink" title="2、查看文件内容"></a>2、查看文件内容</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">显示文件内容</span></span><br><span class="line">hadoop fs -cat &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">将文件尾部1KB字节的内容输出到stdout</span></span><br><span class="line">hadoop fs -tail [-f] URI</span><br></pre></td></tr></table></figure>
-
-<h3 id="3、文件复制"><a href="#3、文件复制" class="headerlink" title="3、文件复制"></a>3、文件复制</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">将文件源路径移动到目标路径</span></span><br><span class="line">hadoop fs -mv &lt;src1&gt; &lt;src2&gt; &lt;dest&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">将文件从源路径复制到目标路径</span></span><br><span class="line">hadoop fs -cp &lt;src1&gt; &lt;src2&gt; &lt;dest&gt;       </span><br><span class="line"><span class="meta">#</span><span class="bash">将本地文件放置在HDFS上</span></span><br><span class="line">hadoop fs -copyFromLocal &lt;local_path&gt; &lt;remote_path&gt;     </span><br><span class="line"><span class="meta">#</span><span class="bash">将HDFS上的文件复制到本地文件系统中</span></span><br><span class="line">hadoop fs -copyToLocal &lt;remote_path&gt; &lt;local_path&gt;       </span><br><span class="line"><span class="meta">#</span><span class="bash">复制文件到本地文件系统</span></span><br><span class="line">hadoop fs -get &lt;src&gt; &lt;localdst&gt;    </span><br><span class="line"><span class="meta">#</span><span class="bash">从本地文件系统中复制单个或多个源路径到目标文件系统中</span></span><br><span class="line">hadoop fs -put &lt;localsrc&gt;... &lt;dst&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="4、高权限"><a href="#4、高权限" class="headerlink" title="4、高权限"></a>4、高权限</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scp victor@192.168.10.1:/home/victor/py/test.py /usr/opt/script/</span><br><span class="line"><span class="meta">#</span><span class="bash">去前1000行记录到新文件</span></span><br><span class="line">head -1000 basic.dat &gt; test1.dat</span><br></pre></td></tr></table></figure>
-
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2017/09/13/Hadoop%E5%91%BD%E4%BB%A4/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
     <article id="post-一、Java并发编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -1356,6 +1258,104 @@
     
     <p class="article-more-link">
       <a class="article-more-a" href="../../2017/09/13/%E4%B8%80%E3%80%81Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-Hadoop命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2017/09/13/Hadoop%E5%91%BD%E4%BB%A4/" target="_blank">Hadoop命令</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2017/09/13/Hadoop%E5%91%BD%E4%BB%A4/" class="archive-article-date">
+        <time datetime="2017-09-13T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-13</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h3 id="1、文件操作"><a href="#1、文件操作" class="headerlink" title="1、文件操作"></a>1、文件操作</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">在HDFS上创建目录</span></span><br><span class="line">hadoop fs -mkdir &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">查看文件</span></span><br><span class="line">hadoop fs -ls &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">显示文件的大小</span></span><br><span class="line">hadoop fs -du &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">只删除文件或者空目录</span></span><br><span class="line">hadoop fs -rm &lt;hdsf_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">递归删除目录，命令rm的递归版本，会递归删除目录下的各级目录以及文件</span></span><br><span class="line">hadoop fs -rmr &lt;hdfs_path&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、查看文件内容"><a href="#2、查看文件内容" class="headerlink" title="2、查看文件内容"></a>2、查看文件内容</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">显示文件内容</span></span><br><span class="line">hadoop fs -cat &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">将文件尾部1KB字节的内容输出到stdout</span></span><br><span class="line">hadoop fs -tail [-f] URI</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、文件复制"><a href="#3、文件复制" class="headerlink" title="3、文件复制"></a>3、文件复制</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">将文件源路径移动到目标路径</span></span><br><span class="line">hadoop fs -mv &lt;src1&gt; &lt;src2&gt; &lt;dest&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">将文件从源路径复制到目标路径</span></span><br><span class="line">hadoop fs -cp &lt;src1&gt; &lt;src2&gt; &lt;dest&gt;       </span><br><span class="line"><span class="meta">#</span><span class="bash">将本地文件放置在HDFS上</span></span><br><span class="line">hadoop fs -copyFromLocal &lt;local_path&gt; &lt;remote_path&gt;     </span><br><span class="line"><span class="meta">#</span><span class="bash">将HDFS上的文件复制到本地文件系统中</span></span><br><span class="line">hadoop fs -copyToLocal &lt;remote_path&gt; &lt;local_path&gt;       </span><br><span class="line"><span class="meta">#</span><span class="bash">复制文件到本地文件系统</span></span><br><span class="line">hadoop fs -get &lt;src&gt; &lt;localdst&gt;    </span><br><span class="line"><span class="meta">#</span><span class="bash">从本地文件系统中复制单个或多个源路径到目标文件系统中</span></span><br><span class="line">hadoop fs -put &lt;localsrc&gt;... &lt;dst&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4、高权限"><a href="#4、高权限" class="headerlink" title="4、高权限"></a>4、高权限</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scp victor@192.168.10.1:/home/victor/py/test.py /usr/opt/script/</span><br><span class="line"><span class="meta">#</span><span class="bash">去前1000行记录到新文件</span></span><br><span class="line">head -1000 basic.dat &gt; test1.dat</span><br></pre></td></tr></table></figure>
+
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2017/09/13/Hadoop%E5%91%BD%E4%BB%A4/">展开全文 >></a>
     </p>
     
 
@@ -1902,11 +1902,11 @@
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">大数据</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color4">大数据</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1922,11 +1922,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">计算机基础</a>
+                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
+                <a href="javascript:void(0)" class="js-tag color1">计算机基础</a>
               </li>
             
             <div class="clearfix"></div>
