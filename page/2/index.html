@@ -234,6 +234,178 @@
 
 
   
+    <article id="post-Redis应用场景之抢红包系统-四" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/" target="_blank">Redis应用场景之抢红包系统(四)</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/" class="archive-article-date">
+        <time datetime="2018-06-21T07:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-21</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、Redis应用场景之抢红包系统-四"><a href="#一、Redis应用场景之抢红包系统-四" class="headerlink" title="一、Redis应用场景之抢红包系统(四)"></a>一、Redis应用场景之抢红包系统(四)</h1><h3 id="1、Jmeter压力测试高并发抢红包"><a href="#1、Jmeter压力测试高并发抢红包" class="headerlink" title="1、Jmeter压力测试高并发抢红包"></a>1、Jmeter压力测试高并发抢红包</h3><ul>
+<li><p>Apache Jmeter是Apache组织开发的基于Java的压力测试工具。可以用来模拟生产环境中高并发产生的巨大负载。</p>
+</li>
+<li><p><a href="https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.2.1.tgz">下载链接</a></p>
+</li>
+<li><p>下载好后，解压运行Jmeter</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd ~/下载/软件安装包</span><br><span class="line">tar -zxvf apache-jmeter-5.2.1.tgz</span><br><span class="line">cd apache-jmeter-5.2.1</span><br><span class="line">cd bin</span><br><span class="line">./jmeter.sh</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>首先用Postman先新建一个用户userId假设为10030，生成一个新的红包全局id</p>
+<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/postman%E5%8F%91%E7%BA%A2%E5%8C%85%E6%8E%A5%E5%8F%A3.png" alt></p>
+</li>
+<li><p>测试计划–&gt;右键–&gt;添加–&gt;线程(用户)–&gt;线程组</p>
+<p>线程组面板，设置线程属性，设置线程数为1000个</p>
+<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/Jmeter%E7%BA%BF%E7%A8%8B%E7%BB%84%E8%AE%BE%E7%BD%AE.png" alt></p>
+</li>
+<li><p>线程组–&gt;右键–&gt;添加–&gt;取样器–&gt;HTTP请求</p>
+<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/Jmeter%E7%9A%84Http%E8%AF%B7%E6%B1%82%E8%AE%BE%E7%BD%AE.png" alt></p>
+</li>
+<li><p>线程组–&gt;右键–&gt;添加–&gt;配置原件–&gt;CSV数据文件设置</p>
+<p>假设录入新的用户userId是从10030~10035的data.csv数据文件</p>
+<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/data%E7%9A%84csv%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6.png" alt></p>
+<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/Jmeter%E7%9A%84CSV%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E8%AE%BE%E7%BD%AE.png" alt></p>
+<p>然后点击Jmeter上面的三角符号运行按钮进行测试</p>
+</li>
+<li><p>线程组–&gt;右键–&gt;添加–&gt;监听器–&gt;查看结果树</p>
+<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/%E6%9F%A5%E7%9C%8B%E7%BB%93%E6%9E%9C%E6%A0%91%E7%9A%84%E5%93%8D%E5%BA%94%E7%BB%93%E6%9E%9C.png" alt></p>
+</li>
+<li><p>打开MySQL查询抢红包的明细表发现已经抢过红包的用户后续又抢到红包，比如10030已经抢过，后又抢到红包，说明是高并发引起的线程安全问题</p>
+<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/%E6%9F%A5%E8%AF%A2%E6%8A%A2%E7%BA%A2%E5%8C%85%E6%98%8E%E7%BB%86%E8%A1%A8.png" alt></p>
+</li>
+</ul>
+<h3 id="2、问题分析"><a href="#2、问题分析" class="headerlink" title="2、问题分析"></a>2、问题分析</h3><ul>
+<li>当某一时刻的同一个用户在疯狂的点红包，如果前端不加以控制，同一时间的同一个账户将发起多个抢红包请求。</li>
+<li>后端接口接收到这些请求后，很可能同时在redis中判断是否有红包，并成功通过，然后导致一个用户抢到多个红包。</li>
+<li>后端接口并没有考虑到高并发请求，原因在于当前请求还没有处理完核心业务逻辑，其他同样的请求过来，导致后端接口几乎来不及做重复判断</li>
+</ul>
+<h3 id="3、优化方案"><a href="#3、优化方案" class="headerlink" title="3、优化方案"></a>3、优化方案</h3><ul>
+<li>同一时刻多个并发的线程对共享资源进行了访问操作，导致最终出现数据不一致或者结果并非自己所预料的现象，就是多线程高并发时出现的并发安全问题。</li>
+<li>传统的单体Java应用，为了解决高并发，最常见的方法是在核心的业务逻辑代码中加锁，也就是Synchronized关键字。</li>
+<li>在微服务、分布式系统架构，这样做法行不通，因为Synchronized关键字是跟单一服务节点所在的JVM相关联，而分布式系统架构的服务一般是部署在不同的节点服务器上，从而当出现高并发请求时，Synchronized同步操作力不从心。</li>
+<li>为了保证单一节点核心业务代码的同步控制，也要保证当扩展到多个节点部署同样的实现核心业务逻辑，就出现了分布式锁。</li>
+<li>分布式锁只是一种解决方案，主要是为了解决分布式系统高并发请求时出现并发访问共享资源导致的并发安全问题；</li>
+<li>分布式锁的实现有多种<ul>
+<li>基于数据库级别的乐观锁和悲观锁</li>
+<li>基于Redis的原子操作实现分布式锁</li>
+<li>基于Zookeeper实现分布式锁</li>
+</ul>
+</li>
+</ul>
+<h3 id="4、Redis分布式锁实战"><a href="#4、Redis分布式锁实战" class="headerlink" title="4、Redis分布式锁实战"></a>4、Redis分布式锁实战</h3><h4 id="4-1、redis的底层分析"><a href="#4-1、redis的底层分析" class="headerlink" title="4.1、redis的底层分析"></a>4.1、redis的底层分析</h4><ul>
+<li>由于Redis底层架构是采用单线程进行设计的，所以它提供的这些操作都是单线程的，也就是操作具有原子性。</li>
+<li>原子性就是在同一时刻只能有一个线程来处理核心业务逻辑，当有其他线程对应的请求过来的时候，如果前面的线程没有处理完毕，那么当前线程将进入等待(阻塞)状态，直到前面的线程处理完毕。</li>
+</ul>
+<h4 id="4-2、分布式锁实现"><a href="#4-2、分布式锁实现" class="headerlink" title="4.2、分布式锁实现"></a>4.2、分布式锁实现</h4><ul>
+<li><p>因为抢红包的核心业务逻辑在于拆红包操作。</p>
+</li>
+<li><p>可以通过redis的原子操作setIfAbsent()方法对业务逻辑加分布式锁</p>
+</li>
+<li><p>setIfAbsent()方法：</p>
+<ul>
+<li>如果当前的key不存在redis中，就设置对应的value，然后返回true</li>
+<li>如果当前key存在，则设置value失败，返回false</li>
+</ul>
+</li>
+<li><p>方法具有原子性单线程操作，所以多个并发的线程同一时刻调用setIfAbsent()，redis底层会将线程加入队列排队处理</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> BigDecimal <span class="title">robByDistributeLock</span><span class="params">(Integer userId, String redId)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       ValueOperations valueOperations = redisTemplate.opsForValue();</span><br><span class="line">       <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * 处理用户抢红包之前，需要先判断一下当前用户是否已经抢过红包</span></span><br><span class="line"><span class="comment">        * 如果抢过，则直接返回红包金额</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">       Object data = valueOperations.get(redId + userId + <span class="string">":rob"</span>);</span><br><span class="line">       <span class="keyword">if</span> (data != <span class="keyword">null</span>) &#123;</span><br><span class="line">           BigDecimal redPacket = <span class="keyword">new</span> BigDecimal(data.toString());</span><br><span class="line">           log.info(<span class="string">"从redis中获取数据，当前用户抢到红包了：userId=&#123;&#125; key=&#123;&#125; 金额=&#123;&#125;"</span>, userId, redId, redPacket);</span><br><span class="line">           <span class="keyword">return</span> redPacket;</span><br><span class="line">       &#125;</span><br><span class="line">       Boolean res = clilck(redId);</span><br><span class="line">       <span class="comment">//如果为true代表redis中仍然还有红包，也就是红包个数&gt;0</span></span><br><span class="line">       <span class="keyword">if</span> (res) &#123;</span><br><span class="line">           <span class="comment">//上分布式锁：一个红包每个人只能抢到一次随机金额，也即是永远保证一对一关系</span></span><br><span class="line">           <span class="keyword">final</span> String lockKey = redId+userId+<span class="string">"-lock"</span>;</span><br><span class="line">           <span class="comment">//调用setIfAbsent()方法，其实就是间接实现了分布式锁</span></span><br><span class="line">           Boolean lock = valueOperations.setIfAbsent(lockKey, redId);</span><br><span class="line">           <span class="comment">//设置分布式锁的过期时间为24h</span></span><br><span class="line">           redisTemplate.expire(lockKey,<span class="number">24L</span>,TimeUnit.HOURS);</span><br><span class="line">           <span class="keyword">try</span> &#123;</span><br><span class="line">               <span class="comment">//表示当前线程获取到了该分布式锁</span></span><br><span class="line">               <span class="keyword">if</span>(lock) &#123;</span><br><span class="line">                   <span class="comment">//从小红包随机金额列表弹出一个随机金额</span></span><br><span class="line">                   Object value = redisTemplate.opsForList().rightPop(redId);</span><br><span class="line">                   <span class="keyword">if</span> (value != <span class="keyword">null</span>) &#123;</span><br><span class="line">                       <span class="comment">/**</span></span><br><span class="line"><span class="comment">                        * 更新redis中剩余的红包个数，也就是红包个数减1</span></span><br><span class="line"><span class="comment">                        */</span></span><br><span class="line">                       String redTotalKey = redId + <span class="string">":total"</span>;</span><br><span class="line">                       Object total = valueOperations.get(redTotalKey);</span><br><span class="line">                       Integer curTotal = <span class="number">0</span>;</span><br><span class="line">                       <span class="keyword">if</span> (total != <span class="keyword">null</span>) &#123;</span><br><span class="line">                           curTotal = (Integer) total;</span><br><span class="line">                       &#125;</span><br><span class="line">                       valueOperations.set(redTotalKey, curTotal - <span class="number">1</span>);</span><br><span class="line">                       <span class="comment">//直接处理红包的单位变为分，如果此处不处理，需要前端处理也是一样的</span></span><br><span class="line">                       BigDecimal redPacket = <span class="keyword">new</span> BigDecimal(value.toString()).divide(<span class="keyword">new</span> BigDecimal(<span class="number">100</span>));</span><br><span class="line">                       <span class="comment">//将抢到红包的用户信息异步保存到数据库</span></span><br><span class="line">                       redService.recordRobRedPacket(userId, redId, <span class="keyword">new</span> BigDecimal(value.toString()));</span><br><span class="line">                       <span class="comment">//将当前用户抢到红包的用户设置到redis中，表示当前用户已经抢过红包了，设置过期时间24h</span></span><br><span class="line">                       valueOperations.set(redId + userId + <span class="string">":rob"</span>, redPacket, <span class="number">24L</span>, TimeUnit.HOURS);</span><br><span class="line">                       log.info(<span class="string">"当前用户抢到红包了：userId=&#123;&#125; key=&#123;&#125; 金额=&#123;&#125;"</span>, userId, redId, redPacket);</span><br><span class="line">                       <span class="keyword">return</span> redPacket;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">               <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"系统异常-抢红包-加分布式锁失败！"</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//null表示当前用户没有抢到红包</span></span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3、测试结果"><a href="#4-3、测试结果" class="headerlink" title="4.3、测试结果"></a>4.3、测试结果</h4><ul>
+<li><p>首先利用postman调用发红包接口，重新生成一个红包全局id</p>
+<p>然后配置到Jmeter的http请求的redId上</p>
+<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/%E5%8F%91%E7%BA%A2%E5%8C%85%E6%8E%A5%E5%8F%A3%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90%E6%96%B0%E7%9A%84%E7%BA%A2%E5%8C%85id.png" alt></p>
+</li>
+<li><p>然后利用Jmeter测试步骤同样的，最后查看抢红包明细表发现，没有出现同一个账户又重复抢到红包的情况，从而实现分布式锁控制</p>
+<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/%E5%8A%A0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E4%B9%8B%E5%90%8E%E7%9A%84%E7%BA%A2%E5%8C%85%E6%98%8E%E7%BB%86%E8%A1%A8.png" alt></p>
+</li>
+</ul>
+<h3 id="5、总结与分析"><a href="#5、总结与分析" class="headerlink" title="5、总结与分析"></a>5、总结与分析</h3><ul>
+<li>代码的核心业务逻辑已经加上分布式锁，也能扛得住秒级高并发的请求，但是从业务层来看，我们只设置了10030~10035这6个用户来抢红包，发红包我们设置了10个红包，那么剩下4个红包的剩余金额还没处理，首先需要归还个发红包的人，这块业务逻辑就不在写。</li>
+<li>多线程高并发时产生的并发安全问题，需要对核心业务处理逻辑加同步控制操作，也就是加上分布式锁</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">分布式中间件</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-Redis应用场景值抢红包系统-三" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -760,7 +932,7 @@
 </ul>
 </li>
 </ul>
-<h4 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h4><p>​        不管是缓存穿透，缓存雪崩，缓存击穿，其实它们最终导致的后果几乎都是一样的，给数据库造成压力，甚至压垮数据库。解决方案也都有一个共同特征，就是加强防线，尽量让高并发的读请求落在缓存中，从而避免直接跟数据库打交道。</p>
+<h1 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h1><p>​        不管是缓存穿透，缓存雪崩，缓存击穿，其实它们最终导致的后果几乎都是一样的，给数据库造成压力，甚至压垮数据库。解决方案也都有一个共同特征，就是加强防线，尽量让高并发的读请求落在缓存中，从而避免直接跟数据库打交道。</p>
 
     
 
@@ -1668,259 +1840,6 @@
     
     <p class="article-more-link">
       <a class="article-more-a" href="../../2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-JVM的运行过程：" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2018/06/12/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/" target="_blank">JVM探究</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2018/06/12/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/" class="archive-article-date">
-        <time datetime="2018-06-12T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-12</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h2 id="JVM的运行过程："><a href="#JVM的运行过程：" class="headerlink" title="JVM的运行过程："></a>JVM的运行过程：</h2><p>​    Java源文件，通过编译器，能够生产相应得.class字节码文件。而字节码文件又通过JVM中的解释器，编译成特定机器上的机器码。</p>
-<ul>
-<li>Java源文件–&gt;编译器–&gt;字节码文件</li>
-<li>字节码文件–&gt;JVM–&gt;机器码</li>
-</ul>
-<p>每一种平台的解释器是不同的，但是实现的虚拟机是相同的，这也就是Java为什么可以跨平台的原因，当一个程序从开始运行，这时虚拟机就开始实例化了，多个程序启动就会存在多个虚拟机实例。程序退出或者关闭，则虚拟机实例消亡，多个虚拟机实例之间数据不能共享。</p>
-<h3 id="1、线程"><a href="#1、线程" class="headerlink" title="1、线程"></a>1、线程</h3><p>​    线程指的是程序执行过程中的一个线程实体。JVM允许一个应用并发执行多个线程。Hotspot JVM中的Java线程与原生操作系统线程有直接的映射关系。当线程本地存储、缓冲区分配、同步对象、栈、程序计数器等准备好之后，就会创建一个操作系统原生的线程(守护线程Daemon)。Java线程结束，原生线程随之被回收。操作系统负责调度所有线程，并把它分配到任何可用的CPU上。<strong>当原生线程初始化完毕，就会调用Java线程的run()方法。当线程结束时，会释放原生线程和Java线程的所有资源</strong>。</p>
-<p>Hotspot JVM后台运行的系统线程主要有下面几个：</p>
-<table>
-<thead>
-<tr>
-<th align="left">线程</th>
-<th align="center">解释</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">虚拟机线程（VM thread）</td>
-<td align="center">这个线程等待JVM到达安全点操作出现。这些操作必须要在独立的线程里执行，因为当堆修改无法进行时，线程都需要JVM位于安全点。这些操作的类型有：stop-the-world垃圾回收、线程栈dump、线程暂停、线程偏向锁（biased locking）解除</td>
-</tr>
-<tr>
-<td align="left">周期性任务线程</td>
-<td align="center">这线程负责定时器事件（也就是中断），用来调度周期性操作的执行</td>
-</tr>
-<tr>
-<td align="left">GC线程</td>
-<td align="center">这些线程支持JVM中不同的垃圾回收活动</td>
-</tr>
-<tr>
-<td align="left">编译器线程</td>
-<td align="center">这些线程在运行时将字节码动态编译成本地平台相关的机器码</td>
-</tr>
-<tr>
-<td align="left">信号分发线程</td>
-<td align="center">这个线程接收发送到JVM的信号并调用适当的JVM方法处理</td>
-</tr>
-</tbody></table>
-<h3 id="3、JVM内存"><a href="#3、JVM内存" class="headerlink" title="3、JVM内存"></a>3、JVM内存</h3><h4 id="3-1、线程私有Thread-Local"><a href="#3-1、线程私有Thread-Local" class="headerlink" title="3.1、线程私有Thread Local"></a>3.1、线程私有Thread Local</h4><ul>
-<li><p>程序计数器PC</p>
-<ul>
-<li><p>指向虚拟机字节码指令的位置</p>
-</li>
-<li><p>唯一一个无OOM的区域（OOM：Out Of Memory内存溢出）</p>
-</li>
-</ul>
-</li>
-<li><p>虚拟机栈VM Stack</p>
-<ul>
-<li><p>虚拟机栈和线程的生命周期相同</p>
-</li>
-<li><p>一个线程中，每调用一个方法创建一个栈帧（Stack Frame）</p>
-</li>
-<li><p>栈帧的结构</p>
-<ul>
-<li>本地变量表Local Variable</li>
-<li>操作数栈Operand Stack</li>
-<li>对运行时常量池的引用 Runtime Constant Pool Reference</li>
-</ul>
-</li>
-<li><p>异常</p>
-<ul>
-<li>线程请求的栈深度大于JVM所允许的深度StackOverflowError</li>
-<li>若JVM允许动态扩展，若无法申请到足够内存OutOfMemoryError</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>本地方法栈Native Method Stack</p>
-<ul>
-<li>异常<ul>
-<li>线程请求的栈深度大于JVM所允许的深度StackOverflowError</li>
-<li>若JVM允许动态扩展，若无法申请到足够内存OutOfMemoryError</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>线程共享Thread Shared</p>
-<ul>
-<li><p>方法区（永久代）Method Area</p>
-<ul>
-<li>运行时常量池Runtime Constant Pool</li>
-</ul>
-</li>
-<li><p>类实例区（Java堆）Objects</p>
-<ul>
-<li><p>新生代</p>
-<ul>
-<li>eden</li>
-<li>from survivor</li>
-<li>to survivor</li>
-</ul>
-</li>
-<li><p>老年代</p>
-</li>
-<li><p>异常OutOfMemoryError</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>直接内存Direct Memory</p>
-<ul>
-<li>不受JVM GC管理</li>
-</ul>
-</li>
-</ul>
-<h4 id="3-2、JVM内存区域解释"><a href="#3-2、JVM内存区域解释" class="headerlink" title="3.2、JVM内存区域解释"></a>3.2、JVM内存区域解释</h4><p>JVM内存区域主要分为：</p>
-<ol>
-<li>线程私有区域：程序计数器、虚拟机栈、本地方法栈</li>
-<li>线程共享区域：Java堆，方法区</li>
-<li>直接内存</li>
-</ol>
-<p><strong>线程私有数据区域生命周期与线程相同，依赖用户线程的启动/结束，而创建/销毁在Hotspot JVM内，每个线程都与操作系统的本地线程直接映射，因此这部分内存区域的存/否跟随本地线程的生/死对应。</strong></p>
-<p><strong>线程共享区域随虚拟机JVM的启动/关闭而创建/销毁</strong></p>
-<p><strong>直接内存并不是JVM运行时数据区的一部分，但也会被频繁的使用：在JDK1.4引入的NIO提供了基于Channel与Buffer的IO方式，它可以使用Native函数库直接分配堆外内存，然后使用DirectByteBuffer对象作为这块内存的引用进行操作，这样就避免了在Java堆和Native堆中来回复制数据，因此在一些场景中可以显著提供性能。</strong></p>
-<h5 id="1、程序计数器（线程私有）"><a href="#1、程序计数器（线程私有）" class="headerlink" title="1、程序计数器（线程私有）"></a>1、程序计数器（线程私有）</h5><p>​    一块较小的内存空间，是当前线程所执行的字节码的行号指示器，每条线程都要有一个独立的程序计数器，这类内存也称为“线程私有”的内存。</p>
-<p>​    正在执行Java方法的话，计数器记录的是虚拟机字节码指令的地址（当前指令的地址）。如果还是Native方法，则为空。</p>
-<p>​    这个内存区域是唯一一个在虚拟机中没有规定任何OutOfMemoryError情况的区域。</p>
-<h5 id="2、虚拟机栈（线程私有）"><a href="#2、虚拟机栈（线程私有）" class="headerlink" title="2、虚拟机栈（线程私有）"></a>2、虚拟机栈（线程私有）</h5><p>​    是描述Java方法执行的内存模型，每个方法在执行的同时都会创建一个栈帧（Stack Frame）,用来存储局部变量表、操作数栈、动态链接、方法出口等信息。每一个方法从调用直至执行完成的过程，就对应着一个栈帧在虚拟机栈中入栈到出栈的过程。</p>
-<p>​    栈帧（Frame）是用来存储数据和部分过程结果的数据结构，同时也被用来处理动态链接（Dynamic Linking）、方法返回值和异常分派(Dispatch Exception)。栈帧随着方法调用而创建，随着方法结束而摧毁—无论方法是正常完成还是异常完成（抛出了在方法内未被捕获的异常）都算作方法结束。</p>
-<ul>
-<li>当前线程：<ul>
-<li>当前栈帧Current Stack Frame<ul>
-<li>局部变量表</li>
-<li>操作栈</li>
-<li>动态链接</li>
-<li>返回地址</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h5 id="3、本地方法区（线程私有）"><a href="#3、本地方法区（线程私有）" class="headerlink" title="3、本地方法区（线程私有）"></a>3、本地方法区（线程私有）</h5><p>​    本地方法区和Java Stack作用类似，区别是虚拟机栈为执行Java方法服务，而本地方法栈则为Native方法服务，如果一个VM实现使用C-linkage模型来支持Native调用，那么该栈将会是一个C栈，但是HotSpot VM直接就把本地方法栈和虚拟机栈合二为一。</p>
-<h5 id="4、堆（Heap-线程共享）-运行时数据区"><a href="#4、堆（Heap-线程共享）-运行时数据区" class="headerlink" title="4、堆（Heap-线程共享）-运行时数据区"></a>4、堆（Heap-线程共享）-运行时数据区</h5><p>​    是被线程共享的一块内存区域，创建的对象和数组都保存在Java堆内存中，也是垃圾收集器进行垃圾收集的最重要的内存区域。由于现代VM采用分代收集算法，因此Java堆从GC的角度还可以细分为：新生代(Eden区，From Survivor区、To Survivor区)和老年代。</p>
-<h5 id="5、方法区-永久代（线程共享）"><a href="#5、方法区-永久代（线程共享）" class="headerlink" title="5、方法区/永久代（线程共享）"></a>5、方法区/永久代（线程共享）</h5><p>​    我们常说的永久代（Permanent Generation），用于存储被JVM加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。HotSpot VM把GC分代收集扩展到方法区，也就是使用Java堆的永久代来实现方法区，这样HotSpot的垃圾收集器就可以像管理Java堆一样管理这部分内存，而不必为方法区开发专门的内存管理器（永久代的内存回收的主要目标是针对常量池的回收和类型的卸载，因此收益一般很小）</p>
-<p>​    运行时常量池（Runtime Constant Pool）是方法区的一部分。Class文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项信息是常量池(Constant Pool Table)，用于存放编译期生成的各种字面量和符号引用，这部分内容将在类加载后存放到方法区的运行时常量池中。Java虚拟机对Class文件的每一部分（自然也包括常量池）的格式都有严格的规定，每一个字节用于存储哪种数据都必须符合规范上的要求，这样才会被虚拟机认可、装载和执行。</p>
-<h4 id="3-3、JVM运行时内存"><a href="#3-3、JVM运行时内存" class="headerlink" title="3.3、JVM运行时内存"></a>3.3、JVM运行时内存</h4><p>Java堆从GC的角度还可以细分为：新生代（Eden区、From Survivor区和To Survivor区）和老年区</p>
-<p>堆（Heap）</p>
-<p>新生代（1/3）堆空间 ：Eden(8/10)，From Survivor(1/10)，To Survivor(1/10)</p>
-<p>老年代(2/3)堆空间</p>
-<h5 id="1、新生代"><a href="#1、新生代" class="headerlink" title="1、新生代"></a>1、新生代</h5><p>​    用来存放新生的对象。一般占据堆的1/3空间。由于频繁创建对象，所以新生代会频繁触发MinorGC进行垃圾回收。新生代又分为Eden区、From Survivor区，To Survivor三个区。</p>
-<ul>
-<li><p>Eden区</p>
-<p>Java新对象的出生地 （如果新创建的对象占用内存很大，则直接分配到老年代）。当Eden区内存不够的时候就会触发MinorGC，对新生代区进行一次垃圾回收。</p>
-</li>
-<li><p>From Survivor区</p>
-<p>上一次GC的幸存者，作为这一次GC的被扫描者</p>
-</li>
-<li><p>To Survivor区</p>
-<p>保留了一次MinorGC过程中的幸存者</p>
-</li>
-<li><p>MinorGC的过程</p>
-<p>复制—&gt;清空—&gt;互换</p>
-<p>MinorGC采用复制算法。</p>
-</li>
-</ul>
-<h6 id="1、-Eden、From-Survivor复制到To-Survivor，年龄-1"><a href="#1、-Eden、From-Survivor复制到To-Survivor，年龄-1" class="headerlink" title="1、 Eden、From Survivor复制到To Survivor，年龄+1"></a>1、 Eden、From Survivor复制到To Survivor，年龄+1</h6><p>​    首先，把Eden和From Survivor区域中存活的对象复制到To Survivor区域(如果有对象的年龄以及达到了老年的标准，则赋值到老年区)，同时把这些对象的年龄+1（如果To Survivor不够位置了就放到老年区）</p>
-<h6 id="2、清空Eden、From-Survivor"><a href="#2、清空Eden、From-Survivor" class="headerlink" title="2、清空Eden、From Survivor"></a>2、清空Eden、From Survivor</h6><p>​    然后，清空Eden和From Survivor中的对象 。</p>
-<h6 id="3、To-Survivor和From-Survivor互换"><a href="#3、To-Survivor和From-Survivor互换" class="headerlink" title="3、To Survivor和From Survivor互换"></a>3、To Survivor和From Survivor互换</h6><p>​    最后，To Survivor和From Survivor互换，原To Survivor成为下一次GC的From Survivor区。</p>
-<h5 id="2、老年代"><a href="#2、老年代" class="headerlink" title="2、老年代"></a>2、老年代</h5><p>​    主要存放应用程序中生命周期长的内存对象。</p>
-<p>​    老年代的对象比较稳定，所以MajorGC不会频繁执行。在进行MajorGC前一般都先进行了一次MinorGC，使得有新生代的对象晋身入老年代，导致空间不够用时才触发。当无法找到足够大的连续空间分配给新创建的较大对象的时候，也会提前触发一次MajorGC进行了垃圾回收腾出空间。</p>
-<p>​    MajorGC采用标记清除算法：首先扫描一次所有老年代，标记出存活的对象，然后回收没有标记的对象。MajorGC的耗时比较长，因为要扫描再回收 。MajorGC会产生 内存碎片，为了减少内存损耗，我们一般需要进行合并或者标记出来方便下次直接分配。当老年代也满了装不下的时候，就会抛出OOM(OutOfMemory)异常。</p>
-<h5 id="3、永久代"><a href="#3、永久代" class="headerlink" title="3、永久代"></a>3、永久代</h5><p>​    内存的永久保存区域。主要存放Class和Meta(元数据)的信息，Class被加载的时候被放入永久区域，它和存放实例的区域不同，GC不会再逐层序运行期对永久区域进行清理。所以这也导致了永久代的区域会随着加载的Class的增多而胀满，最终抛出OOM异常。</p>
-<h6 id="1、Java8与Meta元数据"><a href="#1、Java8与Meta元数据" class="headerlink" title="1、Java8与Meta元数据"></a>1、Java8与Meta元数据</h6><p>​    在Java8中，永久代已经被移除，被一个成为元数据区(元空间)的区域所取代。元空间的本质和永久代类似，元空间与永久代之间最大的区别是：元空间并不在虚拟机中，而是使用本地内存。在默认情况下，元空间的大小仅受本地内存限制，类的元数据放入Native Memory，字符串池和静态变量放入Java堆中，这样可以加载多少类的元数据就不再由MaxPermSize控制，而由系统的实际可用空间来控制。</p>
-<h4 id="4、垃圾回收与算法"><a href="#4、垃圾回收与算法" class="headerlink" title="4、垃圾回收与算法"></a>4、垃圾回收与算法</h4>
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2018/06/12/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/">展开全文 >></a>
     </p>
     
 

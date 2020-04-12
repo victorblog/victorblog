@@ -6,20 +6,29 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://victorblog.github.io">
-  <title>AOP的使用 | VictorDan</title>
+  <title>消息中间件RabbitMQ | VictorDan</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="AOP的使用">
-<meta name="keywords" content="Java">
+  <meta name="description" content="消息中间件RabbitMQ">
+<meta name="keywords" content="分布式中间件">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AOP的使用">
-<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2017&#x2F;07&#x2F;03&#x2F;AOP%E7%9A%84%E4%BD%BF%E7%94%A8&#x2F;index.html">
+<meta property="og:title" content="消息中间件RabbitMQ">
+<meta property="og:url" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;07&#x2F;%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ&#x2F;index.html">
 <meta property="og:site_name" content="VictorDan">
-<meta property="og:description" content="AOP的使用">
+<meta property="og:description" content="消息中间件RabbitMQ">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-11T07:24:25.400Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;07&#x2F;%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ&#x2F;RabbitMQ%E7%9A%84%E4%BD%9C%E7%94%A8.jpeg">
+<meta property="og:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;07&#x2F;%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ&#x2F;%E4%BC%A0%E7%BB%9F%E7%94%A8%E6%88%B7%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.jpeg">
+<meta property="og:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;07&#x2F;%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ&#x2F;%E5%BC%95%E5%85%A5RabbitMQ%E7%9A%84%E7%94%A8%E6%88%B7%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.jpeg">
+<meta property="og:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;07&#x2F;%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ&#x2F;%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E5%95%86%E5%93%81%E6%8A%A2%E8%B4%AD%E6%B4%BB%E5%8A%A8%E4%BC%A0%E7%BB%9F%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg">
+<meta property="og:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;07&#x2F;%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ&#x2F;%E5%BC%95%E5%85%A5RabbitMQ%E7%9A%84%E5%95%86%E5%93%81%E6%8A%A2%E8%B4%AD%E6%B5%81%E7%A8%8B.jpeg">
+<meta property="og:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;07&#x2F;%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ&#x2F;%E6%8A%A2%E7%A5%A8%E6%88%90%E5%8A%9F%E5%90%8E30%E5%88%86%E9%92%9F%E5%86%85%E6%9C%AA%E4%BB%98%E6%AC%BE%E7%9A%84%E4%BC%A0%E7%BB%9F%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg">
+<meta property="og:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;07&#x2F;%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ&#x2F;%E5%BC%95%E5%85%A5RabbitMQ%E4%BC%98%E5%8C%96%E6%8A%A2%E7%A5%A8%E6%88%90%E5%8A%9F%E5%90%8E30%E5%88%86%E9%92%9F%E5%86%85%E6%9C%AA%E4%BB%98%E6%AC%BE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg">
+<meta property="og:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;07&#x2F;%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ&#x2F;RabbitMQ%E5%90%8E%E5%8F%B0.png">
+<meta property="og:updated_time" content="2020-04-12T14:55:10.035Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;victorblog.github.io&#x2F;2018&#x2F;07&#x2F;07&#x2F;%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ&#x2F;RabbitMQ%E7%9A%84%E4%BD%9C%E7%94%A8.jpeg">
   
     <link rel="alternative" href="../../../../atom.xml" title="VictorDan" type="application/atom+xml">
   
@@ -222,14 +231,14 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-AOP的使用" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-消息中间件RabbitMQ" class="article article-type-post " itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
   
   
     <h1 class="article-title" itemprop="name">
-      AOP的使用
+      消息中间件RabbitMQ
     </h1>
   
 
@@ -242,7 +251,7 @@
         </span>
 
 <a href="" class="archive-article-date">
-        <time datetime="2017-07-03T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-03</time>
+        <time datetime="2018-07-07T07:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-07</time>
 </a>
 
   
@@ -255,7 +264,7 @@
       <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
       <i class="icon-statistics"></i>
       <span class="post-meta-item-text"> 字数统计:</span>
-      <span class="post-count">714字</span>
+      <span class="post-count">1.4k字</span>
     </span>
   </span>
 
@@ -264,7 +273,7 @@
     <span class="post-meta-item-icon">
       <i class="icon-book icon"></i>
       <span class="post-meta-item-text"> 阅读时长≈</span>
-      <span class="post-count">3分</span>
+      <span class="post-count">4分</span>
     </span>
   </span>
 </div>
@@ -275,17 +284,69 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h2 id="一、实际开发中AOP的使用"><a href="#一、实际开发中AOP的使用" class="headerlink" title="一、实际开发中AOP的使用"></a>一、实际开发中AOP的使用</h2><p>背景，为了打印controller的接口信息，以及传参等到log日志文件，方便后期查找问题。</p>
-<h3 id="1、首先定义一个注解类Log"><a href="#1、首先定义一个注解类Log" class="headerlink" title="1、首先定义一个注解类Log"></a>1、首先定义一个注解类Log</h3><p>首先在项目的结构下，创建一个package叫做annotation包</p>
-<p>然后新建一个注解类@interface,在IDEA中的new-&gt;class中选Annotation项目</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.METHOD)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Log &#123;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2、指定-Log注解使用的切面"><a href="#2、指定-Log注解使用的切面" class="headerlink" title="2、指定@Log注解使用的切面"></a>2、指定@Log注解使用的切面</h3><p>在项目的结构下，新建一个package叫做aop</p>
-<p>然后新建一个类LogAspect</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>:日志切面</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: VictorDan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 19-7-30 上午10:07</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span>: 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LogAspect</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> Logger logger = LoggerFactory.getLogger(LogAspect<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * controller层切点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"@annotation(com.anjuke.ai.annotation.Log)"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">controllerAspect</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 前置通知，用于拦截controller层记录用户的操作</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> joinPoint 切点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> ClassNotFoundException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"controllerAspect()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">(JoinPoint joinPoint)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();</span><br><span class="line">        logger.info(<span class="string">"请求IP：&#123;&#125;"</span>,request.getRemoteAddr());</span><br><span class="line">        logger.info(<span class="string">"请求路径：&#123;&#125;"</span>,request.getRequestURL());</span><br><span class="line">        logger.info(<span class="string">"请求方式：&#123;&#125;"</span>,request.getMethod());</span><br><span class="line">        logger.info(<span class="string">"方法描述：&#123;&#125;"</span>,getMethodDescription(joinPoint));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 环绕通知，用于方法执行结束，返回值的打印</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> joinPoint</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Throwable</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Around</span>(<span class="string">"controllerAspect()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">around</span><span class="params">(ProceedingJoinPoint joinPoint)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> startTime=System.currentTimeMillis();</span><br><span class="line">        Object[] args = joinPoint.getArgs();</span><br><span class="line">        Object proceed = joinPoint.proceed(args);</span><br><span class="line">        String result = <span class="string">"null"</span>;</span><br><span class="line">        <span class="keyword">if</span> (proceed != <span class="keyword">null</span>) &#123;</span><br><span class="line">            result = proceed.toString();</span><br><span class="line">            <span class="keyword">if</span> (result.length() &gt; <span class="number">90</span>) &#123;</span><br><span class="line">                result = result.substring(<span class="number">0</span>, <span class="number">90</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">long</span> endTime=System.currentTimeMillis();</span><br><span class="line">        logger.info(<span class="string">"执行时间：&#123;&#125;ms"</span>,endTime-startTime);</span><br><span class="line">        logger.info(<span class="string">"返回值：&#123;&#125;\n\t"</span>, result);</span><br><span class="line">        <span class="keyword">return</span> proceed;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 异常通知，用来拦截controller层的异常日志</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ex</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@AfterThrowing</span>(throwing = <span class="string">"ex"</span>,pointcut = <span class="string">"controllerAspect()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterThrowing</span><span class="params">(Throwable ex)</span></span>&#123;</span><br><span class="line">        logger.error(<span class="string">"发生异常：&#123;&#125;"</span>,ex.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取注解中对方法的描述信息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> point 切点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 方法描述</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> ClassNotFoundException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getMethodDescription</span><span class="params">(JoinPoint point)</span> <span class="keyword">throws</span> ClassNotFoundException </span>&#123;</span><br><span class="line">        String targetName = point.getTarget().getClass().getName();</span><br><span class="line">        String methodName = point.getSignature().getName();</span><br><span class="line">        Object[] args = point.getArgs();</span><br><span class="line">        Class&lt;?&gt; targetClass = Class.forName(targetName);</span><br><span class="line">        Method[] methods = targetClass.getMethods();</span><br><span class="line"></span><br><span class="line">        String description=<span class="string">""</span>;</span><br><span class="line">        <span class="keyword">for</span> (Method method:methods) &#123;</span><br><span class="line">            <span class="keyword">if</span>(method.getName().equals(methodName))&#123;</span><br><span class="line">                Class&lt;?&gt;[] clazz = method.getParameterTypes();</span><br><span class="line">                <span class="keyword">if</span>(clazz.length==args.length)&#123;</span><br><span class="line">                    description=method.getAnnotation(Log<span class="class">.<span class="keyword">class</span>).<span class="title">value</span>()</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> description;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@RequestBody</span>的数据，只能通过流来读取，而controller读取过request的数据，流就会关闭，所以log打印不出。</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> httpServletRequest</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getRequestData</span><span class="params">(HttpServletRequest httpServletRequest)</span></span>&#123;</span><br><span class="line">        HttpServletRequestWrapper httpServletRequestWrapper = <span class="keyword">new</span> HttpServletRequestWrapper(httpServletRequest);</span><br><span class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        BufferedReader reader = <span class="keyword">null</span>;</span><br><span class="line">        InputStreamReader inputStreamReader=<span class="keyword">null</span>;</span><br><span class="line">        ServletInputStream servletInputStream =<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            servletInputStream =  httpServletRequestWrapper.getInputStream();</span><br><span class="line">            inputStreamReader=<span class="keyword">new</span> InputStreamReader (servletInputStream, Charset.forName(<span class="string">"UTF-8"</span>));</span><br><span class="line">            reader = <span class="keyword">new</span> BufferedReader(inputStreamReader);</span><br><span class="line">            String line = <span class="string">""</span>;</span><br><span class="line">            <span class="keyword">while</span> ((line = reader.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                sb.append(line);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            logger.error(<span class="string">"IO异常：&#123;&#125;"</span>,e.getMessage());</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span>(servletInputStream!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    servletInputStream.close();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(inputStreamReader!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    inputStreamReader.close();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(reader!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    reader.close();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                logger.error(<span class="string">"IO异常：&#123;&#125;"</span>,e.getMessage());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sb.toString ();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="3、在Controller中方法的注解使用就行"><a href="#3、在Controller中方法的注解使用就行" class="headerlink" title="3、在Controller中方法的注解使用就行"></a>3、在Controller中方法的注解使用就行</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping</span>(<span class="string">"/key-data"</span>)</span><br><span class="line">    <span class="meta">@Log</span>(value = <span class="string">"关键数据"</span>)</span><br><span class="line">    <span class="keyword">public</span> ResponseEntity&lt;Map&lt;String, Object&gt;&gt; getKeyDataDaily(<span class="meta">@RequestBody</span> KeyDataDailyRequest request) &#123;</span><br><span class="line">        BrokerUserSession brokerUserSession = getBrokerUserSession();</span><br><span class="line">        Long brokerId = brokerUserSession.getUserId();</span><br><span class="line">        request.setBrokerId(brokerId);</span><br><span class="line">        Map&lt;String, Object&gt; data = service.getKeyDataDaily(request);</span><br><span class="line">        <span class="keyword">boolean</span> flag = service.isThirtyDailyPmPropZero(request);</span><br><span class="line">        data.put(<span class="string">"isZero"</span>,flag);</span><br><span class="line">        <span class="keyword">return</span> resultOK(data);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+    <h1 id="一、消息中间件RabbitMQ"><a href="#一、消息中间件RabbitMQ" class="headerlink" title="一、消息中间件RabbitMQ"></a>一、消息中间件RabbitMQ</h1><h3 id="1、RabbitMQ介绍"><a href="#1、RabbitMQ介绍" class="headerlink" title="1、RabbitMQ介绍"></a>1、RabbitMQ介绍</h3><ul>
+<li>RabbitMQ是一个开源并实现了高级消息队列协议(AMQP)的消息中间件，支持单一节点部署，也支持多个节点的集群部署。</li>
+<li>RabbitMQ提供了后端管理控制台，用来实现RabbitMQ的队列，交换机，路由，消息和服务节点的管理。</li>
+<li>RabbitMQ可以通过客户端管理相应的用户，主要是分配相应的操作权限和数据管理权限</li>
+</ul>
+<h3 id="2、RabbitMQ应用场景"><a href="#2、RabbitMQ应用场景" class="headerlink" title="2、RabbitMQ应用场景"></a>2、RabbitMQ应用场景</h3><p>RabbitMQ实现了高性能存储分发消息的分布式中间件，它的作用如下图</p>
+<p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/RabbitMQ%E7%9A%84%E4%BD%9C%E7%94%A8.jpeg" alt></p>
+<h4 id="2-1、异步通信和服务解耦"><a href="#2-1、异步通信和服务解耦" class="headerlink" title="2.1、异步通信和服务解耦"></a>2.1、异步通信和服务解耦</h4><h5 id="1、以用户注册为场景，传统的方式用户注册过程如下"><a href="#1、以用户注册为场景，传统的方式用户注册过程如下" class="headerlink" title="1、以用户注册为场景，传统的方式用户注册过程如下"></a>1、以用户注册为场景，传统的方式用户注册过程如下</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E4%BC%A0%E7%BB%9F%E7%94%A8%E6%88%B7%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<ul>
+<li>分析用户注册流程，核心业务就是判断用户注册信息的合法性以及把用户信息写入到数据库。</li>
+<li>发送邮件，短信验证码服务不归属用户注册的核心流程，可以使用消息中间件进行异步通信，将这一块解耦出来。</li>
+</ul>
+<h5 id="2、引入RabbitMQ消息中间件后用户注册的流程"><a href="#2、引入RabbitMQ消息中间件后用户注册的流程" class="headerlink" title="2、引入RabbitMQ消息中间件后用户注册的流程"></a>2、引入RabbitMQ消息中间件后用户注册的流程</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E5%BC%95%E5%85%A5RabbitMQ%E7%9A%84%E7%94%A8%E6%88%B7%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<h5 id="3、好处"><a href="#3、好处" class="headerlink" title="3、好处"></a>3、好处</h5><ul>
+<li>引入RabbitMQ，可以将一条业务线走到底，系统的接口的整体响应时间明显降低，实现了低延迟，给用户带啦很好的体验效果。</li>
+</ul>
+<h4 id="2-2、接口限流和消息分发"><a href="#2-2、接口限流和消息分发" class="headerlink" title="2.2、接口限流和消息分发"></a>2.2、接口限流和消息分发</h4><h5 id="1、以电商网站商品抢购活动的传统处理流程"><a href="#1、以电商网站商品抢购活动的传统处理流程" class="headerlink" title="1、以电商网站商品抢购活动的传统处理流程"></a>1、以电商网站商品抢购活动的传统处理流程</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E5%95%86%E5%93%81%E6%8A%A2%E8%B4%AD%E6%B4%BB%E5%8A%A8%E4%BC%A0%E7%BB%9F%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<ul>
+<li>分析抢购活动开始的那一刻，将会产生巨大的用户抢购流量，请求几乎在同一时刻到达后端系统接口。</li>
+<li>首先校验用户和商品信息的合法性，校验通过后</li>
+<li>会判断当前商品的库存是否重组，如果充足，代表当前用户将能成功抢购</li>
+<li>最后将用户抢购成功的相关数据保存到数据库</li>
+<li>异步通知用户抢购成功，尽快进行付款</li>
+</ul>
+<p>分析发现后端接口在处理用户抢购整体业务流程太长，业务处理逻辑，先取出库存然后进行判断，然后进行减1更新。在高并发情况下，会导致商品超卖，数据不一致，用户等待时间过长，系统接口直接挂了，如果是商品抢购，商品秒杀等某一时刻产生高并发的请求就不行了。</p>
+<h5 id="2、引入RabbitMQ的商品抢购流程"><a href="#2、引入RabbitMQ的商品抢购流程" class="headerlink" title="2、引入RabbitMQ的商品抢购流程"></a>2、引入RabbitMQ的商品抢购流程</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E5%BC%95%E5%85%A5RabbitMQ%E7%9A%84%E5%95%86%E5%93%81%E6%8A%A2%E8%B4%AD%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<ul>
+<li>引入RabbitMQ主要用来优化系统如下：<ul>
+<li>接口限流：当前端产生高并发请求的时候，不会立刻到达后端接口，而是先将请求按照先来后到加入到RabbitMQ队列，一定程度上实现接口限流。</li>
+<li>消息异步分发：当商品库存充足，当前抢购的用户将可以抢到商品，然后会异步发送短信通知用户抢购成功，然后告知用户付款，一定程度上实现消息异步分发。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-3、业务延迟处理"><a href="#2-3、业务延迟处理" class="headerlink" title="2.3、业务延迟处理"></a>2.3、业务延迟处理</h4><h5 id="1、实际场景分析"><a href="#1、实际场景分析" class="headerlink" title="1、实际场景分析"></a>1、实际场景分析</h5><ul>
+<li>以12306抢票来分析，春运的时候12306抢票抢到车票的时候，12306会提醒用户，请在30分钟内付款。</li>
+<li>正常情况用户会立刻付款，然后付款成功12306会发短信通知。</li>
+<li>然而也存在一些特殊情况，比如抢到车票的用户迟迟没有付款，过了30分钟，系统会自动取消这笔订单。</li>
+<li>需要延迟一定的时间后再进行处理的业务在实际生产环境常见。</li>
+</ul>
+<h5 id="2、传统处理方式-采用定时器"><a href="#2、传统处理方式-采用定时器" class="headerlink" title="2、传统处理方式-采用定时器"></a>2、传统处理方式-采用定时器</h5><ul>
+<li><p>传统处理方式采用一个定时器定时的去获取用户没有付款的订单，然后判断用户的下单时间距离当前时间是否超过30分钟，超过没有付款则设置订单失效。</p>
+<p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E6%8A%A2%E7%A5%A8%E6%88%90%E5%8A%9F%E5%90%8E30%E5%88%86%E9%92%9F%E5%86%85%E6%9C%AA%E4%BB%98%E6%AC%BE%E7%9A%84%E4%BC%A0%E7%BB%9F%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<ul>
+<li>分析发现，春运抢票可以看做是一个大数据量，高并发请求场景，如果定时器频繁的从数据库获取未付款状态的订单，数据量非常大，假如有大量用户在30分钟内没付款，那么数据库中获取数据量一直增长，达到一定程度，给数据库服务器和应用服务器带来巨大的压力，直接压跨服务器，导致抢票全线崩溃。</li>
+<li>早期12306网站每次赶上春运，经常出现网站崩溃卡顿无响应等状态，因为某一时刻产生高并发，定时频繁拉取数据库得到数据量过大，导致内存，CPU，网络和数据库服务负载过高导致的。</li>
+</ul>
+</li>
+</ul>
+<h5 id="2、引入RabbitMQ优化"><a href="#2、引入RabbitMQ优化" class="headerlink" title="2、引入RabbitMQ优化"></a>2、引入RabbitMQ优化</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E5%BC%95%E5%85%A5RabbitMQ%E4%BC%98%E5%8C%96%E6%8A%A2%E7%A5%A8%E6%88%90%E5%8A%9F%E5%90%8E30%E5%88%86%E9%92%9F%E5%86%85%E6%9C%AA%E4%BB%98%E6%AC%BE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg" alt>    </p>
+<ul>
+<li>优化流程看出，RabbitMQ的引入主要替代传统处理流程的定时器处理逻辑，而采用RabbitMQ的延迟队列来进行处理。</li>
+<li>延迟队列：可以延迟一定的时间后再处理相应的业务逻辑</li>
+<li>常见的成功抢到票30分钟没付款流程，商城抢购没有在规定时间付款，点外卖下单成功后，没有在规定时间付款的流程，都是用RabbitMQ的延迟队列来实现。</li>
+</ul>
+<h3 id="3、RabbitMQ的简单使用"><a href="#3、RabbitMQ的简单使用" class="headerlink" title="3、RabbitMQ的简单使用"></a>3、RabbitMQ的简单使用</h3><ul>
+<li><p>由于我本地使用docker来运行RabbitMQ，如何使用docker安装RabbitMQ以及运行，<a href="https://victorblog.github.io/2018/09/03/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/#1%E3%80%81docker%E4%B8%8B%E7%9A%84RabbitMQ%E6%8B%89%E5%8F%96">请点击链接看我这篇博客</a></p>
+</li>
+<li><p>运行好RabbitMQ后，然后浏览器输入访问地址(<a href="http://localhost:15672/">http://localhost:15672/</a>)</p>
+</li>
+<li><p>默认用户名密码都为guest/guest，即可进入RabbitMQ管理后台</p>
+<p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/RabbitMQ%E5%90%8E%E5%8F%B0.png" alt></p>
+</li>
+</ul>
 
     
 
@@ -332,7 +393,7 @@
         </li>
         <li>
           <strong>本文链接：</strong>
-          <a href="https://victorblog.github.io/2017/07/03/AOP的使用/" title="AOP的使用" target="_blank">https://victorblog.github.io/2017/07/03/AOP的使用/</a>
+          <a href="https://victorblog.github.io/2018/07/07/消息中间件RabbitMQ/" title="消息中间件RabbitMQ" target="_blank">https://victorblog.github.io/2018/07/07/消息中间件RabbitMQ/</a>
         </li>
         <li>
           <strong>版权声明： </strong>
@@ -351,7 +412,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">分布式中间件</a>
         		</li>
       		
 		</ul>
@@ -407,7 +468,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://victorblog.github.io/2017/07/03/AOP%E7%9A%84%E4%BD%BF%E7%94%A8/" alt="微信分享二维码"> -->
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=https://victorblog.github.io/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/" alt="微信分享二维码"> -->
     </div>
 </div>
 
@@ -422,18 +483,18 @@
 
 <nav id="article-nav">
   
-    <a href="../Java%E9%9D%A2%E8%AF%95/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="../../21/%E4%B8%80%E3%80%81G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%BB%8B%E7%BB%8D/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Java的常识总结
+          G1垃圾回收
         
       </div>
     </a>
   
   
-    <a href="../../02/Java%E7%89%88%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Java数据结构</div>
+    <a href="../../../06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Redis应用场景之抢红包系统(四)</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -460,7 +521,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、实际开发中AOP的使用"><span class="toc-number">1.</span> <span class="toc-text">一、实际开发中AOP的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、首先定义一个注解类Log"><span class="toc-number">1.1.</span> <span class="toc-text">1、首先定义一个注解类Log</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、指定-Log注解使用的切面"><span class="toc-number">1.2.</span> <span class="toc-text">2、指定@Log注解使用的切面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、在Controller中方法的注解使用就行"><span class="toc-number">1.3.</span> <span class="toc-text">3、在Controller中方法的注解使用就行</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、消息中间件RabbitMQ"><span class="toc-number">1.</span> <span class="toc-text">一、消息中间件RabbitMQ</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、RabbitMQ介绍"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、RabbitMQ介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、RabbitMQ应用场景"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、RabbitMQ应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1、异步通信和服务解耦"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">2.1、异步通信和服务解耦</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、以用户注册为场景，传统的方式用户注册过程如下"><span class="toc-number">1.0.2.1.1.</span> <span class="toc-text">1、以用户注册为场景，传统的方式用户注册过程如下</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、引入RabbitMQ消息中间件后用户注册的流程"><span class="toc-number">1.0.2.1.2.</span> <span class="toc-text">2、引入RabbitMQ消息中间件后用户注册的流程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3、好处"><span class="toc-number">1.0.2.1.3.</span> <span class="toc-text">3、好处</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2、接口限流和消息分发"><span class="toc-number">1.0.2.2.</span> <span class="toc-text">2.2、接口限流和消息分发</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、以电商网站商品抢购活动的传统处理流程"><span class="toc-number">1.0.2.2.1.</span> <span class="toc-text">1、以电商网站商品抢购活动的传统处理流程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、引入RabbitMQ的商品抢购流程"><span class="toc-number">1.0.2.2.2.</span> <span class="toc-text">2、引入RabbitMQ的商品抢购流程</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3、业务延迟处理"><span class="toc-number">1.0.2.3.</span> <span class="toc-text">2.3、业务延迟处理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、实际场景分析"><span class="toc-number">1.0.2.3.1.</span> <span class="toc-text">1、实际场景分析</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、传统处理方式-采用定时器"><span class="toc-number">1.0.2.3.2.</span> <span class="toc-text">2、传统处理方式-采用定时器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、引入RabbitMQ优化"><span class="toc-number">1.0.2.3.3.</span> <span class="toc-text">2、引入RabbitMQ优化</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、RabbitMQ的简单使用"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、RabbitMQ的简单使用</span></a></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -486,9 +547,9 @@
     <script src="https://giteement.oss-cn-beijing.aliyuncs.com/giteement.browser.js"></script>
   
   <script>
-  <!-- id: "AOP的使用" -->
+  <!-- id: "消息中间件RabbitMQ" -->
   var giteement = new Giteement({
-    id: '20170703100600',
+    id: '20180707150600',
     owner: 'victorblog',
     repo: 'victorblog.comment',
     backcall_uri: 'https://victorblog.github.io/',
@@ -517,7 +578,7 @@
             <div id="toc-article" class="toc-article">
                 <span id="toc-close" class="toc-close" title="隐藏导航" onclick="showBtn();">×</span>
                 <strong class="toc-title">文章目录</strong>
-                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、实际开发中AOP的使用"><span class="toc-number">1.</span> <span class="toc-text">一、实际开发中AOP的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、首先定义一个注解类Log"><span class="toc-number">1.1.</span> <span class="toc-text">1、首先定义一个注解类Log</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、指定-Log注解使用的切面"><span class="toc-number">1.2.</span> <span class="toc-text">2、指定@Log注解使用的切面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、在Controller中方法的注解使用就行"><span class="toc-number">1.3.</span> <span class="toc-text">3、在Controller中方法的注解使用就行</span></a></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、消息中间件RabbitMQ"><span class="toc-number">1.</span> <span class="toc-text">一、消息中间件RabbitMQ</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、RabbitMQ介绍"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、RabbitMQ介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、RabbitMQ应用场景"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、RabbitMQ应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1、异步通信和服务解耦"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">2.1、异步通信和服务解耦</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、以用户注册为场景，传统的方式用户注册过程如下"><span class="toc-number">1.0.2.1.1.</span> <span class="toc-text">1、以用户注册为场景，传统的方式用户注册过程如下</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、引入RabbitMQ消息中间件后用户注册的流程"><span class="toc-number">1.0.2.1.2.</span> <span class="toc-text">2、引入RabbitMQ消息中间件后用户注册的流程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3、好处"><span class="toc-number">1.0.2.1.3.</span> <span class="toc-text">3、好处</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2、接口限流和消息分发"><span class="toc-number">1.0.2.2.</span> <span class="toc-text">2.2、接口限流和消息分发</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、以电商网站商品抢购活动的传统处理流程"><span class="toc-number">1.0.2.2.1.</span> <span class="toc-text">1、以电商网站商品抢购活动的传统处理流程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、引入RabbitMQ的商品抢购流程"><span class="toc-number">1.0.2.2.2.</span> <span class="toc-text">2、引入RabbitMQ的商品抢购流程</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3、业务延迟处理"><span class="toc-number">1.0.2.3.</span> <span class="toc-text">2.3、业务延迟处理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、实际场景分析"><span class="toc-number">1.0.2.3.1.</span> <span class="toc-text">1、实际场景分析</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、传统处理方式-采用定时器"><span class="toc-number">1.0.2.3.2.</span> <span class="toc-text">2、传统处理方式-采用定时器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、引入RabbitMQ优化"><span class="toc-number">1.0.2.3.3.</span> <span class="toc-text">2、引入RabbitMQ优化</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、RabbitMQ的简单使用"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、RabbitMQ的简单使用</span></a></li></ol></li></ol></li></ol>
            </div>
            <script type="text/javascript">
             function showToc(){

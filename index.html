@@ -1243,7 +1243,7 @@
 
 <h1 id="十六、安装Docker"><a href="#十六、安装Docker" class="headerlink" title="十六、安装Docker"></a>十六、安装Docker</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">安装之前先更新</span></span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br><span class="line">sudo apt install docker.io</span><br><span class="line"><span class="meta">#</span><span class="bash">启用docker</span></span><br><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl enable docker</span><br><span class="line">docker -v</span><br><span class="line"><span class="meta">#</span><span class="bash">查看已经pull的镜像</span></span><br><span class="line">sudo docker images</span><br></pre></td></tr></table></figure>
 
-<h4 id="1、docker下的RabbitMQ拉取"><a href="#1、docker下的RabbitMQ拉取" class="headerlink" title="1、docker下的RabbitMQ拉取"></a>1、docker下的RabbitMQ拉取</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">使用国内镜像加速安装unbuntu18.04镜像</span></span><br><span class="line">sudo docker pull registry.docker-cn.com/library/ubuntu:18.04</span><br><span class="line"><span class="meta">#</span><span class="bash">安装RabbitMQ</span></span><br><span class="line">sudo docker pull registry.docker-cn.com/library/rabbitmq:3-management</span><br><span class="line"><span class="meta">#</span><span class="bash">运行RabbitMQ</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -d:表示后台运行</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -p：表示暴露端口号</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --name myrabbitmq：指定名字</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> a829a97a0435：对应的image id</span></span><br><span class="line">sudo docker run -d -p 5672:5672 -p 15672:15672 --name myrabbitmq a829a97a0435</span><br><span class="line"><span class="meta">#</span><span class="bash">查看进程</span></span><br><span class="line">sudo docker ps</span><br><span class="line"><span class="meta">#</span><span class="bash">访问RabbitMQ</span></span><br><span class="line">localhost:15672</span><br><span class="line">0.0.0.0:15672</span><br><span class="line"><span class="meta">#</span><span class="bash">登录</span></span><br><span class="line">用户名：guest</span><br><span class="line">密码：guest</span><br></pre></td></tr></table></figure>
+<h4 id="1、docker下的RabbitMQ拉取"><a href="#1、docker下的RabbitMQ拉取" class="headerlink" title="1、docker下的RabbitMQ拉取"></a>1、docker下的RabbitMQ拉取</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">使用国内镜像加速安装unbuntu18.04镜像</span></span><br><span class="line">sudo docker pull registry.docker-cn.com/library/ubuntu:18.04</span><br><span class="line"><span class="meta">#</span><span class="bash">安装RabbitMQ</span></span><br><span class="line">sudo docker pull registry.docker-cn.com/library/rabbitmq:3-management</span><br><span class="line"><span class="meta">#</span><span class="bash">运行RabbitMQ</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -d:表示后台运行</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -p：表示暴露端口号</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --name myrabbitmq：指定名字</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> a829a97a0435：对应的image id</span></span><br><span class="line">sudo docker run -d -p 5672:5672 -p 15672:15672 --name myrabbitmq a829a97a0435</span><br><span class="line"><span class="meta">#</span><span class="bash">查看进程</span></span><br><span class="line">sudo docker ps</span><br><span class="line"><span class="meta">#</span><span class="bash">访问RabbitMQ</span></span><br><span class="line">localhost:15672</span><br><span class="line">0.0.0.0:15672</span><br><span class="line"><span class="meta">#</span><span class="bash">登录</span></span><br><span class="line">用户名：guest</span><br><span class="line">密码：guest</span><br><span class="line"><span class="meta">#</span><span class="bash">下一次启动</span></span><br><span class="line"><span class="meta">#</span><span class="bash">找到对应的Container ID</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">然后启动命令</span></span><br><span class="line">sudo docker start 213a1c20682e</span><br><span class="line"><span class="meta">#</span><span class="bash">停止命令</span></span><br><span class="line">sudo docker stop 213a1c20682e</span><br></pre></td></tr></table></figure>
 
 <p><img src="/2018/09/03/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/docker%E5%AE%89%E8%A3%85RabbitMQ.png" alt="安装RabbitMQ"></p>
 <p><img src="/2018/09/03/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/docker%E8%BF%90%E8%A1%8CRabbitMQ.png" alt="docker的RabbitMQ运行"></p>
@@ -1590,7 +1590,7 @@
 
 
   
-    <article id="post-Redis应用场景之抢红包系统-四" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-消息中间件RabbitMQ" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
       <header class="article-header">
@@ -1598,7 +1598,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/" target="_blank">Redis应用场景之抢红包系统(四)</a>
+	  <a class="article-title" href="2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/" target="_blank">消息中间件RabbitMQ</a>
   
     </h1>
   
@@ -1606,8 +1606,8 @@
 
   
   
-<a href="2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/" class="archive-article-date">
-        <time datetime="2018-06-21T07:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-21</time>
+<a href="2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/" class="archive-article-date">
+        <time datetime="2018-07-07T07:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-07</time>
 </a>
 
   
@@ -1619,87 +1619,68 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="一、Redis应用场景之抢红包系统-四"><a href="#一、Redis应用场景之抢红包系统-四" class="headerlink" title="一、Redis应用场景之抢红包系统(四)"></a>一、Redis应用场景之抢红包系统(四)</h1><h3 id="1、Jmeter压力测试高并发抢红包"><a href="#1、Jmeter压力测试高并发抢红包" class="headerlink" title="1、Jmeter压力测试高并发抢红包"></a>1、Jmeter压力测试高并发抢红包</h3><ul>
-<li><p>Apache Jmeter是Apache组织开发的基于Java的压力测试工具。可以用来模拟生产环境中高并发产生的巨大负载。</p>
-</li>
-<li><p><a href="https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.2.1.tgz">下载链接</a></p>
-</li>
-<li><p>下载好后，解压运行Jmeter</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd ~/下载/软件安装包</span><br><span class="line">tar -zxvf apache-jmeter-5.2.1.tgz</span><br><span class="line">cd apache-jmeter-5.2.1</span><br><span class="line">cd bin</span><br><span class="line">./jmeter.sh</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>首先用Postman先新建一个用户userId假设为10030，生成一个新的红包全局id</p>
-<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/postman%E5%8F%91%E7%BA%A2%E5%8C%85%E6%8E%A5%E5%8F%A3.png" alt></p>
-</li>
-<li><p>测试计划–&gt;右键–&gt;添加–&gt;线程(用户)–&gt;线程组</p>
-<p>线程组面板，设置线程属性，设置线程数为1000个</p>
-<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/Jmeter%E7%BA%BF%E7%A8%8B%E7%BB%84%E8%AE%BE%E7%BD%AE.png" alt></p>
-</li>
-<li><p>线程组–&gt;右键–&gt;添加–&gt;取样器–&gt;HTTP请求</p>
-<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/Jmeter%E7%9A%84Http%E8%AF%B7%E6%B1%82%E8%AE%BE%E7%BD%AE.png" alt></p>
-</li>
-<li><p>线程组–&gt;右键–&gt;添加–&gt;配置原件–&gt;CSV数据文件设置</p>
-<p>假设录入新的用户userId是从10030~10035的data.csv数据文件</p>
-<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/data%E7%9A%84csv%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6.png" alt></p>
-<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/Jmeter%E7%9A%84CSV%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E8%AE%BE%E7%BD%AE.png" alt></p>
-<p>然后点击Jmeter上面的三角符号运行按钮进行测试</p>
-</li>
-<li><p>线程组–&gt;右键–&gt;添加–&gt;监听器–&gt;查看结果树</p>
-<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/%E6%9F%A5%E7%9C%8B%E7%BB%93%E6%9E%9C%E6%A0%91%E7%9A%84%E5%93%8D%E5%BA%94%E7%BB%93%E6%9E%9C.png" alt></p>
-</li>
-<li><p>打开MySQL查询抢红包的明细表发现已经抢过红包的用户后续又抢到红包，比如10030已经抢过，后又抢到红包，说明是高并发引起的线程安全问题</p>
-<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/%E6%9F%A5%E8%AF%A2%E6%8A%A2%E7%BA%A2%E5%8C%85%E6%98%8E%E7%BB%86%E8%A1%A8.png" alt></p>
-</li>
+    <h1 id="一、消息中间件RabbitMQ"><a href="#一、消息中间件RabbitMQ" class="headerlink" title="一、消息中间件RabbitMQ"></a>一、消息中间件RabbitMQ</h1><h3 id="1、RabbitMQ介绍"><a href="#1、RabbitMQ介绍" class="headerlink" title="1、RabbitMQ介绍"></a>1、RabbitMQ介绍</h3><ul>
+<li>RabbitMQ是一个开源并实现了高级消息队列协议(AMQP)的消息中间件，支持单一节点部署，也支持多个节点的集群部署。</li>
+<li>RabbitMQ提供了后端管理控制台，用来实现RabbitMQ的队列，交换机，路由，消息和服务节点的管理。</li>
+<li>RabbitMQ可以通过客户端管理相应的用户，主要是分配相应的操作权限和数据管理权限</li>
 </ul>
-<h3 id="2、问题分析"><a href="#2、问题分析" class="headerlink" title="2、问题分析"></a>2、问题分析</h3><ul>
-<li>当某一时刻的同一个用户在疯狂的点红包，如果前端不加以控制，同一时间的同一个账户将发起多个抢红包请求。</li>
-<li>后端接口接收到这些请求后，很可能同时在redis中判断是否有红包，并成功通过，然后导致一个用户抢到多个红包。</li>
-<li>后端接口并没有考虑到高并发请求，原因在于当前请求还没有处理完核心业务逻辑，其他同样的请求过来，导致后端接口几乎来不及做重复判断</li>
-</ul>
-<h3 id="3、优化方案"><a href="#3、优化方案" class="headerlink" title="3、优化方案"></a>3、优化方案</h3><ul>
-<li>同一时刻多个并发的线程对共享资源进行了访问操作，导致最终出现数据不一致或者结果并非自己所预料的现象，就是多线程高并发时出现的并发安全问题。</li>
-<li>传统的单体Java应用，为了解决高并发，最常见的方法是在核心的业务逻辑代码中加锁，也就是Synchronized关键字。</li>
-<li>在微服务、分布式系统架构，这样做法行不通，因为Synchronized关键字是跟单一服务节点所在的JVM相关联，而分布式系统架构的服务一般是部署在不同的节点服务器上，从而当出现高并发请求时，Synchronized同步操作力不从心。</li>
-<li>为了保证单一节点核心业务代码的同步控制，也要保证当扩展到多个节点部署同样的实现核心业务逻辑，就出现了分布式锁。</li>
-<li>分布式锁只是一种解决方案，主要是为了解决分布式系统高并发请求时出现并发访问共享资源导致的并发安全问题；</li>
-<li>分布式锁的实现有多种<ul>
-<li>基于数据库级别的乐观锁和悲观锁</li>
-<li>基于Redis的原子操作实现分布式锁</li>
-<li>基于Zookeeper实现分布式锁</li>
-</ul>
-</li>
-</ul>
-<h3 id="4、Redis分布式锁实战"><a href="#4、Redis分布式锁实战" class="headerlink" title="4、Redis分布式锁实战"></a>4、Redis分布式锁实战</h3><h4 id="4-1、redis的底层分析"><a href="#4-1、redis的底层分析" class="headerlink" title="4.1、redis的底层分析"></a>4.1、redis的底层分析</h4><ul>
-<li>由于Redis底层架构是采用单线程进行设计的，所以它提供的这些操作都是单线程的，也就是操作具有原子性。</li>
-<li>原子性就是在同一时刻只能有一个线程来处理核心业务逻辑，当有其他线程对应的请求过来的时候，如果前面的线程没有处理完毕，那么当前线程将进入等待(阻塞)状态，直到前面的线程处理完毕。</li>
-</ul>
-<h4 id="4-2、分布式锁实现"><a href="#4-2、分布式锁实现" class="headerlink" title="4.2、分布式锁实现"></a>4.2、分布式锁实现</h4><ul>
-<li><p>因为抢红包的核心业务逻辑在于拆红包操作。</p>
-</li>
-<li><p>可以通过redis的原子操作setIfAbsent()方法对业务逻辑加分布式锁</p>
-</li>
-<li><p>setIfAbsent()方法：</p>
+<h3 id="2、RabbitMQ应用场景"><a href="#2、RabbitMQ应用场景" class="headerlink" title="2、RabbitMQ应用场景"></a>2、RabbitMQ应用场景</h3><p>RabbitMQ实现了高性能存储分发消息的分布式中间件，它的作用如下图</p>
+<p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/RabbitMQ%E7%9A%84%E4%BD%9C%E7%94%A8.jpeg" alt></p>
+<h4 id="2-1、异步通信和服务解耦"><a href="#2-1、异步通信和服务解耦" class="headerlink" title="2.1、异步通信和服务解耦"></a>2.1、异步通信和服务解耦</h4><h5 id="1、以用户注册为场景，传统的方式用户注册过程如下"><a href="#1、以用户注册为场景，传统的方式用户注册过程如下" class="headerlink" title="1、以用户注册为场景，传统的方式用户注册过程如下"></a>1、以用户注册为场景，传统的方式用户注册过程如下</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E4%BC%A0%E7%BB%9F%E7%94%A8%E6%88%B7%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.jpeg" alt></p>
 <ul>
-<li>如果当前的key不存在redis中，就设置对应的value，然后返回true</li>
-<li>如果当前key存在，则设置value失败，返回false</li>
+<li>分析用户注册流程，核心业务就是判断用户注册信息的合法性以及把用户信息写入到数据库。</li>
+<li>发送邮件，短信验证码服务不归属用户注册的核心流程，可以使用消息中间件进行异步通信，将这一块解耦出来。</li>
+</ul>
+<h5 id="2、引入RabbitMQ消息中间件后用户注册的流程"><a href="#2、引入RabbitMQ消息中间件后用户注册的流程" class="headerlink" title="2、引入RabbitMQ消息中间件后用户注册的流程"></a>2、引入RabbitMQ消息中间件后用户注册的流程</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E5%BC%95%E5%85%A5RabbitMQ%E7%9A%84%E7%94%A8%E6%88%B7%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<h5 id="3、好处"><a href="#3、好处" class="headerlink" title="3、好处"></a>3、好处</h5><ul>
+<li>引入RabbitMQ，可以将一条业务线走到底，系统的接口的整体响应时间明显降低，实现了低延迟，给用户带啦很好的体验效果。</li>
+</ul>
+<h4 id="2-2、接口限流和消息分发"><a href="#2-2、接口限流和消息分发" class="headerlink" title="2.2、接口限流和消息分发"></a>2.2、接口限流和消息分发</h4><h5 id="1、以电商网站商品抢购活动的传统处理流程"><a href="#1、以电商网站商品抢购活动的传统处理流程" class="headerlink" title="1、以电商网站商品抢购活动的传统处理流程"></a>1、以电商网站商品抢购活动的传统处理流程</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E5%95%86%E5%93%81%E6%8A%A2%E8%B4%AD%E6%B4%BB%E5%8A%A8%E4%BC%A0%E7%BB%9F%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<ul>
+<li>分析抢购活动开始的那一刻，将会产生巨大的用户抢购流量，请求几乎在同一时刻到达后端系统接口。</li>
+<li>首先校验用户和商品信息的合法性，校验通过后</li>
+<li>会判断当前商品的库存是否重组，如果充足，代表当前用户将能成功抢购</li>
+<li>最后将用户抢购成功的相关数据保存到数据库</li>
+<li>异步通知用户抢购成功，尽快进行付款</li>
+</ul>
+<p>分析发现后端接口在处理用户抢购整体业务流程太长，业务处理逻辑，先取出库存然后进行判断，然后进行减1更新。在高并发情况下，会导致商品超卖，数据不一致，用户等待时间过长，系统接口直接挂了，如果是商品抢购，商品秒杀等某一时刻产生高并发的请求就不行了。</p>
+<h5 id="2、引入RabbitMQ的商品抢购流程"><a href="#2、引入RabbitMQ的商品抢购流程" class="headerlink" title="2、引入RabbitMQ的商品抢购流程"></a>2、引入RabbitMQ的商品抢购流程</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E5%BC%95%E5%85%A5RabbitMQ%E7%9A%84%E5%95%86%E5%93%81%E6%8A%A2%E8%B4%AD%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<ul>
+<li>引入RabbitMQ主要用来优化系统如下：<ul>
+<li>接口限流：当前端产生高并发请求的时候，不会立刻到达后端接口，而是先将请求按照先来后到加入到RabbitMQ队列，一定程度上实现接口限流。</li>
+<li>消息异步分发：当商品库存充足，当前抢购的用户将可以抢到商品，然后会异步发送短信通知用户抢购成功，然后告知用户付款，一定程度上实现消息异步分发。</li>
 </ul>
 </li>
-<li><p>方法具有原子性单线程操作，所以多个并发的线程同一时刻调用setIfAbsent()，redis底层会将线程加入队列排队处理</p>
+</ul>
+<h4 id="2-3、业务延迟处理"><a href="#2-3、业务延迟处理" class="headerlink" title="2.3、业务延迟处理"></a>2.3、业务延迟处理</h4><h5 id="1、实际场景分析"><a href="#1、实际场景分析" class="headerlink" title="1、实际场景分析"></a>1、实际场景分析</h5><ul>
+<li>以12306抢票来分析，春运的时候12306抢票抢到车票的时候，12306会提醒用户，请在30分钟内付款。</li>
+<li>正常情况用户会立刻付款，然后付款成功12306会发短信通知。</li>
+<li>然而也存在一些特殊情况，比如抢到车票的用户迟迟没有付款，过了30分钟，系统会自动取消这笔订单。</li>
+<li>需要延迟一定的时间后再进行处理的业务在实际生产环境常见。</li>
+</ul>
+<h5 id="2、传统处理方式-采用定时器"><a href="#2、传统处理方式-采用定时器" class="headerlink" title="2、传统处理方式-采用定时器"></a>2、传统处理方式-采用定时器</h5><ul>
+<li><p>传统处理方式采用一个定时器定时的去获取用户没有付款的订单，然后判断用户的下单时间距离当前时间是否超过30分钟，超过没有付款则设置订单失效。</p>
+<p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E6%8A%A2%E7%A5%A8%E6%88%90%E5%8A%9F%E5%90%8E30%E5%88%86%E9%92%9F%E5%86%85%E6%9C%AA%E4%BB%98%E6%AC%BE%E7%9A%84%E4%BC%A0%E7%BB%9F%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<ul>
+<li>分析发现，春运抢票可以看做是一个大数据量，高并发请求场景，如果定时器频繁的从数据库获取未付款状态的订单，数据量非常大，假如有大量用户在30分钟内没付款，那么数据库中获取数据量一直增长，达到一定程度，给数据库服务器和应用服务器带来巨大的压力，直接压跨服务器，导致抢票全线崩溃。</li>
+<li>早期12306网站每次赶上春运，经常出现网站崩溃卡顿无响应等状态，因为某一时刻产生高并发，定时频繁拉取数据库得到数据量过大，导致内存，CPU，网络和数据库服务负载过高导致的。</li>
+</ul>
 </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> BigDecimal <span class="title">robByDistributeLock</span><span class="params">(Integer userId, String redId)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       ValueOperations valueOperations = redisTemplate.opsForValue();</span><br><span class="line">       <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * 处理用户抢红包之前，需要先判断一下当前用户是否已经抢过红包</span></span><br><span class="line"><span class="comment">        * 如果抢过，则直接返回红包金额</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">       Object data = valueOperations.get(redId + userId + <span class="string">":rob"</span>);</span><br><span class="line">       <span class="keyword">if</span> (data != <span class="keyword">null</span>) &#123;</span><br><span class="line">           BigDecimal redPacket = <span class="keyword">new</span> BigDecimal(data.toString());</span><br><span class="line">           log.info(<span class="string">"从redis中获取数据，当前用户抢到红包了：userId=&#123;&#125; key=&#123;&#125; 金额=&#123;&#125;"</span>, userId, redId, redPacket);</span><br><span class="line">           <span class="keyword">return</span> redPacket;</span><br><span class="line">       &#125;</span><br><span class="line">       Boolean res = clilck(redId);</span><br><span class="line">       <span class="comment">//如果为true代表redis中仍然还有红包，也就是红包个数&gt;0</span></span><br><span class="line">       <span class="keyword">if</span> (res) &#123;</span><br><span class="line">           <span class="comment">//上分布式锁：一个红包每个人只能抢到一次随机金额，也即是永远保证一对一关系</span></span><br><span class="line">           <span class="keyword">final</span> String lockKey = redId+userId+<span class="string">"-lock"</span>;</span><br><span class="line">           <span class="comment">//调用setIfAbsent()方法，其实就是间接实现了分布式锁</span></span><br><span class="line">           Boolean lock = valueOperations.setIfAbsent(lockKey, redId);</span><br><span class="line">           <span class="comment">//设置分布式锁的过期时间为24h</span></span><br><span class="line">           redisTemplate.expire(lockKey,<span class="number">24L</span>,TimeUnit.HOURS);</span><br><span class="line">           <span class="keyword">try</span> &#123;</span><br><span class="line">               <span class="comment">//表示当前线程获取到了该分布式锁</span></span><br><span class="line">               <span class="keyword">if</span>(lock) &#123;</span><br><span class="line">                   <span class="comment">//从小红包随机金额列表弹出一个随机金额</span></span><br><span class="line">                   Object value = redisTemplate.opsForList().rightPop(redId);</span><br><span class="line">                   <span class="keyword">if</span> (value != <span class="keyword">null</span>) &#123;</span><br><span class="line">                       <span class="comment">/**</span></span><br><span class="line"><span class="comment">                        * 更新redis中剩余的红包个数，也就是红包个数减1</span></span><br><span class="line"><span class="comment">                        */</span></span><br><span class="line">                       String redTotalKey = redId + <span class="string">":total"</span>;</span><br><span class="line">                       Object total = valueOperations.get(redTotalKey);</span><br><span class="line">                       Integer curTotal = <span class="number">0</span>;</span><br><span class="line">                       <span class="keyword">if</span> (total != <span class="keyword">null</span>) &#123;</span><br><span class="line">                           curTotal = (Integer) total;</span><br><span class="line">                       &#125;</span><br><span class="line">                       valueOperations.set(redTotalKey, curTotal - <span class="number">1</span>);</span><br><span class="line">                       <span class="comment">//直接处理红包的单位变为分，如果此处不处理，需要前端处理也是一样的</span></span><br><span class="line">                       BigDecimal redPacket = <span class="keyword">new</span> BigDecimal(value.toString()).divide(<span class="keyword">new</span> BigDecimal(<span class="number">100</span>));</span><br><span class="line">                       <span class="comment">//将抢到红包的用户信息异步保存到数据库</span></span><br><span class="line">                       redService.recordRobRedPacket(userId, redId, <span class="keyword">new</span> BigDecimal(value.toString()));</span><br><span class="line">                       <span class="comment">//将当前用户抢到红包的用户设置到redis中，表示当前用户已经抢过红包了，设置过期时间24h</span></span><br><span class="line">                       valueOperations.set(redId + userId + <span class="string">":rob"</span>, redPacket, <span class="number">24L</span>, TimeUnit.HOURS);</span><br><span class="line">                       log.info(<span class="string">"当前用户抢到红包了：userId=&#123;&#125; key=&#123;&#125; 金额=&#123;&#125;"</span>, userId, redId, redPacket);</span><br><span class="line">                       <span class="keyword">return</span> redPacket;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">               <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"系统异常-抢红包-加分布式锁失败！"</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//null表示当前用户没有抢到红包</span></span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="4-3、测试结果"><a href="#4-3、测试结果" class="headerlink" title="4.3、测试结果"></a>4.3、测试结果</h4><ul>
-<li><p>首先利用postman调用发红包接口，重新生成一个红包全局id</p>
-<p>然后配置到Jmeter的http请求的redId上</p>
-<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/%E5%8F%91%E7%BA%A2%E5%8C%85%E6%8E%A5%E5%8F%A3%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90%E6%96%B0%E7%9A%84%E7%BA%A2%E5%8C%85id.png" alt></p>
-</li>
-<li><p>然后利用Jmeter测试步骤同样的，最后查看抢红包明细表发现，没有出现同一个账户又重复抢到红包的情况，从而实现分布式锁控制</p>
-<p><img src="/2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/%E5%8A%A0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E4%B9%8B%E5%90%8E%E7%9A%84%E7%BA%A2%E5%8C%85%E6%98%8E%E7%BB%86%E8%A1%A8.png" alt></p>
-</li>
+<h5 id="2、引入RabbitMQ优化"><a href="#2、引入RabbitMQ优化" class="headerlink" title="2、引入RabbitMQ优化"></a>2、引入RabbitMQ优化</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E5%BC%95%E5%85%A5RabbitMQ%E4%BC%98%E5%8C%96%E6%8A%A2%E7%A5%A8%E6%88%90%E5%8A%9F%E5%90%8E30%E5%88%86%E9%92%9F%E5%86%85%E6%9C%AA%E4%BB%98%E6%AC%BE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg" alt>    </p>
+<ul>
+<li>优化流程看出，RabbitMQ的引入主要替代传统处理流程的定时器处理逻辑，而采用RabbitMQ的延迟队列来进行处理。</li>
+<li>延迟队列：可以延迟一定的时间后再处理相应的业务逻辑</li>
+<li>常见的成功抢到票30分钟没付款流程，商城抢购没有在规定时间付款，点外卖下单成功后，没有在规定时间付款的流程，都是用RabbitMQ的延迟队列来实现。</li>
 </ul>
-<h3 id="5、总结与分析"><a href="#5、总结与分析" class="headerlink" title="5、总结与分析"></a>5、总结与分析</h3><ul>
-<li>代码的核心业务逻辑已经加上分布式锁，也能扛得住秒级高并发的请求，但是从业务层来看，我们只设置了10030~10035这6个用户来抢红包，发红包我们设置了10个红包，那么剩下4个红包的剩余金额还没处理，首先需要归还个发红包的人，这块业务逻辑就不在写。</li>
-<li>多线程高并发时产生的并发安全问题，需要对核心业务处理逻辑加同步控制操作，也就是加上分布式锁</li>
+<h3 id="3、RabbitMQ的简单使用"><a href="#3、RabbitMQ的简单使用" class="headerlink" title="3、RabbitMQ的简单使用"></a>3、RabbitMQ的简单使用</h3><ul>
+<li><p>由于我本地使用docker来运行RabbitMQ，如何使用docker安装RabbitMQ以及运行，<a href="https://victorblog.github.io/2018/09/03/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/#1%E3%80%81docker%E4%B8%8B%E7%9A%84RabbitMQ%E6%8B%89%E5%8F%96">请点击链接看我这篇博客</a></p>
+</li>
+<li><p>运行好RabbitMQ后，然后浏览器输入访问地址(<a href="http://localhost:15672/">http://localhost:15672/</a>)</p>
+</li>
+<li><p>默认用户名密码都为guest/guest，即可进入RabbitMQ管理后台</p>
+<p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/RabbitMQ%E5%90%8E%E5%8F%B0.png" alt></p>
+</li>
 </ul>
 
     
@@ -1727,7 +1708,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="2018/06/21/Redis%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B9%8B%E6%8A%A2%E7%BA%A2%E5%8C%85%E7%B3%BB%E7%BB%9F-%E5%9B%9B/">展开全文 >></a>
+      <a class="article-more-a" href="2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/">展开全文 >></a>
     </p>
     
 
