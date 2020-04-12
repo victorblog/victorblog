@@ -234,6 +234,209 @@
 
 
   
+    <article id="post-Java锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2018/06/11/Java%E9%94%81/" target="_blank">Java的锁分类</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2018/06/11/Java%E9%94%81/" class="archive-article-date">
+        <time datetime="2018-06-11T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-11</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h3 id="一、Java锁分类"><a href="#一、Java锁分类" class="headerlink" title="一、Java锁分类"></a>一、Java锁分类</h3><h4 id="1、乐观锁"><a href="#1、乐观锁" class="headerlink" title="1、乐观锁"></a>1、乐观锁</h4><ul>
+<li><p>乐观锁是一种乐观思想，认为<font color="red">读多写少，遇到并发写的可能性低，每次拿数据的时候都认为别人不会修改，所以不会上锁</font>。</p>
+</li>
+<li><p>但是在更新的时候会判断一下在期间别人有没有去更新这个数据，采取在写时先读出当前版本号，然后加锁操作。比较跟上一次的版本号，如果一样则更新，如果失败则要重复读-比较-写的操作。</p>
+</li>
+<li><p>Java的乐观锁基本都是通过CAS操作实现的。CAS是一种更新的原子操作，比较当前值是否一样，一样则更新，否则失败。</p>
+</li>
+</ul>
+<h4 id="2、悲观锁"><a href="#2、悲观锁" class="headerlink" title="2、悲观锁"></a>2、悲观锁</h4><ul>
+<li><p>悲观锁就是悲观思想，认为写多，遇到并发写的可能性高，每次去拿数据的时候都认为别人会修改，所以每次在读写数据的时候都会上锁，这样别人想读写这个数据就会block直到拿到锁。java中的悲观锁就是</p>
+</li>
+<li><p>synchronized，AQS框架下的锁则是先尝试CAS乐观锁去获取锁，获取不到才会转换为悲观锁，比如RetreenLock。</p>
+</li>
+</ul>
+<h4 id="3、自旋锁"><a href="#3、自旋锁" class="headerlink" title="3、自旋锁"></a>3、自旋锁</h4><ul>
+<li><p>自选锁原理非常简单，如果持有锁的线程能在很短时间内释放锁资源，那么那些等待竞争锁的线程就不需要做内核态和用户态之间的切换进行阻塞挂起状态，他们只需要等一等（自旋），等持有锁的线程释放锁后就可以立即获取到锁，这样就避免了用户线程和内核的切换消耗。</p>
+</li>
+<li><p>线程自旋需要消耗CPU，说白了就是让CPU再做无用功，如果一直获取不到锁，那么线程也不能一直占用CPU自旋做无用功，所以需要设定一个自旋等待的最大时间。</p>
+</li>
+<li><p>如果持有锁的线程执行的时间超过自旋等待的最大时间仍没有释放锁，就会导致其他的线程在最大等待时间内还是获取不到锁，这时其他线程就会停止自旋进入阻塞状态。</p>
+</li>
+<li><p><font color="red">自旋锁是一种思想，一般需要配合CAS使用</font></p>
+</li>
+<li><p><font color="red">java.util.concurrent.atomic包下的原子类是自旋锁</font></p>
+</li>
+</ul>
+<h4 id="4、可重入锁"><a href="#4、可重入锁" class="headerlink" title="4、可重入锁"></a>4、可重入锁</h4><ul>
+<li>不可重入的话，一个锁在嵌套中使用会把自己锁死</li>
+<li>synchronized和ReentrantLock都是可重入锁，可以放心用</li>
+</ul>
+<h4 id="5公平锁-非公平所"><a href="#5公平锁-非公平所" class="headerlink" title="5公平锁/非公平所"></a>5公平锁/非公平所</h4><ul>
+<li>synchronized是非公平锁，ReentrantLock默认构造函数也是非公平锁</li>
+<li>非公平锁的性能比公平锁性能高很多</li>
+</ul>
+<h4 id="6、互斥锁-共享锁"><a href="#6、互斥锁-共享锁" class="headerlink" title="6、互斥锁/共享锁"></a>6、互斥锁/共享锁</h4><ul>
+<li>互斥与共享的概念简单，任何语言都存在</li>
+</ul>
+<h4 id="7、偏向锁-轻量级锁-重量级锁"><a href="#7、偏向锁-轻量级锁-重量级锁" class="headerlink" title="7、偏向锁/轻量级锁/重量级锁"></a>7、偏向锁/轻量级锁/重量级锁</h4><ul>
+<li>synchronized底层优化，偏向锁、轻量级锁是针对重量级锁做优化而提出来的定义</li>
+<li>这些优化大部分情况下对于开发来讲是透明的，默认开启的</li>
+</ul>
+<h4 id="8、分段锁"><a href="#8、分段锁" class="headerlink" title="8、分段锁"></a>8、分段锁</h4><ul>
+<li>分段锁不是一种实际的锁，而是一种思想</li>
+<li>ConcurrentHashMap是实现锁分段机制</li>
+</ul>
+<h4 id="9、锁优化"><a href="#9、锁优化" class="headerlink" title="9、锁优化"></a>9、锁优化</h4><h5 id="9-1、减少锁持有时间"><a href="#9-1、减少锁持有时间" class="headerlink" title="9.1、减少锁持有时间"></a>9.1、减少锁持有时间</h5><p>只用在要求线程安全的程序上加锁</p>
+<h5 id="9-2、减小锁粒度"><a href="#9-2、减小锁粒度" class="headerlink" title="9.2、减小锁粒度"></a>9.2、减小锁粒度</h5><p>将大对象(被多线程访问的对象)，拆分成小对象，大大增加并行度，降低锁竞争。降低锁竞争，偏向锁，轻量级锁成功率才会提高。最典型的减小锁粒度的例子就是：分段锁ConcurrentHashMap。</p>
+<h4 id="10、锁分离"><a href="#10、锁分离" class="headerlink" title="10、锁分离"></a>10、锁分离</h4><ul>
+<li><font color="red"> 常见的锁分离就是读写锁ReadWriteLock</font>，根据功能进行分离成读锁和写锁，这样读读不互斥，读写互斥，写写互斥，保证了线程安全，还提高了性能。</li>
+<li>LinkedBlockingQueue从头部取出数据，从尾部放数据。</li>
+</ul>
+<h4 id="11、锁粗化"><a href="#11、锁粗化" class="headerlink" title="11、锁粗化"></a>11、锁粗化</h4><p>为了保证多线程间的有效并发，会要求每个线程持有锁的时间尽量短，也就是在使用公共资源后，应该立即释放锁。<font color="red">如果对同一个锁不停地进行请求，同步和释放，本身也会消耗系统的资源，反而不利于性能的优化</font></p>
+<h4 id="12、锁消除"><a href="#12、锁消除" class="headerlink" title="12、锁消除"></a>12、锁消除</h4><p>锁消除是在编译器级别的事情，如果发现不可能被共享的对象，就可以消除这些对象的加锁操作，多数是因为编码不规范引起的。</p>
+<h3 id="二、Java常用锁"><a href="#二、Java常用锁" class="headerlink" title="二、Java常用锁"></a>二、Java常用锁</h3><ul>
+<li>synchronized</li>
+<li>ReentrantLock</li>
+<li>ReadWriteLock</li>
+<li>Semaphore</li>
+</ul>
+<h4 id="synchronized"><a href="#synchronized" class="headerlink" title="synchronized"></a>synchronized</h4><ul>
+<li>按照加锁范围大小，分为类锁和对象锁</li>
+<li>按加锁方法，分为代码块加锁和方法加锁</li>
+</ul>
+<p>注：<font color="red">对象锁只会影响单个对象，类锁会影响这个类下的所有对象</font></p>
+<h5 id="1、分析"><a href="#1、分析" class="headerlink" title="1、分析"></a>1、分析</h5><ul>
+<li>每个对象都有一个monitor对象，加锁就是在竞争monitor对象</li>
+<li>代码块加锁是在前后分别加上monitorenter和monitorexit指令来实现的</li>
+<li>方法加锁是通过一个标记位来判断的</li>
+</ul>
+<h5 id="2、误解"><a href="#2、误解" class="headerlink" title="2、误解"></a>2、误解</h5><ul>
+<li><p>JDK1.5，synchronized是一个重量级加锁操作，需要调用操作系统的接口，则导致性能低，给线程加锁消耗的时间比有用操作消耗时间要多。</p>
+</li>
+<li><p>JDK1.6，synchronized进行了锁优化，有自旋锁，锁消除 ，锁粗化，轻量级锁，偏向锁等，效率有了提高。而之后的JDK1.7,1.8都对关键字的实现原理实现了优化。</p>
+</li>
+</ul>
+<h5 id="3、总结"><a href="#3、总结" class="headerlink" title="3、总结"></a>3、总结</h5><ul>
+<li>引入了偏向锁和轻量级锁，都是在对象头中有标记位，不需要经过操作系统加锁</li>
+<li>锁可以从偏向锁升级到轻量级锁，再升级到重量级锁。这种升级过程叫做锁膨胀</li>
+<li>JDK1.6中默认是开启偏向锁和轻量级锁，可以通过-XX:UseraBiasedLocking来禁用偏向锁</li>
+</ul>
+<h4 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h4><h5 id="1、使用"><a href="#1、使用" class="headerlink" title="1、使用"></a>1、使用</h5><ul>
+<li>lock.lock()和lock.unlock()</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> lock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantLock;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>:</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: VictorDan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 18-11-20 下午4:15</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span>: 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LockTest</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LockTest</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                lock.lock();</span><br><span class="line">                flag++;</span><br><span class="line">            &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                lock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        LockTest lockTest1=<span class="keyword">new</span> LockTest(<span class="string">"thread1"</span>);</span><br><span class="line">        LockTest lockTest2=<span class="keyword">new</span> LockTest(<span class="string">"thread1"</span>);</span><br><span class="line">        lockTest1.start();</span><br><span class="line">        lockTest2.start();</span><br><span class="line">        lockTest1.join();</span><br><span class="line">        lockTest2.join();</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 如果不加锁，则flag为小于20000的任意数</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        System.out.println(flag);<span class="comment">//2000</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>lock.tryLock(long timeout, TimeUnit unit)</p>
+<p>尝试获取锁，在时间范围内没有拿到就会返回false，不会永久构成死锁。</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.anjuke.ai;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantLock;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>:</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: VictorDan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 18-11-20 下午4:24</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span>: 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TryLock</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TryLock</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (lock.tryLock(<span class="number">5</span>, TimeUnit.SECONDS)) &#123;</span><br><span class="line">                Thread.sleep(<span class="number">6000</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="keyword">this</span>.getName() + <span class="string">" get lock failed"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (lock.isHeldByCurrentThread()) &#123;</span><br><span class="line">                System.out.println(<span class="string">"lock.isHeldByCurrentThread: "</span> + <span class="keyword">this</span>.getName());</span><br><span class="line">                lock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        TryLock t1 = <span class="keyword">new</span> TryLock(<span class="string">"TryLockTest1"</span>);</span><br><span class="line">        TryLock t2 = <span class="keyword">new</span> TryLock(<span class="string">"TryLockTest2"</span>);</span><br><span class="line"></span><br><span class="line">        t1.start();</span><br><span class="line">        t2.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//TryLockTest2 get lock failed</span></span><br><span class="line"><span class="comment">//lock.isHeldByCurrentThread: TryLockTest1</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>公平锁：<ul>
+<li>一般锁是不公平的，不一定先来的线程先得到锁，后来的锁就后得到锁，不公平锁可能会产生饥饿现象</li>
+<li>公平锁就是先来先服务。不会产生饥饿现象，但是公平所性能比费公平所性能差很多</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ReentrantLock lock = <span class="keyword">new</span> ReentrantLock(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+
+<h5 id="2、分析"><a href="#2、分析" class="headerlink" title="2、分析"></a>2、分析</h5><ul>
+<li><p>ReentrantLock是基于AQS实现的，而AQS的基础是CAS。所以搞定AQS，就搞定了ReentrantLock。</p>
+</li>
+<li><p>ReentrantLock分为公平锁和非公平锁</p>
+</li>
+<li><p>而ReentrantLock，CountDownLatch，Semaphore都是通过AQS实现的</p>
+</li>
+</ul>
+<h5 id="3、总结-1"><a href="#3、总结-1" class="headerlink" title="3、总结"></a>3、总结</h5><ul>
+<li>synchronized能做的，ReentrantLock都能做，并且还能做很多，但是synchronized仍有用武之地</li>
+<li>ReentrantLock相比synchronized的优势是可中断，公平锁，多个锁。这种情况下使用ReentrantLock。只要是synchronized能做到的，还是使用synchronized</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2018/06/11/Java%E9%94%81/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-Redis的基本使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -1476,104 +1679,6 @@
     
     <p class="article-more-link">
       <a class="article-more-a" href="../../2017/09/13/%E4%B8%80%E3%80%81Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-Hadoop命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2017/09/13/Hadoop%E5%91%BD%E4%BB%A4/" target="_blank">Hadoop命令</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2017/09/13/Hadoop%E5%91%BD%E4%BB%A4/" class="archive-article-date">
-        <time datetime="2017-09-13T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-13</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h3 id="1、文件操作"><a href="#1、文件操作" class="headerlink" title="1、文件操作"></a>1、文件操作</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">在HDFS上创建目录</span></span><br><span class="line">hadoop fs -mkdir &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">查看文件</span></span><br><span class="line">hadoop fs -ls &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">显示文件的大小</span></span><br><span class="line">hadoop fs -du &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">只删除文件或者空目录</span></span><br><span class="line">hadoop fs -rm &lt;hdsf_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">递归删除目录，命令rm的递归版本，会递归删除目录下的各级目录以及文件</span></span><br><span class="line">hadoop fs -rmr &lt;hdfs_path&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2、查看文件内容"><a href="#2、查看文件内容" class="headerlink" title="2、查看文件内容"></a>2、查看文件内容</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">显示文件内容</span></span><br><span class="line">hadoop fs -cat &lt;hdfs_path&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">将文件尾部1KB字节的内容输出到stdout</span></span><br><span class="line">hadoop fs -tail [-f] URI</span><br></pre></td></tr></table></figure>
-
-<h3 id="3、文件复制"><a href="#3、文件复制" class="headerlink" title="3、文件复制"></a>3、文件复制</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">将文件源路径移动到目标路径</span></span><br><span class="line">hadoop fs -mv &lt;src1&gt; &lt;src2&gt; &lt;dest&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash">将文件从源路径复制到目标路径</span></span><br><span class="line">hadoop fs -cp &lt;src1&gt; &lt;src2&gt; &lt;dest&gt;       </span><br><span class="line"><span class="meta">#</span><span class="bash">将本地文件放置在HDFS上</span></span><br><span class="line">hadoop fs -copyFromLocal &lt;local_path&gt; &lt;remote_path&gt;     </span><br><span class="line"><span class="meta">#</span><span class="bash">将HDFS上的文件复制到本地文件系统中</span></span><br><span class="line">hadoop fs -copyToLocal &lt;remote_path&gt; &lt;local_path&gt;       </span><br><span class="line"><span class="meta">#</span><span class="bash">复制文件到本地文件系统</span></span><br><span class="line">hadoop fs -get &lt;src&gt; &lt;localdst&gt;    </span><br><span class="line"><span class="meta">#</span><span class="bash">从本地文件系统中复制单个或多个源路径到目标文件系统中</span></span><br><span class="line">hadoop fs -put &lt;localsrc&gt;... &lt;dst&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="4、高权限"><a href="#4、高权限" class="headerlink" title="4、高权限"></a>4、高权限</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scp victor@192.168.10.1:/home/victor/py/test.py /usr/opt/script/</span><br><span class="line"><span class="meta">#</span><span class="bash">去前1000行记录到新文件</span></span><br><span class="line">head -1000 basic.dat &gt; test1.dat</span><br></pre></td></tr></table></figure>
-
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2017/09/13/Hadoop%E5%91%BD%E4%BB%A4/">展开全文 >></a>
     </p>
     
 
