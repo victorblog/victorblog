@@ -234,259 +234,6 @@
 
 
   
-    <article id="post-JVM的运行过程：" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2018/06/12/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/" target="_blank">JVM探究</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2018/06/12/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/" class="archive-article-date">
-        <time datetime="2018-06-12T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-12</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h2 id="JVM的运行过程："><a href="#JVM的运行过程：" class="headerlink" title="JVM的运行过程："></a>JVM的运行过程：</h2><p>​    Java源文件，通过编译器，能够生产相应得.class字节码文件。而字节码文件又通过JVM中的解释器，编译成特定机器上的机器码。</p>
-<ul>
-<li>Java源文件–&gt;编译器–&gt;字节码文件</li>
-<li>字节码文件–&gt;JVM–&gt;机器码</li>
-</ul>
-<p>每一种平台的解释器是不同的，但是实现的虚拟机是相同的，这也就是Java为什么可以跨平台的原因，当一个程序从开始运行，这时虚拟机就开始实例化了，多个程序启动就会存在多个虚拟机实例。程序退出或者关闭，则虚拟机实例消亡，多个虚拟机实例之间数据不能共享。</p>
-<h3 id="1、线程"><a href="#1、线程" class="headerlink" title="1、线程"></a>1、线程</h3><p>​    线程指的是程序执行过程中的一个线程实体。JVM允许一个应用并发执行多个线程。Hotspot JVM中的Java线程与原生操作系统线程有直接的映射关系。当线程本地存储、缓冲区分配、同步对象、栈、程序计数器等准备好之后，就会创建一个操作系统原生的线程(守护线程Daemon)。Java线程结束，原生线程随之被回收。操作系统负责调度所有线程，并把它分配到任何可用的CPU上。<strong>当原生线程初始化完毕，就会调用Java线程的run()方法。当线程结束时，会释放原生线程和Java线程的所有资源</strong>。</p>
-<p>Hotspot JVM后台运行的系统线程主要有下面几个：</p>
-<table>
-<thead>
-<tr>
-<th align="left">线程</th>
-<th align="center">解释</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">虚拟机线程（VM thread）</td>
-<td align="center">这个线程等待JVM到达安全点操作出现。这些操作必须要在独立的线程里执行，因为当堆修改无法进行时，线程都需要JVM位于安全点。这些操作的类型有：stop-the-world垃圾回收、线程栈dump、线程暂停、线程偏向锁（biased locking）解除</td>
-</tr>
-<tr>
-<td align="left">周期性任务线程</td>
-<td align="center">这线程负责定时器事件（也就是中断），用来调度周期性操作的执行</td>
-</tr>
-<tr>
-<td align="left">GC线程</td>
-<td align="center">这些线程支持JVM中不同的垃圾回收活动</td>
-</tr>
-<tr>
-<td align="left">编译器线程</td>
-<td align="center">这些线程在运行时将字节码动态编译成本地平台相关的机器码</td>
-</tr>
-<tr>
-<td align="left">信号分发线程</td>
-<td align="center">这个线程接收发送到JVM的信号并调用适当的JVM方法处理</td>
-</tr>
-</tbody></table>
-<h3 id="3、JVM内存"><a href="#3、JVM内存" class="headerlink" title="3、JVM内存"></a>3、JVM内存</h3><h4 id="3-1、线程私有Thread-Local"><a href="#3-1、线程私有Thread-Local" class="headerlink" title="3.1、线程私有Thread Local"></a>3.1、线程私有Thread Local</h4><ul>
-<li><p>程序计数器PC</p>
-<ul>
-<li><p>指向虚拟机字节码指令的位置</p>
-</li>
-<li><p>唯一一个无OOM的区域（OOM：Out Of Memory内存溢出）</p>
-</li>
-</ul>
-</li>
-<li><p>虚拟机栈VM Stack</p>
-<ul>
-<li><p>虚拟机栈和线程的生命周期相同</p>
-</li>
-<li><p>一个线程中，每调用一个方法创建一个栈帧（Stack Frame）</p>
-</li>
-<li><p>栈帧的结构</p>
-<ul>
-<li>本地变量表Local Variable</li>
-<li>操作数栈Operand Stack</li>
-<li>对运行时常量池的引用 Runtime Constant Pool Reference</li>
-</ul>
-</li>
-<li><p>异常</p>
-<ul>
-<li>线程请求的栈深度大于JVM所允许的深度StackOverflowError</li>
-<li>若JVM允许动态扩展，若无法申请到足够内存OutOfMemoryError</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>本地方法栈Native Method Stack</p>
-<ul>
-<li>异常<ul>
-<li>线程请求的栈深度大于JVM所允许的深度StackOverflowError</li>
-<li>若JVM允许动态扩展，若无法申请到足够内存OutOfMemoryError</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>线程共享Thread Shared</p>
-<ul>
-<li><p>方法区（永久代）Method Area</p>
-<ul>
-<li>运行时常量池Runtime Constant Pool</li>
-</ul>
-</li>
-<li><p>类实例区（Java堆）Objects</p>
-<ul>
-<li><p>新生代</p>
-<ul>
-<li>eden</li>
-<li>from survivor</li>
-<li>to survivor</li>
-</ul>
-</li>
-<li><p>老年代</p>
-</li>
-<li><p>异常OutOfMemoryError</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>直接内存Direct Memory</p>
-<ul>
-<li>不受JVM GC管理</li>
-</ul>
-</li>
-</ul>
-<h4 id="3-2、JVM内存区域解释"><a href="#3-2、JVM内存区域解释" class="headerlink" title="3.2、JVM内存区域解释"></a>3.2、JVM内存区域解释</h4><p>JVM内存区域主要分为：</p>
-<ol>
-<li>线程私有区域：程序计数器、虚拟机栈、本地方法栈</li>
-<li>线程共享区域：Java堆，方法区</li>
-<li>直接内存</li>
-</ol>
-<p><strong>线程私有数据区域生命周期与线程相同，依赖用户线程的启动/结束，而创建/销毁在Hotspot JVM内，每个线程都与操作系统的本地线程直接映射，因此这部分内存区域的存/否跟随本地线程的生/死对应。</strong></p>
-<p><strong>线程共享区域随虚拟机JVM的启动/关闭而创建/销毁</strong></p>
-<p><strong>直接内存并不是JVM运行时数据区的一部分，但也会被频繁的使用：在JDK1.4引入的NIO提供了基于Channel与Buffer的IO方式，它可以使用Native函数库直接分配堆外内存，然后使用DirectByteBuffer对象作为这块内存的引用进行操作，这样就避免了在Java堆和Native堆中来回复制数据，因此在一些场景中可以显著提供性能。</strong></p>
-<h5 id="1、程序计数器（线程私有）"><a href="#1、程序计数器（线程私有）" class="headerlink" title="1、程序计数器（线程私有）"></a>1、程序计数器（线程私有）</h5><p>​    一块较小的内存空间，是当前线程所执行的字节码的行号指示器，每条线程都要有一个独立的程序计数器，这类内存也称为“线程私有”的内存。</p>
-<p>​    正在执行Java方法的话，计数器记录的是虚拟机字节码指令的地址（当前指令的地址）。如果还是Native方法，则为空。</p>
-<p>​    这个内存区域是唯一一个在虚拟机中没有规定任何OutOfMemoryError情况的区域。</p>
-<h5 id="2、虚拟机栈（线程私有）"><a href="#2、虚拟机栈（线程私有）" class="headerlink" title="2、虚拟机栈（线程私有）"></a>2、虚拟机栈（线程私有）</h5><p>​    是描述Java方法执行的内存模型，每个方法在执行的同时都会创建一个栈帧（Stack Frame）,用来存储局部变量表、操作数栈、动态链接、方法出口等信息。每一个方法从调用直至执行完成的过程，就对应着一个栈帧在虚拟机栈中入栈到出栈的过程。</p>
-<p>​    栈帧（Frame）是用来存储数据和部分过程结果的数据结构，同时也被用来处理动态链接（Dynamic Linking）、方法返回值和异常分派(Dispatch Exception)。栈帧随着方法调用而创建，随着方法结束而摧毁—无论方法是正常完成还是异常完成（抛出了在方法内未被捕获的异常）都算作方法结束。</p>
-<ul>
-<li>当前线程：<ul>
-<li>当前栈帧Current Stack Frame<ul>
-<li>局部变量表</li>
-<li>操作栈</li>
-<li>动态链接</li>
-<li>返回地址</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h5 id="3、本地方法区（线程私有）"><a href="#3、本地方法区（线程私有）" class="headerlink" title="3、本地方法区（线程私有）"></a>3、本地方法区（线程私有）</h5><p>​    本地方法区和Java Stack作用类似，区别是虚拟机栈为执行Java方法服务，而本地方法栈则为Native方法服务，如果一个VM实现使用C-linkage模型来支持Native调用，那么该栈将会是一个C栈，但是HotSpot VM直接就把本地方法栈和虚拟机栈合二为一。</p>
-<h5 id="4、堆（Heap-线程共享）-运行时数据区"><a href="#4、堆（Heap-线程共享）-运行时数据区" class="headerlink" title="4、堆（Heap-线程共享）-运行时数据区"></a>4、堆（Heap-线程共享）-运行时数据区</h5><p>​    是被线程共享的一块内存区域，创建的对象和数组都保存在Java堆内存中，也是垃圾收集器进行垃圾收集的最重要的内存区域。由于现代VM采用分代收集算法，因此Java堆从GC的角度还可以细分为：新生代(Eden区，From Survivor区、To Survivor区)和老年代。</p>
-<h5 id="5、方法区-永久代（线程共享）"><a href="#5、方法区-永久代（线程共享）" class="headerlink" title="5、方法区/永久代（线程共享）"></a>5、方法区/永久代（线程共享）</h5><p>​    我们常说的永久代（Permanent Generation），用于存储被JVM加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。HotSpot VM把GC分代收集扩展到方法区，也就是使用Java堆的永久代来实现方法区，这样HotSpot的垃圾收集器就可以像管理Java堆一样管理这部分内存，而不必为方法区开发专门的内存管理器（永久代的内存回收的主要目标是针对常量池的回收和类型的卸载，因此收益一般很小）</p>
-<p>​    运行时常量池（Runtime Constant Pool）是方法区的一部分。Class文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项信息是常量池(Constant Pool Table)，用于存放编译期生成的各种字面量和符号引用，这部分内容将在类加载后存放到方法区的运行时常量池中。Java虚拟机对Class文件的每一部分（自然也包括常量池）的格式都有严格的规定，每一个字节用于存储哪种数据都必须符合规范上的要求，这样才会被虚拟机认可、装载和执行。</p>
-<h4 id="3-3、JVM运行时内存"><a href="#3-3、JVM运行时内存" class="headerlink" title="3.3、JVM运行时内存"></a>3.3、JVM运行时内存</h4><p>Java堆从GC的角度还可以细分为：新生代（Eden区、From Survivor区和To Survivor区）和老年区</p>
-<p>堆（Heap）</p>
-<p>新生代（1/3）堆空间 ：Eden(8/10)，From Survivor(1/10)，To Survivor(1/10)</p>
-<p>老年代(2/3)堆空间</p>
-<h5 id="1、新生代"><a href="#1、新生代" class="headerlink" title="1、新生代"></a>1、新生代</h5><p>​    用来存放新生的对象。一般占据堆的1/3空间。由于频繁创建对象，所以新生代会频繁触发MinorGC进行垃圾回收。新生代又分为Eden区、From Survivor区，To Survivor三个区。</p>
-<ul>
-<li><p>Eden区</p>
-<p>Java新对象的出生地 （如果新创建的对象占用内存很大，则直接分配到老年代）。当Eden区内存不够的时候就会触发MinorGC，对新生代区进行一次垃圾回收。</p>
-</li>
-<li><p>From Survivor区</p>
-<p>上一次GC的幸存者，作为这一次GC的被扫描者</p>
-</li>
-<li><p>To Survivor区</p>
-<p>保留了一次MinorGC过程中的幸存者</p>
-</li>
-<li><p>MinorGC的过程</p>
-<p>复制—&gt;清空—&gt;互换</p>
-<p>MinorGC采用复制算法。</p>
-</li>
-</ul>
-<h6 id="1、-Eden、From-Survivor复制到To-Survivor，年龄-1"><a href="#1、-Eden、From-Survivor复制到To-Survivor，年龄-1" class="headerlink" title="1、 Eden、From Survivor复制到To Survivor，年龄+1"></a>1、 Eden、From Survivor复制到To Survivor，年龄+1</h6><p>​    首先，把Eden和From Survivor区域中存活的对象复制到To Survivor区域(如果有对象的年龄以及达到了老年的标准，则赋值到老年区)，同时把这些对象的年龄+1（如果To Survivor不够位置了就放到老年区）</p>
-<h6 id="2、清空Eden、From-Survivor"><a href="#2、清空Eden、From-Survivor" class="headerlink" title="2、清空Eden、From Survivor"></a>2、清空Eden、From Survivor</h6><p>​    然后，清空Eden和From Survivor中的对象 。</p>
-<h6 id="3、To-Survivor和From-Survivor互换"><a href="#3、To-Survivor和From-Survivor互换" class="headerlink" title="3、To Survivor和From Survivor互换"></a>3、To Survivor和From Survivor互换</h6><p>​    最后，To Survivor和From Survivor互换，原To Survivor成为下一次GC的From Survivor区。</p>
-<h5 id="2、老年代"><a href="#2、老年代" class="headerlink" title="2、老年代"></a>2、老年代</h5><p>​    主要存放应用程序中生命周期长的内存对象。</p>
-<p>​    老年代的对象比较稳定，所以MajorGC不会频繁执行。在进行MajorGC前一般都先进行了一次MinorGC，使得有新生代的对象晋身入老年代，导致空间不够用时才触发。当无法找到足够大的连续空间分配给新创建的较大对象的时候，也会提前触发一次MajorGC进行了垃圾回收腾出空间。</p>
-<p>​    MajorGC采用标记清除算法：首先扫描一次所有老年代，标记出存活的对象，然后回收没有标记的对象。MajorGC的耗时比较长，因为要扫描再回收 。MajorGC会产生 内存碎片，为了减少内存损耗，我们一般需要进行合并或者标记出来方便下次直接分配。当老年代也满了装不下的时候，就会抛出OOM(OutOfMemory)异常。</p>
-<h5 id="3、永久代"><a href="#3、永久代" class="headerlink" title="3、永久代"></a>3、永久代</h5><p>​    内存的永久保存区域。主要存放Class和Meta(元数据)的信息，Class被加载的时候被放入永久区域，它和存放实例的区域不同，GC不会再逐层序运行期对永久区域进行清理。所以这也导致了永久代的区域会随着加载的Class的增多而胀满，最终抛出OOM异常。</p>
-<h6 id="1、Java8与Meta元数据"><a href="#1、Java8与Meta元数据" class="headerlink" title="1、Java8与Meta元数据"></a>1、Java8与Meta元数据</h6><p>​    在Java8中，永久代已经被移除，被一个成为元数据区(元空间)的区域所取代。元空间的本质和永久代类似，元空间与永久代之间最大的区别是：元空间并不在虚拟机中，而是使用本地内存。在默认情况下，元空间的大小仅受本地内存限制，类的元数据放入Native Memory，字符串池和静态变量放入Java堆中，这样可以加载多少类的元数据就不再由MaxPermSize控制，而由系统的实际可用空间来控制。</p>
-<h4 id="4、垃圾回收与算法"><a href="#4、垃圾回收与算法" class="headerlink" title="4、垃圾回收与算法"></a>4、垃圾回收与算法</h4>
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2018/06/12/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
     <article id="post-Java锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -773,6 +520,308 @@
     
     <p class="article-more-link">
       <a class="article-more-a" href="../../2018/05/11/Redis%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
+    <article id="post-Linux安装常用软件" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2018/05/11/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/" target="_blank">Linux安装常用软件</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2018/05/11/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/" class="archive-article-date">
+        <time datetime="2018-05-11T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-11</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、安装Ubuntu18-04LTS"><a href="#一、安装Ubuntu18-04LTS" class="headerlink" title="一、安装Ubuntu18.04LTS"></a>一、安装Ubuntu18.04LTS</h1><ul>
+<li><p>去老毛桃<a href="http://www.laomaotao.org/download.html?download=http://down.lmtxz1.cn/20190125/LaoMaoTao_STA_gw.exe">官网下载</a>软件，制作老毛桃U盘。我的笔记本比较旧，要设置BIOS setup的boot选项为<strong>Legacy Support</strong>才能进入WIN PE。</p>
+</li>
+<li><p>利用里面的DiskGenius磁盘分区工具，进行磁盘分区等。</p>
+</li>
+<li><p>利用软碟通Utral ISO软件进行镜像快捷U盘刻录</p>
+</li>
+<li><p>安装Ubuntu的时候，设置BIOS，在BIOS SETUP中选择boot 选项，<u><strong>选择boot mode为UEFI，U盘设置为Enabled</strong></u></p>
+</li>
+</ul>
+<p>然后在Security中设置<strong>Secure boot为disabled</strong>，否则可能导致安装无线插件的时候报错。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">更新软件源</span></span><br><span class="line">sudo apt-get update</span><br><span class="line"><span class="meta">#</span><span class="bash">安装无线网卡驱动</span></span><br><span class="line">sudo apt install boradcom-sta-dkms</span><br><span class="line"><span class="meta">#</span><span class="bash">提示有未能满足的依赖关系执行以下命令</span></span><br><span class="line">sudo apt --fix-broken install</span><br></pre></td></tr></table></figure>
+
+<h1 id="二、Ubuntu18-04LTS更换清华的镜像源"><a href="#二、Ubuntu18-04LTS更换清华的镜像源" class="headerlink" title="二、Ubuntu18.04LTS更换清华的镜像源"></a>二、Ubuntu18.04LTS更换清华的镜像源</h1><ul>
+<li>先是进行源码备份：<br>cp /etc/apt/sources.list /etc/apt/sources.list.backup</li>
+<li>然后修改源列表：<br>sudo vim /etc/apt/sources.list</li>
+<li>删除源列表的所有内容，复制如下内容并保存：</li>
+<li><a href="https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/">清华镜像源官网：</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释</span></span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse</span><br><span class="line"><span class="meta">#</span><span class="bash"> deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse</span></span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse</span><br><span class="line"><span class="meta">#</span><span class="bash"> deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse</span></span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse</span><br><span class="line"><span class="meta">#</span><span class="bash"> deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse</span></span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse</span><br><span class="line"><span class="meta">#</span><span class="bash"> deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 预发布软件源，不建议启用</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="三、Ubuntu18-04LTS安装谷歌浏览器"><a href="#三、Ubuntu18-04LTS安装谷歌浏览器" class="headerlink" title="三、Ubuntu18.04LTS安装谷歌浏览器"></a>三、Ubuntu18.04LTS安装谷歌浏览器</h1><ul>
+<li><p>第一步获取linux的google chrome列表<br>sudo wget <a href="http://www.linuxidc.com/files/repo/google-chrome.list">http://www.linuxidc.com/files/repo/google-chrome.list</a> -P /etc/apt/sources.list.d/</p>
+</li>
+<li><p>第二步获取google的linux密钥<br>wget -q -O - <a href="https://dl.google.com/linux/linux_signing_key.pub">https://dl.google.com/linux/linux_signing_key.pub</a>  | sudo apt-key add -</p>
+</li>
+<li><p>第三步进行镜像源更新<br>sudo apt update</p>
+</li>
+<li><p>第四步安装获取的google-chrome<br>sudo apt install google-chrome-stable</p>
+</li>
+<li><p>第五步：启动谷歌浏览器</p>
+<p>/usr/bin/google-chrome-stable</p>
+</li>
+</ul>
+<h1 id="四、Ubuntu18-04LTS安装Typora"><a href="#四、Ubuntu18-04LTS安装Typora" class="headerlink" title="四、Ubuntu18.04LTS安装Typora"></a>四、Ubuntu18.04LTS安装Typora</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BA300B7755AFCFAE</span></span><br><span class="line">wget -qO - https://typora.io/linux/public-key.asc | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> add Typora<span class="string">'s repository</span></span></span><br><span class="line">sudo add-apt-repository 'deb https://typora.io/linux ./'</span><br><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> install typora</span></span><br><span class="line">sudo apt-get install typora</span><br></pre></td></tr></table></figure>
+
+<h1 id="五、Ubuntu18-04LTS右键怎么添加新建空白文本文档"><a href="#五、Ubuntu18-04LTS右键怎么添加新建空白文本文档" class="headerlink" title="五、Ubuntu18.04LTS右键怎么添加新建空白文本文档"></a>五、Ubuntu18.04LTS右键怎么添加新建空白文本文档</h1><ul>
+<li><p>第一步：在Terminal终端上切换到用户主目录的模板文件夹里</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ~/模板/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第二步：使用gedit命令打开一个文本文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit 文本文件</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>会打开一个空白文件窗口，不要做任何修改直接点击<strong>保存</strong></p>
+</li>
+<li><p>接着在模板文件夹中会多出一个我们创建的文本文件</p>
+</li>
+<li><p>现在我们可以在桌面上右键，在新建文档中就有文本文件选项。</p>
+</li>
+</ul>
+<h1 id="六、Ubuntu18-04LTS安装NotePad"><a href="#六、Ubuntu18-04LTS安装NotePad" class="headerlink" title="六、Ubuntu18.04LTS安装NotePad++"></a>六、Ubuntu18.04LTS安装NotePad++</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">Ununtu下的安装notepad方法：</span></span><br><span class="line">sudo add-apt-repository ppa:notepadqq-team/notepadqq</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install notepadqq</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">Ubuntu下的卸载notepad方法：</span></span><br><span class="line">sudo apt-get remove notepadqq</span><br><span class="line">sudo add-apt-repository --removeppa:notepadqq-team/notepadqq</span><br></pre></td></tr></table></figure>
+
+<h1 id="七、安装JDK1-8"><a href="#七、安装JDK1-8" class="headerlink" title="七、安装JDK1.8"></a>七、安装JDK1.8</h1><ul>
+<li><p>去Oracle官网下载，<a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">点击链接</a></p>
+</li>
+<li><p>由于从浏览器下载的东西一般默认都会在下载目录下，所以可以修改一下目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">切换到/usr目录，然后新建一个java文件夹</span></span><br><span class="line">cd /usr</span><br><span class="line">sudo mkdir java</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">切换到~/下载，然后把刚下在的jdk移动到java文件夹</span></span><br><span class="line">cd ~/下载</span><br><span class="line">sudo mv jdk-8u201-linux-x64.tar.gz /usr/java</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换到/usr/java文件夹,解压tar.gz包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">解压jdk</span></span><br><span class="line">sudo tar -zxvf jdk-8u201-linux-x64.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置环境变量</p>
+<ul>
+<li><p>方案一：修改全局配置文件，作用于所有用户：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">修改配置文件</span></span><br><span class="line">sudo vim /etc/profile</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">按i进入编辑模式</span></span><br><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_201</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib</span><br><span class="line">export PATH=.:$&#123;JAVA_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">按ESC后，输入:wq回车</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">在终端，输入使得修改的配置立刻生效</span></span><br><span class="line">source /etc/profile</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">检查是否安装成功</span></span><br><span class="line">java -version</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方案二：修改当前用户配置文件，只作用与当前用户：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">修改配置文件</span></span><br><span class="line">vim ~/.bashrc</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">按i进入编辑模式</span></span><br><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_201</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib</span><br><span class="line">export PATH=.:$&#123;JAVA_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">按ESC后，输入:wq回车</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">在终端，输入使得修改的配置立刻生效</span></span><br><span class="line">source ~/.bashrc</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">检查是否安装成功</span></span><br><span class="line">java -version</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="八、安装Maven"><a href="#八、安装Maven" class="headerlink" title="八、安装Maven"></a>八、安装Maven</h1><ul>
+<li><p>去官网下载，<a href="https://maven.apache.org/download.cgi">点击链接</a></p>
+</li>
+<li><p>由于从浏览器下载的东西一般默认都会在下载目录下，所以可以修改一下目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">切换到/usr目录，然后新建一个maven文件夹</span></span><br><span class="line">cd /usr</span><br><span class="line">sudo mkdir maven</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">切换到~/下载，然后把刚下在的移动到maven文件夹</span></span><br><span class="line">cd ~/下载</span><br><span class="line">sudo mv apache-maven-3.6.0-bin.tar.gz /usr/maven</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换到/usr/maven文件夹,解压tar.gz包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">解压maven</span></span><br><span class="line">sudo tar -zxvf apache-maven-3.6.0-bin.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置环境变量</p>
+<ul>
+<li><p>方案一：修改全局配置文件，作用于所有用户：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">修改配置文件</span></span><br><span class="line">sudo vim /etc/profile</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">按i进入编辑模式</span></span><br><span class="line">export M2_HOME=/usr/maven/apache-maven-3.6.0 </span><br><span class="line">export PATH=$&#123;M2_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">按ESC后，输入:wq回车</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">在终端，输入使得修改的配置立刻生效</span></span><br><span class="line">source /etc/profile</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">检查是否安装成功</span></span><br><span class="line">mvn -v</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方案二：修改当前用户配置文件，只作用与当前用户：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">修改配置文件</span></span><br><span class="line">vim ~/.bashrc</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">按i进入编辑模式</span></span><br><span class="line">export M2_HOME=/usr/maven/apache-maven-3.6.0 </span><br><span class="line">export PATH=$&#123;M2_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">按ESC后，输入:wq回车</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">在终端，输入使得修改的配置立刻生效</span></span><br><span class="line">source ~/.bashrc</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">检查是否安装成功</span></span><br><span class="line">mvn -v</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="九、安装Intellij-IDEA"><a href="#九、安装Intellij-IDEA" class="headerlink" title="九、安装Intellij IDEA"></a>九、安装Intellij IDEA</h1><ul>
+<li><p>去IDEA官网下载，<a href="https://www.jetbrains.com/idea/download/#section=linux">点击链接</a></p>
+</li>
+<li><p>由于从浏览器下载的东西一般默认都会在下载目录下，所以可以修改一下目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">切换到/usr目录，然后新建一个idea文件夹</span></span><br><span class="line">cd /usr</span><br><span class="line">sudo mkdir idea</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">切换到~/下载，然后把刚下在的移动到maven文件夹</span></span><br><span class="line">cd ~/下载</span><br><span class="line">sudo mv ideaIU-2018.3.4.tar.gz /usr/idea</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换到/usr/idea文件夹,解压tar.gz包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">解压maven</span></span><br><span class="line">sudo tar -zxvf ideaIU-2018.3.4.tar.gz</span><br><span class="line"><span class="meta">#</span><span class="bash">赋予权限</span></span><br><span class="line">sudo chmod 755 -R idea-IU-183.5429.30/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>破解，下载破解jar包，<a href="http://idea.lanyus.com/jar/JetbrainsIdesCrack-4.2-release-sha1-3323d5d0b82e716609808090d3dc7cb3198b8c4b.jar">点击链接</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">移动下载的jar包到idea-IU-183.5429.30/bin路径</span></span><br><span class="line">cd ~/下载</span><br><span class="line">sudo mv JetbrainsIdesCrack-4.2-release.jar /usr/idea/idea-IU-183.5429.30/bin</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">赋予权限</span></span><br><span class="line">cd /usr/idea/idea-IU-183.5429.30/bin</span><br><span class="line">sudo chmod 755 JetbrainsIdesCrack-4.2-release.jar</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编辑idea-IU-183.5429.30/bin路径下的两个配置文件</p>
+<p>在两个文件末尾加入：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">编辑idea.vmoptions配置文件</span></span><br><span class="line">sudo vim idea.vmoptions</span><br><span class="line">-javaagent:/usr/idea/idea-IU-183.5429.30/bin/JetbrainsIdesCrack-4.2-release.jar</span><br><span class="line"><span class="meta">#</span><span class="bash">点击ESC然后输入:wq保存并推出</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">编辑idea64.vmoptions配置文件</span></span><br><span class="line">sudo vim idea64.vmoptions</span><br><span class="line">-javaagent:/usr/idea/idea-IU-183.5429.30/bin/JetbrainsIdesCrack-4.2-release.jar</span><br><span class="line"><span class="meta">#</span><span class="bash">点击ESC然后输入:wq保存并推出</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后在idea-IU-183.5429.30/bin路径下的执行命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./idea.sh</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>点击下一步，选择<a href="http://idea.lanyus.com/">激活码激活</a>，并将激活码粘贴进去：</p>
+</li>
+</ul>
+<h1 id="十、安装搜狗输入法"><a href="#十、安装搜狗输入法" class="headerlink" title="十、安装搜狗输入法"></a>十、安装搜狗输入法</h1><p>搜狗输入法官网下载<a href="https://pinyin.sogou.com/linux/?r=pinyin">linux版本搜狗输入法</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">首先安装fcitx输入框架</span></span><br><span class="line">sudo apt install fcitx</span><br><span class="line"><span class="meta">#</span><span class="bash">解压安装</span></span><br><span class="line">cd ~/下载</span><br><span class="line">sudo dpkg -i sogoupinyin_2.2.0.0108_amd64.deb</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">安装过程有错则运行如命令</span></span><br><span class="line">sudo apt --fix-broken install</span><br></pre></td></tr></table></figure>
+
+<h1 id="十一、安装MySQL-8"><a href="#十一、安装MySQL-8" class="headerlink" title="十一、安装MySQL-8"></a>十一、安装MySQL-8</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">卸载mysql</span></span><br><span class="line">sudo apt remove mysql-*</span><br><span class="line"><span class="meta">#</span><span class="bash">清除mysql的缓存</span></span><br><span class="line">dpkg -l |grep ^rc|awk '&#123;print $2&#125;' |sudo xargs dpkg -P</span><br></pre></td></tr></table></figure>
+
+<h3 id="1、Ubuntu安装mysql8"><a href="#1、Ubuntu安装mysql8" class="headerlink" title="1、Ubuntu安装mysql8"></a>1、Ubuntu安装mysql8</h3><p><a href="https://dev.mysql.com/downloads/file/?id=482330">官方链接</a>:选择最底下<strong>No thanks, just start my download.</strong></p>
+<p>然后更新镜像源</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">切换到下载的目录</span></span><br><span class="line">cd ~/下载</span><br><span class="line">sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb</span><br></pre></td></tr></table></figure>
+
+<p>下载mysql8</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install mysql-server</span><br></pre></td></tr></table></figure>
+
+<p>新建数据库和用户</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--创建数据库</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> victor;</span><br><span class="line"></span><br><span class="line"><span class="comment">--以下都是在root用户下执行</span></span><br><span class="line"><span class="comment">--创建用户victor</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> <span class="string">'victor'</span>@<span class="string">'localhost'</span> <span class="keyword">identified</span> <span class="keyword">by</span> <span class="string">'root'</span>;</span><br><span class="line"><span class="comment">--赋予victor数据库的所有权限</span></span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> <span class="keyword">privileges</span> <span class="keyword">on</span> victor.* <span class="keyword">to</span> victor@localhost;</span><br><span class="line"><span class="comment">--删除用户</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> victor;</span><br></pre></td></tr></table></figure>
+
+<p>注意：安装的Navicat无法连接，直接报错退出，可能是版本问题，导致Navicat已经不怎么维护Linux版本了。</p>
+<p>所以选择MySQL官网的MySQL Workbench客户端来使用就行。</p>
+<h3 id="2、安装MySQL5-7"><a href="#2、安装MySQL5-7" class="headerlink" title="2、安装MySQL5.7"></a>2、安装MySQL5.7</h3><p>用sudo apt 镜像源装默认是MySQL5.7，而且mysql的控制台有中文显示bug。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">更新源</span></span><br><span class="line">sudo apt-get update</span><br><span class="line"><span class="meta">#</span><span class="bash">安装mysql</span></span><br><span class="line">sudo apt-get install mysql-server</span><br><span class="line"><span class="meta">#</span><span class="bash">配置mysql</span></span><br><span class="line">sudo mysql_secure_installation</span><br><span class="line"><span class="meta">#</span><span class="bash">检查mysql服务状态</span></span><br><span class="line">systemctl status mysql.service</span><br><span class="line"><span class="meta">#</span><span class="bash">登陆mysql</span></span><br><span class="line">sudo mysql -u root -p</span><br></pre></td></tr></table></figure>
+
+<p>注意：使用Navicat，导致中文乱码，设置start_navicat文件将export LANG=”en_US.UTF-8”改为export LANG=”zh_CN.UTF-8”，保存,又会导致英文乱码。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim start_navicat</span><br></pre></td></tr></table></figure>
+
+<p>Navicat试用期到了，可以执行以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">rm -rf .navicat64</span><br></pre></td></tr></table></figure>
+
+<h1 id="十二、安装Anaconda3和Tensorflow"><a href="#十二、安装Anaconda3和Tensorflow" class="headerlink" title="十二、安装Anaconda3和Tensorflow"></a>十二、安装Anaconda3和Tensorflow</h1><p><a href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2018.12-Linux-x86_64.sh">下载链接</a></p>
+<h4 id="1、安装步骤"><a href="#1、安装步骤" class="headerlink" title="1、安装步骤"></a>1、安装步骤</h4><p>执行以下命令就行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2018.12-Linux-x86_64.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">赋予权限</span></span><br><span class="line">chmod +x Anaconda3-2018.12-Linux-x86_64.sh </span><br><span class="line"><span class="meta">#</span><span class="bash">执行shell</span></span><br><span class="line">sudo ./Anaconda3-2018.12-Linux-x86_64.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">设置安装路径</span></span><br><span class="line">/usr/anaconda3</span><br><span class="line"><span class="meta">#</span><span class="bash">最后提示要不要安装vscode选择no</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">设置anaconda3的路径</span></span><br><span class="line">export PATH=/usr/anaconda3/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">路径加到<span class="variable">$PATH</span>就行,然后保存退出</span></span><br><span class="line">source ~/.bashrc</span><br><span class="line"><span class="meta">#</span><span class="bash">测试是否可以打开anaconda navigator</span></span><br><span class="line">anaconda-navigator</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">查看conda的版本</span></span><br><span class="line">conda --version</span><br><span class="line"><span class="meta">#</span><span class="bash">查看conda自带的包</span></span><br><span class="line">conda list</span><br><span class="line"><span class="meta">#</span><span class="bash">查看python版本</span></span><br><span class="line">python --version</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">删除conda创建的虚拟环境</span></span><br><span class="line">conda remove -n tensorflow --all</span><br><span class="line"><span class="meta">#</span><span class="bash">查看conda的虚拟环境</span></span><br><span class="line">conda env list</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">设置清华conda镜像</span></span><br><span class="line">conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/</span><br><span class="line">conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">conda config --set show_channel_urls yes</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">创建tensorflow的虚拟环境防止污染anaconda3</span></span><br><span class="line">conda create --name [虚拟环境名] python版本</span><br><span class="line">conda create --name tensorflow python=3.7</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">激活tensorflow虚拟环境，进入到tensorflow虚拟环境</span></span><br><span class="line">source activate tensorflow</span><br><span class="line"><span class="meta">#</span><span class="bash">安装tensorflow</span></span><br><span class="line">conda install tensorflow</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、喜欢在spyder上编写tensorflow和运行"><a href="#2、喜欢在spyder上编写tensorflow和运行" class="headerlink" title="2、喜欢在spyder上编写tensorflow和运行"></a>2、喜欢在spyder上编写tensorflow和运行</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">anaconda-navigator</span><br><span class="line">选择sypder来运行就行。</span><br></pre></td></tr></table></figure>
+
+<p>在激活tensorflow的虚拟环境运行，使用spyder会报错，没有tensorflow模块等。是因为tensorflow的虚拟环境中，没有spyder。要先在tensorflow的环境中安装spyder等插件。</p>
+<p><img src="/2018/05/11/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/tensorflow%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83.png" alt></p>
+<p>要Ananconda navigator的Home中选择Applications on tensorflow,以及其他包。</p>
+<p><img src="/2018/05/11/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/%E6%9F%A5%E7%9C%8Btensorflow%E5%AE%89%E8%A3%85%E7%9A%84%E5%8C%85.png" alt></p>
+<h4 id="3、tensorboard的使用"><a href="#3、tensorboard的使用" class="headerlink" title="3、tensorboard的使用"></a>3、tensorboard的使用</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">切换到anaconda建立的tensorflow的虚拟环境</span></span><br><span class="line">source activate tensorflow</span><br><span class="line">tensorboard --logdir=/tmp/tmp_4sbz6pn/</span><br></pre></td></tr></table></figure>
+
+<h1 id="十三、安装Node"><a href="#十三、安装Node" class="headerlink" title="十三、安装Node"></a>十三、安装Node</h1><h4 id="1、安装node"><a href="#1、安装node" class="headerlink" title="1、安装node"></a>1、安装node</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">更新源</span></span><br><span class="line">sudo apt update</span><br><span class="line"><span class="meta">#</span><span class="bash">安装nodejs</span></span><br><span class="line">sudo apt install nodejs</span><br><span class="line"><span class="meta">#</span><span class="bash">安装npm</span></span><br><span class="line">sudo apt install npm</span><br><span class="line"><span class="meta">#</span><span class="bash">验证版本</span></span><br><span class="line">node -v</span><br><span class="line">npm -v </span><br><span class="line"><span class="meta">#</span><span class="bash">设置淘宝镜像来使用cnpm</span></span><br><span class="line"><span class="meta">#</span><span class="bash">因为利用npm下载，国内很慢。</span></span><br><span class="line">sudo npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line"><span class="meta">#</span><span class="bash">安装完成后，默认的淘宝镜像放在</span></span><br><span class="line">/usr/local/lib/node_modules/cnpm/bin/cnpm</span><br><span class="line"><span class="meta">#</span><span class="bash">测试cnpm</span></span><br><span class="line">cnpm -v</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、安装vue"><a href="#2、安装vue" class="headerlink" title="2、安装vue"></a>2、安装vue</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">安装vue脚手架工具vue-cli</span></span><br><span class="line">sudo cnpm install -g vue-cli</span><br><span class="line"><span class="meta">#</span><span class="bash">测试vue的版本</span></span><br><span class="line">vue -V</span><br><span class="line"><span class="meta">#</span><span class="bash">创建vue项目</span></span><br><span class="line">sudo vue init webpack vue-demo</span><br><span class="line">一直回车，然后选择n就可以</span><br><span class="line"><span class="meta">#</span><span class="bash">切换到vue-demo目录,安装项目依赖</span></span><br><span class="line">sudo cnpm install</span><br><span class="line"><span class="meta">#</span><span class="bash">然后运行项目</span></span><br><span class="line">sudo npm run dev</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、安装hexo"><a href="#3、安装hexo" class="headerlink" title="3、安装hexo"></a>3、安装hexo</h4><p>hexo init命令执行的时候卡死在Install Dependencies</p>
+<p>可能还是由于使用默认的npm库，速度极慢。可以安装nrm</p>
+<p>nrm是一个npm源管理器。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">使用cnpm初始化nrm包</span></span><br><span class="line">cnpm install nrm -g</span><br><span class="line"><span class="meta">#</span><span class="bash">切换到淘宝npm镜像</span></span><br><span class="line">nrm use taobao</span><br><span class="line"><span class="meta">#</span><span class="bash">新建一个文件夹</span></span><br><span class="line">mkdir hexo</span><br><span class="line"><span class="meta">#</span><span class="bash">安装hexo的脚手架</span></span><br><span class="line">sudo npm install -g hexo-cli</span><br><span class="line"><span class="meta">#</span><span class="bash">初始化hexo</span></span><br><span class="line">hexo init</span><br><span class="line"><span class="meta">#</span><span class="bash">生成静态页面</span></span><br><span class="line">hexo g</span><br><span class="line"><span class="meta">#</span><span class="bash">本地运行测试。</span></span><br><span class="line">hexo s</span><br><span class="line"><span class="meta">#</span><span class="bash">将public文件内容部署到github仓库</span></span><br><span class="line">hexo d -g</span><br></pre></td></tr></table></figure>
+
+<h1 id="十四、安装Eclipse"><a href="#十四、安装Eclipse" class="headerlink" title="十四、安装Eclipse"></a>十四、安装Eclipse</h1><p><a href="http://mirrors.neusoft.edu.cn/eclipse/technology/epp/downloads/release/2018-12/R/eclipse-jee-2018-12-R-linux-gtk-x86_64.tar.gz">下载链接</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">usr路径下新建eclipse文件夹</span></span><br><span class="line">cd /usr</span><br><span class="line">sudo mkdir eclipse</span><br><span class="line"><span class="meta">#</span><span class="bash">移动到/usr/eclipse路径</span></span><br><span class="line">cd ~/下载</span><br><span class="line">sudo mv eclipse-jee-2018-12-R-linux-gtk-x86_64.tar.gz /usr/eclipse/</span><br><span class="line"><span class="meta">#</span><span class="bash">解压</span></span><br><span class="line">sudo tar -zxvf eclipse-jee-2018-12-R-linux-gtk-x86_64.tar.gz</span><br><span class="line"><span class="meta">#</span><span class="bash">进入eclipse文件目录</span></span><br><span class="line">cd /usr/eclipse</span><br><span class="line"><span class="meta">#</span><span class="bash">给解压后的eclipse文件夹赋予权限</span></span><br><span class="line">sudo chown -R eclipse</span><br><span class="line"><span class="meta">#</span><span class="bash">建立桌面启动项</span></span><br><span class="line">cd /usr/share/applications</span><br><span class="line">sudo gedit eclipse.desktop</span><br><span class="line"><span class="meta">#</span><span class="bash">将下面内容复制到desktop文件里保存</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Exec路径是eclipse安装文件夹下的可执行文件</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Icon路径是图标路径</span></span><br><span class="line">[Desktop Entry]</span><br><span class="line">Encoding=UTF-8</span><br><span class="line">Name=Eclipse</span><br><span class="line">Comment=Eclipse IDE</span><br><span class="line">Exec=/usr/eclipse/eclipse/eclipse</span><br><span class="line">Icon=/usr/eclipse/eclipse/icon.xpm</span><br><span class="line">Terminal=false</span><br><span class="line">StartupNotify=true</span><br><span class="line">Type=Application</span><br><span class="line">Categories=Application;Development;</span><br><span class="line"><span class="meta">#</span><span class="bash">赋予可执行权限</span></span><br><span class="line">sudo chmod u+x eclipse.desktop</span><br><span class="line"><span class="meta">#</span><span class="bash">复制到桌面</span></span><br><span class="line">cp eclipse.desktop ~/桌面</span><br></pre></td></tr></table></figure>
+
+<h1 id="十五、安装Tomcat"><a href="#十五、安装Tomcat" class="headerlink" title="十五、安装Tomcat"></a>十五、安装Tomcat</h1><p><a href="https://tomcat.apache.org/download-80.cgi">下载链接</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">/usr路径下新建tomcat文件夹</span></span><br><span class="line">cd /usr</span><br><span class="line">sudo mkdir tomcat</span><br><span class="line"><span class="meta">#</span><span class="bash">把下载的tomcat移动到新建文件夹</span></span><br><span class="line">cd ~/下载</span><br><span class="line">sudo mv apache-tomcat-8.5.37.tar.gz /usr/tomcat</span><br><span class="line"></span><br><span class="line">cd /usr/tomcat</span><br><span class="line"><span class="meta">#</span><span class="bash">解压</span></span><br><span class="line">sudo tar -zxvf apache-tomcat-8.5.37.tar.gz</span><br><span class="line"><span class="meta">#</span><span class="bash">赋予文件夹权限</span></span><br><span class="line">sudo chmod 755 -R apache-tomcat-8.5.37</span><br><span class="line"><span class="meta">#</span><span class="bash">到tomcat的bin路径下</span></span><br><span class="line">cd /usr/tomcat/apache-tomcat-8.5.37/bin</span><br><span class="line"><span class="meta">#</span><span class="bash">修改启动</span></span><br><span class="line">sudo vim startup.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">加入jdk路径和tomcat路径</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">set</span> java environment</span></span><br><span class="line"><span class="meta">#</span><span class="bash">JAVA PATH</span></span><br><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_201</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib</span><br><span class="line">export PATH=.:$&#123;JAVA_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">tomcat</span></span><br><span class="line">export TOMCAT_HOME=/usr/tomcat/apache-tomcat-8.5.37</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">测试启动tomcat</span></span><br><span class="line">sudo ./startup.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">关闭</span></span><br><span class="line">sudo ./shutdown.sh</span><br></pre></td></tr></table></figure>
+
+<h1 id="十六、安装Docker"><a href="#十六、安装Docker" class="headerlink" title="十六、安装Docker"></a>十六、安装Docker</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">安装之前先更新</span></span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br><span class="line">sudo apt install docker.io</span><br><span class="line"><span class="meta">#</span><span class="bash">启用docker</span></span><br><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl enable docker</span><br><span class="line">docker -v</span><br><span class="line"><span class="meta">#</span><span class="bash">查看已经pull的镜像</span></span><br><span class="line">sudo docker images</span><br></pre></td></tr></table></figure>
+
+<h4 id="1、docker下的RabbitMQ拉取"><a href="#1、docker下的RabbitMQ拉取" class="headerlink" title="1、docker下的RabbitMQ拉取"></a>1、docker下的RabbitMQ拉取</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">使用国内镜像加速安装unbuntu18.04镜像</span></span><br><span class="line">sudo docker pull registry.docker-cn.com/library/ubuntu:18.04</span><br><span class="line"><span class="meta">#</span><span class="bash">安装RabbitMQ</span></span><br><span class="line">sudo docker pull registry.docker-cn.com/library/rabbitmq:3-management</span><br><span class="line"><span class="meta">#</span><span class="bash">运行RabbitMQ</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -d:表示后台运行</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -p：表示暴露端口号</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --name myrabbitmq：指定名字</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> a829a97a0435：对应的image id</span></span><br><span class="line">sudo docker run -d -p 5672:5672 -p 15672:15672 --name myrabbitmq a829a97a0435</span><br><span class="line"><span class="meta">#</span><span class="bash">查看进程</span></span><br><span class="line">sudo docker ps</span><br><span class="line"><span class="meta">#</span><span class="bash">访问RabbitMQ</span></span><br><span class="line">localhost:15672</span><br><span class="line">0.0.0.0:15672</span><br><span class="line"><span class="meta">#</span><span class="bash">登录</span></span><br><span class="line">用户名：guest</span><br><span class="line">密码：guest</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2018/05/11/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/docker%E5%AE%89%E8%A3%85RabbitMQ.png" alt="安装RabbitMQ"></p>
+<p><img src="/2018/05/11/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/docker%E8%BF%90%E8%A1%8CRabbitMQ.png" alt="docker的RabbitMQ运行"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">下一次启动</span></span><br><span class="line"><span class="meta">#</span><span class="bash">找到对应的Container ID</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">然后启动命令</span></span><br><span class="line">sudo docker start 213a1c20682e</span><br><span class="line"><span class="meta">#</span><span class="bash">停止命令</span></span><br><span class="line">sudo docker stop 213a1c20682e</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、docker下的redis拉取"><a href="#2、docker下的redis拉取" class="headerlink" title="2、docker下的redis拉取"></a>2、docker下的redis拉取</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">下载Redis镜像</span></span><br><span class="line">sudo docker pull registry.docker-cn.com/library/redis</span><br><span class="line"><span class="meta">#</span><span class="bash">启动镜像</span></span><br><span class="line"><span class="meta">#</span><span class="bash">redis默认的端口是6379，可以将虚拟机的6379映射到容器的6379</span></span><br><span class="line">sudo docker run -d -p 6379:6379 --name myredis 0f55cf3661e9</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2018/05/11/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/docker%E5%90%8D%E5%AD%97%E5%86%B2%E7%AA%81.png" alt="docker镜像命名冲突"></p>
+<p>解决方法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">查看docker的进程</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">删除掉创建的镜像</span></span><br><span class="line"><span class="meta">#</span><span class="bash">886183d7a2cc：container id，镜像id</span></span><br><span class="line">sudo docker rm 886183d7a2cc</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2018/05/11/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/%E6%9F%A5%E7%9C%8Bdocker%E7%9A%84%E8%BF%9B%E7%A8%8Bps.png" alt></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">重新启动docker已经有的容器</span></span><br><span class="line">sudo docker restart myrabbitmq</span><br></pre></td></tr></table></figure>
+
+<h1 id="十七、安装XMind8"><a href="#十七、安装XMind8" class="headerlink" title="十七、安装XMind8"></a>十七、安装XMind8</h1><p><a href="https://www.xmind.net/xmind/download/">官网链接</a></p>
+<ul>
+<li><p>解压压缩包</p>
+</li>
+<li><p>然后移动到/usr/xmind8</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir xmind8</span><br><span class="line">cd ~/下载 </span><br><span class="line">sudo mv xmind-8-update8-linux /usr/xmind8/</span><br><span class="line">cd /usr/xmind8/xmind-8-update8-linux/</span><br><span class="line"><span class="meta">#</span><span class="bash">执行setup.sh文件，安装相关依赖。</span></span><br><span class="line"></span><br><span class="line">sudo /setup.sh </span><br><span class="line"><span class="meta">#</span><span class="bash">百度下载一个xmind8的图片</span></span><br><span class="line">sudo mv xmind8.png /usr/xmind8/xmind-8-update8-linux/XMind_amd64</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">创建桌面快捷方式</span></span><br><span class="line">sudo vim /usr/share/applications/xmind8.desktop</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">编辑xmind8.desktop</span></span><br><span class="line">[Desktop Entry]</span><br><span class="line">Type=Application</span><br><span class="line">Path=/usr/xmind8/xmind-8-update8-linux/XMind_amd64</span><br><span class="line">Exec=/usr/xmind8/xmind-8-update8-linux/XMind_amd64/XMind</span><br><span class="line">Name=XMind 8</span><br><span class="line">Comment=Create mind maps</span><br><span class="line">GenericName=Planning Tool</span><br><span class="line">Icon=/usr/xmind8/xmind-8-update8-linux/XMind_amd64/xmind8.png</span><br><span class="line">Categories=Office</span><br><span class="line"></span><br><span class="line">cp /usr/share/applications/xmind8.desktop ~/桌面</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="十八、本地文件提交到github"><a href="#十八、本地文件提交到github" class="headerlink" title="十八、本地文件提交到github"></a>十八、本地文件提交到github</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd ~/文档/Ubuntu安装软件手册</span><br><span class="line">git add .</span><br><span class="line">git commit -m "本次更新的说明"</span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+
+<h1 id="十九、安装react脚手架"><a href="#十九、安装react脚手架" class="headerlink" title="十九、安装react脚手架"></a>十九、安装react脚手架</h1>  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">更新系统</span></span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br><span class="line"><span class="meta">#</span><span class="bash">跟新npm</span></span><br><span class="line">sudo npm cache clean -f</span><br><span class="line">sudo npm install -g n</span><br><span class="line">sudo n stable</span><br><span class="line"><span class="meta">#</span><span class="bash">安装react的脚手架</span></span><br><span class="line">sudo cnpm install -g create-react-app</span><br><span class="line"><span class="meta">#</span><span class="bash">创建一个文件夹</span></span><br><span class="line">cd ~/桌面</span><br><span class="line">sudo mkdir react-app</span><br><span class="line">cd ~/桌面/react-app</span><br><span class="line"><span class="meta">#</span><span class="bash">用react脚手架创建react项目</span></span><br><span class="line">sudo create-react-app react-app</span><br></pre></td></tr></table></figure>
+
+<h1 id="二十、安装vmware"><a href="#二十、安装vmware" class="headerlink" title="二十、安装vmware"></a>二十、安装vmware</h1><p>  <a href="https://download3.vmware.com/software/player/file/VMware-Player-15.1.0-13591040.x86_64.bundle?HashKey=04ff370c88515453c2a79ba2d5df876d&params=%7B%22sourcefilesize%22%3A%22141.60+MB%22%2C%22dlgcode%22%3A%22PLAYER-1510%22%2C%22languagecode%22%3A%22en%22%2C%22source%22%3A%22DOWNLOADS%22%2C%22downloadtype%22%3A%22manual%22%2C%22eula%22%3A%22N%22%2C%22downloaduuid%22%3A%222a92b861-36ca-4e04-937b-43019645eea6%22%2C%22purchased%22%3A%22N%22%2C%22dlgtype%22%3A%22Product+Binaries%22%2C%22productversion%22%3A%2215.1.0%22%2C%22productfamily%22%3A%22VMware+Workstation+Player%22%7D&AuthKey=1562586294_29dc1a37c9e192f53e9e3c7ae8b4c39a">下载链接</a></p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">cd ~/下载</span><br><span class="line"><span class="meta">#</span><span class="bash">赋予可执行权限</span></span><br><span class="line">sudo chmod +x VMware-Player-15.1.0-13591040.x86_64.bundle</span><br><span class="line"><span class="meta">#</span><span class="bash">安装</span></span><br><span class="line">sudo ./VMware-Player-15.1.0-13591040.x86_64.bundle</span><br><span class="line"><span class="meta">#</span><span class="bash">创建虚拟机的时候，如果遇到vmmode is defined表示没有这个模块</span></span><br><span class="line"><span class="meta">#</span><span class="bash">还需要在bios设置，把secure boot设置为disabled</span></span><br><span class="line">sudo vmware-modconfig --console --install-all</span><br><span class="line">sudo apt-get install libcanberra-gtk-module</span><br><span class="line"><span class="meta">#</span><span class="bash">当vmware报错为Cannot open /dev/vmmon: No such file or directory. Please make sure that the kernel module `vmmon<span class="string">' is loaded</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">设置秘钥</span></span><br><span class="line">openssl req -new -x509 -newkey rsa:2048 -keyout MOK.priv -outform DER -out MOK.der -nodes -days 36500 -subj "/CN=VMware/"</span><br><span class="line"><span class="meta">#</span><span class="bash">然后在内核装</span></span><br><span class="line">sudo /usr/src/linux-headers-`uname -r`/scripts/sign-file sha256 ./MOK.priv ./MOK.der $(modinfo -n vmmon)</span><br><span class="line"><span class="meta">#</span><span class="bash">安装MOK</span></span><br><span class="line">sudo /usr/src/linux-headers-`uname -r`/scripts/sign-file sha256 ./MOK.priv ./MOK.der $(modinfo -n vmnet)</span><br><span class="line">mokutil --import MOK.der</span><br><span class="line"><span class="meta">#</span><span class="bash">重启</span></span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装vmware-tools"><a href="#安装vmware-tools" class="headerlink" title="安装vmware tools"></a>安装vmware tools</h4><p><img src="/2018/05/11/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/vmware%E8%AE%BE%E7%BD%AE.png" alt>  </p>
+<p>需要吧CD/DVD设置为Auto detect设置为自动检测，然后保存，才可以出现install vmware tools的菜单栏由灰色变为可用。</p>
+<p>安装过程中，可能需要你输入密码，这时候，你只需要输入你的ubuntu的系统管理就行。然后安装就行。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">卸载命令</span></span><br><span class="line">sudo  vmware-installer -u vmware-player</span><br></pre></td></tr></table></figure>
+
+<h1 id="二十一、Ubuntu-安装redis"><a href="#二十一、Ubuntu-安装redis" class="headerlink" title="二十一、Ubuntu 安装redis"></a>二十一、Ubuntu 安装redis</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">更新系统</span></span><br><span class="line">sudo apt update</span><br><span class="line"><span class="meta">#</span><span class="bash">更新软件列表</span></span><br><span class="line">sudo apt upgrade</span><br><span class="line"><span class="meta">#</span><span class="bash">安装redis</span></span><br><span class="line">sudo apt install redis-server</span><br><span class="line"><span class="meta">#</span><span class="bash">打印redis版本</span></span><br><span class="line">redi-server -v</span><br><span class="line"><span class="meta">#</span><span class="bash">启动redis服务</span></span><br><span class="line">redis-server</span><br><span class="line"><span class="meta">#</span><span class="bash">启动客户端</span></span><br><span class="line">redis-cli</span><br><span class="line"><span class="meta">#</span><span class="bash">然后输入ping，出现PONG说明安装成功</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2018/05/11/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/redis%E5%AE%89%E8%A3%85.png" alt></p>
+<h1 id="二十二、环境变量的配置"><a href="#二十二、环境变量的配置" class="headerlink" title="二十二、环境变量的配置"></a>二十二、环境变量的配置</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">修改环境变量</span></span><br><span class="line">vim ~/.bashrc</span><br><span class="line"><span class="meta">#</span><span class="bash">Java</span></span><br><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_201</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib</span><br><span class="line">export PATH=.:$&#123;JAVA_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">Maven</span></span><br><span class="line">export M2_HOME=/usr/maven/apache-maven-3.3.3</span><br><span class="line">export PATH=$&#123;M2_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">tomcat</span></span><br><span class="line">export TOMCAT_HOME=/usr/tomcat/apache-tomcat-8.5.42</span><br><span class="line"><span class="meta">#</span><span class="bash">终端颜色配置</span></span><br><span class="line">PS1='$&#123;debian_chroot:+($debian_chroot)&#125;\[\033[01;35;01m\]\u\[\033[00;00;01m\]@\[\033[01;35;01m\]\h\[\033[00;31;01m\]:\[\033[00;00;01m\]\w \[\033[01;32;01m\]\$ \[\033[01;01;01m\]'</span><br><span class="line"><span class="meta">#</span><span class="bash">Scala</span></span><br><span class="line">export SCALA_HOME=/usr/scala/scala-2.13.1</span><br><span class="line">export PATH=$&#123;SCALA_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">Spark</span></span><br><span class="line">export SPARK_HOME=/usr/spark/spark-2.4.4-bin-hadoop2.7</span><br><span class="line">export PATH=$&#123;SPARK_HOME&#125;/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">启动spark(首先确保配置好jdk，scala，以及spark才能使用spark-shell命令启动)</span></span><br><span class="line">spark-shell</span><br><span class="line"><span class="meta">#</span><span class="bash">保存.bashrc</span></span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">DevOps</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2018/05/11/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/">展开全文 >></a>
     </p>
     
 
@@ -1493,7 +1542,7 @@
 
 <h4 id="7、使用docker安装并运行redis"><a href="#7、使用docker安装并运行redis" class="headerlink" title="7、使用docker安装并运行redis"></a>7、使用docker安装并运行redis</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">docker拉取redis</span></span><br><span class="line">sudo docker pull redis:3.2</span><br><span class="line"><span class="meta">#</span><span class="bash">本地创建一个redis文件夹存放数据</span></span><br><span class="line">sudo mkdir -p ~/桌面/mydata/redis/data</span><br><span class="line"><span class="meta">#</span><span class="bash">更改文件件执行权限</span></span><br><span class="line">sudo chmod 777 -R ~/桌面/mydata/redis</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动redis</span></span><br><span class="line">sudo docker run -p 6379:6379 --name redis -v ~/桌面/mydata/redis/data:/data -d redis:3.2 redis-server --appendonly yes</span><br><span class="line"><span class="meta">#</span><span class="bash">进入redis容器使用redis-cli命令进行连接</span></span><br><span class="line">sudo docker exec -it redis redis-cli</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">####以下为redis的命令</span></span></span><br><span class="line">ping</span><br><span class="line">set a 100</span><br><span class="line">get a</span><br><span class="line"><span class="meta">#</span><span class="bash">退出redis</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
 
-<h4 id="8、使用docker安装并运行rabbitmq"><a href="#8、使用docker安装并运行rabbitmq" class="headerlink" title="8、使用docker安装并运行rabbitmq"></a>8、使用docker安装并运行rabbitmq</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉取docker镜像</span></span><br><span class="line">sudo docker pull rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动rabbitmq</span></span><br><span class="line">sudo docker run --name rabbitmq --publish 5671:5671 --publish 5672:5672 --publish 4369:4369 --publish 25672:25672 --publish 15672:15672 --publish 15671:15671 -d rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">Ubuntu的防火墙暴露端口15672</span></span><br><span class="line">sudo ufw allow 15672</span><br><span class="line"><span class="meta">#</span><span class="bash">开启防火墙</span></span><br><span class="line">sudo ufw enable</span><br><span class="line"><span class="meta">#</span><span class="bash">重新加载</span></span><br><span class="line">sudo ufw reload</span><br><span class="line"><span class="meta">#</span><span class="bash">查看防火墙状态</span></span><br><span class="line">sudo ufw status</span><br><span class="line"><span class="meta">#</span><span class="bash">进入到rabbitmq的连接</span></span><br><span class="line">sudo docker exec -it rabbitmq /bin/bash</span><br><span class="line"><span class="meta">#</span><span class="bash">然后输入如下命令，开启rabbitmq的管理后台</span></span><br><span class="line">rabbitmq-plugins enable rabbitmq_management</span><br><span class="line"><span class="meta">#</span><span class="bash">浏览器输入rabbitmq的管理后台页面</span></span><br><span class="line">http://localhost:15672</span><br><span class="line">用户名密码：guest guest</span><br><span class="line"><span class="meta">#</span><span class="bash">退出</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+<h4 id="8、使用docker安装并运行rabbitmq"><a href="#8、使用docker安装并运行rabbitmq" class="headerlink" title="8、使用docker安装并运行rabbitmq"></a>8、使用docker安装并运行rabbitmq</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉取docker镜像</span></span><br><span class="line">sudo docker pull rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动rabbitmq</span></span><br><span class="line">sudo docker run --name rabbitmq --publish 5671:5671 --publish 5672:5672 --publish 4369:4369 --publish 25672:25672 --publish 15672:15672 --publish 15671:15671 -d rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">Ubuntu的防火墙暴露端口15672</span></span><br><span class="line">sudo ufw allow 15672</span><br><span class="line"><span class="meta">#</span><span class="bash">开启防火墙</span></span><br><span class="line">sudo ufw enable</span><br><span class="line"><span class="meta">#</span><span class="bash">重新加载</span></span><br><span class="line">sudo ufw reload</span><br><span class="line"><span class="meta">#</span><span class="bash">查看防火墙状态</span></span><br><span class="line">sudo ufw status</span><br><span class="line"><span class="meta">#</span><span class="bash">进入到rabbitmq的连接</span></span><br><span class="line">sudo docker exec -it rabbitmq /bin/bash</span><br><span class="line"><span class="meta">#</span><span class="bash">然后输入如下命令，开启rabbitmq的管理后台</span></span><br><span class="line">rabbitmq-plugins enable rabbitmq_management</span><br><span class="line"><span class="meta">#</span><span class="bash">浏览器输入rabbitmq的管理后台页面</span></span><br><span class="line">http://localhost:15672</span><br><span class="line">用户名密码：guest guest</span><br><span class="line"><span class="meta">#</span><span class="bash">退出</span></span><br><span class="line">exit</span><br><span class="line"><span class="meta">#</span><span class="bash">rabbitmq的下一次启动</span></span><br><span class="line"><span class="meta">#</span><span class="bash">直接找到对应的Container ID</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">然后启动命令</span></span><br><span class="line">sudo docker start 213a1c20682e</span><br><span class="line"><span class="meta">#</span><span class="bash">停止命令</span></span><br><span class="line">sudo docker stop 213a1c20682e</span><br></pre></td></tr></table></figure>
 
 
 
@@ -1908,15 +1957,11 @@
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">大数据</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">DevOps</a>
+                <a href="javascript:void(0)" class="js-tag color4">大数据</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1924,15 +1969,19 @@
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">DevOps</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">计算机基础</a>
+                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">杂文</a>
+                <a href="javascript:void(0)" class="js-tag color1">计算机基础</a>
               </li>
             
             <div class="clearfix"></div>
