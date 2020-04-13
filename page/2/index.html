@@ -234,6 +234,159 @@
 
 
   
+    <article id="post-消息中间件RabbitMQ" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/" target="_blank">消息中间件RabbitMQ</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/" class="archive-article-date">
+        <time datetime="2018-07-07T07:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-07</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、消息中间件RabbitMQ"><a href="#一、消息中间件RabbitMQ" class="headerlink" title="一、消息中间件RabbitMQ"></a>一、消息中间件RabbitMQ</h1><h3 id="1、RabbitMQ介绍"><a href="#1、RabbitMQ介绍" class="headerlink" title="1、RabbitMQ介绍"></a>1、RabbitMQ介绍</h3><ul>
+<li>RabbitMQ是一个开源并实现了高级消息队列协议(AMQP)的消息中间件，支持单一节点部署，也支持多个节点的集群部署。</li>
+<li>RabbitMQ提供了后端管理控制台，用来实现RabbitMQ的队列，交换机，路由，消息和服务节点的管理。</li>
+<li>RabbitMQ可以通过客户端管理相应的用户，主要是分配相应的操作权限和数据管理权限</li>
+</ul>
+<h3 id="2、RabbitMQ应用场景"><a href="#2、RabbitMQ应用场景" class="headerlink" title="2、RabbitMQ应用场景"></a>2、RabbitMQ应用场景</h3><p>RabbitMQ实现了高性能存储分发消息的分布式中间件，它的作用如下图</p>
+<p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/RabbitMQ%E7%9A%84%E4%BD%9C%E7%94%A8.jpeg" alt></p>
+<h4 id="2-1、异步通信和服务解耦"><a href="#2-1、异步通信和服务解耦" class="headerlink" title="2.1、异步通信和服务解耦"></a>2.1、异步通信和服务解耦</h4><h5 id="1、以用户注册为场景，传统的方式用户注册过程如下"><a href="#1、以用户注册为场景，传统的方式用户注册过程如下" class="headerlink" title="1、以用户注册为场景，传统的方式用户注册过程如下"></a>1、以用户注册为场景，传统的方式用户注册过程如下</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E4%BC%A0%E7%BB%9F%E7%94%A8%E6%88%B7%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<ul>
+<li>分析用户注册流程，核心业务就是判断用户注册信息的合法性以及把用户信息写入到数据库。</li>
+<li>发送邮件，短信验证码服务不归属用户注册的核心流程，可以使用消息中间件进行异步通信，将这一块解耦出来。</li>
+</ul>
+<h5 id="2、引入RabbitMQ消息中间件后用户注册的流程"><a href="#2、引入RabbitMQ消息中间件后用户注册的流程" class="headerlink" title="2、引入RabbitMQ消息中间件后用户注册的流程"></a>2、引入RabbitMQ消息中间件后用户注册的流程</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E5%BC%95%E5%85%A5RabbitMQ%E7%9A%84%E7%94%A8%E6%88%B7%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<h5 id="3、好处"><a href="#3、好处" class="headerlink" title="3、好处"></a>3、好处</h5><ul>
+<li>引入RabbitMQ，可以将一条业务线走到底，系统的接口的整体响应时间明显降低，实现了低延迟，给用户带啦很好的体验效果。</li>
+</ul>
+<h4 id="2-2、接口限流和消息分发"><a href="#2-2、接口限流和消息分发" class="headerlink" title="2.2、接口限流和消息分发"></a>2.2、接口限流和消息分发</h4><h5 id="1、以电商网站商品抢购活动的传统处理流程"><a href="#1、以电商网站商品抢购活动的传统处理流程" class="headerlink" title="1、以电商网站商品抢购活动的传统处理流程"></a>1、以电商网站商品抢购活动的传统处理流程</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E5%95%86%E5%93%81%E6%8A%A2%E8%B4%AD%E6%B4%BB%E5%8A%A8%E4%BC%A0%E7%BB%9F%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<ul>
+<li>分析抢购活动开始的那一刻，将会产生巨大的用户抢购流量，请求几乎在同一时刻到达后端系统接口。</li>
+<li>首先校验用户和商品信息的合法性，校验通过后</li>
+<li>会判断当前商品的库存是否重组，如果充足，代表当前用户将能成功抢购</li>
+<li>最后将用户抢购成功的相关数据保存到数据库</li>
+<li>异步通知用户抢购成功，尽快进行付款</li>
+</ul>
+<p>分析发现后端接口在处理用户抢购整体业务流程太长，业务处理逻辑，先取出库存然后进行判断，然后进行减1更新。在高并发情况下，会导致商品超卖，数据不一致，用户等待时间过长，系统接口直接挂了，如果是商品抢购，商品秒杀等某一时刻产生高并发的请求就不行了。</p>
+<h5 id="2、引入RabbitMQ的商品抢购流程"><a href="#2、引入RabbitMQ的商品抢购流程" class="headerlink" title="2、引入RabbitMQ的商品抢购流程"></a>2、引入RabbitMQ的商品抢购流程</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E5%BC%95%E5%85%A5RabbitMQ%E7%9A%84%E5%95%86%E5%93%81%E6%8A%A2%E8%B4%AD%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<ul>
+<li>引入RabbitMQ主要用来优化系统如下：<ul>
+<li>接口限流：当前端产生高并发请求的时候，不会立刻到达后端接口，而是先将请求按照先来后到加入到RabbitMQ队列，一定程度上实现接口限流。</li>
+<li>消息异步分发：当商品库存充足，当前抢购的用户将可以抢到商品，然后会异步发送短信通知用户抢购成功，然后告知用户付款，一定程度上实现消息异步分发。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-3、业务延迟处理"><a href="#2-3、业务延迟处理" class="headerlink" title="2.3、业务延迟处理"></a>2.3、业务延迟处理</h4><h5 id="1、实际场景分析"><a href="#1、实际场景分析" class="headerlink" title="1、实际场景分析"></a>1、实际场景分析</h5><ul>
+<li>以12306抢票来分析，春运的时候12306抢票抢到车票的时候，12306会提醒用户，请在30分钟内付款。</li>
+<li>正常情况用户会立刻付款，然后付款成功12306会发短信通知。</li>
+<li>然而也存在一些特殊情况，比如抢到车票的用户迟迟没有付款，过了30分钟，系统会自动取消这笔订单。</li>
+<li>需要延迟一定的时间后再进行处理的业务在实际生产环境常见。</li>
+</ul>
+<h5 id="2、传统处理方式-采用定时器"><a href="#2、传统处理方式-采用定时器" class="headerlink" title="2、传统处理方式-采用定时器"></a>2、传统处理方式-采用定时器</h5><ul>
+<li><p>传统处理方式采用一个定时器定时的去获取用户没有付款的订单，然后判断用户的下单时间距离当前时间是否超过30分钟，超过没有付款则设置订单失效。</p>
+<p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E6%8A%A2%E7%A5%A8%E6%88%90%E5%8A%9F%E5%90%8E30%E5%88%86%E9%92%9F%E5%86%85%E6%9C%AA%E4%BB%98%E6%AC%BE%E7%9A%84%E4%BC%A0%E7%BB%9F%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg" alt></p>
+<ul>
+<li>分析发现，春运抢票可以看做是一个大数据量，高并发请求场景，如果定时器频繁的从数据库获取未付款状态的订单，数据量非常大，假如有大量用户在30分钟内没付款，那么数据库中获取数据量一直增长，达到一定程度，给数据库服务器和应用服务器带来巨大的压力，直接压跨服务器，导致抢票全线崩溃。</li>
+<li>早期12306网站每次赶上春运，经常出现网站崩溃卡顿无响应等状态，因为某一时刻产生高并发，定时频繁拉取数据库得到数据量过大，导致内存，CPU，网络和数据库服务负载过高导致的。</li>
+</ul>
+</li>
+</ul>
+<h5 id="2、引入RabbitMQ优化"><a href="#2、引入RabbitMQ优化" class="headerlink" title="2、引入RabbitMQ优化"></a>2、引入RabbitMQ优化</h5><p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/%E5%BC%95%E5%85%A5RabbitMQ%E4%BC%98%E5%8C%96%E6%8A%A2%E7%A5%A8%E6%88%90%E5%8A%9F%E5%90%8E30%E5%88%86%E9%92%9F%E5%86%85%E6%9C%AA%E4%BB%98%E6%AC%BE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.jpeg" alt>    </p>
+<ul>
+<li>优化流程看出，RabbitMQ的引入主要替代传统处理流程的定时器处理逻辑，而采用RabbitMQ的延迟队列来进行处理。</li>
+<li>延迟队列：可以延迟一定的时间后再处理相应的业务逻辑</li>
+<li>常见的成功抢到票30分钟没付款流程，商城抢购没有在规定时间付款，点外卖下单成功后，没有在规定时间付款的流程，都是用RabbitMQ的延迟队列来实现。</li>
+</ul>
+<h3 id="3、RabbitMQ的简单使用"><a href="#3、RabbitMQ的简单使用" class="headerlink" title="3、RabbitMQ的简单使用"></a>3、RabbitMQ的简单使用</h3><ul>
+<li><p>由于我本地使用docker来运行RabbitMQ，如何使用docker安装RabbitMQ以及运行，<a href="https://victorblog.github.io/2018/09/03/Linux%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/#1%E3%80%81docker%E4%B8%8B%E7%9A%84RabbitMQ%E6%8B%89%E5%8F%96">请点击链接看我这篇博客</a></p>
+</li>
+<li><p>运行好RabbitMQ后，然后浏览器输入访问地址(<a href="http://localhost:15672/">http://localhost:15672/</a>)</p>
+</li>
+<li><p>默认用户名密码都为guest/guest，即可进入RabbitMQ管理后台</p>
+<p><img src="/2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/RabbitMQ%E5%90%8E%E5%8F%B0.png" alt></p>
+</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">分布式中间件</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2018/07/07/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6RabbitMQ/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-Redis应用场景之抢红包系统-四" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -1700,146 +1853,6 @@
     
     <p class="article-more-link">
       <a class="article-more-a" href="../../2018/06/13/JVM%E7%9B%B8%E5%85%B3/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-分布式常识总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/" target="_blank">分布式常识总结</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/" class="archive-article-date">
-        <time datetime="2018-06-13T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-13</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、基础知识"><a href="#一、基础知识" class="headerlink" title="一、基础知识"></a>一、基础知识</h1><h2 id="1、分布式基础理论"><a href="#1、分布式基础理论" class="headerlink" title="1、分布式基础理论"></a>1、分布式基础理论</h2><h3 id="1、什么是分布式系统？"><a href="#1、什么是分布式系统？" class="headerlink" title="1、什么是分布式系统？"></a>1、什么是分布式系统？</h3><p>《分布式系统原理与范型》定义：</p>
-<p>分布式系统是若干独立计算机的<strong>集合</strong>，这些计算机对于用户来说就像<strong>单个相关系统</strong>。</p>
-<p>分布式系统(distributed system)是建立在<strong>网络</strong>之上的软件系统</p>
-<p>eg：比如我们在使用京东商城进行购物的时候，我们登陆京东商城完成整个购物。对于我们的用户使用来说，我们体会到的是一个完整的京东商城系统。实际上京东商城后面有成千上万台独立的计算机为我们提供服务。这些所有计算机合起来它构成了一个完整的京东商城系统。京东商城它是一个分布式系统。</p>
-<h3 id="2、为什么要有分布式系统？"><a href="#2、为什么要有分布式系统？" class="headerlink" title="2、为什么要有分布式系统？"></a>2、为什么要有分布式系统？</h3><p>随着互联网的发展，网站应用的规模不断扩大，常规的垂直应用架构已经无法应对，分布式服务架构以及流动计算架构势在必行，亟需<strong>一个治理系统</strong>确保架构有条不紊的演进。</p>
-<p>eg：比如我们的应用是淘宝级别的，可能没有任何一台服务器能抵挡得住像双11那么大的用户量，每秒要处理几十万的数据。有几个亿的实时数据处理。面对这种情况怎么办呢？我们既然有一个超大型系统，把这个大型系统划分成一个个的小功能模块，把这些功能模块分布在各个计算机上，那这么多的计算机就合起来组成一个完整的系统为我们提供服务。这就是我们分布式的架构思想。毕竟三个臭皮匠，顶个诸葛亮，这么多的计算机合起来就能抵御住非常大的流量。在这种情况下，我们把大型系统，分成一个个小模块(小服务)。而这些小模块(小服务)之间也有着千丝万缕的关系。比如A可能要用到B。而B呢可能要用到C，C可能要用到D，D回过头又得用到B等等。这么复杂的关系我们亟需要一个治理系统来维护我们这个复杂的关系，保证我们系统有条不紊的进行。而我们的Dubbo就能维护和治理这些复杂的关系。那么有了dubbo，我们就能轻而易举的使用分布式的思想来架构我们一个应用。</p>
-<h3 id="3、应用架构的发展演变"><a href="#3、应用架构的发展演变" class="headerlink" title="3、应用架构的发展演变"></a>3、应用架构的发展演变</h3><p><img src="/2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/%E5%8F%91%E5%B1%95%E6%BC%94%E5%8F%98.png" alt></p>
-<ul>
-<li><p><strong>单一应用架构</strong></p>
-<p>当网站流量很小时，只需要一个应用，将所有功能都部署在一起，以减少部署节点和成本。此时，用于简化增删改查工作量的数据访问框架(ORM)是关键。</p>
-<p>比如：超市的收银系统，公司的一些管理系统，一些小型的网站应用等等。比如我们有一个小型的购物网站，它只能少量的人来提供服务，流量很小。比如网站里面有非常多的功能：用户，商品，订单。由于我们网站访问量还是很小的，我们没必要把它做成一个大型的分布式应用。所以说，我们可以将所有的功能都放在一个应用里面。然后将整个应用打包部署放在服务器里。开发简单，部署也简单。某一天网站的访问量大，服务器受不了了。我们可以再来一个服务器，同样都来跑这个应用。两个服务器一起来分担流量压力。</p>
-<p>但是单一应用会带来一些缺点：1、扩展不容易，比如某个功能模块修改了，我们要把整个应用重新打包部署到服务器上。服务器如果有多台，我们就扩展不容易。2、我们协同开发也不容易，大家都去改这一个应用，可能都会改乱，不利于我们应用的维护。</p>
-</li>
-<li><p>垂直应用架构</p>
-<p>当我们的应用规模不断扩大。比如我们以前的应用只要10Mb</p>
-<p>我们应用不断扩大到了500Mb，还是单体应用放在一个服务器里面。单台服务器跑这么大的应用，压力也是很大，光靠增加每一个服务器，已经不能带来性能上的极大提升了。那么接下来就要重新考虑一下我们应用的架构方式。我们就来到第二阶段，叫垂直的应用架构(Vertical Application)。</p>
-<p>我们可以将那么大的单体应用，垂直拆分成几个互不相干的小应用。这些小应用独立部署在每一个服务器上。哪一个小应用的功能增加了，我们只改这些小应用，包括这些小应用流量很大了，我们把它多放在几台服务器上。垂直拆分的好处：</p>
-<p>1、我们分工合作很容易，每一个人负责开发和维护不同的应用。这样就互不干扰。</p>
-<p>2、性能扩展也是很容易的，比如我们的用户应用访问量增大了。我们就把它多复制上几份放到几台服务器上。我们三五台服务器上一起来跑。我们扩展是很容易的。不像是之前的单体应用，一扩展就带上整个应用。我们只是扩展小应用，想要扩展哪一部分就扩展这一个应用就行了，其他的应用先不用动。但是呢？即使是这样的架构也是有一些缺点的：因为每一个小的应用都是完整的，包含界面，业务逻辑，数据库等等。但是呢？我们市场上对界面的要求会经常发生变化，美工天天会改这个页面，一个页面一改，我们整个应用都要重新部署，现在没法做到：1、界面和业务逻辑的实现分离。2、我们应用后来也会增多。垂直应用从用户模块，商品模块，订单模块，增多到支付模块，物流模块等等，这种情况下，我们不能理想情况下，让应用跟应用直接会互相独立。我们的订单可能会用到用户，因为我们创建订单的时候，可能会访问到用户，包括订单还要用到商品的信息。而物流，支付可能会用到订单的一些内容。我们会发现，应用与应用之间可能会进行交互。</p>
-<p>3、应用不可能完全的独立。大量的应用之间需要交互。</p>
-<p>接下来我们怎么办呢？可以采取分布式的应用架构(Distributed Service)，当我们的垂直应用越来越多，应用之间还会进行交互，我们可以把它们的核心业务单独的抽取出来。</p>
-</li>
-<li><p>分布式服务架构(Distributed Service)</p>
-<p><img src="/2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84.jpg" alt></p>
-<p>用户的应用抽取出用户的界面web和用户的业务逻辑。订单的界面web和订单的业务逻辑等等。这样做的好处是业务逻辑不变的情况下，我们只想改界面，那界面的服务器重新启动一下，我们的核心的业务逻辑还在其他服务器上。比如我们的用户界面，它要展示我们的用户信息，还要展示商品信息。只需要调对应的服务业务就行了。包括业务之间也可能需要互调。但是现在还要一个最大的问题：我们的用户的Web可能在A服务器上，用户的业务可能放在B服务器上，订单放在C服务器上等。如果我们的A服务器要去调B服务器的功能，我们以前写在一个应用里面，A调B，那直接A调B的方法就行了，我们叫进程内通讯，因为他们都在一个服务器上，都是同一个tomcat,同一个进程内通讯。但是现在我们发现A跟B已经分割两地了，它在两处了，这两处我们代码之间如何互调呢?我们把这个调用称为RPC(远程过程调用)。也就是说分布式应用架构下，最核心的难点是RPC远程过程调用，以及如何拆分业务，提升业务的复用程度，那么此时一个好的<strong>分布式服务框架(RPC)</strong>，帮我们来解决远程过程调用的这个框架，就能极大的简化我们的开发。那么这样的架构就会高枕无忧了吗？随着我们的业务不断增加，我们分拆的服务也越来越多，有成千上万的服务器，再来跑各种不同的服务，而出现的一些资源浪费情况，就尤为严重，比如我们的用户业务，这块的访问量比较小，有100台服务器在跑，而我们的商品业务，它的访问量比较大却只有10台服务器在跑，那我们呢就应该有一个能基于我们访问压力的调度中心，能帮我们实时的来监控这些数据，来动态的调度，提高我们这个系统的资源利用率，你跑的服务器有点多了，我们来减上几台，让更多的服务器取来跑业务量更大的这些业务，这个时候呢，就可以采用流动计算架构(Elastic Computing)。</p>
-</li>
-<li><p>流动计算架构(Elastic Computing)</p>
-<p><img src="/2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/%E8%B0%83%E5%BA%A6%E4%B8%AD%E5%BF%83.jpg" alt>    服务调度中心，负责维护服务之间的复杂关系以及实时管理我们整个服务集群。比如说A服务器访问量大了，我给A冬天的多来几台服务器。第一台有100个请求，第二台2个请求，第三台有10000个请求，那么下次进来的时候，就找比较闲的服务器来处理请求，比如第二台，提高我们整个服务集群的利用率。</p>
-</li>
-</ul>
-<h3 id="4、RPC"><a href="#4、RPC" class="headerlink" title="4、RPC"></a>4、RPC</h3><ul>
-<li><p><strong>什么叫RPC</strong></p>
-<p>RPC(Remote Procedure Call)：是指远程过程调用，是一种进程间通信方式，它是一种技术思想，而不是规范。它允许程序调用另一个地址空间(通常是共享网络的另一台机器)的过程或者函数。而不是程序员显式的编码这个远程调用的细节。即程序员无论是调用本地的还是远程的函数，本质上编写的调用代码基本相同。</p>
-</li>
-<li><p><strong>RPC基本原理</strong></p>
-<p><img src="/2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/RPC%E5%8E%9F%E7%90%86.jpg" alt></p>
-<p>过程：A想要调用B服务器的应用，A先跟B服务器在网络建立一个Socket连接，然后将我们要调用B的一些信息，B的哪个方法，包括方法名，用的参数是什么，把这些信息传递给B服务器，然后B服务器上Server stub这个小助手收到这些信息，一看A想要调用我里面的信息，它就将这个方法一调用，包括调这个方法用到的参数，也通过网络传递了过来，那我们调方法的时候也将参数传过去，我们B服务器里面的Server stub将方法调用完，调用完以后，方法会有一个返回值，然后这个返回值也通过网络传输给A，A收到返回值以后，A的client stub小助手把这个返回值给我们Client functions。</p>
-<p>整个RPC的核心：A，B两个服务器之间建立网络之间，它们之间进行通信，这样的话A想要用B里面的服务，就像A给B发送一个请求一样，B的方法将响应的结果，交给A。</p>
-</li>
-</ul>
-<h3 id="5、dubbo"><a href="#5、dubbo" class="headerlink" title="5、dubbo"></a>5、dubbo</h3><p>​    dubbo是一款高性能、轻量级的开源Java RPC框架，提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，以及服务自动注册和发现。</p>
-<p><img src="/2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/dubbo%E7%9A%84%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
-<p>​    register：服务注册中心。</p>
-<p>​    provider：服务提供者</p>
-<p>​    consumer：服务消费者，消费我们提供的服务。</p>
-<p>​    container：指的是dubbo框架容器。</p>
-<p>​    monitor：是监控中心，服务提供者provider，服务消费者的一些监控信息都会发到监控中心。</p>
-<h3 id="6、zookeeper注册中心"><a href="#6、zookeeper注册中心" class="headerlink" title="6、zookeeper注册中心"></a>6、zookeeper注册中心</h3><h3 id="7、dubbo的Monitor监控中心"><a href="#7、dubbo的Monitor监控中心" class="headerlink" title="7、dubbo的Monitor监控中心"></a>7、dubbo的Monitor监控中心</h3><p><a href="https://github.com/apache/incubator-dubbo-admin">GitHub地址</a></p>
-<p>然后用mvn clean package打成一个jar包，然后在控制台用java -jar的命令启动就行。</p>
-<p>注意：启动监控中心，之前必须启动zookeeper，否则，导致监控中心失败。</p>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">分布式中间件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/">展开全文 >></a>
     </p>
     
 

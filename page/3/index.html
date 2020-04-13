@@ -234,6 +234,146 @@
 
 
   
+    <article id="post-分布式常识总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/" target="_blank">分布式常识总结</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/" class="archive-article-date">
+        <time datetime="2018-06-13T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-13</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="一、基础知识"><a href="#一、基础知识" class="headerlink" title="一、基础知识"></a>一、基础知识</h1><h2 id="1、分布式基础理论"><a href="#1、分布式基础理论" class="headerlink" title="1、分布式基础理论"></a>1、分布式基础理论</h2><h3 id="1、什么是分布式系统？"><a href="#1、什么是分布式系统？" class="headerlink" title="1、什么是分布式系统？"></a>1、什么是分布式系统？</h3><p>《分布式系统原理与范型》定义：</p>
+<p>分布式系统是若干独立计算机的<strong>集合</strong>，这些计算机对于用户来说就像<strong>单个相关系统</strong>。</p>
+<p>分布式系统(distributed system)是建立在<strong>网络</strong>之上的软件系统</p>
+<p>eg：比如我们在使用京东商城进行购物的时候，我们登陆京东商城完成整个购物。对于我们的用户使用来说，我们体会到的是一个完整的京东商城系统。实际上京东商城后面有成千上万台独立的计算机为我们提供服务。这些所有计算机合起来它构成了一个完整的京东商城系统。京东商城它是一个分布式系统。</p>
+<h3 id="2、为什么要有分布式系统？"><a href="#2、为什么要有分布式系统？" class="headerlink" title="2、为什么要有分布式系统？"></a>2、为什么要有分布式系统？</h3><p>随着互联网的发展，网站应用的规模不断扩大，常规的垂直应用架构已经无法应对，分布式服务架构以及流动计算架构势在必行，亟需<strong>一个治理系统</strong>确保架构有条不紊的演进。</p>
+<p>eg：比如我们的应用是淘宝级别的，可能没有任何一台服务器能抵挡得住像双11那么大的用户量，每秒要处理几十万的数据。有几个亿的实时数据处理。面对这种情况怎么办呢？我们既然有一个超大型系统，把这个大型系统划分成一个个的小功能模块，把这些功能模块分布在各个计算机上，那这么多的计算机就合起来组成一个完整的系统为我们提供服务。这就是我们分布式的架构思想。毕竟三个臭皮匠，顶个诸葛亮，这么多的计算机合起来就能抵御住非常大的流量。在这种情况下，我们把大型系统，分成一个个小模块(小服务)。而这些小模块(小服务)之间也有着千丝万缕的关系。比如A可能要用到B。而B呢可能要用到C，C可能要用到D，D回过头又得用到B等等。这么复杂的关系我们亟需要一个治理系统来维护我们这个复杂的关系，保证我们系统有条不紊的进行。而我们的Dubbo就能维护和治理这些复杂的关系。那么有了dubbo，我们就能轻而易举的使用分布式的思想来架构我们一个应用。</p>
+<h3 id="3、应用架构的发展演变"><a href="#3、应用架构的发展演变" class="headerlink" title="3、应用架构的发展演变"></a>3、应用架构的发展演变</h3><p><img src="/2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/%E5%8F%91%E5%B1%95%E6%BC%94%E5%8F%98.png" alt></p>
+<ul>
+<li><p><strong>单一应用架构</strong></p>
+<p>当网站流量很小时，只需要一个应用，将所有功能都部署在一起，以减少部署节点和成本。此时，用于简化增删改查工作量的数据访问框架(ORM)是关键。</p>
+<p>比如：超市的收银系统，公司的一些管理系统，一些小型的网站应用等等。比如我们有一个小型的购物网站，它只能少量的人来提供服务，流量很小。比如网站里面有非常多的功能：用户，商品，订单。由于我们网站访问量还是很小的，我们没必要把它做成一个大型的分布式应用。所以说，我们可以将所有的功能都放在一个应用里面。然后将整个应用打包部署放在服务器里。开发简单，部署也简单。某一天网站的访问量大，服务器受不了了。我们可以再来一个服务器，同样都来跑这个应用。两个服务器一起来分担流量压力。</p>
+<p>但是单一应用会带来一些缺点：1、扩展不容易，比如某个功能模块修改了，我们要把整个应用重新打包部署到服务器上。服务器如果有多台，我们就扩展不容易。2、我们协同开发也不容易，大家都去改这一个应用，可能都会改乱，不利于我们应用的维护。</p>
+</li>
+<li><p>垂直应用架构</p>
+<p>当我们的应用规模不断扩大。比如我们以前的应用只要10Mb</p>
+<p>我们应用不断扩大到了500Mb，还是单体应用放在一个服务器里面。单台服务器跑这么大的应用，压力也是很大，光靠增加每一个服务器，已经不能带来性能上的极大提升了。那么接下来就要重新考虑一下我们应用的架构方式。我们就来到第二阶段，叫垂直的应用架构(Vertical Application)。</p>
+<p>我们可以将那么大的单体应用，垂直拆分成几个互不相干的小应用。这些小应用独立部署在每一个服务器上。哪一个小应用的功能增加了，我们只改这些小应用，包括这些小应用流量很大了，我们把它多放在几台服务器上。垂直拆分的好处：</p>
+<p>1、我们分工合作很容易，每一个人负责开发和维护不同的应用。这样就互不干扰。</p>
+<p>2、性能扩展也是很容易的，比如我们的用户应用访问量增大了。我们就把它多复制上几份放到几台服务器上。我们三五台服务器上一起来跑。我们扩展是很容易的。不像是之前的单体应用，一扩展就带上整个应用。我们只是扩展小应用，想要扩展哪一部分就扩展这一个应用就行了，其他的应用先不用动。但是呢？即使是这样的架构也是有一些缺点的：因为每一个小的应用都是完整的，包含界面，业务逻辑，数据库等等。但是呢？我们市场上对界面的要求会经常发生变化，美工天天会改这个页面，一个页面一改，我们整个应用都要重新部署，现在没法做到：1、界面和业务逻辑的实现分离。2、我们应用后来也会增多。垂直应用从用户模块，商品模块，订单模块，增多到支付模块，物流模块等等，这种情况下，我们不能理想情况下，让应用跟应用直接会互相独立。我们的订单可能会用到用户，因为我们创建订单的时候，可能会访问到用户，包括订单还要用到商品的信息。而物流，支付可能会用到订单的一些内容。我们会发现，应用与应用之间可能会进行交互。</p>
+<p>3、应用不可能完全的独立。大量的应用之间需要交互。</p>
+<p>接下来我们怎么办呢？可以采取分布式的应用架构(Distributed Service)，当我们的垂直应用越来越多，应用之间还会进行交互，我们可以把它们的核心业务单独的抽取出来。</p>
+</li>
+<li><p>分布式服务架构(Distributed Service)</p>
+<p><img src="/2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84.jpg" alt></p>
+<p>用户的应用抽取出用户的界面web和用户的业务逻辑。订单的界面web和订单的业务逻辑等等。这样做的好处是业务逻辑不变的情况下，我们只想改界面，那界面的服务器重新启动一下，我们的核心的业务逻辑还在其他服务器上。比如我们的用户界面，它要展示我们的用户信息，还要展示商品信息。只需要调对应的服务业务就行了。包括业务之间也可能需要互调。但是现在还要一个最大的问题：我们的用户的Web可能在A服务器上，用户的业务可能放在B服务器上，订单放在C服务器上等。如果我们的A服务器要去调B服务器的功能，我们以前写在一个应用里面，A调B，那直接A调B的方法就行了，我们叫进程内通讯，因为他们都在一个服务器上，都是同一个tomcat,同一个进程内通讯。但是现在我们发现A跟B已经分割两地了，它在两处了，这两处我们代码之间如何互调呢?我们把这个调用称为RPC(远程过程调用)。也就是说分布式应用架构下，最核心的难点是RPC远程过程调用，以及如何拆分业务，提升业务的复用程度，那么此时一个好的<strong>分布式服务框架(RPC)</strong>，帮我们来解决远程过程调用的这个框架，就能极大的简化我们的开发。那么这样的架构就会高枕无忧了吗？随着我们的业务不断增加，我们分拆的服务也越来越多，有成千上万的服务器，再来跑各种不同的服务，而出现的一些资源浪费情况，就尤为严重，比如我们的用户业务，这块的访问量比较小，有100台服务器在跑，而我们的商品业务，它的访问量比较大却只有10台服务器在跑，那我们呢就应该有一个能基于我们访问压力的调度中心，能帮我们实时的来监控这些数据，来动态的调度，提高我们这个系统的资源利用率，你跑的服务器有点多了，我们来减上几台，让更多的服务器取来跑业务量更大的这些业务，这个时候呢，就可以采用流动计算架构(Elastic Computing)。</p>
+</li>
+<li><p>流动计算架构(Elastic Computing)</p>
+<p><img src="/2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/%E8%B0%83%E5%BA%A6%E4%B8%AD%E5%BF%83.jpg" alt>    服务调度中心，负责维护服务之间的复杂关系以及实时管理我们整个服务集群。比如说A服务器访问量大了，我给A冬天的多来几台服务器。第一台有100个请求，第二台2个请求，第三台有10000个请求，那么下次进来的时候，就找比较闲的服务器来处理请求，比如第二台，提高我们整个服务集群的利用率。</p>
+</li>
+</ul>
+<h3 id="4、RPC"><a href="#4、RPC" class="headerlink" title="4、RPC"></a>4、RPC</h3><ul>
+<li><p><strong>什么叫RPC</strong></p>
+<p>RPC(Remote Procedure Call)：是指远程过程调用，是一种进程间通信方式，它是一种技术思想，而不是规范。它允许程序调用另一个地址空间(通常是共享网络的另一台机器)的过程或者函数。而不是程序员显式的编码这个远程调用的细节。即程序员无论是调用本地的还是远程的函数，本质上编写的调用代码基本相同。</p>
+</li>
+<li><p><strong>RPC基本原理</strong></p>
+<p><img src="/2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/RPC%E5%8E%9F%E7%90%86.jpg" alt></p>
+<p>过程：A想要调用B服务器的应用，A先跟B服务器在网络建立一个Socket连接，然后将我们要调用B的一些信息，B的哪个方法，包括方法名，用的参数是什么，把这些信息传递给B服务器，然后B服务器上Server stub这个小助手收到这些信息，一看A想要调用我里面的信息，它就将这个方法一调用，包括调这个方法用到的参数，也通过网络传递了过来，那我们调方法的时候也将参数传过去，我们B服务器里面的Server stub将方法调用完，调用完以后，方法会有一个返回值，然后这个返回值也通过网络传输给A，A收到返回值以后，A的client stub小助手把这个返回值给我们Client functions。</p>
+<p>整个RPC的核心：A，B两个服务器之间建立网络之间，它们之间进行通信，这样的话A想要用B里面的服务，就像A给B发送一个请求一样，B的方法将响应的结果，交给A。</p>
+</li>
+</ul>
+<h3 id="5、dubbo"><a href="#5、dubbo" class="headerlink" title="5、dubbo"></a>5、dubbo</h3><p>​    dubbo是一款高性能、轻量级的开源Java RPC框架，提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，以及服务自动注册和发现。</p>
+<p><img src="/2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/dubbo%E7%9A%84%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt></p>
+<p>​    register：服务注册中心。</p>
+<p>​    provider：服务提供者</p>
+<p>​    consumer：服务消费者，消费我们提供的服务。</p>
+<p>​    container：指的是dubbo框架容器。</p>
+<p>​    monitor：是监控中心，服务提供者provider，服务消费者的一些监控信息都会发到监控中心。</p>
+<h3 id="6、zookeeper注册中心"><a href="#6、zookeeper注册中心" class="headerlink" title="6、zookeeper注册中心"></a>6、zookeeper注册中心</h3><h3 id="7、dubbo的Monitor监控中心"><a href="#7、dubbo的Monitor监控中心" class="headerlink" title="7、dubbo的Monitor监控中心"></a>7、dubbo的Monitor监控中心</h3><p><a href="https://github.com/apache/incubator-dubbo-admin">GitHub地址</a></p>
+<p>然后用mvn clean package打成一个jar包，然后在控制台用java -jar的命令启动就行。</p>
+<p>注意：启动监控中心，之前必须启动zookeeper，否则，导致监控中心失败。</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">分布式中间件</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2018/06/13/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B8%B8%E8%AF%86%E6%80%BB%E7%BB%93/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-JVM的运行过程：" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
@@ -1718,114 +1858,6 @@
     
     <p class="article-more-link">
       <a class="article-more-a" href="../../2017/11/03/git%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-	  <!-- 目录内容 -->
-             
-        <!-- 目录内容结束 -->
-
-
-  
-    <article id="post-docker使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-	<div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="../../2017/11/01/docker%E4%BD%BF%E7%94%A8/" target="_blank">Docker的使用</a>
-  
-    </h1>
-  
-
-
-  
-  
-<a href="../../2017/11/01/docker%E4%BD%BF%E7%94%A8/" class="archive-article-date">
-        <time datetime="2017-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-01</time>
-</a>
-
-  
-  
-    
-
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <h1 id="一、docker的使用"><a href="#一、docker的使用" class="headerlink" title="一、docker的使用"></a>一、docker的使用</h1><h4 id="1、docker添加镜像加速文件"><a href="#1、docker添加镜像加速文件" class="headerlink" title="1、docker添加镜像加速文件"></a>1、docker添加镜像加速文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/docker</span><br><span class="line"><span class="meta">#</span><span class="bash">如果没有daemon.json文件，需要新建一个</span></span><br><span class="line">sudo touch daemon.json</span><br><span class="line">sudo vim daemon.json</span><br><span class="line"><span class="meta">#</span><span class="bash">daemon.json添加以下配置，然后保存</span></span><br><span class="line">&#123;"registry-mirrors":["https://registry.docker-cn.com"]&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash">重启服务</span></span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
-
-<h4 id="2、查看docker的版本"><a href="#2、查看docker的版本" class="headerlink" title="2、查看docker的版本"></a>2、查看docker的版本</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker查找镜像</span></span><br><span class="line">sudo docker search mysql</span><br><span class="line"><span class="meta">#</span><span class="bash">查看本地下载的镜像</span></span><br><span class="line">sudo docker images</span><br><span class="line"><span class="meta">#</span><span class="bash">查看本地正在运行的镜像</span></span><br><span class="line">sudo docker ps -a</span><br></pre></td></tr></table></figure>
-
-<h4 id="3、使用docker拉取镜像"><a href="#3、使用docker拉取镜像" class="headerlink" title="3、使用docker拉取镜像"></a>3、使用docker拉取镜像</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo docker pull redis:5.0.6</span><br><span class="line">sudo docker pull nginx</span><br><span class="line">sudo docker pull mysql:8.0.18</span><br><span class="line"><span class="meta">#</span><span class="bash">删除拉取的镜像</span></span><br><span class="line">sudo docker image rm mysql:8.0.18</span><br></pre></td></tr></table></figure>
-
-<h4 id="4、使用docker安装并运行nginx"><a href="#4、使用docker安装并运行nginx" class="headerlink" title="4、使用docker安装并运行nginx"></a>4、使用docker安装并运行nginx</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sudo docker search nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">pull的时候，后面不追加冒号和版本号，默认是最新的latest版本</span></span><br><span class="line">sudo docker pull nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">运行nginx</span></span><br><span class="line">sudo docker run --name victor-nginx-test -p 8081:80 -d nginx</span><br><span class="line"><span class="meta">#</span><span class="bash">victor-nginx-test是容器名称</span></span><br><span class="line">-d，设置容器在后台一直运行</span><br><span class="line">-p，端口进行映射，将本地的8081端口映射到容器内部的80端口</span><br><span class="line"><span class="meta">#</span><span class="bash">执行玩上面那条命令后，会生成一串字符串45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89，这个表示容器的id，一般作为日志的文件名来查看启动信息等</span></span><br><span class="line">sudo docker logs 45faac1c8dcac4c356e4fd8f8dc0ee204385feca7e851cbe874805db7b811f89</span><br><span class="line"><span class="meta">#</span><span class="bash">停止nginx</span></span><br><span class="line">sudo docker ps</span><br><span class="line"><span class="meta">#</span><span class="bash">复制对应容器的id,然后停止镜像</span></span><br><span class="line">sudo docker stop 45faac1c8dca</span><br><span class="line"><span class="meta">#</span><span class="bash">删除镜像</span></span><br><span class="line">sudo docker rm 45faac1c8dca</span><br></pre></td></tr></table></figure>
-
-<h4 id="5、使用docker部署项目"><a href="#5、使用docker部署项目" class="headerlink" title="5、使用docker部署项目"></a>5、使用docker部署项目</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">首先创建一个文件夹，里面包含3个子文件夹</span></span><br><span class="line">sudo mkdir -p ~/桌面/nginx/www ~/桌面/nginx/logs ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">首先你要直到容器的id，</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">复制docker容器里的nginx默认配置文件信息，到你的本地刚创建的conf文件夹目录下</span></span><br><span class="line">sudo docker cp76d9d74d071e:/etc/nginx/nginx.conf ~/桌面/nginx/conf</span><br><span class="line"><span class="meta">#</span><span class="bash">部署项目，到docker里的nginx</span></span><br><span class="line">sudo docker run -p 8082:80 --name victor-nginx-web -v ~/桌面/nginx/www:/usr/share/nginx/html -v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v ~/桌面/nginx/logs:/var/log/nginx -d nginx</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">命令说明</span></span><br><span class="line">-p 8082:80  是把你容器里的nginx的80端口映射到你本地主机的8082端口</span><br><span class="line">--name victor-nginx-web  是把容器重命名我们自己喜欢的名字</span><br><span class="line">-v ~/桌面/nginx/www:/usr/share/nginx/html   是把我们本地创建的项目 的www目录挂在到容器的/usr/share/nginx/html</span><br><span class="line">-v ~/桌面/nginx/conf/nginx.conf:/etc/nginx/nginx.conf 是吧我们创建的nginx.conf挂在到容器的/etc/nginx/nginx.conf</span><br><span class="line">-v ~/桌面/nginx/logs:/var/log/nginx 是把我们自己创建的logs挂在到容器的/var/log/nginx</span><br><span class="line">-d nginx :是设置容器一直后台运行</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">执行完命令后，会生成一串字符串，用这个字符串表示日志id，可以使用</span></span><br><span class="line">sudo docker logs 76d9d74d071e8b2d8499a56691587eef3e2f19d4fddeb5a3e26e5d9338856e10</span><br></pre></td></tr></table></figure>
-
-<h4 id="6、使用docker安装mysql并运行"><a href="#6、使用docker安装mysql并运行" class="headerlink" title="6、使用docker安装mysql并运行"></a>6、使用docker安装mysql并运行</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉去mysql的镜像</span></span><br><span class="line">sudo docker pull mysql:5.7</span><br><span class="line"><span class="meta">#</span><span class="bash">本地创建一个文件夹，用来映射容器的mysql</span></span><br><span class="line">sudo mkdir -p ~/桌面/mydata/mysql/log ~/桌面/mydata/mysql/conf ~/桌面/mydata/mysql/data</span><br><span class="line"><span class="meta">#</span><span class="bash">给创建好的文件夹开权限</span></span><br><span class="line">sudo chmod 777 -R ~/桌面/mydata/</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动mysql</span></span><br><span class="line">sudo docker run -p 3305:3306 --name mysql -v ~/桌面/mydata/mysql/log:/var/log/mysql -v ~/桌面/mydata/mysql/data:/var/lib/mysql -v ~/桌面/mydata/mysql/conf:/etc/mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7</span><br><span class="line"><span class="meta">#</span><span class="bash">查看镜像，如果存在，或者端口被占用，则换为3305映射容器的端口</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">先删除被占用名字的容器镜像id，然后重新执行启动命令</span></span><br><span class="line">sudo docker rm3bf96e1f8a95</span><br><span class="line"><span class="meta">#</span><span class="bash">进入运行mysql的docker容器</span></span><br><span class="line">sudo docker exec -it mysql /bin/bash</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#######以下是mysql的命令操作</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">使用mysql 命令打开客户端</span></span><br><span class="line">mysql -uroot -proot --default-character-set=utf8</span><br><span class="line"><span class="meta">#</span><span class="bash">查看数据库</span></span><br><span class="line">show databases;</span><br><span class="line">create database test character set utf8;</span><br><span class="line">use test;</span><br><span class="line">create table ();</span><br><span class="line"><span class="meta">#</span><span class="bash">退出mysql命令操作</span></span><br><span class="line">\q</span><br><span class="line"><span class="meta">#</span><span class="bash">退出mysql运行的docker容器</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
-
-<h4 id="7、使用docker安装并运行redis"><a href="#7、使用docker安装并运行redis" class="headerlink" title="7、使用docker安装并运行redis"></a>7、使用docker安装并运行redis</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">docker拉取redis</span></span><br><span class="line">sudo docker pull redis:3.2</span><br><span class="line"><span class="meta">#</span><span class="bash">本地创建一个redis文件夹存放数据</span></span><br><span class="line">sudo mkdir -p ~/桌面/mydata/redis/data</span><br><span class="line"><span class="meta">#</span><span class="bash">更改文件件执行权限</span></span><br><span class="line">sudo chmod 777 -R ~/桌面/mydata/redis</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动redis</span></span><br><span class="line">sudo docker run -p 6379:6379 --name redis -v ~/桌面/mydata/redis/data:/data -d redis:3.2 redis-server --appendonly yes</span><br><span class="line"><span class="meta">#</span><span class="bash">进入redis容器使用redis-cli命令进行连接</span></span><br><span class="line">sudo docker exec -it redis redis-cli</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">####以下为redis的命令</span></span></span><br><span class="line">ping</span><br><span class="line">set a 100</span><br><span class="line">get a</span><br><span class="line"><span class="meta">#</span><span class="bash">退出redis</span></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
-
-<h4 id="8、使用docker安装并运行rabbitmq"><a href="#8、使用docker安装并运行rabbitmq" class="headerlink" title="8、使用docker安装并运行rabbitmq"></a>8、使用docker安装并运行rabbitmq</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉取docker镜像</span></span><br><span class="line">sudo docker pull rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">使用docker命令启动rabbitmq</span></span><br><span class="line">sudo docker run --name rabbitmq --publish 5671:5671 --publish 5672:5672 --publish 4369:4369 --publish 25672:25672 --publish 15672:15672 --publish 15671:15671 -d rabbitmq:3.7.15</span><br><span class="line"><span class="meta">#</span><span class="bash">Ubuntu的防火墙暴露端口15672</span></span><br><span class="line">sudo ufw allow 15672</span><br><span class="line"><span class="meta">#</span><span class="bash">开启防火墙</span></span><br><span class="line">sudo ufw enable</span><br><span class="line"><span class="meta">#</span><span class="bash">重新加载</span></span><br><span class="line">sudo ufw reload</span><br><span class="line"><span class="meta">#</span><span class="bash">查看防火墙状态</span></span><br><span class="line">sudo ufw status</span><br><span class="line"><span class="meta">#</span><span class="bash">进入到rabbitmq的连接</span></span><br><span class="line">sudo docker exec -it rabbitmq /bin/bash</span><br><span class="line"><span class="meta">#</span><span class="bash">然后输入如下命令，开启rabbitmq的管理后台</span></span><br><span class="line">rabbitmq-plugins enable rabbitmq_management</span><br><span class="line"><span class="meta">#</span><span class="bash">浏览器输入rabbitmq的管理后台页面</span></span><br><span class="line">http://localhost:15672</span><br><span class="line">用户名密码：guest guest</span><br><span class="line"><span class="meta">#</span><span class="bash">退出</span></span><br><span class="line">exit</span><br><span class="line"><span class="meta">#</span><span class="bash">rabbitmq的下一次启动</span></span><br><span class="line"><span class="meta">#</span><span class="bash">直接找到对应的Container ID</span></span><br><span class="line">sudo docker ps -a</span><br><span class="line"><span class="meta">#</span><span class="bash">然后启动命令</span></span><br><span class="line">sudo docker start 213a1c20682e</span><br><span class="line"><span class="meta">#</span><span class="bash">停止命令</span></span><br><span class="line">sudo docker stop 213a1c20682e</span><br></pre></td></tr></table></figure>
-
-
-
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">DevOps</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="../../2017/11/01/docker%E4%BD%BF%E7%94%A8/">展开全文 >></a>
     </p>
     
 

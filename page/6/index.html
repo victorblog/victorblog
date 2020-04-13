@@ -234,6 +234,162 @@
 
 
   
+    <article id="post-Linux常用的操作命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+	<div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="../../2015/11/01/Linux%E5%B8%B8%E7%94%A8%E7%9A%84%E6%93%8D%E4%BD%9C%E5%91%BD%E4%BB%A4/" target="_blank">Linux常用命令</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="../../2015/11/01/Linux%E5%B8%B8%E7%94%A8%E7%9A%84%E6%93%8D%E4%BD%9C%E5%91%BD%E4%BB%A4/" class="archive-article-date">
+        <time datetime="2015-11-01T02:06:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-11-01</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h4 id="Linux常用的操作命令"><a href="#Linux常用的操作命令" class="headerlink" title="Linux常用的操作命令"></a>Linux常用的操作命令</h4><p>记住：Linux系统里一切都是文件</p>
+<ul>
+<li><p>更新系统</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看历史命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">清除历史</span></span><br><span class="line">history -c</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看某个命令的所在位置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">which ps</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看某个命令的使用文档</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">man ps</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看端口占用情况：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsof -i:8080</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看某个进程：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux | grep "chrome"</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>杀死某个进程：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -9 pid</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>展示MD5：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo "danruiqing" | md5sum</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看系统时间：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">date +%s</span><br><span class="line">date -d"1 week ago" +"%F %H:%M:%S"</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看路由表</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -rn</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>路由表添加路由</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">添加路由</span></span><br><span class="line">sudo route add 10.249.7.38/32 dev wlp2s0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>访问远程服务器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh danruiqing@xxx.com -p 21</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看本地网络配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig -a</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>maven清楚并忽略test</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn clean package -Dmaven.test.skip=true</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询命令的使用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">grep <span class="string">"123"</span>查询的结果作为后面的输入，管道</span></span><br><span class="line">grep "123" | grep "45" | grep "tom"</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>环境变量配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vim .bashrc</span><br><span class="line">export JAVA_HOME=/usr/java/jdk1.8</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/Lib</span><br><span class="line">export PATH=.$&#123;JAVA_HOME&#125;/bin:$PATH</span><br><span class="line">:wq</span><br><span class="line">source .bashrc</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>tar包的解压打包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf xxx.tar</span><br><span class="line">tar -zcvf java_demo.tar java_demo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>zip包的解压打包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zip java_demo.zip java_demo</span><br><span class="line">unzip -l example.zip</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看日志文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tail -f java.log</span><br><span class="line">cat .bashrc</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改hosts文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">为了线下稳定访问服务，配置hosts</span></span><br><span class="line">sudo gedit /etc/hosts</span><br><span class="line"><span class="meta">#</span><span class="bash">保存并重启网络</span></span><br><span class="line">sudo /etc/init.d/networking restart</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">DevOps</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="../../2015/11/01/Linux%E5%B8%B8%E7%94%A8%E7%9A%84%E6%93%8D%E4%BD%9C%E5%91%BD%E4%BB%A4/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+	  <!-- 目录内容 -->
+             
+        <!-- 目录内容结束 -->
+
+
+  
     <article id="post-病毒与细菌" class="article article-type-post  article-index" itemscope itemprop="blogPost">
 	<div class="article-inner">
     
